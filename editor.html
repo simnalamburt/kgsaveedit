@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Kittens Game Save Editor</title>
+	<link rel="stylesheet" type="text/css" href="editor/editor.css">
+</head>
+<body>
+	<form>
+		<div id="topBar" class="header">
+			<span class="smallText">
+				Kittens Game Save Editor by <a href="http://coderpatsy.bitbucket.org/">patsy</a>, updated by Guest93,
+				for <a href="http://bloodrizer.ru/games/kittens/">Kittens Game</a> version 1.2.0.0b
+				by <a href="http://bloodrizer.ru/">bloodrizer</a>
+			</span>
+
+			<span id="topSettings">
+				<span id="toolbarBlock"></span>
+
+				<a id="showImport" href="#">Import</a> |
+				<a id="showExport" href="#">Export</a>
+			</span>
+		</div>
+
+		<div id="load" class="hideSiblings">Loading...</div>
+
+		<div id="editContainer">
+			<div id="importBlock" class="lightbox hidden">
+				Save Import<br>
+				<textarea id="importSaveArea" class="saveArea"></textarea><br>
+				<input id="importLoadButton" type="button" value="Load">
+				<input id="importCancel" type="button" value="Cancel">
+				<span id="importError" class="hidden">Unable to import data!</span>
+			</div>
+			<div id="exportBlock" class="lightbox hidden">
+				Save Export<br>
+				<textarea id="exportSaveArea" class="saveArea"></textarea><br>
+				<input id="exportCancel" type="button" value="OK">
+			</div>
+
+			<div class="blockContainer">
+				<div id="tooltipBlock" class="hidden"></div>
+
+				<div id="resourceColumn" class="bottom-spacer">
+					<table id="resourceBlock"></table><br>
+					<table id="craftableBlock"></table>
+				</div>
+
+				<div id="editColumn"><div class="blockContainer">
+					<div id="tabContainer"></div>
+
+					<div id="tabBlocks"><div id="tabBlocksContainer" class="blockContainer"></div></div>
+				</div></div>
+			</div>
+		</div>
+	</form>
+
+	<script src="editor/lz-string.js"></script>
+	<script src="editor/dojo.js"></script>
+	<script>
+		require(["dojo/on"], function (on) {
+			window.catchError = on(window, 'error', function () {
+				dojo.byId('load').textContent = 'Something went wrong while loading!';
+			});
+		});
+	</script>
+
+	<script src="editor/e-core.js?v=1.2.0.0b"></script>
+	<script src="editor/e-resources.js?v=1.2.0.0b"></script>
+	<script src="editor/e-upgrades.js?v=1.2.0.0b"></script>
+	<script src="editor/e-buildings.js?v=1.2.0.0b"></script>
+	<script src="editor/e-village.js?v=1.2.0.0b"></script>
+	<script src="editor/e-stats.js?v=1.2.0.0b"></script>
+	<script src="editor/e-main.js?v=1.2.0.0b"></script>
+
+	<script>
+	var gamePage = new classes.KGSaveEdit.saveEdit(dojo.byId('editContainer'));
+	var game = gamePage;
+	var saveEdit = gamePage;
+
+	require(["dojo/on"], function (on) {
+		"use strict";
+
+		setTimeout(function () {
+			//stop the submit event from doing anything (the <form> element is only there for "valid" html)
+			on(document.forms[0], 'submit',
+				function (event) { event.preventDefault(); });
+
+			//don't follow empty fragment links
+			on(document.documentElement, 'a[href="#"]:click',
+				function (event) { event.preventDefault(); });
+
+			on(dojo.byId('showImport'), 'click', function () {
+				dojo.query('.lightbox').addClass('hidden');
+				dojo.removeClass('importBlock', 'hidden');
+				dojo.addClass('importError', 'hidden');
+
+				var area = dojo.byId('importSaveArea');
+				area.value = '';
+				area.focus();
+			});
+
+			on(dojo.byId('importLoadButton'), 'click', function () {
+				var data = dojo.byId('importSaveArea').value.trim();
+
+				if (!data || !window.confirm("Are your sure? This will overwrite your save!")) {
+					return;
+				}
+				var success = gamePage.importSave(data);
+
+				if (success === 'ERROR') {
+					dojo.removeClass('importError', 'hidden');
+				} else if (success) {
+					dojo.byId('importSaveArea').value = '';
+					dojo.addClass('importBlock', 'hidden');
+					dojo.addClass('importError', 'hidden');
+				}
+			});
+
+			on(dojo.byId('importCancel'), 'click', function () {
+				dojo.addClass('importBlock', 'hidden');
+				dojo.addClass('importError', 'hidden');
+			});
+
+			on(dojo.byId('showExport'), 'click', function () {
+				dojo.query('.lightbox').addClass('hidden');
+				dojo.removeClass('exportBlock', 'hidden');
+
+				var area = dojo.byId('exportSaveArea');
+				area.value = gamePage.exportSave(true);
+				area.select();
+			});
+
+			on(dojo.byId('exportCancel'), 'click', function () {
+				dojo.addClass('exportBlock', 'hidden');
+			});
+
+			dojo.addClass('load', 'hidden');
+			window.catchError.remove();
+		}, 0);
+	});
+	</script>
+</body>
+</html>
