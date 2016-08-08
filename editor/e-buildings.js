@@ -114,6 +114,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			],
 			priceRatio: 2.5,
 			breakIronWill: true,
+			// unlocks: {tabs: ["village"]},
 			effects: {
 				"maxKittens":  2,
 				"manpowerMax": 75
@@ -161,6 +162,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "wood", val: 25}
 			],
 			priceRatio: 1.15,
+			// unlocks: {tabs: ["science"], jobs: ["scholar"]},
 			effects: {},
 			calculateEffects: function (self, game) {
 				var effects = {
@@ -370,6 +372,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			],
 			priceRatio: 1.15,
 			unlockRatio: 0.15,
+			// unlocks: {jobs: ["miner"]},
 			requires: {tech: ["mining"]},
 			effects: {},
 			calculateEffects: function (self, game) {
@@ -635,6 +638,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			],
 			priceRatio: 1.15,
 			ignorePriceCheck: true,
+			// unlocks: {tabs: ["workshop"]},
 			effects: {},
 			calculateEffects: function(self, game) {
 				var effects = {
@@ -1619,6 +1623,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 100000},
 				{name: "oil",       val: 15000}
 			],
+			// unlocks: {planet: "cath", programs: ["moonMission"]}
 			unlocked: true
 		}, {
 			name: "moonMission",
@@ -1630,6 +1635,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 125000},
 				{name: "oil",       val: 45000}
 			],
+			// unlocks: {planet: "moon", programs: ["duneMission", "piscineMission"]}
 			requires: {program: ["orbitalLaunch"]},
 			upgradable: false
 		}, {
@@ -1642,6 +1648,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 175000},
 				{name: "kerosene",  val: 75}
 			],
+			// unlocks: {planet: "dune", programs: ["heliosMission"]},
 			requires: {program: ["moonMission"]},
 			upgradable: false
 		}, {
@@ -1654,6 +1661,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 200000},
 				{name: "kerosene",  val: 250}
 			],
+			// unlocks: {planet: "piscine", programs: ["terminusMission"]},
 			requires: {program: ["moonMission"]},
 			upgradable: false
 		}, {
@@ -1666,6 +1674,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 250000},
 				{name: "kerosene",  val: 1250}
 			],
+			// unlocks: {planet: "helios", programs: ["yarnMission"]},
 			requires: {program: ["duneMission"]},
 			upgradable: false
 		}, {
@@ -1678,6 +1687,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 225000},
 				{name: "kerosene",  val: 750}
 			],
+			// unlocks: {planet: "terminus", programs: ["kairoMission"]},
 			requires: {program: ["piscineMission"]},
 			upgradable: false
 		}, {
@@ -1690,6 +1700,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 300000},
 				{name: "kerosene",  val: 7500}
 			],
+			// unlocks: {planet: "kairo", programs: ["rorschachMission"]},
 			requires: {program: ["terminusMission"]},
 			upgradable: false
 		}, {
@@ -1714,7 +1725,8 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 350000},
 				{name: "kerosene",  val: 12000}
 			],
-			// requires: {program: ["kairoMission"]},
+			// unlocks: {planet: "yarn"},
+			requires: {program: ["heliosMission"]},
 			upgradable: false
 	}],
 

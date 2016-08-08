@@ -80,6 +80,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science", val: 30}
 			],
 			unlocked: true,
+			// unlocks: {tech: ["agriculture"]},
 			flavor: "What day is it again?"
 		}, {
 			name: "agriculture",
@@ -89,6 +90,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 100}
 			],
+			// unlocks: {tech: ["mining", "archery"], jobs: ["farmer"]},
 			requires: {tech: ["calendar"]},
 			flavor: "Best thing since sliced bread!"
 		}, {
@@ -99,6 +101,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 300}
 			],
+			// unlocks: {tech: ["animal"], jobs: ["hunter"]},
 			requires: {tech: ["agriculture"]}
 		}, {
 			name: "mining",
@@ -108,6 +111,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 500}
 			],
+			// unlocks: {tech: ["metal"], upgrades: ["bolas"]},
 			requires: {tech: ["agriculture"]},
 			flavor: "Pickaxes are easier to hold with opposable thumbs"
 		}, {
@@ -118,6 +122,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 900}
 			],
+			// unlocks: {upgrades: ["huntingArmor"]},
 			requires: {tech: ["mining"]}
 		}, {
 			name: "animal",
@@ -127,6 +132,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 500}
 			],
+			// unlocks: {tech: ["civil", "math", "construction"]},
 			requires: {tech: ["archery"]}
 		}, {
 			name: "brewery",
@@ -136,7 +142,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 1200}
 			],
-			hidden: true
+			hidden: true // not used anymore
 		}, {
 			name: "civil",
 			title: "Civil Service",
@@ -145,6 +151,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 1500}
 			],
+			// unlocks: {tech: ["currency"]},
 			requires: {tech: ["animal"]},
 			flavor: "Specialists in Herding Cats"
 		}, {
@@ -155,6 +162,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 1000}
 			],
+			// unlocks: {upgrades: ["celestialMechanics"], tabs: ["stats"]},
 			requires: {tech: ["animal"]},
 			flavor: "Purr equals Meow times Paw to the square"
 		}, {
@@ -165,6 +173,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 1300}
 			],
+			// unlocks: {tech: ["engineering"], upgrades: ["compositeBow", "advancedRefinement"]},
 			requires: {tech: ["animal"]},
 			flavor: "Making pillow forts smart!"
 		}, {
@@ -175,6 +184,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 1500}
 			],
+			// unlocks: {tech: ["writing"]},
 			requires: {tech: ["construction"]}
 		}, {
 			name: "currency",
@@ -184,6 +194,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 2200}
 			],
+			// unlocks: {upgrades: ["goldOre"]},
 			requires: {tech: ["civil"]}
 		}, {
 			name: "writing",
@@ -193,6 +204,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 3600}
 			],
+			// unlocks: {tech: ["philosophy", "machinery", "steel"], upgrades: ["register"], crafts: ["parchment"]},
 			requires: {tech: ["engineering"]},
 			flavor: "Writing uses less ink than pawprints"
 		}, {
@@ -203,6 +215,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 9500}
 			],
+			// unlocks: {tech: ["theology"], crafts: ["compedium"]},
 			requires: {tech: ["writing"]},
 			flavor: "I purr, therefore I am"
 		}, {
@@ -214,6 +227,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 15000}
 			],
+			// unlocks: {upgrades: ["printingPress", "factoryAutomation", "crossbow"]}
 			requires: {tech: ["writing"]}
 		}, {
 			name: "steel",
@@ -223,6 +237,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 12000}
 			],
+			// unlocks: {upgrades: ["deepMining", "coalFurnace", "combustionEngine", "reinforcedWarehouses", "steelAxe", "steelArmor"], crafts: ["steel"]},
 			requires: {tech: ["writing"]}
 		}, {
 			name: "theology",
@@ -233,6 +248,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",    val: 20000},
 				{name: "manuscript", val: 35}
 			],
+			// unlocks: {tech: ["astronomy", "cryptotheology"], jobs: ["priest"]},
 			requires: {tech: ["philosophy"]},
 			upgrades: {buildings: ["temple"]},
 			flavor: "What is that flaming ball in the sky anyway?"
@@ -245,6 +261,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",    val: 28000},
 				{name: "manuscript", val: 65}
 			],
+			// unlocks: {tech: ["navigation"]},
 			requires: {tech: ["theology"]}
 		}, {
 			name: "navigation",
@@ -255,6 +272,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",    val: 35000},
 				{name: "manuscript", val: 100}
 			],
+			// unlocks: {tech: ["physics", "archeology", "architecture"], crafts: ["ship"], upgrades: ["caravanserai", "cargoShips", "astrolabe", "titaniumMirrors", "titaniumAxe"]},
 			requires: {tech: ["astronomy"]}
 		}, {
 			name: "architecture",
@@ -265,6 +283,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 42000},
 				{name: "compedium", val: 10}
 			],
+			// unlocks: {tech: ["acoustics"]},
 			requires: {tech: ["navigation"]},
 			flavor: "Bigger, better cat towers!"
 		}, {
@@ -276,6 +295,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 50000},
 				{name: "compedium", val: 35}
 			],
+			// unlocks: {tech: ["chemistry", "electricity", "metaphysics"], crafts: ["blueprint"], upgrades: ["pneumaticPress", "pyrolysis", "steelSaw"]},
 			requires: {tech: ["navigation"]}
 		}, {
 			name: "metaphysics",
@@ -296,6 +316,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 60000},
 				{name: "compedium", val: 50}
 			],
+			// unlocks: {upgrades: ["alloyAxe", "alloyArmor", "alloyWarehouses", "alloyBarns"], crafts: ["alloy"]},
 			requires: {tech: ["physics"]}
 		}, {
 			name: "acoustics",
@@ -306,6 +327,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 60000},
 				{name: "compedium", val: 60}
 			],
+			// unlocks: {tech: ["drama"]},
 			requires: {tech: ["architecture"]}
 		}, {
 			name: "drama",
@@ -326,6 +348,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 65000},
 				{name: "compedium", val: 65}
 			],
+			// unlocks: {tech: ["biology"], jobs: ["geologist"], upgrades:["geodesy"]},
 			requires: {tech: ["navigation"]},
 			flavor: "Different fossils of giant lizards were discovered. Apparently they all died in a sudden but inevitable betrayal."
 		}, {
@@ -337,6 +360,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 75000},
 				{name: "compedium", val: 85}
 			],
+			// unlocks: {tech: ["industrialization"]},
 			requires: {tech: ["physics"]},
 			flavor: "Who knew running around on the carpet could generate such power?"
 		}, {
@@ -348,6 +372,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 85000},
 				{name: "compedium", val: 100}
 			],
+			// unlocks: {tech: ["biochemistry"]},
 			requires: {tech: ["archeology"]}
 		}, {
 			name: "biochemistry",
@@ -358,6 +383,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 145000},
 				{name: "compedium", val: 500}
 			],
+			// unlocks: {tech: ["genetics"], upgrades: ["biofuel"]},
 			requires: {tech: ["biology"]}
 		}, {
 			name: "genetics",
@@ -368,6 +394,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 190000},
 				{name: "compedium", val: 1500}
 			],
+			// unlocks: {upgrades: ["unicornSelection", "gmo"]},
 			requires: {tech: ["biochemistry"]}
 		}, {
 			name: "industrialization",
@@ -378,6 +405,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 100000},
 				{name: "blueprint", val: 25}
 			],
+			// unlocks: {tech: ["mechanization", "metalurgy", "combustion"], upgrades: ["barges", "advancedAutomation"]},
 			requires: {tech: ["electricity"]}
 		}, {
 			name: "mechanization",
@@ -388,6 +416,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 115000},
 				{name: "blueprint", val: 45}
 			],
+			// unlocks: {tech: ["electronics"], crafts: ["concrate"], upgrades: ["pumpjack", "concreteWarehouses", "concreteBarns", "concreteHuts"]},
 			requires: {tech: ["industrialization"]}
 		}, {
 			name: "metalurgy",
@@ -398,6 +427,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 125000},
 				{name: "blueprint", val: 60}
 			],
+			// unlocks: {upgrades: ["electrolyticSmelting", "oxidation", "miningDrill"]},
 			requires: {tech: ["industrialization"]}
 		}, {
 			name: "combustion",
@@ -408,6 +438,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 115000},
 				{name: "blueprint", val: 45}
 			],
+			// unlocks: {upgrades: ["offsetPress", "fuelInjectors", "oilRefinery"], tech: ["ecology"]},
 			requires: {tech: ["industrialization"]}
 		}, {
 			name: "ecology",
@@ -418,6 +449,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 125000},
 				{name: "blueprint", val: 55}
 			],
+			// unlocks: {stages: [{bld:"pasture", stage:1}]},
 			requires: {tech: ["combustion"]}
 		}, {
 			name: "electronics",
@@ -428,6 +460,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 135000},
 				{name: "blueprint", val: 70}
 			],
+			// unlocks: {tech: ["nuclearFission", "rocketry", "robotics"], upgrades: ["cadSystems", "refrigeration", "seti", "factoryLogistics"], stages: [{bld:"amphitheatre", stage:1}]},
 			requires: {tech: ["mechanization"]}
 		}, {
 			name: "robotics",
@@ -438,6 +471,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 140000},
 				{name: "blueprint", val: 80}
 			],
+			// unlocks: {upgrades: ["steelPlants", "rotaryKiln"], crafts: ["tanker"], stages: [{bld:"aqueduct", stage:1}]},
 			requires: {tech: ["electronics"]}
 		}, {
 			name: "nuclearFission",
@@ -448,6 +482,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 150000},
 				{name: "blueprint", val: 100}
 			],
+			// unlocks: {tech: ["nanotechnology", "particlePhysics"], upgrades: ["reactorVessel", "nuclearSmelters"]},
 			requires: {tech: ["electronics"]}
 		}, {
 			name: "rocketry",
@@ -458,6 +493,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 175000},
 				{name: "blueprint", val: 125}
 			],
+			// unlocks: {tech: ["sattelites", "oilProcessing"], tabs: ["space"], upgrades: ["oilDistillation"]},
 			requires: {tech: ["electronics"]}
 		}, {
 			name: "oilProcessing",
@@ -468,6 +504,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 215000},
 				{name: "blueprint", val: 150}
 			],
+			// unlocks: {crafts: ["kerosene"], upgrades: ["factoryProcessing"]},
 			requires: {tech: ["rocketry"]}
 		}, {
 			name: "sattelites",
@@ -478,6 +515,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 190000},
 				{name: "blueprint", val: 125}
 			],
+			// unlocks: {tech: ["orbitalEngineering" ], upgrades: ["photolithography"]},
 			requires: {tech: ["rocketry"]},
 			flavor: "Spreading cat videos at the speed of light"
 		}, {
@@ -489,6 +527,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 250000},
 				{name: "blueprint", val: 250}
 			],
+			// unlocks: {tech: ["exogeology"], upgrades: ["hubbleTelescope", "satelliteRadio", "astrophysicists", "solarSatellites"]},
 			requires: {tech: ["sattelites"]}
 		}, {
 			name: "exogeology",
@@ -499,6 +538,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 275000},
 				{name: "blueprint", val: 250}
 			],
+			// unlocks: {tech: ["advExogeology"], upgrades: ["unobtainiumReflectors", "unobtainiumHuts", "unobtainiumDrill", "hydroPlantTurbines", "storageBunkers"]},
 			requires: {tech: ["orbitalEngineering"]}
 		}, {
 			name: "advExogeology",
@@ -509,6 +549,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 325000},
 				{name: "blueprint", val: 350}
 			],
+			// unlocks: {upgrades: ["eludiumCracker", "eludiumReflectors", "eludiumHuts", "mWReactor" /*, "eludiumDrill"*/], crafts: ["eludium"]},
 			requires: {tech: ["exogeology"]}
 		}, {
 			name: "nanotechnology",
@@ -519,6 +560,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 200000},
 				{name: "blueprint", val: 150}
 			],
+			// unlocks: {tech: ["superconductors"], upgrades: ["augumentation", "nanosuits", "photovoltaic", "fluidizedReactors"]},
 			requires: {tech: ["nuclearFission"]}
 		}, {
 			name: "superconductors",
@@ -529,6 +571,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 225000},
 				{name: "blueprint", val: 175}
 			],
+			// unlocks: {upgrades: ["coldFusion", "spaceManufacturing"], tech: ["antimatter"]},
 			requires: {tech: ["nanotechnology"]}
 		}, {
 			name: "antimatter",
@@ -539,6 +582,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science", val: 500000},
 				{name: "relic",   val: 1}
 			],
+			// unlocks: {upgrades: ["amReactors", "amBases"], tech: ["terraformation"]},
 			requires: {tech: ["superconductors"]}
 		}, {
 			name: "terraformation",
@@ -549,6 +593,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name : "science", val: 750000},
 				{name : "relic",   val: 5}
 			],
+			// unlocks: {tech: ["hydroponics"], space: [{planet:"yarn", bld: "terraformingStation"}]},
 			requires: {tech: ["antimatter"]}
 		}, {
 			name: "hydroponics",
@@ -559,6 +604,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name : "science", val: 1000000},
 				{name : "relic",   val: 25}
 			],
+			// unlocks: {space: [{planet:"yarn", bld: "hydroponics"}]},
 			requires: {tech: ["terraformation"]}
 		}, {
 			name: "particlePhysics",
@@ -569,6 +615,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 185000},
 				{name: "blueprint", val: 135}
 			],
+			// unlocks: {tech: ["chronophysics", "dimensionalPhysics"], upgrades: ["enrichedUranium", "railgun"]},
 			requires: {tech: ["nuclearFission"]}
 		}, {
 			name: "dimensionalPhysics",
@@ -578,6 +625,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 235000}
 			],
+			// unlocks: {upgrades: ["energyRifts", "lhc"]},
 			requires: {tech: ["particlePhysics"]}
 		}, {
 			name: "chronophysics",
@@ -588,6 +636,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",     val: 250000},
 				{name: "timeCrystal", val: 5}
 			],
+			// unlocks: {tech: ["tachyonTheory"], upgrades: ["stasisChambers", "fluxCondensator"]},
 			requires: {tech: ["particlePhysics"]}
 		}, {
 			name: "tachyonTheory",
@@ -599,6 +648,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "timeCrystal", val: 25},
 				{name: "relic",       val: 1}
 			],
+			// unlocks: {upgrades: ["tachyonAccelerators", "chronoforge"]},
 			requires: {tech: ["chronophysics"]}
 		}, {
 			name: "cryptotheology",
@@ -609,6 +659,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science", val: 650000},
 				{name: "relic",   val: 5}
 			],
+			// unlocks: {upgrades: ["relicStation"]},
 			requires: {tech: ["theology"]}
 	}],
 
@@ -982,6 +1033,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "minerals", val: 275}
 			],
 			unlocked: true,
+			// unlocks: {upgrades: ["ironHoes"]},'
 			effects: {
 				"catnipRatio": 0.5
 			}
@@ -1006,6 +1058,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "minerals", val: 500}
 			],
 			unlocked: true,
+			// unlocks: {upgrades: ["ironAxes"]},
 			effects: {
 				"woodRatio": 0.7
 			}
@@ -1041,6 +1094,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "science", val: 52000},
 				{name: "steel",   val: 750}
 			],
+			// unlocks: {upgrades: ["titaniumSaw"]},
 			requires: {tech: ["physics"]},
 			effects: {
 				"lumberMillRatio": 0.2
@@ -1054,6 +1108,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "science",  val: 70000},
 				{name: "titanium", val: 500}
 			],
+			// unlocks: {upgrades: ["alloySaw"]},
 			requires: {upgrades: ["steelSaw"]},
 			effects: {
 				"lumberMillRatio": 0.15
@@ -1149,6 +1204,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "iron",    val: 100}
 			],
 			unlocked: true,
+			// unlocks: {upgrades: ["titaniumBarns"]},
 			effects: {
 				"barnRatio": 0.8
 			},
@@ -1163,6 +1219,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "steel",    val: 50},
 				{name: "scaffold", val: 25}
 			],
+			// unlocks: {upgrades: ["ironwood"]},
 			requires: {tech: ["steel"]},
 			effects: {
 				"warehouseRatio": 0.25
@@ -1289,6 +1346,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "uranium",     val: 2000},
 				{name: "timeCrystal", val: 1}
 			],
+			// unlocks: {upgrades: ["voidEnergy"]},
 			requires: {tech: ["chronophysics"]},
 			effects: {
 				"acceleratorRatio": 0.95
@@ -1304,6 +1362,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "uranium",     val: 2500},
 				{name: "timeCrystal", val: 2}
 			],
+			// unlocks: {upgrades: ["darkEnergy"]},
 			requires: {upgrades: ["stasisChambers"]},
 			effects: {
 				"acceleratorRatio": 0.75
@@ -1441,6 +1500,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "wood",    val: 15000},
 				{name: "iron",    val: 3000}
 			],
+			// unlocks: {upgrades: ["silos"]},
 			requires: {upgrades: ["reinforcedWarehouses"]},
 			effects: {
 				"hutPriceRatio": -0.5
@@ -1492,6 +1552,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "steel",     val: 125},
 				{name: "blueprint", val: 5}
 			],
+			// unlocks: {upgrades: ["titaniumWarehouses"]},
 			requires: {upgrades: ["ironwood"]},
 			upgrades: {buildings: ["barn", "warehouse", "harbor"]},
 			flavor: "With carpeting and climbing holds of course"
@@ -1762,6 +1823,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "gear",     val: 750},
 				{name: "science",  val: 140000}
 			],
+			// unlocks: {upgrades: ["automatedPlants"]},
 			requires: {tech: ["robotics"]},
 			effects: {
 				"calcinerSteelRatio": 0.1
@@ -2017,6 +2079,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "eludium",    val: 35},
 				{name: "antimatter", val: 750}
 			],
+			// unlocks: {upgrades: ["amReactorsMK2"]},
 			requires: {tech: ["antimatter"]},
 			effects: {
 				"spaceScienceRatio": 0.95
@@ -2179,6 +2242,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "oil",     val: 50000},
 				{name: "science", val: 250000}
 			],
+			// unlocks: {upgrades: ["satnav"]},
 			requires: {tech: ["orbitalEngineering"]},
 			effects: {
 				"starchartGlobalRatio": 0.3
