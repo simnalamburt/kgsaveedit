@@ -117,8 +117,11 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		}, {
 			name: "karma",
 			type: "rare",
+			inputParseFn: function (value) {
+				return this.game.getTriValue(Math.round(this.game.reverseTriValue(value, 5)), 5);
+			},
 			inputHandler: function() {
-				this.game.setInput(this.game.karmaKittensNode, this.game.reverseTriValue(this.parsedValue, 5), true);
+				this.game.setInput(this.game.karmaKittensNode, Math.round(this.game.reverseTriValue(this.parsedValue, 5)), true);
 				this.game.setInput(this.game.karmaKittensKarma, this.parsedValue, true);
 			}
 		}, {
@@ -435,6 +438,9 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 		var td = dojo.create('td', null, tr);
 		this.game._createInput({'class': this.inputClass || 'abbrInput'},
 			td, this, 'value');
+		if (this.inputParseFn) {
+			this.valueNode.parseFn = this.inputParseFn;
+		}
 		if (this.inputHandler) {
 			this.valueNode.handler = this.inputHandler;
 		}

@@ -456,20 +456,18 @@ dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 		game.karmaKittensKarma = game._createInput({'class': 'abbrInput'}, td);
 		dojo.place(document.createTextNode(' Karma'), td);
 
-		game.karmaKittensKarma.handler = function () {
-			this.game.resPool.get('karma').setValue(this.parsedValue, true);
-			this.game.setInput(this.game.karmaKittensKarma,
-				this.game.getTriValue(this.parsedValue, 5), true);
+		game.karmaKittensNode.handler = function () {
+			var value = this.game.getTriValue(this.parsedValue, 5);
+			this.game.setInput(this.game.karmaKittensKarma, value, true);
+			this.game.resPool.get('karma').setValue(value, true);
 		};
 
 		game.karmaKittensKarma.parseFn = function (value) {
 			return this.game.getTriValue(Math.round(this.game.reverseTriValue(value, 5)), 5);
 		};
 		game.karmaKittensKarma.handler = function () {
-			var value = Math.round(this.game.reverseTriValue(this.parsedValue, 5));
-			this.game.setInput(this.game.karmaKittensIn,
-				value, true);
-			this.game.resPool.get('karma').setValue(value, true);
+			this.game.resPool.get('karma').setValue(this.parsedValue, true);
+			this.game.setInput(this.game.karmaKittensNode, Math.round(this.game.reverseTriValue(this.parsedValue, 5)), true);
 		};
 
 		tr = dojo.create('tr', {innerHTML: '<td>karmaZebras</td><td><td>'}, table);
