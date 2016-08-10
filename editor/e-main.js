@@ -1146,7 +1146,11 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				if (effectName.substr(-3) === "Max") {
 					effectValue += effectValue * this.workshop.getEffect(effectName + "Ratio");
 					effectValue += effectValue * this.game.prestige.getParagonStorageRatio();
-					effectValue += effectValue * this.game.religion.getEffect("tcResourceRatio");
+
+					var res = this.game.resPool.get(effectMeta.resName || effectName.slice(0, -3));
+					if (!this.game.resPool.isNormalCraftableResource(res) && !res.transient) {
+						effectValue += effectValue * this.game.religion.getEffect("tcResourceRatio");
+					}
 				}
 
 				var displayEffectValue;
