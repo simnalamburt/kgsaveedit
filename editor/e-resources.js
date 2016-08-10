@@ -296,6 +296,10 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 
 			maxValue += maxValue * game.prestige.getParagonStorageRatio();
 
+			if (!this.isNormalCraftableResource(res) && !res.transient) {
+				maxValue *= (1 + this.game.religion.getEffect("tcResourceRatio"));
+			}
+
 			if (maxValue < 0) {
 				maxValue = 0;
 			}
@@ -377,6 +381,10 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			delta = 0.25;
 		}
 		return delta;
+	},
+
+	isNormalCraftableResource: function(res) {
+		return res.craftable && res.name !== "wood";
 	},
 
 	save: function (saveData) {

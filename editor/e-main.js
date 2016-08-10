@@ -1145,7 +1145,8 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				//display resMax values with global ratios like Refrigeration and Paragon
 				if (effectName.substr(-3) === "Max") {
 					effectValue += effectValue * this.workshop.getEffect(effectName + "Ratio");
-					effectValue += effectValue * (this.resPool.get("paragon").getValue() / 1000);
+					effectValue += effectValue * this.game.prestige.getParagonStorageRatio();
+					effectValue += effectValue * this.game.religion.getEffect("tcResourceRatio");
 				}
 
 				var displayEffectValue;

@@ -1843,7 +1843,7 @@ dojo.declare('classes.KGSaveEdit.TranscendenceMeta', classes.KGSaveEdit.MetaItem
 
 	update: function () {
 		this.updateEnabled();
-		this.unlocked = this.game.religion.getTranscendenceLevel() > this.tier;
+		this.unlocked = this.game.religion.getTranscendenceLevel() >= this.tier;
 		dojo.toggleClass(this.nameNode, 'ital', !this.unlocked);
 	},
 
