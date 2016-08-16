@@ -181,7 +181,7 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', classes.KGSaveEdit.UI.Tab
 			hasStar: true,
 			starDescription: "In the grim and dark future of a catkind there are no resets",
 			starCondition: function() {
-				return this.game.calendar.year >= 40000;
+				return this.game.calendar.year >= 40000 + this.game.time.flux;
 			}
 		}, {
 			name: "limitlessClicker",
