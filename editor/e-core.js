@@ -39,8 +39,8 @@ dojo.declare('classes.KGSaveEdit.UI.Tab', classes.KGSaveEdit.core, {
 		this.game = game;
 	},
 
-	toggleVisible: function () {
-		this.isVisible = true;
+	getVisible: function () {
+		return true;
 	},
 
 	getTabName: function () {
@@ -50,7 +50,7 @@ dojo.declare('classes.KGSaveEdit.UI.Tab', classes.KGSaveEdit.core, {
 	renderTab: function () {
 		//wrap tab link for css
 		this.tabWrapper = dojo.create('span', {
-			'class': 'wrapper separated' + (this.isVisible ? '' : ' hidden')
+			'class': 'wrapper separated' + (this.isVisible ? '' : ' spoiler')
 		});
 
 		this.tabNode = dojo.create('a', {
@@ -82,15 +82,8 @@ dojo.declare('classes.KGSaveEdit.UI.Tab', classes.KGSaveEdit.core, {
 
 	updateTab: function () {
 		this.tabNode.innerHTML = this.getTabName();
-		// dojo.toggleClass(this.tabWrapper, 'hidden', !this.isVisible);
-		// if (!this.isVisible) {
-			// dojo.removeClass(this.tabWrapper, 'activeTab');
-			// dojo.addClass(this.tabBlockNode, 'hidden');
-		// }
-
-		// if (dojo.hasClass(this.tabWrapper, 'hidden')) {
-			// this.tabNode.removeClass('activeTab');
-		// }
+		this.isVisible = this.getVisible();
+		dojo.toggleClass(this.tabWrapper, 'spoiler', !this.isVisible);
 	}
 });
 
@@ -1135,6 +1128,19 @@ dojo.declare('classes.KGSaveEdit.DiplomacyManager', [classes.KGSaveEdit.UI.Tab, 
 		return this.racesByName[name];
 	},
 
+	hasUnlockedRaces: function () {
+		for (var i = this.races.length - 1; i >= 0; i--) {
+			if (this.races[i].unlocked) {
+				return true;
+			}
+		}
+		return false;
+	},
+
+	getVisible: function () {
+		return this.hasUnlockedRaces();
+	},
+
 	update: function () { },
 
 	save: function (saveData) {
@@ -1463,7 +1469,11 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 	faithRatio: 0,
 	corruption: 0,
 	tcratio: 0,
+
 	tabName: 'Religion',
+	getVisible: function () {
+		return this.game.resPool.get("faith").owned();
+	},
 
 	constructor: function (game) {
 		this.zigguratUpgrades = [];

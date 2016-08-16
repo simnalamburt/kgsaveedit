@@ -2122,6 +2122,9 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 
 	tabName: 'Space',
 	tabBlockClass: 'shortInt',
+	getVisible: function () {
+		return this.game.science.get('rocketry').owned();
+	},
 
 	programs: null,
 	planets: null,

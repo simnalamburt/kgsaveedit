@@ -120,6 +120,9 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	traitsByName: null,
 
 	tabName: 'Outpost',
+	getVisible: function () {
+		return this.game.resPool.get('kittens').owned() || this.game.resPool.get('zebras').owned() || this.game.bld.get('hut').owned();
+	},
 
 	leader: null,
 	senators: null,

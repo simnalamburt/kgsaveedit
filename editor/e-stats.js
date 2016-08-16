@@ -274,6 +274,19 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', classes.KGSaveEdit.UI.Tab
 		}
 	},
 
+	hasUnlocked: function () {
+		for (var i = this.achievements.length - 1; i >= 0; i--) {
+			if (this.achievements[i].unlocked) {
+				return true;
+			}
+		}
+		return false;
+	},
+
+	getVisible: function () {
+		return this.hasUnlocked();
+	},
+
 	update: function () {
 		var newAch = false;
 
@@ -454,6 +467,9 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
     }],
 
 	tabName: 'Stats',
+	getVisible: function () {
+		return this.game.karmaKittens > 0 || this.game.science.get('math').owned();
+	},
 
 	stats: null,
 	statsByName: null,

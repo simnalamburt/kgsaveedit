@@ -277,12 +277,12 @@ input.integerInput.shortInt {
 	clear: both;
 }
 
-.tooltipEffect.hiddenEffect {
+.spoiler {
 	font-style: italic;
 }
 
 .tooltipFlavor {
-	display: inline-block;
+	display: block;
 	padding-top: 20px;
 	float: right;
 	font-size: 12px;

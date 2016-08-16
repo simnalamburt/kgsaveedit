@@ -664,6 +664,9 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 	}],
 
 	tabName: 'Science',
+	getVisible: function () {
+		return this.game.bld.get('library').owned();
+	},
 
 	techs: null,
 	techsByName: null,
@@ -2511,6 +2514,9 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 	},
 
 	tabName: 'Workshop',
+	getVisible: function () {
+		return this.game.bld.get('workshop').owned();
+	},
 
 	upgrades: null,
 	upgradesByName: null,

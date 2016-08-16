@@ -1138,8 +1138,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				var displayEffectName = effectMeta.title || effectName;
 
 				if (effectMeta.resName && this.resPool.get(effectMeta.resName).getValue() === 0) {
-					effectClass += ' hiddenEffect';
-					//continue; //hide resource-related effects if we did not unlocked this effect yet
+					effectClass += ' spoiler'; //mark resource-related effects if we did not unlocked this effect yet
 				}
 
 				//display resMax values with global ratios like Refrigeration and Paragon
