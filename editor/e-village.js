@@ -1367,7 +1367,6 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		for (var i = this.editJobs.length - 1; i >= 0; i--) {
 			var job = this.editJobs[i];
 			this.game.setInput(job.expNode, num(this.skills[job.name]));
-			job.expNode.handler();
 		}
 
 		this.setExpectedExp();
