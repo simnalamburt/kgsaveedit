@@ -654,6 +654,8 @@ dojo.declare('classes.KGSaveEdit.Calendar', classes.KGSaveEdit.core, {
 		game._createInput({id: 'yearNode', 'class': 'integerInput'},
 			td, this, 'year');
 
+		dojo.place(document.createTextNode(' \u00A0'), td); //insert &nbsp; equivalent
+
 		this.milleniumParagonSpan = dojo.create('a', {
 			id: 'milleniumParagonSpan',
 			href: '#', 'class': 'hidden',

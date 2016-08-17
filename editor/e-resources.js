@@ -425,8 +425,9 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 			dojo.addClass(tr, this.type);
 		}
 
-		var isHiddenNode = dojo.create('td', {}, tr);
-		this.game._createCheckbox(null, isHiddenNode, this, 'isHidden');
+		var td = dojo.create('td', {}, tr);
+		var isHiddenNode = this.game._createCheckbox(null, td, this, 'isHidden');
+		isHiddenNode.label.title = 'Resource hidden';
 
 		this.nameNode = dojo.create('td', {
 			'class': 'nameNode',
@@ -443,7 +444,7 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 			}
 		}
 
-		var td = dojo.create('td', null, tr);
+		td = dojo.create('td', null, tr);
 		this.game._createInput({'class': this.inputClass || 'abbrInput'},
 			td, this, 'value');
 		if (this.inputParseFn) {

@@ -1201,7 +1201,11 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		this.editJobs = [];
 
 		var handle = function () {
-			this.skillNode.innerHTML = village.getSkillLevel(this.expNode.parsedValue);
+			var skill = '';
+			if (this.expNode.parsedValue > 0) {
+				skill = village.getSkillLevel(this.expNode.parsedValue);
+			}
+			this.skillNode.innerHTML = skill;
 		};
 
 		for (var i = 0, len = village.jobs.length; i < len; i++) {
@@ -1363,6 +1367,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		for (var i = this.editJobs.length - 1; i >= 0; i--) {
 			var job = this.editJobs[i];
 			this.game.setInput(job.expNode, num(this.skills[job.name]));
+			job.expNode.handler();
 		}
 
 		this.setExpectedExp();
