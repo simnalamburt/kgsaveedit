@@ -1111,6 +1111,7 @@ dojo.declare('classes.KGSaveEdit.DiplomacyManager', [classes.KGSaveEdit.UI.Tab, 
 				'class': 'tradeRace',
 				innerHTML: '<td>' + race.title + '</td><td></td><td></td>'
 			}, this.diplomacyBlock);
+			race.nameNode = race.domNode.children[0];
 
 			this.game._createCheckbox('Unlocked', race.domNode.children[1], race, 'unlocked');
 			this.game._createCheckbox('Collapsed', race.domNode.children[1], race, 'collapsed');
@@ -1141,7 +1142,12 @@ dojo.declare('classes.KGSaveEdit.DiplomacyManager', [classes.KGSaveEdit.UI.Tab, 
 		return this.hasUnlockedRaces();
 	},
 
-	update: function () { },
+	update: function () {
+		for (var i = this.races.length - 1; i >= 0; i--) {
+			var race = this.races[i];
+			dojo.toggleClass(race.nameNode, 'spoiler', !race.unlocked);
+		}
+	},
 
 	save: function (saveData) {
 		saveData.diplomacy = {
@@ -1572,6 +1578,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 			'class': 'bottom-margin',
 			innerHTML: '<tr><th colspan="2">Ziggurats</th></tr>'
 		}, this.tabBlockNode);
+		this.zigguratBlockHeader = this.zigguratBlock.children[0];
 
 		var table = dojo.create('table', {'class': 'bottom-margin'}, this.tabBlockNode);
 
@@ -1608,6 +1615,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 			id: 'transcendenceBlock',
 			innerHTML: '<tr><th colspan="2">Cryptotheology</th></tr>'
 		}, this.tabBlockNode);
+		this.transcendenceBlockHeader = this.transcendenceBlock.children[0];
 	},
 
 	render: function () {
@@ -1636,6 +1644,9 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 		this.game.callMethods(this.transcendenceUpgrades, 'update');
 
 		var text = '';
+
+		dojo.toggleClass(this.zigguratBlockHeader, 'spoiler', !this.game.bld.get('ziggurat').owned());
+		dojo.toggleClass(this.transcendenceBlockHeader, 'spoiler', !this.game.science.get('cryptotheology').owned());
 
 		if (this.getRU('solarRevolution').owned()) {
 			var bonus = this.getProductionBonus();
@@ -1800,7 +1811,7 @@ dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
 
 	update: function () {
 		this.updateEnabled();
-		dojo.toggleClass(this.nameNode, 'ital', this.game.religion.faith < this.faith);
+		dojo.toggleClass(this.nameNode, 'spoiler', this.game.religion.faith < this.faith);
 
 		var t = Boolean(this.upgradable && this.game.religion.getRU('transcendence').researched);
 		dojo.toggleClass(this.researchedNode.parentNode, 'hidden', t);

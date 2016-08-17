@@ -1583,6 +1583,7 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 		}
 
 		this.unlocked = Boolean(unlocked || (this.unlockedNode.prevChecked && req));
+		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
 		this.unlockedNode.checked = this.unlocked;
 		this.game.toggleDisabled(this.unlockedNode, disable);
 	},
@@ -2158,6 +2159,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 			var planet = dojo.clone(this.planetData[i]);
 			planet.game = game;
 			planet.metaObj = this;
+			planet.unlocked = false;
 
 			this.planets.push(planet);
 			this.planetsByName[planet.name] = planet;
@@ -2233,10 +2235,10 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				continue;
 			}
 			dojo.create('tr', {'colspan': 3, innerHTML: '&nbsp;'}, this.programsBlock);
-			dojo.create('tr', {
-				'colspan': 3,
-				innerHTML: planet.title || planet.name
+			var tr = dojo.create('tr', {
+				innerHTML: '<td colspan="3">' + (planet.title || planet.name) + '</td>'
 			}, this.programsBlock);
+			planet.nameNode = tr.children[0];
 
 			for (var j = 0, bldlen = planet.buildings.length; j < bldlen; j++) {
 				program = planet.buildings[j];
@@ -2261,6 +2263,14 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 
 	update: function () {
 		this.game.callMethods(this.allPrograms, 'update');
+
+		for (var i = this.planets.length - 1; i >= 0; i--) {
+			var planet = this.planets[i];
+			planet.unlocked = this.game.checkRequirements(planet, false);
+			if (planet.nameNode) {
+				dojo.toggleClass(planet.nameNode, 'spoiler', !planet.unlocked);
+			}
+		}
 	},
 
 	save: function (saveData) {
@@ -2405,14 +2415,17 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	update: function () {
-		if (!this.planet) {
-			var unlocked = this.game.checkRequirements(this);
+		var unlocked = this.game.checkRequirements(this);
+		if (this.unlockedNode) {
 			if (!unlocked && this.unlockedNode.prevChecked) {
 				unlocked = true;
 			}
-			this.unlocked = unlocked;
 			this.unlockedNode.checked = unlocked;
+		}
+		this.unlocked = unlocked;
+		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
 
+		if (!this.planet) {
 			dojo.toggleClass(this.valNode, 'hidden', !this.upgradable);
 			dojo.toggleClass(this.researchedLabel, 'hidden', this.upgradable);
 

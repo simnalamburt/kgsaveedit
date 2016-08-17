@@ -904,6 +904,7 @@ dojo.declare('classes.KGSaveEdit.JobMeta', classes.KGSaveEdit.MetaItem, {
 
 	update: function () {
 		this.unlocked = this.game.checkRequirements(this);
+		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
 		dojo.toggleClass(this.domNode, 'btnDisabled',
 			!this.unlocked || !this.game.village.getFreeKittens());
 	},

@@ -59,6 +59,8 @@ dojo.declare('classes.KGSaveEdit.UpgradeMeta', classes.KGSaveEdit.MetaItem, {
 				this.unlocked = this.unlockedNode.checked;
 			}
 		}
+
+		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
 		this.game.toggleDisabled(this.unlockedNode, req);
 		this.updateEnabled();
 	},
@@ -1000,8 +1002,9 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 	render: function () {
 		this.domNode = dojo.create('table', {
 			id: 'metaphysicsBlock',
-			innerHTML: '<tr><td colspan="2">Metaphysics</td></tr>'
+			innerHTML: '<tr><th colspan="2">Metaphysics</th></tr>'
 		}, this.game.science.tabBlockNode);
+		this.domNodeHeader = this.domNode.children[0];
 
 		for (var i = 0, len = this.perks.length; i < len; i++) {
 			var perk = this.perks[i];
@@ -1012,6 +1015,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 
 	update: function () {
 		this.game.callMethods(this.perks, 'update', this.game.science.hideResearched);
+		dojo.toggleClass(this.domNodeHeader, 'spoiler', !this.game.science.get('metaphysics').owned());
 	},
 
 	save: function (saveData) {
