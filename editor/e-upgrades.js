@@ -759,7 +759,7 @@ dojo.declare('classes.KGSaveEdit.ScienceMeta', classes.KGSaveEdit.UpgradeMeta, {
 			}
 		}
 		return prices;
-	},
+	}
 });
 
 

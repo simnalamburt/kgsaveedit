@@ -1729,7 +1729,7 @@ dojo.declare('classes.KGSaveEdit.ZigguratMeta', classes.KGSaveEdit.MetaItem, {
 	update: function () {
 		this.updateEnabled();
 		this.unlocked = this.game.checkRequirements(this);
-		dojo.toggleClass(this.nameNode, 'ital', !this.unlocked);
+		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
 	},
 
 	load: function (saveData) {
@@ -1875,7 +1875,7 @@ dojo.declare('classes.KGSaveEdit.TranscendenceMeta', classes.KGSaveEdit.MetaItem
 	update: function () {
 		this.updateEnabled();
 		this.unlocked = this.game.religion.getTranscendenceLevel() >= this.tier;
-		dojo.toggleClass(this.nameNode, 'ital', !this.unlocked);
+		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
 	},
 
 	load: function (saveData) {
