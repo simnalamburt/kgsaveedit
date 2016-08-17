@@ -746,7 +746,20 @@ dojo.declare('classes.KGSaveEdit.ScienceMeta', classes.KGSaveEdit.UpgradeMeta, {
 			return this.description + '<br>Effect: ' + this.effectDesc;
 		}
 		return this.description;
-	}
+	},
+
+	getPrices: function () {
+		var prices = this.prices ? dojo.clone(this.prices) : [];
+
+		if (this.game.village.leader && this.game.village.leader.trait.name === "scientist") {
+			for (var i = prices.length - 1; i >= 0; i--) {
+				if (prices[i].name === "science") {
+					prices[i].val *= 0.99;
+				}
+			}
+		}
+		return prices;
+	},
 });
 
 
@@ -2608,7 +2621,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 
 	update: function () {
 		this.craftEffectivenessNode.innerHTML = "Craft effectiveness: +" +
-			(this.game.bld.getEffect("craftRatio") * 100).toFixed() + "%";
+			(this.game.getCraftRatio() * 100).toFixed() + "%";
 
 		this.effectsBase["scienceMax"] = Math.floor(this.game.resPool.get("compedium").value * 10);
 		this.effectsBase["oilMax"] = Math.floor(this.game.resPool.get("tanker").value * 500);

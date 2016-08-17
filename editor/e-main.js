@@ -1524,6 +1524,14 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		return stack;
 	},
 
+	getCraftRatio: function() {
+		var craftRatio = this.bld.getEffect("craftRatio");
+		if (this.village.leader && this.village.leader.trait.name === "engineer") {
+			craftRatio += 0.05;
+		}
+		return craftRatio;
+	},
+
 	/**
 	 * Checks whether everything in a given meta.requires is owned
 	 * Returns defaultUnlocked if no .requires, else unlocked

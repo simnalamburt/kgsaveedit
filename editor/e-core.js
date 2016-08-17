@@ -1764,14 +1764,22 @@ dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	getPrices: function () {
-		var prices = dojo.clone(this.prices) || {};
-		if (!this.upgradable || !this.metaObj.getRU('transcendence').owned()) {
-			return prices;
-		}
+		var prices = dojo.clone(this.prices) || [];
 		var priceRatio = this.priceRatio || 2.5;
+		if (!this.upgradable || !this.metaObj.getRU('transcendence').owned()) {
+			priceRatio = 1;
+		}
+		var hasWiseLeader = this.game.village.leader && this.game.village.leader.trait.name == "wise";
 
 		for (var i = prices.length - 1; i >= 0; i--) {
 			prices[i].val *= Math.pow(priceRatio, this.val);
+			if (hasWiseLeader) {
+				if (prices[i].name === "faith") {
+					prices[i].val = prices[i].val / 0.9;
+				} else if (prices[i].name === "gold") {
+					prices[i].val = prices[i].val * 0.9;
+				}
+			}
 		}
 		return prices;
 	},
