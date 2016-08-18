@@ -201,6 +201,30 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			id: 'governmentBlock'
 		}, this.censusBlock);
 
+		this.unassignLeaderBlock = dojo.create('div');
+
+		this.unassignLeaderBtn = dojo.create('span', {
+			'class': 'separated',
+			innerHTML: '<a href="#">Unassign leader</a>'
+		}, this.unassignLeaderBlock);
+
+		on(this.unassignLeaderBtn.children[0], 'click', dojo.hitch(this, function () {
+			if (this.leader) {
+				this.leader.fireLeader();
+			}
+		}));
+
+		this.unassignLeaderJobBtn = dojo.create('span', {
+			'class': 'separated',
+			innerHTML: '<a href="#">Unassign leader job</a>'
+		}, this.unassignLeaderBlock);
+
+		on(this.unassignLeaderJobBtn.children[0], 'click', dojo.hitch(this, function () {
+			if (this.leader) {
+				this.leader.quitJob();
+			}
+		}));
+
 		div = dojo.create('div', null, this.censusBlock);
 		dojo.setStyle(div, 'margin-bottom', '5px');
 
@@ -643,7 +667,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	},
 
 	renderGovernment: function () {
-		var leaderInfo = '';
+		this.governmentBlock.innerHTML = '';
 		var leader = this.leader;
 
 		if (leader && this.kittens.indexOf(leader) > -1) {
@@ -651,7 +675,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 
 			var name = leader.getGovernName(' :&lt;');
 
-			leaderInfo = '<div><strong>Leader:</strong> ' + name + '<br>exp: ' +
+			var leaderInfo = '<strong>Leader:</strong> ' + name + '<br>exp: ' +
 				this.game.getDisplayValueExt(leader.exp);
 
 			if (nextRank > leader.exp) {
@@ -661,11 +685,16 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			if (leader.rank > 0) {
 				leaderInfo += '<br><br>Job bonus: x' +
 					this.getLeaderBonus(leader.rank).toFixed(1) +
-					' (' + (leader.job || 'null') + ')</div>';
+					' (' + (leader.job || 'null') + ')';
 			}
-		}
 
-		this.governmentBlock.innerHTML = leaderInfo;
+			var leaderBlock = dojo.create('div', {
+				innerHTML: leaderInfo + '<br>'
+			}, this.governmentBlock);
+
+			dojo.place(this.unassignLeaderBlock, leaderBlock);
+			dojo.toggleClass(this.unassignLeaderJobBtn, 'hidden', !this.getJob(leader.job));
+		}
 
 		if (!this.hideSenate && this.senators.length) {
 			var div = dojo.create('div', {innerHTML: '<strong>Council:</strong> '});
@@ -1067,17 +1096,12 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 
 		on(div.children[0].children[0], 'click', dojo.hitch(this, this.setEditMode));
 
-		this.unassignJobNode = dojo.create('div', {innerHTML: '<a href="#">Unassign job</a>'}, div);
-		on(this.unassignJobNode.children[0], 'click', dojo.hitch(this, function () {
-			var job = this.village.getJob(this.job);
-			if (job) {
-				job.value--;
-			}
-			this.job = null;
-			this.game.update();
+		this.quitJobNode = dojo.create('div', {innerHTML: '<a href="#">Unassign job</a>'}, div);
+		on(this.quitJobNode.children[0], 'click', dojo.hitch(this,  function () {
+			this.quitJob();
 		}));
 		if (!this.village.getJob(this.job)) {
-			dojo.addClass(this.unassignJobNode, 'hidden');
+			dojo.addClass(this.quitJobNode, 'hidden');
 		}
 
 		this.setLeaderNode = dojo.create('div', {innerHTML: '<a href="#" title="Make Leader">&#9734;</a>'}, div);
@@ -1113,12 +1137,17 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		this.jobBlock.textContent = ' - ' + this.job;
 		dojo.toggleClass(this.jobBlock, 'hidden', !kittenJob);
 
-		dojo.toggleClass(this.unassignJobNode, 'hidden', !kittenJob);
+		dojo.toggleClass(this.quitJobNode, 'hidden', !kittenJob);
 
 		this.ageBlock.textContent = this.age;
 
+		var skills = dojo.clone(this.skills);
+		if (kittenJob) {
+			skills[this.job] = num(skills[this.job]);
+		}
+
 		var skillsText = [];
-		var skillsArr = this.village.getSkillsSorted(this.skills);
+		var skillsArr = this.village.getSkillsSorted(skills);
 		for (var i = 0, len = skillsArr.length; i < len; i++) {
 			var exp = num(skillsArr[i].val);
 
@@ -1251,6 +1280,22 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		return this.name + ' ' + this.surname + ' (' +
 			(trait.title === 'None' ? 'No trait' + (noTraitStr || '') :
 			trait.title + ' rank ' + this.rank) + ')';
+	},
+
+	quitJob: function () {
+		var job = this.village.getJob(this.job);
+		if (job) {
+			job.value--;
+			job.updateCount();
+		}
+		this.job = null;
+
+		this.renderInfo();
+		if (this.isLeader || (this.isSenator && this.showSenate)) {
+			this.village.renderGovernment();
+		}
+
+		this.game.update();
 	},
 
 	makeLeader: function (noRender) {
