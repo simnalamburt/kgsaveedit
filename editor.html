@@ -86,9 +86,15 @@
 			on(document.forms[0], 'submit',
 				function (event) { event.preventDefault(); });
 
-			//don't follow empty fragment links
-			on(document.documentElement, 'a[href="#"]:click',
-				function (event) { event.preventDefault(); });
+			// don't follow empty fragment links
+			// on(document.documentElement, 'a[href="#"]:click',
+			// 	function (event) { event.preventDefault(); });
+			// apparently the above consistently fails on certain elements and I have no clue why the [expletive], considering the elements are identical to others that do get prevented
+			document.documentElement.addEventListener('click', function (event) {
+				if (event.target && event.target.href && event.target.href.slice(-1) === '#') {
+					event.preventDefault();
+				}
+			}, true); // use capture
 
 			on(dojo.byId('showImport'), 'click', function () {
 				dojo.query('.lightbox').addClass('hidden');
