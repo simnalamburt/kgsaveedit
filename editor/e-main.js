@@ -1932,7 +1932,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		this.stats = new classes.KGSaveEdit.StatsManager(this);
 
 		this.tabs = [this.OptionsTab, this.bld, this.village, this.science, this.workshop,
-			this.diplomacy, this.religion, this.space, this.achievements, this.stats];
+			this.diplomacy, this.religion, this.space, this.time, this.achievements, this.stats];
 		this.managers = [this.workshop, this.diplomacy, this.bld, this.science,
 			this.achievements, this.religion, this.space, this.time, this.prestige, this.stats];
 
@@ -1955,7 +1955,6 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 		this.calendar.render();
 		this.console.render();
-		this.time.renderMain(); // Since it is included in the OptionsTab for the time being
 
 		this.resPool.render();
 

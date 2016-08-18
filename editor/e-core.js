@@ -467,8 +467,6 @@ dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 		game._createInput({'class': 'integerInput'}, tr.children[1], game, 'karmaZebras');
 
 		dojo.place(game.console.domNode, this.tabBlockNode);
-
-		dojo.place(game.time.domNode, this.tabBlockNode);
 	}
 });
 
@@ -864,15 +862,13 @@ dojo.declare('classes.KGSaveEdit.Console', classes.KGSaveEdit.core, {
 });
 
 
-dojo.declare('classes.KGSaveEdit.TimeManager', classes.KGSaveEdit.Manager, {
+dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	game: null,
 
-	maxEnergy: 0, /*Time acceleration energy in ticks*/
 	energy: 0,
-	/* Amount of years skipped by CF time jumps */
-	flux: 0,
+	maxEnergy: 0, /*Time acceleration energy in ticks*/
+	flux: 0, /* Amount of years skipped by CF time jumps */
 	timestamp: null,
-	domNode: null,
 
 	cfu: null,
 	cfuByName: null,
@@ -885,7 +881,6 @@ dojo.declare('classes.KGSaveEdit.TimeManager', classes.KGSaveEdit.Manager, {
 			{name: "timeCrystal", val: 5}
 		],
 		priceRatio: 1.25,
-		val: 0,
 		unlocked: true
 	}, {
 		name: "temporalAccelerator",
@@ -899,17 +894,22 @@ dojo.declare('classes.KGSaveEdit.TimeManager', classes.KGSaveEdit.Manager, {
 		effects: {
 			"timeRatio": 0.05
 		},
-		val: 0,
 		unlocked: true
 	}],
+
+	tabName: 'Time',
+	getVisible: function () {
+		return this.game.science.get('calendar').owned();
+	},
 
 	constructor: function (game) {
 		this.game = game;
 		this.maxEnergy = game.rate * 60 * 10; //10 minute max
+		this.timestamp = Date.now();
 
 		this.cfu = [];
 		this.cfuByName = {};
-		for (var i = 0; i < this.cfuData.length; i++){
+		for (var i = 0; i < this.cfuData.length; i++) {
 			var chrono = new classes.KGSaveEdit.CFUMeta(game, this.cfuData[i]);
 			chrono.metaObj = this;
 			this.cfu.push(chrono);
@@ -917,56 +917,113 @@ dojo.declare('classes.KGSaveEdit.TimeManager', classes.KGSaveEdit.Manager, {
 		}
 	},
 
-	renderMain: function () {
+	get: function(name) {
+		return this.getCFU(name);
+	},
+
+	getCFU: function(name){
+		return this.cfuByName[name];
+	},
+
+	renderTabBlock: function () {
 		var game = this.game;
 
-		var table = dojo.create('table', {
-			id: 'cfuBlock',
+		// Timestamp Node
+		var div = dojo.create('div', {
+			id: 'timestampBlock',
 			'class': 'bottom-margin',
-			innerHTML: '<tr><th colspan="3">Time & Chronoforge</th></tr>'
-		});
-		this.domNode = table;
+			innerHTML: '<span class="nameNode">Last save time</span> '
+		}, this.tabBlockNode);
+
+		dojo.create('small', {
+			title: 'Times are in milliseconds since January 1, 1970, 00:00:00 UTC.\nFor more information, click here.',
+			innerHTML: '<a class="help" href="http://www.epochconverter.com/" target="_blank">[?]</a>'
+		}, div);
+
+		dojo.place(document.createTextNode(' '), div);
+
+		game._createInput({
+			id: 'timestampNode',
+			'class': 'integerInput timeInput',
+			title: 'Timestamp of last save'
+		}, div, this, 'timestamp');
+
+		dojo.place(document.createTextNode(' '), div);
+		var btn = dojo.create('a', {
+			href: '#',
+			innerHTML: 'Set to current time'
+		}, div);
+		on(btn, 'click', dojo.hitch(this, function () {
+			this.set('timestamp', Date.now());
+		}));
+
+		this.timeBlock = dojo.create('table', {
+			id: 'timeBlock',
+			'class': 'bottom-margin',
+			innerHTML: '<tr><th colspan="3">Time</th></tr>'
+		}, this.tabBlockNode);
 
 		// Energy Node
 		var tr = dojo.create('tr', {
 			innerHTML: '<td><span class="nameNode">Energy</span></td><td></td><td></td>'
-		}, table);
-		game._createInput({ id: 'energyNode',
+		}, this.timeBlock);
+		game._createInput({
+			id: 'energyNode',
 			'class': 'integerInput',
 			title: 'Temporal Energy'
 		}, tr.children[1], this, 'energy');
-		dojo.place(document.createTextNode("(MAX: " + this["maxEnergy"] + ")"), tr.children[2]);
-		// On Update:
+
+		this.energyMaxBlock = tr.children[2];
+		this.energyMaxBlock.innerHTML = "/" + this.maxEnergy;
 
 		// Flux Node
 		tr = dojo.create('tr', {
 			innerHTML: '<td><span class="nameNode">Flux</span></td><td></td><td></td>'
-		}, table);
-		game._createInput({ id: 'fluxNode',
+		}, this.timeBlock);
+
+		game._createInput({
+			id: 'fluxNode',
 			'class': 'integerInput',
 			title: 'Amount of years skipped by CF time jumps'
 		}, tr.children[1], this, 'flux');
 
-		for (var x in this.cfu){
-			var item = this.cfu[x];
+		this.chronoforgeBlock = dojo.create('table', {
+			id: 'cfuBlock',
+			'class': 'bottom-margin'
+		}, this.tabBlockNode);
+
+		this.chronoforgeHeader = dojo.create('tr', {
+			innerHTML: '<th colspan="3">Chronoforge</th>'
+		}, this.chronoforgeBlock);
+
+		for (var i = 0; i < this.cfu.length; i++){
+			var item = this.cfu[i];
 			item.render();
-			dojo.place(item.domNode, table);
+			dojo.place(item.domNode, this.chronoforgeBlock);
 		}
 	},
 
-	render: function () {},
-	// If the CF-Upgrades work properly, this might be used
-	update: function () {},
+    updateEnergyStats: function() {
+        this.maxEnergy = Math.round(
+            this.game.rate * 60 * 10 *
+				(1 + this.getCFU("temporalBattery").val * 0.25)
+        );
+    },
+
+	update: function () {
+		this.updateEnergyStats();
+		this.energyMaxBlock.innerHTML = "/" + this.maxEnergy;
+
+		dojo.toggleClass(this.chronoforgeHeader, 'spoiler', !this.game.workshop.get('chronoforge').owned());
+	},
 
 	save: function (saveData) {
-		//if(this.cfuByName == null) this.setupCFUByName();
 		saveData.time = {
 			timestamp: this.timestamp,
 			energy: this.energy,
 			flux: this.flux,
-			cfu: this.game.mapMethods(this.cfu, 'save') // this.game.filterMetaData(this.cfuData, ["name", "val"])
+			cfu: this.game.mapMethods(this.cfu, 'save')
 		};
-		//console.log(saveData.time);
 	},
 
 	load: function (saveData) {
@@ -979,11 +1036,6 @@ dojo.declare('classes.KGSaveEdit.TimeManager', classes.KGSaveEdit.Manager, {
 
 		if (!data.cfu) { return; }
 		this.loadMetaData(data.cfu, 'getCFU');
-	},
-
-	get: function(name) { return this.getCFU(name); },
-	getCFU: function(name){
-		return this.cfuByName[name];
 	}
 });
 
@@ -1013,8 +1065,8 @@ dojo.declare('classes.KGSaveEdit.CFUMeta', classes.KGSaveEdit.MetaItem, {
 
 	render: function () {
 		var tr = dojo.create('tr', {
-			'class': 'building',
-			innerHTML: '<td></td><td class="rightAlign"></td><td></td><td></td>'
+			// 'class': 'building',
+			innerHTML: '<td></td><td></td><td></td>'
 		});
 		this.domNode = tr;
 
@@ -1028,7 +1080,7 @@ dojo.declare('classes.KGSaveEdit.CFUMeta', classes.KGSaveEdit.MetaItem, {
 			title: 'Number of Upgrades'
 		}, tr.children[1], this, 'val');
 
-		this.game._createCheckbox('Unlocked', tr.children[2], this, 'unlocked');
+		// this.game._createCheckbox('Unlocked', tr.children[2], this, 'unlocked');
 
 		this.registerHighlight(this.domNode); // MetaItem
 		this.registerTooltip(this.domNode); // ToolTip
@@ -1062,13 +1114,11 @@ dojo.declare('classes.KGSaveEdit.CFUMeta', classes.KGSaveEdit.MetaItem, {
 	/*  saveData.time.cfu[] --> {"name": "...", "val": 0}   */
 	save: function () {
 		var saveData = this.game.filterMetaObj(this, ["name", "val"]);
-		//saveData.unlocked = Boolean(this.unlocked);
 		return saveData;
 	},
 
 	load: function (saveData) {
 		this.set('val', num(saveData.val));
-		// this.set('unlocked', Boolean(saveData.unlocked));
 	}
 });
 

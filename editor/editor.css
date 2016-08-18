@@ -73,8 +73,16 @@ input.integerInput.shortInt {
 	width: 35px;
 }
 
+input.integerInput.timeInput {
+	width: 110px;
+}
+
 :link, :visited {
 	color: #0000ee;
+}
+
+.help {
+	cursor: help;
 }
 
 .locked {
