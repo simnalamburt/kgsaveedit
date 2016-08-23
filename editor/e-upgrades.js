@@ -1856,9 +1856,22 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "alloy",   val: 750},
 				{name: "science", val: 200000}
 			],
+			// unlocks: {upgrades: ["nuclearPlants"]},
 			requires: {upgrades: ["steelPlants"]},
 			effects: {
 				"calcinerSteelCraftRatio": 0.25
+			}
+		}, {
+			name: "nuclearPlants",
+			title: "Nuclear Plants",
+			description: "Steel Plants are additionally boosted by 2% of your craft ratio per Reactor",
+			prices:[
+				{name: "uranium", val: 10000},
+				{name: "science", val: 250000}
+			],
+			requires: {upgrades: ["automatedPlants"]},
+			effects: {
+				"calcinerSteelReactorBonus" : 0.02
 			}
 		}, {
 			name: "rotaryKiln",

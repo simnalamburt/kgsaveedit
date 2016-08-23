@@ -1175,8 +1175,13 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	getEffect: function(effectName) {
-		return this.bld.getEffect(effectName) +
+		var effect = this.bld.getEffect(effectName) +
 			this.space.getEffect(effectName);
+
+		if (effectName === "tcRefineRatio") {
+			effect += this.religion.getEffect(effectName);
+		}
+		return effect;
 	},
 
 	getDetailedResMap: function (res) {
