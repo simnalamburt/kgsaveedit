@@ -156,17 +156,14 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		}, {
 			name: "steel",
 			craftable: true,
-			visible: false,
 			color: "gray"
 		}, {
 			name: "alloy",
 			craftable: true,
-			visible: false,
 			color: "gray"
 		}, {
 			name: "eludium",
 			craftable: true,
-			visible: false,
 			color: "darkViolet"
 		}, {
 			name: "gear",
@@ -235,10 +232,16 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			name: "kerosene",
 			craftable: true,
 			color: "darkYellow"
-		}/**/, {
+		}, {
 			name: "void",
-			description: "Cheater!",
-		}//*/
+			type: "exotic",
+			color: "#5A0EDE",
+			style: {
+				"textShadow": "1px 0px 10px #9A2EFE",
+				"animation": "neon1 1.5s ease-in-out infinite alternate"
+			},
+			visible: false
+		}
 	],
 
 	constructor: function (game) {

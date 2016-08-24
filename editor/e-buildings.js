@@ -452,7 +452,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 					self.effects["titaniumPerTick"] = 0.0015 * autoProdRatio;
 				}
 			},
-			flavor: "Hot!"
+			flavor: "Watch your whiskers!"
 		}, {
 			name: "calciner",
 			label: "Calciner",

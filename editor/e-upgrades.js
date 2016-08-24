@@ -175,7 +175,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 1300}
 			],
-			// unlocks: {tech: ["engineering"], upgrades: ["compositeBow", "advancedRefinement"]},
+			// unlocks: {tech: ["engineering"], upgrades: ["compositeBow", "advancedRefinement", "reinforcedSaw"]},
 			requires: {tech: ["animal"]},
 			flavor: "Making pillow forts smart!"
 		}, {
@@ -418,7 +418,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 115000},
 				{name: "blueprint", val: 45}
 			],
-			// unlocks: {tech: ["electronics"], crafts: ["concrate"], upgrades: ["pumpjack", "concreteWarehouses", "concreteBarns", "concreteHuts"]},
+			// unlocks: {tech: ["electronics"], crafts: ["concrate"], upgrades: ["pumpjack", "strenghtenBuild"]},
 			requires: {tech: ["industrialization"]}
 		}, {
 			name: "metalurgy",
@@ -1107,6 +1107,19 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				"woodRatio": 0.5
 			}
 		}, {
+			name: "reinforcedSaw",
+			title: "Reinforced Saw",
+			description: "Improve Lumber Mill efficiency by 20%",
+			prices:[
+				{name: "science", val: 2500},
+				{name: "iron",    val: 1000}
+			],
+			requires: {tech: ["construction"]},
+			effects: {
+				"lumberMillRatio" : 0.2
+			},
+			upgrades: {buildings: ["lumberMill"]}
+		}, {
 			name: "steelSaw",
 			title: "Steel Saw",
 			description: "Improve Lumber Mill efficiency by 20%",
@@ -1283,7 +1296,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "concrate", val: 45},
 				{name: "titanium", val: 2000}
 			],
-			requires: {tech: ["mechanization"]},
+			requires: {upgrades: ["strenghtenBuild"]},
 			effects: {
 				"barnRatio": 0.75
 			},
@@ -1326,7 +1339,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "titanium", val: 1250},
 				{name: "concrate", val: 35}
 			],
-			requires: {tech: ["mechanization"]},
+			requires: {upgrades: ["strenghtenBuild"]},
 			effects: {
 				"warehouseRatio": 0.35
 			},
@@ -1534,7 +1547,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "concrate", val: 45},
 				{name: "titanium", val: 3000}
 			],
-			requires: {tech: ["mechanization"]},
+			requires: {upgrades: ["strenghtenBuild"]},
 			effects: {
 				"hutPriceRatio": -0.3
 			}
@@ -1752,6 +1765,21 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "science",  val: 500}
 			],
 			requires: {tech: ["writing"]},
+		}, {
+			name: "strenghtenBuild",
+			title: "Concrete Pillars",
+			description: "Repair barn and warehouse cracks with concrete.",
+			prices:[
+				{name: "science",  val: 100000},
+				{name: "concrate", val: 50}
+			],
+			// unlocks: {upgrades: ["concreteWarehouses", "concreteBarns", "concreteHuts"]},
+			requires: {tech: ["mechanization"]},
+			effects: {
+				"barnRatio" : 0.05,
+				"warehouseRatio" : 0.05
+			},
+			upgrades: {buildings: ["barn", "warehouse", "harbor", "mint"]}
 		}, {
 			name: "miningDrill",
 			title: "Mining Drill",
