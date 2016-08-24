@@ -106,6 +106,10 @@ input.integerInput.timeInput {
 	font-style: italic;
 }
 
+.bold {
+	font-weight: bold;
+}
+
 .limited,
 .btnDisabled.limited,
 .tooltipPriceNode .noRes {

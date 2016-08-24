@@ -400,8 +400,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	},
 
 	updateResourceProduction: function () {
-		var productionRatio = 0.25 +
-			this.game.workshop.getEffect("skillMultiplier");
+		var productionRatio = (1 + this.game.workshop.getEffect("skillMultiplier")) / 4;
 
 		var res = {};
 
@@ -496,65 +495,48 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		});
 	},
 
-	getSkillsSorted: function (skillsDict) {
-		var skills = [];
-		for (var skill in skillsDict) {
-			skills.push({"name": skill, "val": skillsDict[skill]});
-		}
-		skills.sort(function (a, b) { return b.val - a.val; });
-		return skills;
-	},
-
 	skillToText: function (value) {
-		if (value >= 9000) { return "Master"; }
-		if (value >= 5000) { return "Proficient"; }
-		if (value >= 2500) { return "Skilled"; }
-		if (value >= 1200) { return "Competent"; }
-		if (value >= 500)  { return "Adequate"; }
-		if (value >= 100)  { return "Novice"; }
-		return "Dabbling";
+		if (value >= 9000) { return "master"; }
+		if (value >= 5000) { return "proficient"; }
+		if (value >= 2500) { return "skilled"; }
+		if (value >= 1200) { return "competent"; }
+		if (value >= 500)  { return "adequate"; }
+		if (value >= 100)  { return "novice"; }
+		return "dabbling";
 	},
 
-	getNextSkillExp: function (value) {
-		if (value >= 20000) { return Number.MAX_VALUE; }
-		if (value >= 9000)  { return 20000; }
-		if (value >= 5000)  { return 9000; }
-		if (value >= 2500)  { return 5000; }
-		if (value >= 500)   { return 2500; }
-		if (value >= 100)   { return 500; }
-		return 100;
-	},
-
-	getPrevSkillExp: function (value) {
-		if (value > 9000) { return 9000; }
-		if (value > 5000) { return 5000; }
-		if (value > 2500) { return 2500; }
-		if (value > 1200) { return 1200; }
-		if (value > 500)  { return 500; }
-		if (value > 100)  { return 100; }
-		return 0;
+	getSkillExpRange: function (value) {
+		if (value >= 20000) { return [20000, value]; }
+		if (value >= 9000)  { return [9000, 20000]; }
+		if (value >= 5000)  { return [5000, 9000]; }
+		if (value >= 2500)  { return [2500, 5000]; }
+		if (value >= 1200)  { return [1200, 5000]; }
+		if (value >= 500)   { return [500, 1200]; }
+		if (value >= 100)   { return [100, 500]; }
+		return [0, 100];
 	},
 
 	getValueModifierPerSkill: function (value) {
 		if (value >= 9000) { return 1.75; }
 		if (value >= 5000) { return 1.50; }
-		if (value >= 1200) { return 1.30; }
+		if (value >= 2500) { return 1.30; }
+		if (value >= 1200) { return 1.18; }
 		if (value >= 500)  { return 1.10; }
 		if (value >= 100)  { return 1.05; }
 		return 1.0;
 	},
 
 	getSkillLevel: function (exp) {
-		var nextExp = this.getNextSkillExp(exp); //UGLY
-		var prevExp = this.getPrevSkillExp(exp); //UGLY
+		var range = this.getSkillExpRange(exp);
+		var prevExp = range[0];
+		var nextExp = range[1];
 
 		var expDiff = exp - prevExp;
-		var expRequried = nextExp - prevExp;
+		var expRequired = nextExp - prevExp;
 
-		var expPercent = (expDiff / expRequried) * 100;
+		var expPercent = exp === nextExp ? 100 : (expDiff / expRequired) * 100;
 
-		return '<span title="' + exp.toFixed(2) + '">' +
-			this.skillToText(exp) + ' (' + expPercent.toFixed() + '%)' + '</span>';
+		return '(' + this.skillToText(exp) + ' ' + expPercent.toFixed() + '%' + ')';
 	},
 
 	assignJobs: function (job, count) {
@@ -1072,7 +1054,6 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 
 	render: function () {
 		this.domNode = dojo.create('div', {'class': 'kittenBlock'});
-		this.renderEditBlock();
 
 		var block = dojo.create('div', {'class': 'blockContainer'}, this.domNode);
 		var div = dojo.create('div', {
@@ -1104,12 +1085,12 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 			dojo.addClass(this.quitJobNode, 'hidden');
 		}
 
-		this.setLeaderNode = dojo.create('div', {innerHTML: '<a href="#" title="Make Leader">&#9734;</a>'}, div);
-		on(this.setLeaderNode.children[0], 'click', dojo.hitch(this, function () {
+		this.setLeaderNode = dojo.create('div', {innerHTML: '<a href="#" title="Make Leader">&#9734;</a>'}, div).children[0];
+		on(this.setLeaderNode, 'click', dojo.hitch(this, function () {
 			this.makeLeader();
 		}));
 		if (this.isLeader) {
-			dojo.addClass(this.setLeaderNode, 'hidden');
+			this.setLeaderNode.innerHTML = "&#9733;";
 		}
 
 		this.setSenatorNode = dojo.create('div', {
@@ -1127,6 +1108,23 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		this.renderInfo();
 	},
 
+	getSkillsSorted: function (withJob) {
+		var skills = [];
+		var job = this.job;
+
+		for (var skill in this.skills) {
+			if (!withJob || skill !== job) {
+				skills.push({"name": skill, "val": this.skills[skill]});
+			}
+		}
+		skills.sort(function (a, b) { return b.val - a.val; });
+
+		if (job && withJob) {
+			skills.unshift({"name": job, "val": this.skills[job]});
+		}
+		return skills;
+	},
+
 	renderInfo: function () {
 		if (!this.domNode) {
 			return;
@@ -1141,30 +1139,38 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 
 		this.ageBlock.textContent = this.age;
 
-		var skills = dojo.clone(this.skills);
-		if (kittenJob) {
-			skills[this.job] = num(skills[this.job]);
+		var skillsText = [];
+		var skillsArr = this.getSkillsSorted(true);
+
+		var end = skillsArr.length;
+		if (!this.game.editorOptions.showAllKittenSkills) {
+			end = Math.min(end, 3);
 		}
 
-		var skillsText = [];
-		var skillsArr = this.village.getSkillsSorted(skills);
-		for (var i = 0, len = skillsArr.length; i < len; i++) {
-			var exp = num(skillsArr[i].val);
+		for (var i = 0; i < end; i++) {
+			var skill = skillsArr[i];
+			var exp = num(skill.val);
 
-			if (exp <= 0 && this.job !== skillsArr[i].name) {
+			if (exp <= 0 && this.job !== skill.name) {
 				continue;
 			}
 
-			skillsText.push(this.village.getSkillLevel(exp) + ' ' + skillsArr[i].name);
+			var bonus = this.getSkillBonus(skill.name, exp, this.rank);
+			var job = this.village.getJob(skill.name);
+			var className = this.job === skill.name ? '" class="bold' : '';
+			skillsText.push('<span title="' + exp.toFixed(2) + className + '">' + job.title + ' ' + bonus +
+				this.village.getSkillLevel(exp) + '</span>');
 		}
 
 		this.kittenSkillsBlock.innerHTML = skillsText.join('<br>');
+		this.updateEditJobSkills();
 	},
 
 	renderEditBlock: function () {
+		var kitten = this;
 		var village = this.village;
 
-		this.editBlock = dojo.create('div', {'class': 'kittenEditBlock hideSiblings hidden'}, this.domNode);
+		this.editBlock = dojo.create('div', {'class': 'kittenEditBlock hideSiblings hidden'}, this.domNode, 'first');
 		var table = dojo.create('table', null, this.editBlock);
 
 		var tr = dojo.create('tr', {
@@ -1213,6 +1219,11 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		}, table);
 		this.editRankNode = this.game._createInput({'class': 'integerInput expEdit'},
 			tr.children[1], null, null, null, true);
+		this.editRankNode.handler = function () {
+			if (kitten.isLeader && kitten.job) {
+				kitten.updateEditJobSkills();
+			}
+		};
 
 		tr = dojo.create('tr', {
 			innerHTML: '<td>Exp</td><td> <a href="#" class="hidden">(Expected: 0)</a></td>'
@@ -1231,8 +1242,10 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 
 		var handle = function () {
 			var skill = '';
-			if (this.expNode.parsedValue > 0) {
-				skill = village.getSkillLevel(this.expNode.parsedValue);
+			var exp = this.expNode.parsedValue;
+			if (exp > 0) {
+				var bonus = kitten.getSkillBonus(this.name, exp, kitten.editRankNode.parsedValue);
+				skill = bonus + village.getSkillLevel(exp);
 			}
 			this.skillNode.innerHTML = skill;
 		};
@@ -1275,6 +1288,19 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 			dojo.hitch(this, this.setExpectedExp));
 	},
 
+	getSkillBonus: function (skillName, exp, rank) {
+		var bonus = "";
+		if (this.job === skillName) {
+			var productionRatio = (1 + this.game.workshop.getEffect("skillMultiplier")) / 4;
+			var mod = this.village.getValueModifierPerSkill(exp);
+			bonus = (mod - 1) * productionRatio;
+			bonus = bonus > 0 && this.isLeader ? (this.village.getLeaderBonus(rank) * (bonus + 1) - 1) : bonus;
+			bonus *= 100;
+			bonus = bonus > 0 ? "+" + bonus.toFixed(0) + "% " : "";
+		}
+		return bonus;
+	},
+
 	getGovernName: function (noTraitStr) {
 		var trait = this.trait || this.traitsByName.none;
 		return this.name + ' ' + this.surname + ' (' +
@@ -1315,6 +1341,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		this.isLeader = true;
 
 		if (!noRender) {
+			this.renderInfo();
 			this.village.renderGovernment();
 		}
 		if (this.village.governmentFilter.selected) {
@@ -1332,6 +1359,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		if (this.village.leader === this) {
 			this.village.leader = null;
 			if (!noRender) {
+				this.renderInfo();
 				this.village.renderGovernment();
 			}
 			if (this.village.governmentFilter.selected) {
@@ -1402,11 +1430,15 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 	},
 
 	setEditMode: function () {
+		if (!this.editBlock) {
+			this.renderEditBlock();
+		}
+
 		this.editNameNode.value = this.name;
 		this.editSurnameNode.value = this.surname;
 		this.game.setInput(this.editAgeNode, this.age);
 		this.game.setSelectByValue(this.editTraitNode, this.trait.name || this.trait);
-		this.game.setInput(this.editRankNode, this.rank);
+		this.game.setInput(this.editRankNode, this.rank, true);
 		this.game.setInput(this.editExpNode, this.exp);
 
 		for (var i = this.editJobs.length - 1; i >= 0; i--) {
@@ -1448,9 +1480,17 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 
 	update: function () {
 		if (this.domNode) {
-			dojo.toggleClass(this.setLeaderNode, 'hidden', Boolean(this.isLeader));
+			this.setLeaderNode.innerHTML = this.isLeader ? "&#9733;" : "&#9734;";
 			dojo.toggleClass(this.setSenatorNode, 'hidden', this.village.hideSenate ||
 				Boolean(this.isSenator) || this.village.senators.length >= this.village.maxSenators);
+		}
+	},
+
+	updateEditJobSkills: function () {
+		if (this.editBlock && !dojo.hasClass(this.editBlock, 'hidden')) {
+			for (var i = this.editJobs.length - 1; i >= 0; i--) {
+				this.editJobs[i].expNode.handler();
+			}
 		}
 	},
 
@@ -1480,7 +1520,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 	},
 
 	load: function (data) {
-		if (this.domNode) {
+		if (this.editBlock) {
 			dojo.addClass(this.editBlock, 'hidden');
 		}
 

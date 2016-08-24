@@ -1865,7 +1865,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			name: "nuclearPlants",
 			title: "Nuclear Plants",
 			description: "Steel Plants are additionally boosted by 2% of your craft ratio per Reactor",
-			prices:[
+			prices: [
 				{name: "uranium", val: 10000},
 				{name: "science", val: 250000}
 			],
