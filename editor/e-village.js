@@ -121,7 +121,8 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 
 	tabName: 'Outpost',
 	getVisible: function () {
-		return this.game.resPool.get('kittens').owned() || this.game.resPool.get('zebras').owned() || this.game.bld.get('hut').owned();
+		return this.game.resPool.get('kittens').owned() || this.game.resPool.get('zebras').owned() ||
+			this.game.bld.get('hut').owned() || this.game.time.getVSU('usedCryochambers').owned();
 	},
 
 	leader: null,

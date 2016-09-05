@@ -683,6 +683,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 	opts: null,
 
+	colorScheme: "",
 	forceShowLimits: false,
 	forceHighPrecision: false,
 	useWorkers: false,
@@ -959,9 +960,9 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				return this.bld.get(unlockId.bld);
 			case 'program':
 				return this.space.getProgram(unlockId);
-			case 'perk':
+			case 'perks':
 				return this.prestige.getPerk(unlockId);
-			case 'ZU':
+			case 'zigguratUpgrades':
 				return this.religion.getZU(unlockId);
 			default:
 				console.log('Couldn\'t get unlock ', unlockId, ' of type ', type);
@@ -1144,13 +1145,8 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 				//display resMax values with global ratios like Refrigeration and Paragon
 				if (effectName.substr(-3) === "Max") {
-					effectValue += effectValue * this.workshop.getEffect(effectName + "Ratio");
-					effectValue += effectValue * this.game.prestige.getParagonStorageRatio();
-
 					var res = this.game.resPool.get(effectMeta.resName || effectName.slice(0, -3));
-					if (!this.game.resPool.isNormalCraftableResource(res) && !res.transient) {
-						effectValue += effectValue * this.game.religion.getEffect("tcResourceRatio");
-					}
+					effectValue = this.game.resPool.addResMaxRatios(res, effectValue);
 				}
 
 				var displayEffectValue;
@@ -1176,12 +1172,13 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	getEffect: function(effectName) {
-		var effect = this.bld.getEffect(effectName) +
-			this.space.getEffect(effectName);
-
-		if (effectName === "tcRefineRatio") {
-			effect += this.religion.getEffect(effectName);
-		}
+		var effect =
+			this.bld.getEffect(effectName) +
+			this.space.getEffect(effectName) +
+			this.workshop.getEffect(effectName) +
+			this.prestige.getEffect(effectName) +
+			this.religion.getEffect(effectName) +
+			this.time.getEffect(effectName);
 		return effect;
 	},
 
@@ -1760,7 +1757,6 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		};
 
 		if (compress) {
-			//console.log(JSON.stringify(saveData));
 			saveData = LZString.compressToBase64(JSON.stringify(saveData));
 		}
 		return saveData;
@@ -1935,12 +1931,13 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		this.religion = new classes.KGSaveEdit.ReligionManager(this);
 		this.space = new classes.KGSaveEdit.SpaceManager(this);
 		this.prestige = new classes.KGSaveEdit.PrestigeManager(this);
+		this.challenges = new classes.KGSaveEdit.ChallengeManager(this);
 		this.stats = new classes.KGSaveEdit.StatsManager(this);
 
 		this.tabs = [this.OptionsTab, this.bld, this.village, this.science, this.workshop,
 			this.diplomacy, this.religion, this.space, this.time, this.achievements, this.stats];
-		this.managers = [this.workshop, this.diplomacy, this.bld, this.science,
-			this.achievements, this.religion, this.space, this.time, this.prestige, this.stats];
+		this.managers = [this.workshop, this.diplomacy, this.bld, this.science, this.achievements,
+			this.religion, this.space, this.time, this.prestige, this.challenges, this.stats];
 
 		this.render();
 

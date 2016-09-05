@@ -407,7 +407,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 100000},
 				{name: "blueprint", val: 25}
 			],
-			// unlocks: {tech: ["mechanization", "metalurgy", "combustion"], upgrades: ["barges", "advancedAutomation"]},
+			// unlocks: {tech: ["mechanization", "metalurgy", "combustion"], upgrades: ["barges", "advancedAutomation", "logistics"]},
 			requires: {tech: ["electricity"]}
 		}, {
 			name: "mechanization",
@@ -529,8 +529,19 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 250000},
 				{name: "blueprint", val: 250}
 			],
-			// unlocks: {tech: ["exogeology"], upgrades: ["hubbleTelescope", "satelliteRadio", "astrophysicists", "solarSatellites"]},
+			// unlocks: {tech: ["exogeology", "thorium"], upgrades: ["hubbleTelescope", "satelliteRadio", "astrophysicists", "solarSatellites"]},
 			requires: {tech: ["sattelites"]}
+		}, {
+			name: "thorium",
+			title: "Thorium",
+			description: "TBD.",
+			effectDesc: "Unlocks Thorium Reactors",
+			prices: [
+				{name: "science",   val: 375000},
+				{name: "blueprint", val: 375}
+			],
+			// unlocks: {crafts: ["thorium"], /*upgrades: ["thoriumReactors"]*/}
+			requires: {tech: ["orbitalEngineering"]}
 		}, {
 			name: "exogeology",
 			title: "Exogeology",
@@ -650,7 +661,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "timeCrystal", val: 25},
 				{name: "relic",       val: 1}
 			],
-			// unlocks: {upgrades: ["tachyonAccelerators", "chronoforge"]},
+			// unlocks: {tech: ["voidSpace"], upgrades: ["tachyonAccelerators", "chronoforge"]},
 			requires: {tech: ["chronophysics"]}
 		}, {
 			name: "cryptotheology",
@@ -663,6 +674,18 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			],
 			// unlocks: {upgrades: ["relicStation"]},
 			requires: {tech: ["theology"]}
+		}, {
+			name: "voidSpace",
+			title: "Void Space",
+			description: "Under the void",
+			effectDesc: "Unlocks Cryochambers",
+			prices: [
+				{name: "science",     val: 800000},
+				{name: "timeCrystal", val: 40},
+				{name: "void",        val: 100}
+			],
+			// unlocks: {voidSpace: ["cryochambers"]}
+			requires: {tech: ["tachyonTheory"]}
 	}],
 
 	tabName: 'Science',
@@ -772,6 +795,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 				{name: "paragon", val: 5}
 			],
 			unlocked: true,
+			// unlocks: {"perks": ["megalomania", "goldenRatio"]},
 			effects: {
 				"priceRatio": -0.01
 			}
@@ -780,9 +804,19 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			title: "Megalomania",
 			description: "Unlocks additional megastructures.",
 			prices: [
+				{name: "paragon", val: 10}
+			],
+			// unlocks: {"perks": ["blackCodex"], "zigguratUpgrades": ["marker", "blackPyramid"]},
+			requires: {perks: ["engeneering"]}
+		}, {
+			name: "blackCodex",
+			title: "Black Codex",
+			description: "Unlocks unicorn graveyards.",
+			prices: [
 				{name: "paragon", val: 25}
 			],
-			requires: {perk: ["engeneering"]}
+			// unlocks: {"zigguratUpgrades": ["unicornGraveyard"]},
+			requires: {perks: ["megalomania"]}
 		}, {
 			name: "goldenRatio",
 			title: "Golden Ratio",
@@ -790,7 +824,8 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 50}
 			],
-			requires: {perk: ["engeneering"]},
+			// unlocks: {"perks": ["divineProportion"]},
+			requires: {perks: ["engeneering"]},
 			effects: {
 				"priceRatio": -(1 + Math.sqrt(5)) / 200 //Calculates the Golden Ratio
 			}
@@ -801,7 +836,8 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 100}
 			],
-			requires: {perk: ["goldenRatio"]},
+			// unlocks: {"perks": ["vitruvianFeline"]},
+			requires: {perks: ["goldenRatio"]},
 			effects: {
 				"priceRatio": -0.017
 			}
@@ -812,7 +848,8 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 250}
 			],
-			requires: {perk: ["divineProportion"]},
+			// unlocks: {"perks": ["renaissance"]},
+			requires: {perks: ["divineProportion"]},
 			effects: {
 				"priceRatio": -0.02
 			}
@@ -823,7 +860,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 750}
 			],
-			requires: {perk: ["vitruvianFeline"]},
+			requires: {perks: ["vitruvianFeline"]},
 			effects: {
 				"priceRatio": -0.0225
 			}
@@ -834,6 +871,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 5}
 			],
+			// unlocks: {"perks": ["zebraDiplomacy"]},
 			unlocked: true
 		}, {
 			name: "zebraDiplomacy",
@@ -842,7 +880,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 50}
 			],
-			requires: {perk: ["diplomacy"]}
+			requires: {perks: ["diplomacy"]}
 		}, {
 			name: "chronomancy",
 			title: "Chronomancy",
@@ -850,6 +888,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 25}
 			],
+			// unlocks: {"perks": ["anachronomancy", "unicornmancy"]},
 			unlocked: true
 		}, {
 			name: "unicornmancy",
@@ -866,7 +905,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 125}
 			],
-			requires: {perk: ["chronomancy"]}
+			requires: {perks: ["chronomancy"]}
 		}, {
 			name: "carnivals",
 			title: "Carnivals",
@@ -874,6 +913,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 25}
 			],
+			// unlocks: {"perks": ["numerology"]},
 			unlocked: true
 		}, {
 			name: "willenfluff",
@@ -882,7 +922,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 150}
 			],
-			requires: {perk: ["numerology"]},
+			requires: {perks: ["numerology"]},
 			effects: {
 				"kittenGrowthRatio": 0.75
 			}
@@ -893,7 +933,8 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 50}
 			],
-			requires: {perk: ["carnivals"]}
+			// unlocks: {"perks": ["numeromancy", "willenfluff", "voidOrder"]},
+			requires: {perks: ["carnivals"]}
 		}, {
 			name: "numeromancy",
 			title: "Numeromancy",
@@ -901,7 +942,8 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 500}
 			],
-			requires: {perk: ["numerology"]}
+			// unlocks: {"perks": ["malkuth"]},
+			requires: {perks: ["numerology"]}
 		}, {
 			name: "malkuth",
 			title: "Malkuth",
@@ -909,7 +951,8 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 500}
 			],
-			requires: {perk: ["numeromancy"]},
+			// unlocks: {"perks": ["yesod"]},
+			requires: {perks: ["numeromancy"]},
 			effects: {
 				"paragonRatio": 0.05
 			}
@@ -920,7 +963,8 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 750}
 			],
-			requires: {perk: ["malkuth"]},
+			// unlocks: {"perks": ["hod"]},
+			requires: {perks: ["malkuth"]},
 			effects: {
 				"paragonRatio": 0.05
 			}
@@ -931,7 +975,8 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 1250}
 			],
-			requires: {perk: ["yesod"]},
+			// unlocks: {"perks": ["netzach"]},
+			requires: {perks: ["yesod"]},
 			effects: {
 				"paragonRatio": 0.05
 			}
@@ -942,7 +987,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 1750}
 			],
-			requires: {perk: ["hod"]},
+			requires: {perks: ["hod"]},
 			effects: {
 				"paragonRatio": 0.05
 			}
@@ -953,7 +998,15 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 75}
 			],
-			requires: {perk: ["numerology"]}
+			requires: {perks: ["numerology"]}
+		}, {
+			name: "adjustmentBureau",
+			title: "Adjustment Bureau",
+			description: "Unlocks additional game challenges.",
+			prices: [
+				{name: "paragon", val: 5}
+			],
+			unlocked: true
 	}],
 
 	domNode: null,
@@ -2240,6 +2293,19 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "science",  val: 125000}
 			],
 			requires: {tech: ["electronics"]}
+		},{
+			name: "logistics",
+			title: "Logistics",
+			description: "Kitten skills are 15% more effective",
+			prices: [
+				{name: "gear",     val: 100},
+				{name: "scaffold", val: 1000},
+				{name: "science",  val: 100000}
+			],
+			requires: {tech: ["industrialization"]},
+			effects: {
+				"skillMultiplier" : 0.15
+			}
 		}, {
 			name: "augumentation",
 			title: "Augmentations",
@@ -2449,6 +2515,14 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			unlocked: false,
 			requires: {tech: ["steel"]}
 		}, {
+			name: "gear",
+			title: "Gear",
+			description: "An integral part of automated structures.",
+			prices: [
+				{name: "steel", val: 15}
+			],
+			unlocked: true
+		}, {
 			name: "alloy",
 			title: "Alloy",
 			description: "A durable alloy of steel, iron and titanium. Required for advanced buildings and upgrades.",
@@ -2468,52 +2542,6 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["advExogeology"]}
-		}, {
-			name: "gear",
-			title: "Gear",
-			description: "An integral part of automated structures.",
-			prices: [
-				{name: "steel", val: 15}
-			],
-			unlocked: true
-		}, {
-			name: "parchment",
-			title: "Parchment",
-			description: "A material for writing on made from animal skin, required for cultural buildings.",
-			prices: [
-				{name: "furs", val: 175}
-			],
-			unlocked: false,
-			requires: {tech: ["writing"]}
-		}, {
-			name: "manuscript",
-			title: "Manuscript",
-			description: "Written document required for technological advancement.Every manuscript will give a minor bonus to a maximum culture (this effect has a diminishing return)",
-			prices: [
-				{name: "parchment", val: 25},
-				{name: "culture",   val: 400}
-			],
-			unlocked: true
-		}, {
-			name: "compedium",
-			title: "Compendium",
-			description: "A sum of all modern knowledge of the catkind. Every compendium will give +10 to max science",
-			prices: [
-				{name: "manuscript", val: 50},
-				{name: "science",    val: 10000}
-			],
-			unlocked: false,
-			requires: {tech: ["philosophy"]}
-		}, {
-			name: "blueprint",
-			title: "Blueprint",
-			description: "Strange piece of paper with blue lines.",
-			prices: [
-				{name: "compedium", val: 25},
-				{name: "science",   val: 25000}
-			],
-			unlocked: false,
-			requires: {tech: ["physics"]}
 		}, {
 			name: "scaffold",
 			title: "Scaffold",
@@ -2555,6 +2583,53 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["oilProcessing"]}
+		}, {
+			name: "parchment",
+			title: "Parchment",
+			description: "A material for writing on made from animal skin, required for cultural buildings.",
+			prices: [
+				{name: "furs", val: 175}
+			],
+			unlocked: false,
+			requires: {tech: ["writing"]}
+		}, {
+			name: "manuscript",
+			title: "Manuscript",
+			description: "Written document required for technological advancement.Every manuscript will give a minor bonus to a maximum culture (this effect has a diminishing return)",
+			prices: [
+				{name: "parchment", val: 25},
+				{name: "culture",   val: 400}
+			],
+			unlocked: true
+		}, {
+			name: "compedium",
+			title: "Compendium",
+			description: "A sum of all modern knowledge of the catkind. Every compendium will give +10 to max science",
+			prices: [
+				{name: "manuscript", val: 50},
+				{name: "science",    val: 10000}
+			],
+			unlocked: false,
+			requires: {tech: ["philosophy"]}
+		}, {
+			name: "blueprint",
+			title: "Blueprint",
+			description: "Strange piece of paper with blue lines.",
+			prices: [
+				{name: "compedium", val: 25},
+				{name: "science",   val: 25000}
+			],
+			unlocked: false,
+			requires: {tech: ["physics"]}
+		}, {
+			name: "thorium",
+			title: "Thorium",
+			description: "A highly radioactive and unstable fuel",
+			prices: [
+				{name: "uranium", val: 250}
+			],
+			unlocked: false,
+			requires: {tech: ["thorium"]}
 		}, {
 			name: "megalith",
 			title: "Megalith",
@@ -2721,7 +2796,7 @@ dojo.declare('classes.KGSaveEdit.CraftMeta', classes.KGSaveEdit.MetaItem, {
 
 	update: function () {
 		var req = this.game.checkRequirements(this);
-		this.unlocked = req || this.unlockedNode.prevChecked;
+		this.set('unlocked', req || this.unlockedNode.prevChecked, true);
 		this.game.toggleDisabled(this.unlockedNode, req);
 
 		//check and cache if you can't craft even once due to storage limits

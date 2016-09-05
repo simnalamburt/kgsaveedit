@@ -105,6 +105,17 @@ dojo.declare('classes.KGSaveEdit.Manager', classes.KGSaveEdit.core, {
 		this.meta.push(meta);
 	}, */
 
+	getMeta: function (name, metadata) {
+		for (var i = metadata.length - 1; i >= 0; i--) {
+			var meta = metadata[i];
+
+			if (meta.name == name){
+				return meta;
+			}
+		}
+		return null;
+	},
+
 	invalidateCachedEffects: function () {
 		this.effectsCached = {};
 		this.calculateEffectsBase();
@@ -154,11 +165,15 @@ dojo.declare('classes.KGSaveEdit.Manager', classes.KGSaveEdit.core, {
 			return;
 		}
 
+		if (!dojo.isFunction(loadFn)) {
+			loadFn = null;
+		}
+
 		for (var i = saveArr.length - 1; i >= 0; i--) {
 			var saveMeta = saveArr[i];
 			var meta = this[getFn](saveMeta.name);
 			if (meta) {
-				if (dojo.isFunction(loadFn)) {
+				if (loadFn) {
 					loadFn.call(this, meta, saveMeta);
 				} else if ('load' in meta) {
 					meta.load(saveMeta);
@@ -727,7 +742,8 @@ dojo.declare('classes.KGSaveEdit.Calendar', classes.KGSaveEdit.core, {
 		tr = dojo.create('tr', {
 			innerHTML: '<td>Day</td><td></td>'
 		}, table);
-		game._createInput({id: 'dayNode'}, tr.children[1], this, 'day');
+		var input = game._createInput({id: 'dayNode'}, tr.children[1], this, 'day');
+		input.minValue = -10;
 
 		tr = dojo.create('tr', {
 			innerHTML: '<td>Festival days</td><td></td>'
@@ -872,6 +888,8 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 
 	cfu: null,
 	cfuByName: null,
+	vsu: null,
+	vsuByName: null,
 
 	cfuData: [{
 		name: "temporalBattery",
@@ -897,9 +915,34 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 		unlocked: true
 	}],
 
+	vsuData: [{
+		name: "cryochambers",
+		label: "Cryochambers",
+		description: "What!",
+		prices: [
+			{name: "void",        val: 100},
+			{name: "timeCrystal", val: 2},
+			{name: "karma",       val: 1}
+		],
+		priceRatio: 1.25,
+		unlocked: false,
+		requires: {tech: ["voidSpace"]},
+		effects: {
+			"maxKittens": 1
+		}
+	}, {
+		name: "usedCryochambers",
+		label: "Used Cryochambers",
+		description: "Those are unusable cryochambers...",
+		prices: [],
+		priceRatio: 1.25,
+		unlocked: true,
+		effects: {}
+    }],
+
 	tabName: 'Time',
 	getVisible: function () {
-		return this.game.science.get('calendar').owned();
+		return this.game.science.get('calendar').owned() || this.getVSU('usedCryochambers').owned();
 	},
 
 	constructor: function (game) {
@@ -915,15 +958,28 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 			this.cfu.push(chrono);
 			this.cfuByName[chrono.name] = chrono;
 		}
+
+		this.vsu = [];
+		this.vsuByName = {};
+		for (i = 0; i < this.cfuData.length; i++) {
+			var voidspace = new classes.KGSaveEdit.VSUMeta(game, this.vsuData[i]);
+			voidspace.metaObj = this;
+			this.vsu.push(voidspace);
+			this.vsuByName[voidspace.name] = voidspace;
+		}
 	},
 
 	get: function(name) {
 		return this.getCFU(name);
 	},
 
-	getCFU: function(name){
+	getCFU: function(name) {
 		return this.cfuByName[name];
 	},
+
+    getVSU: function(name) {
+        return this.vsuByName[name];
+    },
 
 	renderTabBlock: function () {
 		var game = this.game;
@@ -964,21 +1020,24 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 		}, this.tabBlockNode);
 
 		// Energy Node
+		var str = "/" + this.maxEnergy;
+        if (this.game.time.energy) {
+            str +=  " (" + this.game.toDisplaySeconds(this.game.time.energy / this.game.rate) + ")";
+        }
+
 		var tr = dojo.create('tr', {
-			innerHTML: '<td><span class="nameNode">Energy</span></td><td></td><td></td>'
+			innerHTML: '<td><span class="nameNode">Temporal Flux</span></td><td></td><td>' + str + '</td>'
 		}, this.timeBlock);
 		game._createInput({
 			id: 'energyNode',
-			'class': 'integerInput',
-			title: 'Temporal Energy'
+			'class': 'integerInput'
 		}, tr.children[1], this, 'energy');
 
 		this.energyMaxBlock = tr.children[2];
-		this.energyMaxBlock.innerHTML = "/" + this.maxEnergy;
 
 		// Flux Node
 		tr = dojo.create('tr', {
-			innerHTML: '<td><span class="nameNode">Flux</span></td><td></td><td></td>'
+			innerHTML: '<td><span class="nameNode">Years skipped</span></td><td></td><td></td>'
 		}, this.timeBlock);
 
 		game._createInput({
@@ -1001,6 +1060,21 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 			item.render();
 			dojo.place(item.domNode, this.chronoforgeBlock);
 		}
+
+		this.voidspaceBlock = dojo.create('table', {
+			id: 'cfuBlock',
+			'class': 'bottom-margin'
+		}, this.tabBlockNode);
+
+		this.voidspaceHeader = dojo.create('tr', {
+			innerHTML: '<th colspan="3">Void Space</th>'
+		}, this.voidspaceBlock);
+
+		for (i = 0; i < this.vsu.length; i++){
+			item = this.vsu[i];
+			item.render();
+			dojo.place(item.domNode, this.voidspaceBlock);
+		}
 	},
 
     updateEnergyStats: function() {
@@ -1012,9 +1086,15 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 
 	update: function () {
 		this.updateEnergyStats();
-		this.energyMaxBlock.innerHTML = "/" + this.maxEnergy;
+		var str = "/" + this.maxEnergy;
+        if (this.game.time.energy) {
+            str +=  " (" + this.game.toDisplaySeconds(this.game.time.energy / this.game.rate) + ")";
+        }
+		this.energyMaxBlock.innerHTML = str;
 
 		dojo.toggleClass(this.chronoforgeHeader, 'spoiler', !this.game.workshop.get('chronoforge').owned());
+		dojo.toggleClass(this.voidspaceHeader, 'spoiler',
+			!this.game.science.get('voidSpace').owned() && !this.getVSU('usedCryochambers').owned());
 	},
 
 	save: function (saveData) {
@@ -1022,7 +1102,8 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 			timestamp: this.timestamp,
 			energy: this.energy,
 			flux: this.flux,
-			cfu: this.game.mapMethods(this.cfu, 'save')
+			cfu: this.game.mapMethods(this.cfu, 'save'),
+			vsu: this.game.mapMethods(this.vsu, 'save')
 		};
 	},
 
@@ -1034,8 +1115,8 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 		var data = saveData.time;
 		this.game.loadMetaFields(this, data, ["energy", "flux", "timestamp"]);
 
-		if (!data.cfu) { return; }
 		this.loadMetaData(data.cfu, 'getCFU');
+		this.loadMetaData(data.vsu, 'getVSU');
 	}
 });
 
@@ -1120,6 +1201,11 @@ dojo.declare('classes.KGSaveEdit.CFUMeta', classes.KGSaveEdit.MetaItem, {
 	load: function (saveData) {
 		this.set('val', num(saveData.val));
 	}
+});
+
+
+dojo.declare('classes.KGSaveEdit.VSUMeta', classes.KGSaveEdit.CFUMeta, {
+	//TODO: difference?
 });
 
 
@@ -1230,6 +1316,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "tears", val: 5}
 			],
 			priceRatio: 1.15,
+			// unlocks: {"zigguratUpgrades": ["ivoryTower"]},
 			unlocked: true,
 			effects: {
 				"unicornsRatio": 0.05
@@ -1243,8 +1330,8 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "tears", val: 25}
 			],
 			priceRatio: 1.15,
-			unlocked: false,
-			requires: {'ZU': ['unicornTomb']},
+			// unlocks: {"zigguratUpgrades": ["ivoryCitadel"]},
+			requires: {'zigguratUpgrades': ['unicornTomb']},
 			effects: {
 				"unicornsRatio": 0.1,
 				"riftChance":    5
@@ -1258,8 +1345,8 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "tears", val: 50}
 			],
 			priceRatio: 1.15,
-			unlocked: false,
-			requires: {'ZU': ['ivoryTower']},
+			// unlocks: {"zigguratUpgrades": ["skyPalace"]},
+			requires: {'zigguratUpgrades': ['ivoryTower']},
 			effects: {
 				"unicornsRatio":     0.25,
 				"ivoryMeteorChance": 5
@@ -1273,11 +1360,12 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "tears", val: 500}
 			],
 			priceRatio: 1.15,
-			unlocked: false,
-			requires: {'ZU': ['ivoryCitadel']},
+			// unlocks: {"zigguratUpgrades": ["unicornUtopia"]},
+			requires: {'zigguratUpgrades': ['ivoryCitadel']},
 			effects: {
 				"unicornsRatio":    0.5,
 				"alicornChance":    5,
+				"alicornPerTick":   0.00001,
 				"ivoryMeteorRatio": 0.05
 			}
 		}, {
@@ -1289,13 +1377,14 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "tears", val: 5000}
 			],
 			priceRatio: 1.18,
-			unlocked: false,
-			requires: {'ZU': ['skyPalace']},
+			// unlocks: {"zigguratUpgrades": ["sunspire"]},
+			requires: {'zigguratUpgrades': ['skyPalace']},
 			effects: {
 				"unicornsRatio":    2.5,
 				"alicornChance":    15,
+				"alicornPerTick":   0.00005,
 				"ivoryMeteorRatio": 0.15,
-				"tcRefineRatio" : 0.1
+				"tcRefineRatio" :   0.1
 			}
 		}, {
 			name: "sunspire",
@@ -1306,11 +1395,11 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "tears", val: 25000}
 			],
 			priceRatio: 1.15,
-			unlocked: false,
-			requires: {'ZU': ['unicornUtopia']},
+			requires: {'zigguratUpgrades': ['unicornUtopia']},
 			effects: {
 				"unicornsRatio":    5,
 				"alicornChance":    30,
+				"alicornPerTick":   0.0001,
 				"tcRefineRatio":    0.25,
 				"ivoryMeteorRatio": 0.5
 			}
@@ -1325,11 +1414,21 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "megalith",    val: 750}
 			],
 			priceRatio: 1.15,
-			unlocked: false,
-			requires: {perk: ["megalomania"]},
+			requires: {perks: ["megalomania"]},
 			effects: {
 				"corruptionRatio": 0.000001
 			}
+		}, {
+			name: "unicornGraveyard",
+			label: "Unicorn Graveyard",
+			description: "Grave of the fireflies.",
+			prices: [
+				{name: "necrocorn", val: 5},
+				{name: "megalith",  val: 1000}
+			],
+			priceRatio: 1.15,
+			requires: {perks: ["blackCodex"]},
+			effects: {}
 		}, {
 			name: "blackPyramid",
 			label: "Black Pyramid",
@@ -1341,8 +1440,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "megalith",    val: 2500}
 			],
 			priceRatio: 1.15,
-			unlocked: false,
-			requires: {perk: ["megalomania"]}
+			requires: {perks: ["megalomania"]}
 	}],
 
 	religionUpgradesData: [{
@@ -1459,13 +1557,25 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 	}],
 
 	transcendenceUpgradesData: [{
+			name: "blackObelisk",
+			label: "Black Obelisk",
+			description: "Improves your faith bonus.<br>Every Obelisk will improve your transcendance level bonus by 5%",
+			prices: [
+				{name : "relic", val: 100}
+			],
+			tier: 1,
+			priceRatio: 1.15,
+			effects: {},
+			unlocked: true,
+			flavor: "TBD" // flavor is TBD but the faith bonus improvement is already done
+		},{
 			name: "blackNexus",
 			label: "Black Nexus",
 			description: "Improves the rate you refine time crystals into relics.<br>Every Black Pyramid will improve your Relic Refine ratio by 100%. Every level of Black Nexus will increase this bonus by additional 100%",
 			prices: [
 				{name: "relic", val: 5000}
 			],
-			tier: 1,
+			tier: 3,
 			priceRatio: 1.15,
 			effects: {
 				"relicRefineRatio": 1.0
@@ -1479,7 +1589,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 			prices: [
 				{name: "relic", val: 10000}
 			],
-			tier: 3,
+			tier: 5,
 			priceRatio: 1.15,
 			effects: {
 				"blsLimit": 1
@@ -1493,7 +1603,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 			prices: [
 				{name: "relic", val: 25000}
 			],
-			tier: 5,
+			tier: 7,
 			priceRatio: 1.15,
 			effects: {
 				"tcResourceRatio": 0.10
@@ -2076,6 +2186,38 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarEnergy", classes.KGSaveEdit.u
 	}
 });
 
+
+// TODO when game has callenges
+dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, {
+	game: null,
+
+	challenges: null,
+
+	constructor: function (game) {
+		this.game = game;
+		this.challenges = [];
+
+		// for (var i = 0; i < this.challenges.length; i++) {
+
+		// }
+	},
+
+	getChallenge: function(name) {
+		return this.getMeta(name, this.challenges);
+	},
+
+	save: function (saveData) {
+		saveData.challenges = {
+			challenges: this.game.filterMetadata(this.challenges, ["name", "enabled"])
+		};
+	},
+
+	load: function (saveData) {
+		if (saveData.challenges) {
+			this.loadMetaData(saveData.challenges.challenges, 'getChallenge', function () { /*["unlocked", "enabled"]*/ });
+		}
+	}
+});
 
 
 });

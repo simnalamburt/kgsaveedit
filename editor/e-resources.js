@@ -127,7 +127,7 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		}, {
 			name: "paragon",
 			color: "#6141CD",
-			inputClass: "integerInput"
+			inputClass: "integerInput abbrInput"
 		}, {
 			name: "timeCrystal",
 			title: "time crystal",
@@ -137,9 +137,37 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			visible: false,
 			color: "black",
 			getMaxValue: function() {
-				return 11 + this.game.religion.getEffect("blsLimit");
+				return 12 + this.game.religion.getEffect("blsLimit");
 			},
 			hardMaxLimit: true
+		}, {
+			name: "relic",
+			title: "relic",
+			type: "exotic",
+			color: "#5A0EDE",
+			style: {
+				"textShadow": "1px 0px 10px #9A2EFE",
+				"animation": "neon1 1.5s ease-in-out infinite alternate"
+			}
+		}, {
+			name: "void",
+			type: "exotic",
+			color: "#5A0EDE",
+			style: {
+				"textShadow": "1px 0px 10px #9A2EFE",
+				"animation": "neon1 1.5s ease-in-out infinite alternate"
+			},
+			inputClass: "integerInput abbrInput"
+		}, {
+			name: "elderBox",
+			title: "present box",
+			description: "Merry Eldermass!",
+			type: "exotic",
+			color: "#FA0EDE",
+			style: {
+				"textShadow": "1px 0px 10px #FA2E9E",
+				"animation": "neon1 1.5s ease-in-out infinite alternate"
+			}
 		}, {
 			name: "beam",
 			craftable: true
@@ -158,6 +186,10 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			craftable: true,
 			color: "gray"
 		}, {
+			name: "gear",
+			craftable: true,
+			color: "gray"
+		}, {
 			name: "alloy",
 			craftable: true,
 			color: "gray"
@@ -165,10 +197,6 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			name: "eludium",
 			craftable: true,
 			color: "darkViolet"
-		}, {
-			name: "gear",
-			craftable: true,
-			color: "gray"
 		}, {
 			name: "scaffold",
 			craftable: true,
@@ -188,6 +216,10 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 				buildings: ["harbor"]
 			}
 		}, {
+			name: "kerosene",
+			craftable: true,
+			color: "darkYellow"
+		}, {
 			name: "parchment",
 			craftable: true,
 			color: "#DF01D7"
@@ -201,48 +233,19 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			craftable: true,
 			color: "#01A9DB"
 		}, {
-			name: "relic",
-			title: "relic",
-			type: "exotic",
-			color: "#5A0EDE",
-			style: {
-				"textShadow": "1px 0px 10px #9A2EFE",
-				"animation": "neon1 1.5s ease-in-out infinite alternate"
-			}
-		}, {
-			name: "elderBox",
-			title: "present box",
-			description: "Merry Eldermass!",
-			type: "exotic",
-			color: "#FA0EDE",
-			style: {
-				"textShadow": "1px 0px 10px #FA2E9E",
-				"animation": "neon1 1.5s ease-in-out infinite alternate"
-			}
-		}, {
 			name: "blueprint",
 			transient: true,
 			craftable: true,
 			color: "#01A9DB"
 		}, {
+			name : "thorium", //divinite
+			craftable: true,
+			color: "#4EA24E"
+		}, {
 			name: "megalith",
 			craftable: true,
 			color: "gray"
-		}, {
-			name: "kerosene",
-			craftable: true,
-			color: "darkYellow"
-		}, {
-			name: "void",
-			type: "exotic",
-			color: "#5A0EDE",
-			style: {
-				"textShadow": "1px 0px 10px #9A2EFE",
-				"animation": "neon1 1.5s ease-in-out infinite alternate"
-			},
-			visible: false
-		}
-	],
+	}],
 
 	constructor: function (game) {
 		this.game = game;
@@ -294,14 +297,7 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			maxValue += game.workshop.getEffect(res.name + "Max");
 			maxValue += game.space.getEffect(res.name + "Max");
 
-			//Stuff for Refrigiration and (potentially) similar effects
-			maxValue += maxValue * game.workshop.getEffect(res.name + "MaxRatio");
-
-			maxValue += maxValue * game.prestige.getParagonStorageRatio();
-
-			if (!this.isNormalCraftableResource(res) && !res.transient) {
-				maxValue *= (1 + this.game.religion.getEffect("tcResourceRatio"));
-			}
+			maxValue = this.addResMaxRatios(res, maxValue);
 
 			if (maxValue < 0) {
 				maxValue = 0;
@@ -334,6 +330,25 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			newEffects[name] = effect;
 		}
 		return newEffects;
+	},
+
+	addResMaxRatios: function(res, maxValue){
+		maxValue += maxValue * this.game.prestige.getParagonStorageRatio();
+
+		if (res){
+			//Stuff for Refrigiration and (potentially) similar effects
+			maxValue *= ( 1 +
+				this.game.bld.getEffect(res.name + "MaxRatio") +
+				this.game.workshop.getEffect(res.name + "MaxRatio") +
+				this.game.space.getEffect(res.name + "MaxRatio")
+			);
+
+			if (!this.isNormalCraftableResource(res) && !res.transient){
+				maxValue *= (1 + this.game.religion.getEffect("tcResourceRatio"));
+			}
+		}
+
+		return maxValue;
 	},
 
 	hasRes: function (prices, amt) {
@@ -552,7 +567,7 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 	},
 
 	save: function () {
-		return {name: this.name, value: this.getValue(), isHidden: this.isHidden};
+		return {name: this.name, value: this.getValue(), isHidden: this.isHidden ? true : undefined};
 	}
 });
 

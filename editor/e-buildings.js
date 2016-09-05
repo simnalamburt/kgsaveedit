@@ -469,7 +469,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			enabled: false,
 			togglable: true,
 			tunable: true,
-			isAutomationEnabled: false,
+			isAutomationEnabled: true,
 			effects: {
 				"mineralsPerTick":  -1.5,
 				"ironPerTick":       0.15,
@@ -522,7 +522,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			togglable: true,
 			effects: {},
 			jammed: false,
-			isAutomationEnabled: false,
+			isAutomationEnabled: true,
 			calculateEffects: function (self, game) {
 				var effects = {
 					"coalRatioGlobal":  -0.8, //to be revisited later
@@ -973,7 +973,10 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			],
 			priceRatio: 1.25,
 			unlockRatio: 0.01,
-			requires: {tech: ["construction"]}
+			requires: {tech: ["construction"]},
+			effects: {
+				"cultureMaxRatio": 0.1
+			}
 		}, {
 			name: "chronosphere",
 			label: "Chronosphere",
@@ -1100,7 +1103,8 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 		"faithMax":       100,
 		"cultureMax":     100,
 		"uraniumMax":     250,
-		"unobtainiumMax": 150
+		"unobtainiumMax": 150,
+		"antimatterMax":  1000
 	},
 
 	buildings: null,
@@ -1238,7 +1242,8 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			"faithMax":       100,
 			"cultureMax":     100,
 			"uraniumMax":     250,
-			"unobtainiumMax": 150
+			"unobtainiumMax": 150,
+			"antimatterMax":  1000
 		};
 
 		if (this.game.ironWill){
@@ -1993,7 +1998,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 			buildings: [{
 				name: "sunlifter",
 				title: "Sunlifter",
-				description: "Generates antimatter once per year.",
+				description: "Generates antimatter once per year. Inactive if energy production is negative",
 				prices: [
 					{name: "science",  val: 500000},
 					{name: "eludium",  val: 250},
@@ -2008,7 +2013,32 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				calculateEffects: function(game, self) {
 					self.effects = {
 						"antimatterProduction": 1,
-						"energyProduction":     30
+						"energyProduction":     30,
+						"antimatter":           100
+					};
+				},
+				exportOn: true
+			},{
+				name: "containmentChamber",
+				title: "Containment Chamber",
+				description: "Increases antimatter storage space by 100.",
+				prices: [
+					{name: "science",  val: 500000},
+					{name: "kerosene", val: 2500}
+				],
+				priceRatio: 1.15,
+				unlocked: true,
+				upgradable: true,
+				togglable: false,
+				tunable: false,
+				effects: {
+					energyConsumption: 0,
+					antimatterMax: 0
+				},
+				calculateEffects: function(game, self) {
+					self.effects = {
+						"energyConsumption" : 50,
+						"antimatterMax": 100
 					};
 				},
 				exportOn: true
