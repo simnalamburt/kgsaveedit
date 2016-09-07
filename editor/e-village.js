@@ -7,10 +7,10 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	jobsData: [{
 			name: "woodcutter",
 			title: "Woodcutter",
-			description: "+0.015 wood per tick",
+			description: "+0.018 wood per tick",
 			unlocked: true,
 			modifiers: {
-				"wood": 0.015
+				"wood": 0.018
 			},
 			flavor: "Must. Not. Scratch."
 		}, {
@@ -24,12 +24,12 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		}, {
 			name: "scholar",
 			title: "Scholar",
-			description: "+0.05 science per tick",
+			description: "+0.04 science per tick",
 			requires: {buildings: ["library"]},
 			modifiers: {},
 			calculateEffects: function (self, game) {
 				var modifiers = {
-					"science": 0.05
+					"science": 0.04
 				};
 
 				if (game.workshop.get("astrophysicists").owned()) {

@@ -157,7 +157,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 		}, {
 			name: "library",
 			label: "Library",
-			description: "Build a library to store sacred catkind knowledge.\nEach upgrade level improves your science output by 8%",
+			description: "Build a library to store sacred catkind knowledge.\nEach upgrade level improves your science output by 10%",
 			prices: [
 				{name: "wood", val: 25}
 			],
@@ -166,7 +166,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			effects: {},
 			calculateEffects: function (self, game) {
 				var effects = {
-					"scienceRatio": 0.08,
+					"scienceRatio": 0.1,
 					"scienceMax":   250,
 					"cultureMax":   10
 				};
