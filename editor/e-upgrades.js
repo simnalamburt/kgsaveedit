@@ -698,16 +698,8 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 
 	hideResearched: false,
 
-	constructor: function (game) {
-		this.techs = [];
-		this.techsByName = {};
-
-		for (var i = 0; i < this.techData.length; i++) {
-			var tech = new classes.KGSaveEdit.ScienceMeta(game, this.techData[i]);
-			tech.metaObj = this;
-			this.techs.push(tech);
-			this.techsByName[tech.name] = tech;
-		}
+	constructor: function () {
+		this.registerMetaItems(this.techData, classes.KGSaveEdit.ScienceMeta, 'techs');
 		this.meta.push(this.techs);
 	},
 
@@ -1014,17 +1006,8 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 	perks: null,
 	perksByName: null,
 
-	constructor: function (game) {
-		this.perks = [];
-		this.perksByName = {};
-
-		for (var i = 0, len = this.perksData.length; i < len; i++) {
-			var perk = new classes.KGSaveEdit.UpgradeMeta(game, this.perksData[i]);
-			perk.metaObj = this;
-			this.perks.push(perk);
-			this.perksByName[perk.name] = perk;
-		}
-
+	constructor: function () {
+		this.registerMetaItems(this.perksData, classes.KGSaveEdit.UpgradeMeta, 'perks');
 		this.meta.push(this.perks);
 	},
 
@@ -2658,27 +2641,10 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 
 	hideResearched: false,
 
-	constructor: function (game) {
-		this.upgrades = [];
-		this.upgradesByName = {};
-		this.crafts = [];
-		this.craftsByName = {};
-
-		for (var i = 0, len = this.upgradeData.length; i < len; i++) {
-			var upgrade = new classes.KGSaveEdit.UpgradeMeta(game, this.upgradeData[i]);
-			upgrade.metaObj = this;
-			this.upgrades.push(upgrade);
-			this.upgradesByName[upgrade.name] = upgrade;
-		}
-
+	constructor: function () {
+		this.registerMetaItems(this.upgradeData, classes.KGSaveEdit.UpgradeMeta, 'upgrades');
+		this.registerMetaItems(this.craftData, classes.KGSaveEdit.CraftMeta, 'crafts');
 		this.meta.push(this.upgrades);
-
-		for (i = 0, len = this.craftData.length; i < len; i++) {
-			var craft = new classes.KGSaveEdit.CraftMeta(game, this.craftData[i]);
-			craft.metaObj = this;
-			this.crafts.push(craft);
-			this.craftsByName[craft.name] = craft;
-		}
 	},
 
 	renderTabBlock: function () {

@@ -1115,9 +1115,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 	tabBlockClass: 'shortInt',
 
 	constructor: function (game) {
-		this.buildings = [];
 		this.buildingsNames = [];
-		this.buildingsByName = {};
 		this.buildingGroups = {};
 
 		for (var name in this.buildingGroupsData) {
@@ -1128,21 +1126,16 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 		}
 		this.activeGroup = this.buildingGroups.all;
 
-		for (var i = 0; i < this.buildingsData.length; i++) {
-			var bld = new classes.KGSaveEdit.BuildingMeta(game, this.buildingsData[i]);
-			bld.metaObj = this;
-			this.buildings.push(bld);
+		this.registerMetaItems(this.buildingsData, classes.KGSaveEdit.BuildingMeta, 'buildings', function (bld) {
 			this.buildingsNames.push(bld.name);
-			this.buildingsByName[bld.name] = bld;
+			this.buildingGroups.all.buildings.push(bld.name);
 
 			if (bld.breakIronWill) {
 				game.breaksIronWillList.push(bld);
 			} else {
 				this.buildingGroups.iw.buildings.push(bld.name);
 			}
-
-			this.buildingGroups.all.buildings.push(bld.name);
-		}
+		});
 		this.meta.push(this.buildings);
 	},
 
@@ -1587,9 +1580,8 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 			disable = true;
 		}
 
-		this.unlocked = Boolean(unlocked || (this.unlockedNode.prevChecked && req));
+		this.set('unlocked', unlocked || (this.unlockedNode.prevChecked && req), true);
 		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
-		this.unlockedNode.checked = this.unlocked;
 		this.game.toggleDisabled(this.unlockedNode, disable);
 	},
 
@@ -2167,45 +2159,24 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 
 	constructor: function (game) {
 		this.programs = [];
-		this.planets = [];
-		this.planetsByName = {};
-		this.allPrograms = [];
-		this.allProgramsByName = [];
 
-		var program;
-		for (var i = 0, len = this.programData.length; i < len; i++) {
-			program = new classes.KGSaveEdit.ProgramMeta(game, this.programData[i]);
-			program.metaObj = this;
+		this.registerMetaItems(this.programData, classes.KGSaveEdit.ProgramMeta, 'allPrograms', function (program) {
+			this.programs.push(program);
 			if (program.breakIronWill) {
 				game.breaksIronWillList.push(program);
 			}
+		});
 
-			this.programs.push(program);
-			this.allPrograms.push(program);
-			this.allProgramsByName[program.name] = program;
-		}
-
-		for (i = 0, len = this.planetData.length; i < len; i++) {
-			var planet = dojo.clone(this.planetData[i]);
-			planet.game = game;
-			planet.metaObj = this;
+		this.registerMetaItems(this.planetData, classes.KGSaveEdit.GenericItem, 'planets', function (planet) {
 			planet.unlocked = false;
-
-			this.planets.push(planet);
-			this.planetsByName[planet.name] = planet;
 
 			var bld = planet.buildings || [];
 			planet.buildings = [];
-			for (var j = 0, bldlen = bld.length; j < bldlen; j++) {
-				program = new classes.KGSaveEdit.ProgramMeta(game, bld[j]);
-				program.metaObj = this;
+			this.registerMetaItems(bld, classes.KGSaveEdit.ProgramMeta, 'allPrograms', function (program) {
 				program.planet = planet;
-
 				planet.buildings.push(program);
-				this.allPrograms.push(program);
-				this.allProgramsByName[program.name] = program;
-			}
-		}
+			});
+		});
 	},
 
 	getProgram: function (name) {

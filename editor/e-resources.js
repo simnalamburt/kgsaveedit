@@ -120,7 +120,7 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			inputParseFn: function (value) {
 				return this.game.getTriValue(Math.round(this.game.reverseTriValue(value, 5)), 5);
 			},
-			inputHandler: function() {
+			inputHandler: function () {
 				this.game.setInput(this.game.karmaKittensNode, Math.round(this.game.reverseTriValue(this.parsedValue, 5)), true);
 				this.game.setInput(this.game.karmaKittensKarma, this.parsedValue, true);
 			}
@@ -136,8 +136,8 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			name: "sorrow",
 			visible: false,
 			color: "black",
-			getMaxValue: function() {
-				return 12 + this.game.religion.getEffect("blsLimit");
+			getMaxValue: function () {
+				return 12 + this.game.getEffect("blsLimit");
 			},
 			hardMaxLimit: true
 		}, {
@@ -247,16 +247,8 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			color: "gray"
 	}],
 
-	constructor: function (game) {
-		this.game = game;
-		this.resources = [];
-		this.resourcesByName = {};
-
-		for (var i = 0, len = this.resourceData.length; i < len; i++) {
-			var res = new classes.KGSaveEdit.ResourceMeta(game, this.resourceData[i]);
-			this.resources.push(res);
-			this.resourcesByName[res.name] = res;
-		}
+	constructor: function () {
+		this.registerMetaItems(this.resourceData, classes.KGSaveEdit.ResourceMeta, 'resources');
 	},
 
 	render: function () {

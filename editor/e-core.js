@@ -105,11 +105,34 @@ dojo.declare('classes.KGSaveEdit.Manager', classes.KGSaveEdit.core, {
 		this.meta.push(meta);
 	}, */
 
+	/**
+	 * Loops through dataArray, and creates new ClassObjs out of its data
+	 * Creates array/itemByName objects for storing the new items if necessary
+	 * If a function is passed as fn, calls it with this set to the manager
+	 */
+	registerMetaItems: function (dataArray, ClassObj, key, fn) {
+		var arr = this[key] || [];
+		var byName = this[key + 'ByName'] || {};
+		this[key] = arr;
+		this[key + 'ByName'] = byName;
+
+		for (var i = 0; i < dataArray.length; i++) {
+			var item = new ClassObj(this.game, dataArray[i]);
+			item.metaObj = this;
+			arr.push(item);
+			byName[item.name] = item;
+
+			if (fn) {
+				fn.call(this, item);
+			}
+		}
+	},
+
 	getMeta: function (name, metadata) {
 		for (var i = metadata.length - 1; i >= 0; i--) {
 			var meta = metadata[i];
 
-			if (meta.name == name){
+			if (meta.name === name) {
 				return meta;
 			}
 		}
@@ -149,7 +172,7 @@ dojo.declare('classes.KGSaveEdit.Manager', classes.KGSaveEdit.core, {
 
 	getMetaEffect: function(name, metadata) {
 		var totalEffect = 0;
-		if (!metadata.length){
+		if (!metadata.length) {
 			return 0;
 		}
 
@@ -950,36 +973,23 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 		this.maxEnergy = game.rate * 60 * 10; //10 minute max
 		this.timestamp = Date.now();
 
-		this.cfu = [];
-		this.cfuByName = {};
-		for (var i = 0; i < this.cfuData.length; i++) {
-			var chrono = new classes.KGSaveEdit.CFUMeta(game, this.cfuData[i]);
-			chrono.metaObj = this;
-			this.cfu.push(chrono);
-			this.cfuByName[chrono.name] = chrono;
-		}
+		this.registerMetaItems(this.cfuData, classes.KGSaveEdit.CFUMeta, 'cfu');
+		this.registerMetaItems(this.vsuData, classes.KGSaveEdit.VSUMeta, 'vsu');
 
-		this.vsu = [];
-		this.vsuByName = {};
-		for (i = 0; i < this.cfuData.length; i++) {
-			var voidspace = new classes.KGSaveEdit.VSUMeta(game, this.vsuData[i]);
-			voidspace.metaObj = this;
-			this.vsu.push(voidspace);
-			this.vsuByName[voidspace.name] = voidspace;
-		}
+		this.meta.push(this.cfu, this.vsu);
 	},
 
-	get: function(name) {
+	get: function (name) {
 		return this.getCFU(name);
 	},
 
-	getCFU: function(name) {
+	getCFU: function (name) {
 		return this.cfuByName[name];
 	},
 
-    getVSU: function(name) {
-        return this.vsuByName[name];
-    },
+	getVSU: function (name) {
+		return this.vsuByName[name];
+	},
 
 	renderTabBlock: function () {
 		var game = this.game;
@@ -1225,18 +1235,11 @@ dojo.declare('classes.KGSaveEdit.DiplomacyManager', [classes.KGSaveEdit.UI.Tab, 
 	races: null,
 	racesByName: null,
 
-	constructor: function (game) {
-		this.races = [];
-		this.racesByName = {};
-
-		for (var i = 0, len = this.raceData.length; i < len; i++) {
-			var race = new classes.KGSaveEdit.GenericItem(game, this.raceData[i]);
+	constructor: function () {
+		this.registerMetaItems(this.raceData, classes.KGSaveEdit.GenericItem, 'races', function (race) {
 			race.unlocked = Boolean(race.unlocked);
 			race.collapsed = Boolean(race.collapsed);
-
-			this.races.push(race);
-			this.racesByName[race.name] = race;
-		}
+		});
 	},
 
 	renderTabBlock: function () {
@@ -1638,43 +1641,19 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 	corruption: 0,
 	tcratio: 0,
 
+	hasTranscendeceUpgrade: false, //cache for getRU('transcendence').owned()
+
 	tabName: 'Religion',
 	getVisible: function () {
 		return this.game.resPool.get("faith").owned();
 	},
 
-	constructor: function (game) {
-		this.zigguratUpgrades = [];
-		this.zigguratUpgradesByName = {};
-		this.religionUpgrades = [];
-		this.religionUpgradesByName = {};
-		this.transcendenceUpgrades = [];
-		this.transcendenceUpgradesByName = {};
+	constructor: function () {
+		this.registerMetaItems(this.zigguratUpgradesData, classes.KGSaveEdit.ZigguratMeta, 'zigguratUpgrades');
+		this.registerMetaItems(this.religionUpgradesData, classes.KGSaveEdit.ReligionMeta, 'religionUpgrades');
+		this.registerMetaItems(this.transcendenceUpgradesData, classes.KGSaveEdit.TranscendenceMeta, 'transcendenceUpgrades');
 
-		for (var i = 0, len = this.zigguratUpgradesData.length; i < len; i++) {
-			var zu = new classes.KGSaveEdit.ZigguratMeta(game, this.zigguratUpgradesData[i]);
-			zu.metaObj = this;
-			this.zigguratUpgrades.push(zu);
-			this.zigguratUpgradesByName[zu.name] = zu;
-		}
-
-		for (i = 0, len = this.religionUpgradesData.length; i < len; i++) {
-			var ru = new classes.KGSaveEdit.ReligionMeta(game, this.religionUpgradesData[i]);
-			ru.metaObj = this;
-			this.religionUpgrades.push(ru);
-			this.religionUpgradesByName[ru.name] = ru;
-		}
-
-		for (i = 0, len = this.transcendenceUpgradesData.length; i < len; i++) {
-			var tu = new classes.KGSaveEdit.TranscendenceMeta(game, this.transcendenceUpgradesData[i]);
-			tu.metaObj = this;
-			this.transcendenceUpgrades.push(tu);
-			this.transcendenceUpgradesByName[tu.name] = tu;
-		}
-
-		this.meta.push(this.zigguratUpgrades);
-		this.meta.push(this.religionUpgrades);
-		this.meta.push(this.transcendenceUpgrades);
+		this.meta.push(this.zigguratUpgrades, this.religionUpgrades, this.transcendenceUpgrades);
 	},
 
 	getZU: function (name) {
@@ -1801,6 +1780,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 	},
 
 	update: function () {
+		this.hasTranscendeceUpgrade = this.getRU('transcendence').owned();
 		this.game.callMethods(this.zigguratUpgrades, 'update');
 		this.game.callMethods(this.religionUpgrades, 'update');
 		this.game.callMethods(this.transcendenceUpgrades, 'update');
@@ -1883,7 +1863,11 @@ dojo.declare('classes.KGSaveEdit.ZigguratMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	getEffect: function (name) {
-		return this.effects && this.owned() ? num(this.effects[name]) : 0;
+		var effect = 0;
+		if (this.effects) {
+			effect = this.effects[name] * this.val;
+		}
+		return effect || 0;
 	},
 
 	update: function () {
@@ -1907,7 +1891,7 @@ dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
 	hideEffects: true,
 
 	owned: function () {
-		if (this.upgradable && this.metaObj.getRU('transcendence').researched) {
+		if (this.upgradable && this.game.religion.hasTranscendeceUpgrade) {
 			return this.val > 0;
 		}
 		return this.researched;
@@ -1915,7 +1899,7 @@ dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
 
 	getName: function () {
 		var name = (this.label || this.name) + ' (';
-		if (this.isRU && (!this.upgradable || !this.metaObj.religion.getRU('transcendence').owned())) {
+		if (this.isRU && (!this.upgradable || !this.game.religion.hasTranscendeceUpgrade)) {
 			name += 'complete';
 		} else {
 			name += this.val;
@@ -1926,7 +1910,7 @@ dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
 	getPrices: function () {
 		var prices = dojo.clone(this.prices) || [];
 		var priceRatio = this.priceRatio || 2.5;
-		if (!this.upgradable || !this.metaObj.getRU('transcendence').owned()) {
+		if (!this.upgradable || !this.game.religion.hasTranscendeceUpgrade) {
 			priceRatio = 1;
 		}
 		var hasWiseLeader = this.game.village.leader && this.game.village.leader.trait.name == "wise";
@@ -1946,8 +1930,9 @@ dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
 
 	getEffect: function (name) {
 		var effect = this.effects && this.owned() ? num(this.effects[name]) : 0;
-		effect *= this.upgradable && this.game.religion.getRU('transcendence').owned() ?
-			this.val : 1;
+		if (this.upgradable && this.game.religion.hasTranscendeceUpgrade) {
+			effect *= this.val;
+		}
 		return num(effect);
 	},
 
@@ -1983,7 +1968,7 @@ dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
 		this.updateEnabled();
 		dojo.toggleClass(this.nameNode, 'spoiler', this.game.religion.faith < this.faith);
 
-		var t = Boolean(this.upgradable && this.game.religion.getRU('transcendence').researched);
+		var t = Boolean(this.upgradable && this.game.religion.hasTranscendeceUpgrade);
 		dojo.toggleClass(this.researchedNode.parentNode, 'hidden', t);
 		dojo.toggleClass(this.valNode, 'hidden', !t);
 	},

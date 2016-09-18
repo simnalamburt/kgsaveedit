@@ -3,7 +3,7 @@
 require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 "use strict";
 
-dojo.declare('classes.KGSaveEdit.AchievementsManager', classes.KGSaveEdit.UI.Tab, {
+dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	achievementsData: [{
 			name: "unicornConspiracy",
 			title: "Unicorn Conspiracy",
@@ -202,23 +202,15 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', classes.KGSaveEdit.UI.Tab
 	achievements: null,
 	achievementsByName: null,
 
-	constructor: function (game) {
-		this.achievements = [];
-		this.achievementsByName = {};
-
-		for (var i = 0, len = this.achievementsData.length; i < len; i++) {
-			var ach = new classes.KGSaveEdit.GenericItem(game, this.achievementsData[i]);
-			ach.metaObj = this;
+	constructor: function () {
+		this.registerMetaItems(this.achievementsData, classes.KGSaveEdit.GenericItem, 'achievements', function (ach) {
 			ach.unlocked = Boolean(ach.unlocked);
 			ach.newAch = false;
 
 			if (ach.hasStar) {
 				ach.starUnlocked = Boolean(ach.starUnlocked);
 			}
-
-			this.achievements.push(ach);
-			this.achievementsByName[ach.name] = ach;
-		}
+		});
 	},
 
 	get: function (name) {
@@ -464,7 +456,7 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
 				var cDay = ((game.calendar.year * 400) + ((game.calendar.season - 1) * 100) + game.calendar.day);
 				return Math.round(cDay / 1800 * 10) / 10;
 			},//*/
-    }],
+	}],
 
 	tabName: 'Stats',
 	getVisible: function () {
@@ -478,30 +470,15 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
 	statsCurrent: null,
 	statsCurrentByName: null,
 
-	constructor: function (game) {
-		this.stats = [];
-		this.statsByName = {};
+	constructor: function () {
 		this.allStats = [];
 
-		var stat;
-		for (var i = 0, len = this.statsData.length; i < len; i++) {
-			stat = new classes.KGSaveEdit.StatsMeta(game, this.statsData[i]);
-
-			this.stats.push(stat);
-			this.statsByName[stat.name] = stat;
+		var statHandler = function (stat) {
 			this.allStats.push(stat);
-		}
+		};
 
-		this.statsCurrent = [];
-		this.statsCurrentByName = {};
-
-		for (i = 0, len = this.statsCurrentData.length; i < len; i++) {
-			stat = new classes.KGSaveEdit.StatsMeta(game, this.statsCurrentData[i]);
-
-			this.statsCurrent.push(stat);
-			this.statsCurrentByName[stat.name] = stat;
-			this.allStats.push(stat);
-		}
+		this.registerMetaItems(this.statsData, classes.KGSaveEdit.StatsMeta, 'stats', statHandler);
+		this.registerMetaItems(this.statsCurrentData, classes.KGSaveEdit.StatsMeta, 'statsCurrent', statHandler);
 	},
 
 	renderTabBlock: function () {
