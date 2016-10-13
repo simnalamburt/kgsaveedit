@@ -898,25 +898,12 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			precision = this.forceHighPrecision ? 3 : 2;
 		}
 
+		var mantisa = "";
+
 		if (floatVal != 0) {
 			var absVal = Math.abs(floatVal);
-			if (absVal < 0.01 && precision === 2) {
-				precision = 3;
-			}
-			if (absVal < 0.001 && precision === 3) {
-				precision = 4;
-				if (absVal < 0.0001) {
-					precision = 5;
-					if (absVal < 0.00001) {
-						precision = 6;
-						if (absVal < 0.000001) {
-							precision = 7;
-							if (absVal < 0.0000001) {
-								precision = 8;
-							}
-						}
-					}
-				}
+			if (absVal < 0.01 && precision === 2 || absVal < 0.001 && precision === 3) {
+				mantisa = "(...)";
 			}
 		}
 
@@ -924,10 +911,12 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			return plusSign + floatVal;
 		}
 
-		if (floatVal.toFixed() == floatVal) {
-			return plusSign + floatVal.toFixed();
+		if (floatVal.toFixed() == floatVal){
+			var toFixed = floatVal.toFixed();
+			return plusSign + toFixed;
 		} else {
-			return plusSign + floatVal.toFixed(precision);
+			toFixed = floatVal.toFixed(precision);
+			return plusSign + toFixed + mantisa;
 		}
 	},
 
