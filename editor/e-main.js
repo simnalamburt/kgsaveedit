@@ -4,668 +4,570 @@ require(["dojo/on"], function (on) {
 "use strict";
 
 dojo.declare('classes.KGSaveEdit.EffectsManager', null, {
-	effectMeta: {
-		//=====================
-		//      catnip
-		//=====================
-
-		//effect id
-		"catnipPerTickBase" : {
-			//title to be displayed for effect, id if not defined
-			title: "Catnip production",
-
-			//effect will be hidden if resource is not unlocked
-			resName: "catnip",
-
-			//value will be affected by opts.usePerSecondValues
-			type: "perTick"
-		},
-		"catnipPerTick" : {
-			title: "Catnip conversion",
-			resName: "catnip",
-			type: "perTick"
-		},
-
-		"catnipDemandRatio" : {
-			title: "Catnip demand reduction",
-			resName: "catnip",
-			type: "ratio"
-		},
-		"catnipRatio" : {
-			title: "Catnip bonus",
-			resName: "catnip",
-			type: "ratio"
-		},
-		"catnipJobRatio" : {
-			title: "Farmer tools",
-			resName: "catnip",
-			type: "ratio"
-		},
-		"catnipMax" : {
-			title: "Max Catnip",
-			resName: "catnip"
-		},
-
-		/* Worker pseudoeffect */
-		"catnip" : {
-			title: "catnip",
-			resName: "catnip",
-			type: "perTick"
-		},
-
-		//wood
-
-		"woodMax" : {
-			title: "Max Wood",
-			resName: "wood"
-		},
-
-		"woodRatio" : {
-			title: "Wood bonus",
-			resName: "wood",
-			type: "ratio"
-		},
-
-		"woodJobRatio" : {
-			title: "Woodcutter tools",
-			resName: "wood",
-			type: "ratio"
-		},
-
-		"wood" : {
-			title: "wood",
-			resName: "wood",
-			type: "perTick"
-		},
-
-		"woodPerTick" : {
-			title: "Wood conversion",
-			resName: "wood",
-			type: "perTick"
-		},
-
-		//minerals
-
-		"mineralsMax" : {
-			title: "Max Minerals",
-			resName: "minerals"
-		},
-
-		"mineralsRatio" : {
-			title: "Minerals bonus",
-			resName: "minerals",
-			type: "ratio"
-		},
-
-		"mineralsPerTick" : {
-			title: "Minerals conversion",
-			resName: "minerals",
-			type : "perTick"
-		},
-
-		"minerals" : {
-			title: "minerals",
-			resName: "minerals",
-			type: "perTick"
-		},
-
-		//iron
-
-		"ironMax" : {
-			title: "Max Iron",
-			resName: "iron"
-		},
-
-		"ironPerTick" : {
-			title: "Iron conversion",
-			resName: "iron",
-			type: "perTick"
-		},
-
-		//coal
-
-		"coalMax" : {
-			title: "Max Coal",
-			resName: "coal"
-		},
-
-		"coalPerTickBase" : {
-			title: "Coal production",
-			resName: "coal",
-			type : "perTick"
-		},
-
-		"coalRatioGlobal" : {
-			title: "Coal production penalty",
-			resName: "coal",
-			type: "ratio"
-		},
-
-		"coalPerTick" : {
-			title: "Coal conversion",
-			resName: "coal",
-			type: "perTick"
-		},
-
-		//steel
-
-		"steelPerTick" : {
-			title: "Steel conversion",
-			type : "perTick"
-		},
-
-		//gold
-
-		"goldMax" : {
-			title: "Max Gold",
-			resName: "gold"
-		},
-
-		"gold" : {
-			title: "gold",
-			resName: "gold",
-			type: "perTick"
-		},
-
-		"goldPerTick" : {
-			title: "Gold conversion",
-			resName: "gold",
-			type: "perTick"
-		},
-
-		//titanium
-
-		"titaniumMax" : {
-			title: "Max Titanium",
-			resName: "titanium"
-		},
-
-		"titaniumPerTick" : {
-			title: "Titanium conversion",
-			resName: "titanium",
-			type: "perTick"
-		},
-
-		//oil
-
-		"oilReductionRatio" : {
-			title: "Oil consumption reduction",
-			type: "ratio"
-		},
-
-
-
-		//kittens
-
-		"maxKittens" : {
-			title: "Kittens",
-		},
-
-		//catpower
-
-		"manpowerMax": {
-			title: "Max Catpower",
-			resName: "manpower"
-		},
-
-		"manpower" : {
-			title: "catpower",
-			resName: "manpower",
-			type: "perTick"
-		},
-
-		"manpowerJobRatio" : {
-			title: "Hunter tools",
-			resName: "manpower",
-			type: "ratio"
-		},
-
-		"manpowerPerTick" : {
-			title: "Catpower conversion",
-			resName: "manpower",
-			type: "perTick"
-		},
-
-		//science
-
-		"scienceRatio" : {
-			title: "Science bonus",
-			type: "ratio"
-		},
-
-		"scienceMax" : {
-			title: "Max Science"
-		},
-
-		"learnRatio" : {
-			title: "Skills learning",
-			type: "perTick"
-		},
-
-		"science" : {
-			title: "science",
-			resName: "science",
-			type: "perTick"
-		},
-
-		"observatoryRatio" : {
-			title: "Observatory's science ratio",
-			type: "ratio"
-		},
-
-		//culture
-
-		"cultureMax" : {
-			resName: "culture",
-			title: "Max Culture"
-		},
-
-		"culturePerTickBase" : {
-			resName: "culture",
-			title: "Culture",
-			type: "perTick"
-		},
-
-		//oil
-
-		"magnetoBoostRatio" : {
-			title: "Magneto boost",
-			resName: "oil", //this is sort of hack to prevent early spoiler on magnetos
-			type: "ratio"
-		},
-
-		"oilMax" : {
-			resName: "oil",
-			title: "Max Oil"
-		},
-
-		"oilPerTickBase" : {
-			resName: "oil",
-			title: "Oil production",
-			type: "perTick"
-		},
-
-		"oilPerTick" : {
-			resName: "oil",
-			title: "Oil conversion",
-			type: "perTick"
-		},
-
-		//faith
-
-		"faithMax" : {
-			title: "Max Faith",
-			resName: "faith"
-		},
-
-		"faith" : {
-			title: "faith",
-			resName: "faith",
-			type: "perTick"
-		},
-
-		"faithPerTickBase" : {
-			title: "Faith",
-			resName: "faith",
-			type: "perTick"
-		},
-
-		//uranium
-
-		"uraniumMax" : {
-			title: "Max Uranium",
-			resName: "uranium"
-		},
-
-		"uraniumPerTick": {
-			title: "Uranium conversion",
-			resType: "uranium",
-			type: "perTick"
-		},
-
-		//unobtainium
-
-		"unobtainiumMax" : {
-			title: "Max Unobtainium",
-			resName: "unobtainium"
-		},
-
-		"unobtainiumPerTick": {
-			title: "Unobtainium conversion",
-			resType: "unobtainium",
-			type: "perTick"
-		},
-
-		//antimatter
-		"antimatterProduction": {
-			title: "Antimatter production"
-		},
-
-		//unicorns
-
-		"unicornsPerTickBase": {
-			title: "Unicorn production",
-			resType: "unicorns",
-			type: "perTick"
-		},
-
-		//manuscripts
-
-		"manuscriptPerTick": {
-			title: "Manuscript automated production",
-			resType: "manuscript",
-			type: "perTick"
-		},
-
-		//starchart
-
-		"starchart" : {
-			title: "starchart",
-			resName: "starchart",
-			type: "perTick"
-		},
-
-		"starchartPerTickBase": {
-			title: "Starchart production",
-			resType: "starchart",
-			type: "perTick"
-		},
-
-		//miscellaneous
-
-		"refineRatio": {
-			title: "Catnip refine bonus",
-			type: "ratio"
-		},
-
-		"craftRatio": {
-			title: "Craft bonus",
-			type: "ratio"
-		},
-
-		"fursDemandRatio" : {
-			title: "Furs demand reduction",
-			resName: "furs",
-			type: "ratio"
-		},
-
-		"fursPerTick": {
-			title: "Furs conversion",
-			resType: "furs",
-			type: "perTick"
-		},
-
-		"ivoryDemandRatio" : {
-			title: "Ivory demand reduction",
-			resName: "ivory",
-			type: "ratio"
-		},
-
-		"ivoryPerTick": {
-			title: "Ivory conversion",
-			resType: "ivory",
-			type: "perTick"
-		},
-
-		"spiceDemandRatio" : {
-			title: "Spice demand reduction",
-			resName: "spice",
-			type: "ratio"
-		},
-
-		"happiness": {
-			title: "Happiness"
-		},
-
-		"unhappinessRatio": {
-			title: "Unhappiness reduction",
-			type: "ratio"
-		},
-
-		"mintEffect": {
-			title: "Mint effect",
-		},
-
-		"tradeRatio": {
-			title: "Trade ratio",
-			type: "ratio"
-		},
-
-		"standingRatio": {
-			title: "Standing ratio",
-			type: "ratio"
-		},
-
-		"resStasisRatio": {
-			title: "Res-Stasis ratio",
-			type: "ratio"
-		},
-
-		// energy
-
-		"energyProduction": {
-			title: "Energy production"
-		},
-		"energyConsumption": {
-			title: "Energy consumption"
-		},
-
-		//production
-
-		"productionRatio" : {
-			title: "Production bonus",
-			type: "ratio"
-		},
-
-		"magnetoRatio" : {
-			title: "Production bonus",
-			type: "ratio"
-		},
-
-		"spaceRatio" : {
-			title: "Space production bonus",
-			type: "ratio"
-		},
-
-		"prodTransferBonus": {
-			title: "Transferred cath production bonus",
-			type: "ratio"
-		},
-
-		//starEvent
-
-		"starEventChance" : {
-			title: "Astronomical event chance",
-			type: "ratio"
-		},
-
-		"starAutoSuccessChance" : {
-			title: "Auto astronomical event chance",
-			type: "ratio"
-		},
-
-		//in the tab workshop
-		"lumberMillRatio" : {
-			title: "Lumber Mill bonus",
-			type: "ratio"
-		},
-
-		"barnRatio" : {
-			title: "Barn expansion",
-			type: "ratio"
-		},
-
-		"warehouseRatio" : {
-			title: "Warehouse expansion",
-			type: "ratio"
-		},
-
-		"acceleratorRatio" : {
-			title: "Accelerator expansion",
-			type: "ratio"
-		},
-
-		"harborRatio" : {
-			title: "Harbor'ship expansion",
-			type: "ratio"
-		},
-
-		"harborCoalRatio" : {
-			title: "Harbor coal expansion",
-			type: "ratio"
-		},
-
-		"catnipMaxRatio" : {
-			title: "Catnip storage expansion",
-			type: "ratio"
-		},
-
-		"hunterRatio" : {
-			title: "Hunts know-how",
-			type: "ratio"
-		},
-
-		"solarFarmRatio" : {
-			title: "Solar Farm bonus",
-			type: "ratio"
-		},
-
-		"shipLimit" : {
-			title: "Ship limit effect",
-			type: "ratio"
-		},
-
-		"hutPriceRatio" : {
-			title: "Hut price reduction",
-			type: "ratio"
-		},
-
-		"coalSuperRatio" : {
-			title: "Coal bonus",
-			type: "ratio"
-		},
-
-		"smelterRatio" : {
-			title: "Smelter bonus",
-			type: "ratio"
-		},
-
-		"calcinerRatio" : {
-			title: "Calciner bonus",
-			type: "ratio"
-		},
-
-		"calcinerSteelRatio" : {
-			title: "Calciner steel production",
-			type: "ratio"
-		},
-
-		"calcinerSteelCraftRatio" : {
-			title: "Calciner steel production bonus",
-			type: "ratio"
-		},
-
-		"libraryRatio" : {
-			title: "Library bonus",
-			type: "ratio"
-		},
-
-		"hydroPlantRatio" : {
-			title: "Hydro Plant bonus",
-			type: "ratio"
-		},
-
-		"spaceScienceRatio" : {
-			title: "Space science bonus",
-			type: "ratio"
-		},
-
-		"oilWellRatio" : {
-			title: "Oil bonus",
-			type: "ratio"
-		},
-
-		"unicornsGlobalRatio" : {
-			title: "Unicorns bonus",
-			type: "ratio"
-		},
-
-		"biofuelRatio" : {
-			title: "Bio Fuel bonus",
-			type: "ratio"
-		},
-
-		"blueprintCraftRatio" : {
-			title: "Blueprint craft bonus",
-			type: "ratio"
-		},
-
-		"skillMultiplier" : {
-			title: "Kitten's skill effect",
-			type: "ratio"
-		},
-
-		"uraniumRatio" : {
-			title: "Uranium savings",
-			type: "ratio"
-		},
-
-		"reactorEnergyRatio" : {
-			title: "Reactor energy bonus",
-			type: "ratio"
-		},
-
-		"starchartGlobalRatio" : {
-			title: "Starchart bonus",
-			type: "ratio"
-		},
-
-		"satnavRatio" : {
-			title: "Ship's cost savings",
-			type: "ratio"
-		},
-
-		"broadcastTowerRatio" : {
-			title: "Broadcast Tower bonus",
-			type: "ratio"
-		},
-
-		"lunarOutpostRatio" : {
-			title: "Lunar Outpost bonus",
-			type: "ratio"
-		},
-
-		"crackerRatio" : {
-			title: "Cracker bonus",
-			type: "ratio"
-		},
-
-		"factoryRefineRatio" : {
-			title: "Factory refine bonus",
-			type: "ratio"
-		},
-
-		// cycleEffects
-		"prodTransferBonus_cycleEffect" : {
-			title: "Zodiac effect Production transfer bonus",
-			type: "ratio"
-		},
-		"starchartPerTickBase_cycleEffect" : {
-			title: "Zodiac effect Starchart production",
-			type: "ratio"
-		},
-		"observatoryRatio_cycleEffect" : {
-			title: "Zodiac effect Observatory's science ratio",
-			type: "ratio"
-		},
-		"energyConsumption_cycleEffect" : {
-			title: "Zodiac effect Energy consumption",
-			type: "ratio"
-		},
-		"uraniumPerTick_cycleEffect" : {
-			title: "Zodiac effect Uranium production",
-			type: "ratio"
-		},
+	game: null,
+
+	constructor: function (game) {
+		this.game = game;
+	},
+
+	effectMeta: function (effectName) {
+		var game = this.game;
+		for (var i = 0; i < game.resPool.resources.length; i++) {
+			var res = game.resPool.resources[i];
+			if (effectName.indexOf(res.name) === 0) {
+				var resname = res.name;
+				var restitle = res.title || resname;
+				restitle = restitle.charAt(0).toUpperCase() + restitle.substring(1, restitle.length);
+				var type = effectName.substring(resname.length, effectName.length);
+			}
+		}
+
+		switch (type) {
+			/* Worker pseudoeffect */
+			case "":
+				return {
+					//title to be displayed for effect, id if not defined
+					title: restitle,
+					//effect will be hidden if resource is not unlocked
+					resname: resname,
+					//value will be affected by opts.usePerSecondValues
+					type: "perTick"
+				};
+			case "PerTick":
+				return {
+					title: restitle,
+					resname: resname,
+					type: "perTick"
+				};
+			case "Max":
+				return {
+					title: "Max " + restitle,
+					resname: resname
+				};
+			case "Ratio":
+				return {
+					title: restitle + " bonus",
+					resname: resname,
+					type: "ratio"
+				};
+			case "DemandRatio":
+				return {
+					title: restitle + " demand reduction",
+					resname: resname,
+					type: "ratio"
+				};
+			case "PerTickBase":
+			case "PerTickBaseSpace":
+				return {
+					title: restitle + " production",
+					resname: resname,
+					type: "perTick"
+				};
+			case "PerTickCon":
+			case "PerTickAutoprod":
+			case "PerTickProd":
+			case "PerTickSpace":
+			case "PerTickAutoprodSpace":
+				return {
+					title: restitle + " conversion",
+					resname: resname,
+					type: "perTick"
+				};
+			default:
+				return 0;
+		}
+	},
+
+	statics: {
+		effectMeta: {
+			// Specials meta of resources
+			"catnipJobRatio": {
+				title: "Farmer tools",
+				resName: "catnip",
+				type: "ratio"
+			},
+
+			"catnipDemandWorkerRatioGlobal": {
+				title: "Workers catnip demand reduction",
+				resName: "catnip",
+				type: "ratio"
+			},
+
+			"woodJobRatio": {
+				title: "Woodcutter tools",
+				resName: "wood",
+				type: "ratio"
+			},
+
+			"manpowerJobRatio": {
+				title: "Hunter tools",
+				resName: "manpower",
+				type: "ratio"
+			},
+
+			"coalRatioGlobal": {
+				title: "Coal production penalty",
+				resName: "coal",
+				type: "ratio"
+			},
+
+			"coalRatioGlobalReduction": {
+				title: "Coal production penalty reduction",
+				resName: "coal",
+				type: "ratio"
+			},
+
+			"oilReductionRatio": {
+				title: "Oil consumption reduction",
+				type: "ratio"
+			},
+
+			//kittens
+
+			"maxKittens": {
+				title: "Kittens"
+			},
+
+			"antimatterProduction": {
+				title: "Antimatter production",
+				type: "perYear"
+			},
+
+			// Miscellaneous
+
+			"observatoryRatio": {
+                title: "Observatory's science ratio",
+                type: "ratio"
+            },
+
+			"magnetoBoostRatio": {
+				title: "Magneto boost",
+				resName: "oil",				//this is sort of hack to prevent early spoiler on magnetos
+				type: "ratio"
+			},
+
+			"learnRatio": {
+				title: "Skills learning",
+				type: "perTick"
+			},
+
+			"refineRatio": {
+				title: "Catnip refine bonus",
+				type: "ratio"
+			},
+
+			"craftRatio": {
+				title: "Craft bonus",
+				type: "ratio"
+			},
+
+			"happiness": {
+				title: "Happiness"
+			},
+
+			"unhappinessRatio": {
+				title: "Unhappiness reduction",
+				type: "ratio"
+			},
+
+			"tradeRatio": {
+				title: "Trade ratio",
+				type: "ratio"
+			},
+
+			"standingRatio": {
+				title: "Standing ratio",
+				type: "ratio"
+			},
+
+			"resStasisRatio": {
+				title: "Res-Stasis ratio",
+				type: "ratio"
+			},
+
+			"beaconRelicsPerDay": {
+				title: "Relic production",
+				type: "perDay"
+			},
+
+			"relicPerDay": {
+				title: "Relic production",
+				type: "perDay"
+			},
+
+			"routeSpeed": {
+				title: "Space travel speed",
+				type: "fixed"
+			},
+
+			// energy
+
+			"energyProduction": {
+				title: "Energy production",
+				type: "energy"
+			},
+			"energyConsumption": {
+				title: "Energy consumption",
+				type: "energy"
+            },
+
+			//production
+
+            "productionRatio": {
+                title: "Production bonus",
+                type: "ratio"
+            },
+
+            "magnetoRatio": {
+                title: "Production bonus",
+                type: "ratio"
+            },
+
+            "spaceRatio": {
+				title: "Space production bonus",
+				type: "ratio"
+			},
+
+			"prodTransferBonus": {
+				title: "Transferred production bonus",
+				type: "ratio"
+			},
+
+            //starEvent
+
+            "starEventChance": {
+                title: "Astronomical event chance",
+                type: "ratio"
+            },
+
+            "starAutoSuccessChance": {
+                title: "Auto astronomical event chance",
+                type: "ratio"
+            },
+
+            //in the tab workshop
+            "lumberMillRatio": {
+                title: "Lumber Mill bonus",
+                type: "ratio"
+            },
+
+            "barnRatio": {
+                title: "Barn expansion",
+                type: "ratio"
+            },
+
+            "warehouseRatio": {
+                title: "Warehouse expansion",
+                type: "ratio"
+            },
+
+            "acceleratorRatio": {
+                title: "Accelerator expansion",
+                type: "ratio"
+            },
+
+            "harborRatio": {
+                title: "Harbor'ship expansion",
+                type: "ratio"
+            },
+
+            "harborCoalRatio": {
+                title: "Harbor coal expansion",
+                type: "ratio"
+            },
+
+            "catnipMaxRatio": {
+                title: "Catnip storage expansion",
+                type: "ratio"
+            },
+
+            "hunterRatio": {
+                title: "Hunts know-how",
+                type: "ratio"
+            },
+
+            "solarFarmRatio": {
+                title: "Solar Farm bonus",
+                type: "ratio"
+            },
+
+            "shipLimit": {
+                title: "Ship limit effect",
+                type: "ratio"
+            },
+
+            "hutPriceRatio": {
+                title: "Hut price reduction",
+                type: "ratio"
+            },
+
+            "coalSuperRatio": {
+                title: "Coal bonus",
+                type: "ratio"
+            },
+
+            "smelterRatio": {
+                title: "Smelter bonus",
+                type: "ratio"
+            },
+
+            "calcinerRatio": {
+                title: "Calciner bonus",
+                type: "ratio"
+            },
+
+            "calcinerSteelRatio": {
+                title: "Calciner steel production",
+                type: "ratio"
+            },
+
+            "calcinerSteelCraftRatio": {
+                title: "Steel plants's calciner bonuss",
+                type: "ratio"
+            },
+
+            "calcinerSteelReactorBonus": {
+                title: "Calciner steel production bonus",
+                type: "ratio"
+            },
+
+            "libraryRatio": {
+                title: "Library bonus",
+                type: "ratio"
+            },
+
+            "hydroPlantRatio": {
+                title: "Hydro Plant bonus",
+                type: "ratio"
+            },
+
+            "spaceScienceRatio": {
+                title: "Space science bonus",
+                type: "ratio"
+            },
+
+            "oilWellRatio": {
+                title: "Oil bonus",
+                type: "ratio"
+            },
+
+            "unicornsGlobalRatio": {
+                title: "Unicorns bonus",
+                type: "ratio"
+            },
+
+            "biofuelRatio": {
+                title: "Bio Fuel bonus",
+                type: "ratio"
+            },
+
+            "blueprintCraftRatio": {
+                title: "Blueprint craft bonus",
+                type: "ratio"
+            },
+
+            "skillMultiplier": {
+                title: "Kitten's skill effect",
+                type: "ratio"
+            },
+
+            "uraniumRatio": {
+                title: "Uranium savings",
+                type: "ratio"
+            },
+
+            "reactorEnergyRatio": {
+                title: "Reactor energy bonus",
+                type: "ratio"
+            },
+
+			"reactorThoriumPerTick": {
+                title: "Reactor thorium consumption",
+                type: "perTick"
+            },
+
+            "starchartGlobalRatio": {
+                title: "Starchart bonus",
+                type: "ratio"
+            },
+
+            "satnavRatio": {
+                title: "Ship's cost savings",
+                type: "ratio"
+            },
+
+            "broadcastTowerRatio": {
+                title: "Broadcast Tower bonus",
+                type: "ratio"
+            },
+
+            "cultureMaxRatio": {
+                title: "Max Culture bonus",
+                type: "ratio"
+            },
+
+            "lunarOutpostRatio": {
+                title: "Lunar Outpost bonus",
+                type: "ratio"
+            },
+
+            "crackerRatio": {
+                title: "Cracker bonus",
+                type: "ratio"
+            },
+
+            "factoryRefineRatio": {
+                title: "Factory refine bonus",
+                type: "ratio"
+            },
+
+            "timeRatio": {
+                title: "Temporal flux bonus",
+                type: "ratio"
+            },
+
+            "temporalParadoxVoid": {
+                title: "Max void",
+                type: "perDay"
+            },
+
+            "temporalParadoxDay": {
+                title: "Day in temporal paradox",
+                type: "fixed"
+            },
+
+            "temporalParadoxDayBonus": {
+                title: "Day in temporal paradox",
+                type: "fixed"
+            },
+
+			"unicornsRatioReligion": {
+                title: "Unicorns bonus",
+                type: "ratio"
+            },
+
+			"riftChance": {
+                title: "Unicorns rift chance",
+                type: "fixed"
+            },
+
+			"ivoryMeteorChance": {
+                title: "Ivory meteor chance",
+                type: "fixed"
+            },
+
+            "ivoryMeteorRatio": {
+                title: "Ivory meteor bonus",
+                type: "ratio"
+            },
+
+			"alicornChance": {
+                title: "Alicorns descent chance",
+                type: "fixed"
+            },
+
+			"tcRefineRatio": {
+                title: "Alicorns sacrifice bonus",
+                type: "ratio"
+            },
+
+			"corruptionRatio": {
+                title: "Corruption ratio",
+                type: "ratio"
+            },
+
+			"cultureMaxRatioBonus": {
+                title: "Ziggurat's max culture bonus",
+                type: "ratio"
+            },
+
+			"faithRatioReligion": {
+                title: "Faith bonus",
+                type: "ratio"
+            },
+
+			"relicRefineRatio": {
+                title: "Relic refine bonus",
+                type: "ratio"
+            },
+
+			"blsLimit": {
+                title: "Max BLS",
+                type: "integerRatio"
+            },
+
+			"tcResourceRatio": {
+                title: "Max resources bonus",
+                type: "ratio"
+            },
+
+            "shatterTCGain": {
+                title: "Shatter TC ressources retrieved",
+                type: "ratio"
+            },
+
+			"priceRatio": {
+                title: "Building's prices",
+                type: "ratio"
+            },
+
+			"kittenGrowthRatio": {
+                title: "Kittens birth rate",
+                type: "ratio"
+            },
+
+			// cycleEffects
+			"spaceElevator-prodTransferBonus": {
+                title: "Space Elevator - Transferred cath production bonus",
+                type: "ratio"
+            },
+
+			"sattelite-starchartPerTickBaseSpace": {
+                title: "Sattelite - Startchar production",
+                type: "ratio"
+            },
+
+			"sattelite-observatoryRatio": {
+                title: "Sattelite - Observatory's science ratio",
+                type: "ratio"
+            },
+
+			"spaceStation-scienceRatio": {
+                title: "Space Station - Science bonus",
+                type: "ratio"
+            },
+
+			"moonOutpost-unobtainiumPerTickSpace": {
+                title: "Lunar Outpost - Unobtainium conversion",
+                type: "ratio"
+            },
+
+			"planetCracker-uraniumPerTickSpace": {
+                title: "Planet Cracker - Uranium conversion",
+                type: "ratio"
+            },
+
+			"hydrofracturer-oilPerTickAutoprodSpace": {
+                title: "Hydraulic Fracturer - Oil conversion",
+                type: "ratio"
+            },
+
+			"researchVessel-starchartPerTickBaseSpace": {
+                title: "Research Vessel - Starchart production",
+                type: "ratio"
+            },
+
+			"sunlifter-energyProduction": {
+                title: "Sunlifter - Energy production",
+                type: "ratio"
+            },
+
+			"spaceBeacon-starchartPerTickBaseSpace": {
+                title: "Space Beacon - Starchart production",
+                type: "ratio"
+            }
+
+		}
 	}
 });
 
@@ -679,7 +581,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	ironWill: true,
 	cheatMode: false,
 
-	saveVersion: 3,
+	saveVersion: 14,
 
 	opts: null,
 
@@ -687,8 +589,6 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	forceShowLimits: false,
 	forceHighPrecision: false,
 	useWorkers: false,
-
-	breaksIronWillList: null,
 
 	tabs: null,
 	managers: null,
@@ -705,21 +605,21 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 	//shamelessly copied from Sandcastle Builder code
 	postfixes: [
-		{limit:1e210,divisor:1e210,postfix:['Q',' Quita']},
-		{limit: 1e42,divisor: 1e42,postfix:['W',' Wololo']},
-		{limit: 1e39,divisor: 1e39,postfix:['L',' Lotta']},
-		{limit: 1e36,divisor: 1e36,postfix:['F',' Ferro']},
-		{limit: 1e33,divisor: 1e33,postfix:['H',' Helo']}, //or Ballard
-		{limit: 1e30,divisor: 1e30,postfix:['S',' Squilli']},
-		{limit: 1e27,divisor: 1e27,postfix:['U',' Umpty']},
-		{limit: 1e24,divisor: 1e24,postfix:['Y',' Yotta']},
-		{limit: 1e21,divisor: 1e21,postfix:['Z',' Zeta']},
-		{limit: 1e18,divisor: 1e18,postfix:['E',' Exa']},
-		{limit: 1e15,divisor: 1e15,postfix:['P',' Peta']},
-		{limit: 1e12,divisor: 1e12,postfix:['T',' Tera']},
-		{limit:  1e9,divisor:  1e9,postfix:['G',' Giga']},
-		{limit:  1e6,divisor:  1e6,postfix:['M',' Mega']},
-		{limit:  9e3,divisor:  1e3,postfix:['K',' Kilo']} //WHAT
+		{limit: 1e210, divisor: 1e210, postfix: ['Q', ' Quita']},
+		{limit:  1e42, divisor:  1e42, postfix: ['W', ' Wololo']},
+		{limit:  1e39, divisor:  1e39, postfix: ['L', ' Lotta']},
+		{limit:  1e36, divisor:  1e36, postfix: ['F', ' Ferro']},
+		{limit:  1e33, divisor:  1e33, postfix: ['H', ' Helo']}, //or Ballard
+		{limit:  1e30, divisor:  1e30, postfix: ['S', ' Squilli']},
+		{limit:  1e27, divisor:  1e27, postfix: ['U', ' Umpty']},
+		{limit:  1e24, divisor:  1e24, postfix: ['Y', ' Yotta']},
+		{limit:  1e21, divisor:  1e21, postfix: ['Z', ' Zeta']},
+		{limit:  1e18, divisor:  1e18, postfix: ['E', ' Exa']},
+		{limit:  1e15, divisor:  1e15, postfix: ['P', ' Peta']},
+		{limit:  1e12, divisor:  1e12, postfix: ['T', ' Tera']},
+		{limit:   1e9, divisor:   1e9, postfix: ['G', ' Giga']},
+		{limit:   1e6, divisor:   1e6, postfix: ['M', ' Mega']},
+		{limit:   9e3, divisor:   1e3, postfix: ['K', ' Kilo']} //WHAT
 	],
 
 	/**
@@ -831,6 +731,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		if (!ele || ele.type !== 'checkbox') {
 			return;
 		}
+		ele.indeterminate = false;
 		ele.checked = checked;
 		if (!noPrev) {
 			ele.prevChecked = checked;
@@ -877,21 +778,87 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		dojo.toggleClass(ele.parentNode, 'locked', Boolean(disabled));
 	},
 
-	filterMetadata: function(meta, fields) {
+	/**
+	 * Clones an array of meta objects by passing them through filterMetaObj
+	 */
+	filterMetadata: function (meta, fields, callback) {
 		var filtered = [];
-		for (var i = 0, len = meta.length; i < len; i++){
-			var clone = this.filterMetaObj(meta[i], fields);
+		for (var i = 0, len = meta.length; i < len; i++) {
+			var clone = this.filterMetaObj(meta[i], fields, callback);
 			filtered.push(clone);
 		}
 		return filtered;
 	},
 
-	filterMetaObj: function (meta, fields) {
+	/**
+	 * Clones an object, but only the keys in the fields array
+	 * Calls callback in the context of the object if passed
+	 */
+	filterMetaObj: function (meta, fields, callback) {
 		var clone = {};
 		for (var i = 0, len = fields.length; i < len; i++) {
 			clone[fields[i]] = meta[fields[i]];
 		}
+		if (dojo.isFunction(callback)) {
+			callback.call(meta, clone);
+		}
 		return clone;
+	},
+
+	toDisplayDays: function (daysRaw) {
+		var daysNum = parseInt(daysRaw, 10); // don't forget the second param
+
+		var years = Math.floor(daysNum / (4 * 100));
+		var days = daysNum - (years * 4 * 100);
+
+		if (years > 0) {
+			years = this.getDisplayValueExt(years);
+		}
+
+		var timeFormated = "";
+		if (years) { timeFormated = years + "y "; }
+		if (days) { timeFormated += days + "d "; }
+
+		return timeFormated;
+	},
+
+	toDisplayPercentage: function (percentage, precision, precisionFixed) {
+		percentage *= 100;
+
+		if (precisionFixed) {
+			// Prevent 100% whereas it's not really reached
+			percentage -= 1 / Math.pow(10, precision);
+			if (percentage < 0) {
+				percentage = 0;
+			}
+		} else {
+			if (percentage - Math.trunc(percentage) != 0) {
+				precision = 1;
+				if (percentage * 10 - Math.trunc(percentage * 10) != 0) {
+					precision = 2;
+					if (percentage * 100 - Math.trunc(percentage * 100) != 0) {
+						precision = 3;
+						if (percentage * 1000 - Math.trunc(percentage * 1000) != 0) {
+							precision = 4;
+							if (percentage * 10000 - Math.trunc(percentage * 10000) != 0) {
+								precision = 5;
+								if (percentage * 100000 - Math.trunc(percentage * 100000) != 0) {
+									precision = 6;
+									if (percentage * 1000000 - Math.trunc(percentage * 1000000) != 0) {
+										precision = 7;
+										if (percentage * 10000000 - Math.trunc(percentage * 10000000) != 0) {
+											precision = 8;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return percentage.toFixed(precision);
 	},
 
 	getDisplayValueExt: function (value, prefix, usePerTickHack, precision) {
@@ -931,6 +898,28 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			precision = this.forceHighPrecision ? 3 : 2;
 		}
 
+		if (floatVal != 0) {
+			var absVal = Math.abs(floatVal);
+			if (absVal < 0.01 && precision === 2) {
+				precision = 3;
+			}
+			if (absVal < 0.001 && precision === 3) {
+				precision = 4;
+				if (absVal < 0.0001) {
+					precision = 5;
+					if (absVal < 0.00001) {
+						precision = 6;
+						if (absVal < 0.000001) {
+							precision = 7;
+							if (absVal < 0.0000001) {
+								precision = 8;
+							}
+						}
+					}
+				}
+			}
+		}
+
 		if (!floatVal.toFixed) {
 			return plusSign + floatVal;
 		}
@@ -943,7 +932,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	getUnlockByName: function (unlockId, type) {
-		switch(type) {
+		switch (type) {
 			case 'tech':
 				return this.science.get(unlockId);
 			case 'jobs':
@@ -959,11 +948,19 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			case 'stages':
 				return this.bld.get(unlockId.bld);
 			case 'program':
+			case "spaceMission":
+			case 'spaceBuilding':
 				return this.space.getProgram(unlockId);
 			case 'perks':
 				return this.prestige.getPerk(unlockId);
 			case 'zigguratUpgrades':
 				return this.religion.getZU(unlockId);
+			case 'religionUpgrades':
+				return this.religion.getRU(unlockId);
+			case 'chronoforge':
+				return this.time.getCFU(unlockId);
+			case 'voidSpace':
+				return this.time.getVSU(unlockId);
 			default:
 				console.log('Couldn\'t get unlock ', unlockId, ' of type ', type);
 				return false;
@@ -977,6 +974,9 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				if (meta) {
 					if (meta.calculateEffects) {
 						meta.calculateEffects(meta, this);
+						if (type === "spaceBuilding") {
+							this.calendar.cycleEffectsBasics(meta.effects, meta.name);
+						}
 					}
 					if (meta.metaObj && meta.metaObj.invalidateCachedEffects) {
 						meta.metaObj.invalidateCachedEffects();
@@ -986,15 +986,21 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		}
 	},
 
+	getRateUI: function () {
+		return this.rate;
+	},
+
 	calculateAllEffects: function () {
 		this.workshop.invalidateCachedEffects();
 		this.prestige.invalidateCachedEffects();
 		this.religion.invalidateCachedEffects();
 		this.space.invalidateCachedEffects();
+		this.time.invalidateCachedEffects();
 
 		// TODO: delegate this to managers? Can't be done in load unfortunately.
 		this.upgradeItems({
 			buildings: this.bld.buildingsNames,
+			program: this.space.allPrograms,
 			jobs: this.village.jobNames
 		});
 	},
@@ -1003,44 +1009,51 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		return (Math.sqrt(1 + 8 * value / stripe) - 1) / 2;
 	},
 
-	reverseTriValue: function (value, stripe) {
+	getTriValueOrigin: function (value, stripe) {
 		return (Math.pow(value * 2 + 1, 2) - 1) * stripe / 8;
 	},
 
-	getResCraftRatio: function(res) {
-		var ratio;
+	getCraftRatio: function () {
+		var craftRatio = this.getEffect("craftRatio");
+		if (this.village.leader && this.village.leader.trait.name === "engineer") {
+			craftRatio += 0.05;
+		}
+		return craftRatio;
+	},
+
+	getResCraftRatio: function (res) {
 		if (res.name === "wood") {
-			var refineRatio = this.bld.getEffect("refineRatio");
+			var refineRatio = this.getEffect("refineRatio");
 			if (this.ironWill) {
-				return ((1 + refineRatio) * (1 + this.bld.getEffect("woodRatio"))) - 1;
+				return ((1 + refineRatio) * (1 + this.getEffect("woodRatio"))) - 1;
 			} else {
 				return refineRatio;
 			}
 		}
 
 		if (res.name === "blueprint") {
-			var bpRatio = this.workshop.getEffect("blueprintCraftRatio");
+			var bpRatio = this.getEffect("blueprintCraftRatio");
 			var scienceBldAmt = this.bld.get("library").val + this.bld.get("academy").val +
 				this.bld.get("observatory").val + this.bld.get("biolab").val;
 
-			ratio = this.bld.getEffect("craftRatio");
+			var ratio = this.getCraftRatio();
 
 			return ratio + scienceBldAmt * bpRatio;
 		}
 
-		if (res.name === "oil"){
-			var fRatio = this.workshop.getEffect("factoryRefineRatio");
+		if (res.name === "kerosene") {
+			var fRatio = this.getEffect("factoryRefineRatio");
 
-			var amt = this.bld.get("factory").val;
-			ratio = this.bld.getEffect("craftRatio");
+			var amt = this.bld.get("factory").on;
+			ratio = this.getCraftRatio();
 
-			return ratio * (1 + amt * fRatio);
+			return ratio * (1 + amt * fRatio * 0.75);	//25% penalty
 		}
 
 		//get resource specific craft ratio (like factory bonus)
-		var resCraftRatio = this.bld.getEffect(res.name + "CraftRatio") || 0;
+		var resCraftRatio = this.getEffect(res.name + "CraftRatio") || 0;
 
-		return this.bld.getEffect("craftRatio") + resCraftRatio;
+		return this.getCraftRatio() + resCraftRatio;
 	},
 
 	renderPrices: function (tooltip, prices) {
@@ -1073,17 +1086,18 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				this.getDisplayValueExt(resValue) + " / " + this.getDisplayValueExt(price.val) + asterisk
 		}, priceItemNode);
 
-		if (!hasRes && res.perTickUI > 0) {
-			var eta = (price.val - resValue) / (res.perTickUI * this.rate);
+		var resPerTick = this.getResourcePerTick(res.name, true);
+		if (!hasRes && resPerTick > 0) {
+			var eta = (price.val - resValue) / (resPerTick * this.rate);
 			if (eta >= 1) {
-				priceSpan.textContent += " (" + this.game.toDisplaySeconds(eta) + ")";
+				priceSpan.textContent += " (" + this.toDisplaySeconds(eta) + ")";
 			}
 		}
+
 
 		//unroll prices to the raw resources
 		if (!hasRes && res.craftable && res.name !== "wood") {
 			var craft = this.workshop.getCraft(res.name);
-			if (!craft) { console.log(craft, res, res.name); }
 			if (craft.unlocked) {
 				var craftRatio = this.getResCraftRatio(res);
 				nameSpan.textContent = "+ " + nameSpan.textContent;
@@ -1092,7 +1106,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 					indent = 1;
 				}
 
-				var components = this.game.workshop.getCraftPrice(craft);
+				var components = this.workshop.getCraftPrice(craft);
 				for (var j = 0, len = components.length; j < len; j++) {
 
 					var diff = price.val - resValue;
@@ -1119,6 +1133,10 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	renderEffects: function (tooltip, effectsList, hideTitle) {
+		if (Object.keys(effectsList).length === 0) {
+			return;
+		}
+
 		if (!hideTitle) {
 			dojo.create('div', {
 				'class': 'tooltipEffectsTitle',
@@ -1139,13 +1157,15 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				}
 				var displayEffectName = effectMeta.title || effectName;
 
-				if (effectMeta.resName && this.resPool.get(effectMeta.resName).getValue() === 0) {
+				var res = this.resPool.get(effectMeta.resName);
+
+				if (effectMeta.resName && res && !res.unlocked) {
 					effectClass += ' spoiler'; //mark resource-related effects if we did not unlocked this effect yet
 				}
 
 				//display resMax values with global ratios like Refrigeration and Paragon
 				if (effectName.substr(-3) === "Max") {
-					var res = this.game.resPool.get(effectMeta.resName || effectName.slice(0, -3));
+					res = res || this.game.resPool.get(effectName.slice(0, -3));
 					effectValue = this.game.resPool.addResMaxRatios(res, effectValue);
 				}
 
@@ -1153,8 +1173,16 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 				if (effectMeta.type === "perTick" && this.opts.usePerSecondValues) {
 					displayEffectValue = this.getDisplayValueExt(effectValue * this.rate) + "/sec";
+				} else if (effectMeta.type === "perDay") {
+					displayEffectValue = this.getDisplayValueExt(effectValue) + "/day";
+				} else if (effectMeta.type === "perYear") {
+					displayEffectValue = this.getDisplayValueExt(effectValue) + "/year";
 				} else if (effectMeta.type === "ratio") {
-					displayEffectValue = (effectValue * 100).toFixed(1) + "%";
+					displayEffectValue = this.toDisplayPercentage(effectValue, 0, false) + "%";
+				} else if (effectMeta.type === "integerRatio") {
+					displayEffectValue = this.getDisplayValueExt(effectValue) + "%";
+				} else if (effectMeta.type === "energy") {
+					displayEffectValue = this.getDisplayValueExt(effectValue) + "Wt";
 				} else {
 					displayEffectValue = this.getDisplayValueExt(effectValue);
 				}
@@ -1167,11 +1195,16 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		}
 	},
 
-	getEffectMeta: function(effectName) {
-		return this.effectsMgr.effectMeta[effectName];
+	getEffectMeta: function (effectName) {
+		// Try to create Meta automatically, if it fails, check statics, if it fails, by default
+		var effectMeta = this.effectsMgr.effectMeta(effectName);
+		if (!effectMeta) {
+			effectMeta = this.effectsMgr.statics.effectMeta[effectName] || {title: effectName};
+		}
+		return effectMeta;
 	},
 
-	getEffect: function(effectName) {
+	getEffect: function (effectName) {
 		var effect =
 			this.bld.getEffect(effectName) +
 			this.space.getEffect(effectName) +
@@ -1182,40 +1215,65 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		return effect;
 	},
 
+	getHyperbolicEffect: function (effect, limit) {
+		var absEffect = Math.abs(effect);
+		var maxUndiminished = 0.75 * limit; //first 75% is free from diminishing returns
+		if (absEffect <= maxUndiminished) {
+			//Not high enough for diminishing returns to apply
+			return effect < 0 ? -absEffect : absEffect;
+		}
+
+		var diminishedPortion = absEffect - maxUndiminished;
+		var delta = 0.25 * limit; //Lower values will approach 1 more quickly.
+		// The last 25% will approach .25 but cannot actually reach it
+		var diminishedEffect = (1 - (delta / (diminishedPortion + delta))) * 0.25 * limit;
+		var totalEffect = maxUndiminished + diminishedEffect;
+		return effect < 0 ? -totalEffect : totalEffect;
+	},
+
+	isHyperbolic: function (name) {
+		return (name === "catnipDemandRatio" ||
+			name === "fursDemandRatio" ||
+			name === "ivoryDemandRatio" ||
+			name === "spiceDemandRatio" ||
+			name === "unhappinessRatio");
+	},
+
 	getDetailedResMap: function (res) {
 		var resString = "";
 		var resStack = this.getResourcePerTickStack(res.name);
-		var resValue = res.getValue();
 
-		resString = this.processResourcePerTickStack(resStack, 0);
+		resString = this.processResourcePerTickStack(resStack, res, 0);
+
+		var resPertick = this.getResourcePerTick(res.name, true);
 
 		if (this.opts.usePercentageResourceValues) {
-			resString += "<br> Net gain: " + this.getDisplayValueExt(res.perTickUI, true, true);
+			resString += "<br> Net gain: " + this.getDisplayValueExt(resPertick, true, true);
 		}
 
-		if (res.perTickUI < 0) {
-			var toZero = resValue / (-res.perTickUI * this.rate);
-			resString += "<br>To zero: " + this.toDisplaySeconds(toZero);
+		if (resPertick < 0) {
+			var toZero = res.value / (-resPertick * this.getRateUI());
+			resString += "<br>To zero: " + this.toDisplaySeconds(toZero.toFixed());
 		} else {
-			if (res.maxValue) {
-				var toCap = (res.maxValue - resValue) / (res.perTickUI * this.rate);
+			if (res.maxValue && res.value < res.maxValue) {
+				var toCap = (res.maxValue - res.value) / (resPertick * this.getRateUI());
 				if (toCap) {
-					resString += "<br>To cap: " + this.toDisplaySeconds(toCap);
+					resString += "<br>To cap: " + this.toDisplaySeconds(toCap.toFixed());
 				}
 			}
 		}
 		return resString;
 	},
 
-	processResourcePerTickStack: function (resStack, depth) {
+	processResourcePerTickStack: function (resStack, res, depth) {
 		var resString = "";
 		var hasFixed = false;
 
-		for (var i = 0; i < resStack.length; i++) {
+		for (var i = 0, len = resStack.length; i < len; i++) {
 			var stackElem = resStack[i];
 
 			if (stackElem.length) {
-				var subStack = this.processResourcePerTickStack(stackElem, depth + 1);
+				var subStack = this.processResourcePerTickStack(stackElem, res, depth + 1);
 				if (subStack.length) {
 					resString += subStack;
 					hasFixed = true;
@@ -1226,11 +1284,13 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				continue;
 			}
 
-			for (var j = 0; j < depth; j++) {
-				resString += "*";
+			if (i != 0) {
+				for (var j = 0; j < depth; j++) {
+					resString += "|-> ";
+				}
 			}
 
-			resString += this.getStackElemString(stackElem);
+			resString += this.getStackElemString(stackElem, res);
 			if (stackElem.type === "fixed") {
 				hasFixed = true;
 			}
@@ -1240,17 +1300,30 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	getStackElemString: function (stackElem) {
-		var resString = stackElem.name + ": ";
+		var resString = stackElem.name + ":&nbsp;<div style=\"float: right;\">";
 
 		if (stackElem.type === "fixed") {
-			resString += " " + this.getDisplayValueExt(stackElem.value, true, true);
+			resString += this.getDisplayValueExt(stackElem.value, true, true);
 		} else {
-			resString += " " + this.getDisplayValueExt((stackElem.value * 100).toFixed(), true) + "%";
+			resString += this.getDisplayValueExt((stackElem.value * 100).toFixed(), true) + "%";
 		}
 
-		resString += "<br>";
+		resString += "</div><br>";
 
 		return resString;
+	},
+
+	getResourcePerTick: function (resName, withConversion) {
+		var res = this.resPool.get(resName);
+		if (res.calculatePerTick) {
+			return withConversion ? res.perTickCached + this.getResourcePerTickConvertion(res.name) : res.perTickCached;
+		} else {
+			return 0;
+		}
+	},
+
+	getResourcePerTickConvertion: function (resName) {
+		return this.getEffect(resName + "PerTickCon");
 	},
 
 	toDisplaySeconds: function (secondsRaw) {
@@ -1281,97 +1354,137 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	calcResourcePerTick: function (resName, season) {
-
-		//STRUCTURES PRODUCTION
 		var res = this.resPool.get(resName);
 
-		var weatherMod = 0;
-		//SEASON MODIFIERS
+		// BUILDING PerTickBase
+		var perTick = this.getEffect(resName + "PerTickBase");
+
+		// SPACE RATIO CALCULATION
+		var spaceRatio = 1 + this.getEffect("spaceRatio");
+		if (this.workshop.get("spaceManufacturing").owned() && resName !== "uranium") {
+			var factory = this.bld.get("factory");
+			spaceRatio *= (1 + factory.getOn() * factory.effects["craftRatio"] * 0.75);
+		}
+
+		// +SPACE PerTickBase
+		var perTickBaseSpace = this.getEffect(resName + "PerTickBaseSpace") * spaceRatio;
+
+		perTick += perTickBaseSpace;
+
+		// *SEASON MODIFIERS
 		if (!season) {
 			season = this.calendar.getCurSeason();
 		}
-
-		weatherMod = this.calendar.getWeatherMod();
-		weatherMod = (season.modifiers[res.name] + weatherMod);
+		var weatherMod = this.calendar.getWeatherMod();
+		weatherMod = (season.modifiers[resName] + weatherMod);
 		if (weatherMod < -0.95) {
 			weatherMod = -0.95;
 		}
 
-		var perTick = this.getEffect(res.name + "PerTickBase"); //per tick accumulator
-
-		if (season.modifiers[res.name]) {
-			perTick = perTick * weatherMod;
+		if (season.modifiers[resName]) {
+			perTick *= weatherMod;
 		}
 
-		//VILLAGE JOB PRODUCTION
-
+		// +VILLAGE JOB PRODUCTION
 		var resMapProduction = this.village.getResProduction();
-		var resProduction = num(resMapProduction[res.name]);
+		var resProduction = resMapProduction[resName] ? resMapProduction[resName] : 0;
 
 		perTick += resProduction;
 
-		//UPGRADE EFFECTS GENERAL
-		var workshopResRatio = this.workshop.getEffect(res.name + "Ratio");
-		if (workshopResRatio && res.name !== "coal") {
-			perTick += resProduction * workshopResRatio;
-		}
-		var workshopResGlobalRatio = this.workshop.getEffect(res.name + "GlobalRatio");
-		perTick *= (1 + workshopResGlobalRatio);
+		// +VILLAGE JOB PRODUCTION (UPGRADE EFFECTS JOBS)
+		var workshopResRatio = this.getEffect(resName + "JobRatio");
 
-		//BUILDINGS AND SPACE EFFECTS
-		var resRatio = this.getEffect(res.name + "Ratio");
-		if (resRatio) {
-			perTick += perTick * resRatio;
-		}
+		perTick += resProduction * workshopResRatio;
 
-		//UPGRADE EFFECTS FOR COAL (HACK, TO BE FIXED)
-		workshopResRatio = this.workshop.getEffect(res.name + "Ratio");
-		if (workshopResRatio && res.name === "coal") {
-			perTick += perTick * workshopResRatio;
-		}
+		// +*BEFORE PRODUCTION BOOST (UPGRADE EFFECTS GLOBAL)
+		perTick *= 1 + this.getEffect(resName + "GlobalRatio");
 
-		//---------- RELIGION EFFECTS -----------
-		var relResEffect = this.religion.getEffect(resName + "Ratio");
-		if (relResEffect) {
-			perTick += perTick * relResEffect;
-		}
+		// +*BUILDINGS AND SPACE PRODUCTION
+		perTick *= 1 + this.getEffect(resName + "Ratio");
 
-		//---------  PARAGON BONUS ------------
-		perTick += perTick * this.prestige.getParagonProductionRatio();
+		// +*RELIGION EFFECTS
+		perTick *= 1 + this.getEffect(resName + "RatioReligion");
 
-		//---------  FAITH BONUS --------------
-		if (this.religion.getRU("solarRevolution").owned()) {
-			perTick += perTick * (this.religion.getProductionBonus() / 100);
-		}
+		// +*AFTER PRODUCTION BOOST (UPGRADE EFFECTS SUPER)
+		perTick *= 1 + this.getEffect(resName + "SuperRatio");
 
-		//--------- YEY ANOTHER HACK FOR MAGNETOS ------
+		// +*AFTER PRODUCTION REDUCTION (SPECIAL STEAMWORKS HACK FOR COAL)
 		var steamworks = this.bld.get("steamworks");
-		var steamWorksOn = steamworks.getOn();
-		if (!res.transient && this.bld.get("magneto").getOn() > 0) {
+		var steamworksOn = steamworks.getOn();
+		var swEffectGlobal = steamworks.effects[resName + "RatioGlobal"];
+		if (steamworksOn > 0 && swEffectGlobal) {
+			perTick *= 1 + swEffectGlobal;
+		}
 
-			if (res.name !== "oil") {
-				var swRatio = steamWorksOn > 0 ? (1 + steamworks.effects["magnetoBoostRatio"] * steamWorksOn) : 1;
-				perTick += perTick * this.bld.getEffect("magnetoRatio") * swRatio;
+		// *PARAGON BONUS
+		var paragonProductionRatio = this.prestige.getParagonProductionRatio();
+
+		perTick *= 1 + paragonProductionRatio;
+
+		//ParagonSpaceProductionRatio definition 1/4
+		var paragonSpaceProductionRatio = 1 + paragonProductionRatio * 0.05;
+
+		// +BUILDING AUTOPROD
+		var perTickAutoprod = this.getEffect(resName + "PerTickAutoprod");
+		perTickAutoprod *= paragonSpaceProductionRatio;
+
+		perTick += perTickAutoprod;
+
+		// *MAGNETOS PRODUCTION BONUS
+		if (!res.transient && this.bld.get("magneto").getOn() > 0 && resName !== "catnip") {
+
+			var swRatio = steamworksOn > 0 ? (1 + steamworks.effects["magnetoBoostRatio"] * steamworksOn) : 1;
+			if (resName !== "oil") {
+				perTick *= 1 + (this.getEffect("magnetoRatio") * swRatio);
 			}
 
+			//ParagonSpaceProductionRatio definition 2/4
+			paragonSpaceProductionRatio += paragonSpaceProductionRatio * this.getEffect("magnetoRatio") * swRatio; //These special cases need to die in a hole
 		}
 
-		//--------- GENERAL PRODUCTION RATIO --------------
-		if (!res.transient) {
-			perTick += perTick * this.bld.getEffect("productionRatio");
+		// +*REACTOR PRODUCTION BONUS
+		if (!res.transient && resName !== "uranium" && resName !== "catnip") {
+			perTick *= 1 + this.getEffect("productionRatio");
+
+			//ParagonSpaceProductionRatio definition 3/4
+			paragonSpaceProductionRatio += paragonSpaceProductionRatio * this.getEffect("productionRatio");
 		}
 
-		//SPECIAL STEAMWORKS HACK FOR COAL
-		var swEffectGlobal = steamworks.effects[res.name + "RatioGlobal"];
-		if (steamWorksOn > 0 && swEffectGlobal) {
-			perTick += perTick * swEffectGlobal;
-		}
+		// +*FAITH BONUS
+		var religionProductionBonus = this.religion.getProductionBonus();
+		perTick *= 1 + (religionProductionBonus / 100);
 
-		//---------  RESOURCE CONSUMPTION -------------
+		//ParagonSpaceProductionRatio definition 4/4
+		paragonSpaceProductionRatio += paragonSpaceProductionRatio * religionProductionBonus / 100;
+
+		// +AUTOMATED PRODUCTION BUILDING
+		perTick += this.getEffect(resName + "PerTickProd");
+
+		// +AUTOMATED PRODUCTION SPACE (FULL BONUS)
+		perTick += (this.getEffect(resName + "PerTickAutoprodSpace") * spaceRatio) * (1 + (paragonSpaceProductionRatio - 1) * this.getEffect("prodTransferBonus"));
+		// +AUTOMATED PRODUCTION SPACE (NOT FULL BONUS)
+		perTick += this.getEffect(resName + "PerTickSpace") * spaceRatio;
+
+		//CYCLE EFFECTS
+		// Already added because it's space building improvements.
+
+		//CYCLE FESTIVAL EFFECTS
+
+		var effects = {};
+		effects[resName] = perTick;
+		this.calendar.cycleEffectsFestival(effects);
+		perTick = effects[resName];
+
+		// +BUILDING AND SPACE PerTick
+		perTick += this.getEffect(resName + "PerTick");
+
+		// -EARTH CONSUMPTION
 		var resMapConsumption = this.village.getResConsumption();
-		var resConsumption = resMapConsumption[res.name] || 0;
-
-		resConsumption *= 1 + this.bld.getEffect(res.name + "DemandRatio", true); //use hyp reduction
+		var resConsumption = resMapConsumption[resName] || 0;
+		resConsumption *= 1 + this.getEffect(resName + "DemandRatio");
+		if (resName === "catnip" && this.village.kittens.length > 0 && this.village.happiness > 1) {
+			resConsumption *= this.village.happiness * (1 - this.village.getFreeKittens() / this.village.kittens.length) * (1 + this.getEffect(resName + "DemandWorkerRatioGlobal"));
+		}
 
 		perTick += resConsumption;
 
@@ -1383,28 +1496,43 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	getResourcePerTickStack: function (resName, calcAutomatedEffect, season) {
-		var res = null;
-		for (var i = 0; i < this.resPool.resources.length; i++) {
-			if (this.resPool.resources[i].name === resName) {
-				res = this.resPool.resources[i];
-				break;
-			}
-		}
-
-		if (!season) {
-			season = this.calendar.getCurSeason();
-		}
+		var res = this.resPool.get(resName);
 
 		var stack = [];
 
+		// BUILDING PerTickBase
 		stack.push({
-			name: "Base",
+			name: "Production",
 			type: "fixed",
-			value: this.getEffect(res.name + "PerTickBase")
+			value: this.getEffect(resName + "PerTickBase")
 		});
 
+		// SPACE RATIO CALCULATION
+		var spaceRatio = 1 + this.getEffect("spaceRatio");
+		if (this.workshop.get("spaceManufacturing").owned() && resName !== "uranium") {
+			var factory = this.bld.get("factory");
+			spaceRatio *= (1 + factory.getOn() * factory.effects["craftRatio"] * 0.75);
+			spaceRatio -= 1;
+		}
+
+		// +SPACE PerTickBase
+		var perTickBaseSpaceStack = [{
+				name: "Space Production",
+				type: "fixed",
+				value: this.getEffect(resName + "PerTickBaseSpace")
+			}, {
+				name: "Space production bonus",
+				type: "ratio",
+				value: spaceRatio
+		}];
+		stack.push(perTickBaseSpaceStack);
+
+		// *SEASON MODIFIERS
+		if (!season) {
+			season = this.calendar.getCurSeason();
+		}
 		var weatherMod = this.calendar.getWeatherMod();
-		weatherMod = (season.modifiers[res.name] + weatherMod);
+		weatherMod = (season.modifiers[resName] + weatherMod);
 		if (weatherMod < -0.95) {
 			weatherMod = -0.95;
 		}
@@ -1415,97 +1543,52 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			value: weatherMod - 1
 		});
 
-		//----------- production -----------
-
+		// +VILLAGE JOB PRODUCTION
 		var resMapProduction = this.village.getResProduction();
-		var villageStack = [];
-
-		villageStack.push({
-			name: "Village",
-			type: "fixed",
-			value: resMapProduction[res.name] || 0
-		});
-
-		if (res.name !== "coal") {
-			villageStack.push({
-				name: "Upgrades",
+		var villageStack = [{
+				name: "(:3) Village",
+				type: "fixed",
+				value: resMapProduction[resName] || 0
+			}, {
+				name: "Tools",
 				type: "ratio",
-				value: this.workshop.getEffect(res.name + "Ratio")
-			});
-		}
-
+				value: this.getEffect(resName + "JobRatio")
+		}];
 		stack.push(villageStack);
 
+		// +*BEFORE PRODUCTION BOOST (UPGRADE EFFECTS GLOBAL)
 		stack.push({
 			name: "Upgrades",
 			type: "ratio",
-			value: this.workshop.getEffect(res.name + "GlobalRatio")
+			value: this.getEffect(resName + "GlobalRatio")
 		});
 
+		// +*BUILDINGS AND SPACE PRODUCTION
 		stack.push({
 			name: "Buildings",
 			type: "ratio",
-			value: this.bld.getEffect(res.name + "Ratio")
+			value: this.getEffect(resName + "Ratio")
 		});
 
-		stack.push({
-			name: "Space",
-			type: "ratio",
-			value: this.space.getEffect(res.name + "Ratio")
-		});
-
+		// +*RELIGION EFFECTS
 		stack.push({
 			name: "Religion",
 			type: "ratio",
-			value: this.religion.getEffect(res.name + "Ratio")
+			value: this.getEffect(resName + "RatioReligion")
 		});
 
+		// +*AFTER PRODUCTION BOOST (UPGRADE EFFECTS SUPER)
 		stack.push({
-			name: "Paragon",
+			name: "Boost",
 			type: "ratio",
-			value: this.prestige.getParagonProductionRatio()
+			value: this.getEffect(resName + "SuperRatio")
 		});
 
-		if (this.religion.getRU("solarRevolution").owned()) {
-			stack.push({
-				name: "Faith",
-				type: "ratio",
-				value: this.religion.getProductionBonus() / 100
-			});
-		}
-
-		//--------- YEY ANOTHER HACK FOR MAGNETOS ------
+		// +*AFTER PRODUCTION REDUCTION (SPECIAL STEAMWORKS HACK FOR COAL)
 		var steamworks = this.bld.get("steamworks");
-		var steamWorksOn = steamworks.getOn();
-		if (!res.transient && this.bld.get("magneto").getOn() > 0) {
-
-			if (res.name !== "oil") {
-				var swRatio = steamWorksOn > 0 ? (1 + steamworks.effects["magnetoBoostRatio"] * steamWorksOn) : 1;
-				stack.push({
-					name: "Magnetos",
-					type: "ratio",
-					value: this.bld.getEffect("magnetoRatio") * swRatio
-				});
-			}
-		}
-
-		if (!res.transient) {
-			stack.push({
-				name: "Reactors",
-				type: "ratio",
-				value: this.bld.getEffect("productionRatio")
-			});
-		}
-
-		stack.push({
-			name: "Automated",
-			type: "fixed",
-			automated: true,
-			value: this.getEffect(res.name + "PerTick")
-		});
-
-		var swEffectGlobal = steamworks.effects[res.name + "RatioGlobal"];
-		if (steamWorksOn > 0 && swEffectGlobal) {
+		var steamworksOn = steamworks.getOn();
+		var swEffectGlobal = steamworks.effects[resName + "RatioGlobal"];
+		if (steamworksOn > 0 && swEffectGlobal) {
 			stack.push({
 				name: "Steamworks",
 				type: "ratio",
@@ -1513,26 +1596,162 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			});
 		}
 
-		var resMapConsumption = this.village.getResConsumption();
-		var resConsumption = resMapConsumption[res.name] || 0;
+		// *PARAGON BONUS
+		stack.push({
+			name: "Paragon",
+			type: "ratio",
+			value: this.prestige.getParagonProductionRatio()
+		});
 
-		resConsumption *= 1 + this.bld.getEffect(res.name + "DemandRatio", true);
+		//ParagonSpaceProductionRatio definition 1/4
+		var paragonSpaceProductionRatio = 1 + this.prestige.getParagonProductionRatio() * 0.05;
+
+		// +BUILDING AUTOPROD
+		var buildingAutoprod = [{
+				name: "Conversion Production",
+				type: "fixed",
+				value: this.getEffect(resName + "PerTickAutoprod")
+			}, {
+				name: "Paragon",
+				type: "ratio",
+				value: this.prestige.getParagonProductionRatio() * 0.05
+		}];
+		stack.push(buildingAutoprod);
+
+		// *MAGNETOS PRODUCTION BONUS
+		if (!res.transient && this.bld.get("magneto").on > 0 && resName !== "catnip") {
+
+			var swRatio = steamworksOn > 0 ? (1 + steamworks.effects["magnetoBoostRatio"] * steamworksOn) : 1;
+			if (resName !== "oil") {
+				stack.push({
+					name: "Magnetos",
+					type: "ratio",
+					value: this.getEffect("magnetoRatio") * swRatio
+				});
+			}
+
+			//ParagonSpaceProductionRatio definition 2/4
+			paragonSpaceProductionRatio += paragonSpaceProductionRatio * this.getEffect("magnetoRatio") * swRatio; //These special cases need to die in a hole
+		}
+
+		// +*REACTOR PRODUCTION BONUS
+		if (!res.transient && resName !== "uranium" && resName !== "catnip") {
+			stack.push({
+				name: "Reactors",
+				type: "ratio",
+				value: this.getEffect("productionRatio")
+			});
+
+			//ParagonSpaceProductionRatio definition 3/4
+			paragonSpaceProductionRatio += paragonSpaceProductionRatio * this.getEffect("productionRatio");
+
+		}
+
+		// +*FAITH BONUS
+		stack.push({
+			name: "Faith",
+			type: "ratio",
+			value: this.religion.getProductionBonus() / 100
+		});
+
+		//ParagonSpaceProductionRatio definition 4/4
+		paragonSpaceProductionRatio += paragonSpaceProductionRatio * this.religion.getProductionBonus() / 100;
+
+		// +AUTOMATED PRODUCTION BUILDING
+		stack.push({
+			name: "Conversion Production",
+			type: "fixed",
+			value: this.getEffect(resName + "PerTickProd")
+		});
+		stack.push({ // extra-compare with this.calcResourcePerTick
+			name: "Conversion Consumption",
+			type: "fixed",
+			value: this.getEffect(resName + "PerTickCon")
+		});
+
+		// +AUTOMATED PRODUCTION SPACE
+		var perTickAutoprodSpaceStack = [{
+				name: "Space Conversion Production",
+				type: "fixed",
+				value: this.getEffect(resName + "PerTickAutoprodSpace")
+			}, {
+				name: "Space production bonus",
+				type: "ratio",
+				value: spaceRatio
+			}, {
+				name: "Paragon",
+				type: "ratio",
+				value: paragonSpaceProductionRatio - 1
+			}, {
+				name: "Bonus Transfert",
+				type: "ratio",
+				value: this.getEffect("prodTransferBonus")
+		}];
+		stack.push(perTickAutoprodSpaceStack);
+
+		// +AUTOMATED PRODUCTION SPACE
+		var perTickSpace = [{
+				name: "Space Conversion Production",
+				type: "fixed",
+				value: this.getEffect(resName + "PerTickSpace")
+			}, {
+				name: "Space production bonus",
+				type: "ratio",
+				value: spaceRatio
+		}];
+		stack.push(perTickSpace);
+
+		//CYCLE EFFECT
+		// Can't be displayed because it's space building improvements.
+
+		//CYCLE FESTIVAL EFFECTS
+		var effects = {};
+		effects[resName] = 1;
+		this.calendar.cycleEffectsFestival(effects);
+		var cycleEffect = effects[resName] - 1;
 
 		stack.push({
-			name: "Demand",
+			name: "Cycle Festival Effect",
+			type: "ratio",
+			value: cycleEffect
+		});
+
+		// +BUILDING AND SPACE PerTick
+		stack.push({
+			name: "Without Improvement",
+			type: "fixed",
+			value: this.getEffect(resName + "PerTick")
+		});
+
+		// +CRAFTING JOB PRODUCTION
+		stack.push({
+			name: "(:3) Engineer",
+			type: "fixed",
+			value: this.workshop.getEffectEngineer(resName)
+		});
+
+		// -EARTH CONSUMPTION && -SPACE CONSUMPTION
+		var resMapConsumption = this.village.getResConsumption();
+		var resConsumption = resMapConsumption[resName] || 0;
+		resConsumption *= 1 + this.getEffect(resName + "DemandRatio");
+		if (resName === "catnip" && this.village.kittens.length > 0 && this.village.happiness > 1) {
+			resConsumption *= this.village.happiness * (1 - this.village.getFreeKittens() / this.village.kittens.length) * (1 + this.getEffect(resName + "DemandWorkerRatioGlobal"));
+		}
+
+		stack.push({
+			name: "(:3) Demand",
 			type: "fixed",
 			value: resConsumption
 		});
 
-		return stack;
-	},
+		// TIME extra-compare with this.calcResourcePerTick
+		stack.push({
+			name: "Time",
+			type: "ratio",
+			value: (this.getRateUI() - this.rate) / this.rate
+		});
 
-	getCraftRatio: function() {
-		var craftRatio = this.bld.getEffect("craftRatio");
-		if (this.village.leader && this.village.leader.trait.name === "engineer") {
-			craftRatio += 0.05;
-		}
-		return craftRatio;
+		return stack;
 	},
 
 	/**
@@ -1553,6 +1772,10 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			return Boolean(meta[isStage ? 'stageUnlocked' : 'unlocked']);
 		}
 
+		if (dojo.isFunction(metaReqs)) {
+			return meta.requires();
+		}
+
 		for (var type in metaReqs) {
 			var req = metaReqs[type];
 			for (var i = req.length - 1; i >= 0; i--) {
@@ -1564,6 +1787,39 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		}
 
 		return true;
+	},
+
+	_createLinkList: function (metaObj, parentNode, listData, handler) {
+		var game = this;
+
+		var data = listData[0];
+		var root = dojo.create('div', {
+			'class': 'linkListRoot',
+			innerHTML: '<a>' + data.html + '</a>'
+		}, parentNode);
+		root.children[0].valueProp = data.value;
+
+		var tooltip = dojo.create('div', {
+			'class': 'linkListTooltip'
+		}, root);
+
+		for (var i = 1; i < listData.length; i++) {
+			data = listData[i];
+			var link = dojo.create('div', {
+				'class': 'linkListTooltipLink',
+				innerHTML: '<a>' + data.html + '</a>'
+			}, tooltip);
+			link.children[0].valueProp = data.value;
+		}
+
+		on(root, 'click', function (event) {
+			if (!event || !event.target) { return; }
+			var link = event.target;
+			if (link.tagName.toLowerCase() === 'a' && 'valueProp' in link) {
+				handler.call(metaObj, link.valueProp);
+				game.update();
+			}
+		});
 	},
 
 	/**
@@ -1629,11 +1885,32 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	/**
+	 * Special case of _createInput for metaObj.val
+	 * Sets default html classes and a handler to update .on if not .togglable or if .togglableOnOff
+	 */
+	_createValInput: function (attrs, parentNode, metaObj, pos, noUpdate) {
+		if (!attrs) {
+			attrs = {};
+		}
+		var c = attrs['class'];
+		attrs['class'] = 'ownedInput integerInput' + (c ? ' ' + c : '');
+
+		var input = this._createInput(attrs, parentNode, metaObj, 'val', pos, noUpdate);
+
+		input.handler = function () {
+			if (!metaObj.togglable || metaObj.togglableOnOff) {
+				metaObj.set('on', this.parsedValue, true);
+			}
+		};
+		return input;
+	},
+
+	/**
 	 * Creates a checkbox and a label wrapper, and attaches a click event handler
 	 * Automatically updates metaObj[dataProp] if both are set
 	**/
-	_createCheckbox: function (text, parentNode, metaObj, prop) {
-		var label = dojo.create('label', {innerHTML: ' '}, parentNode);
+	_createCheckbox: function (text, parentNode, metaObj, prop, pos) {
+		var label = dojo.create('label', {innerHTML: ' '}, parentNode, pos || 'last');
 		var cbox = dojo.create('input', {type: 'checkbox'}, label, 'first');
 		var span = dojo.create('span', {innerHTML: text || ''}, label);
 
@@ -1747,7 +2024,6 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			colorScheme: this.colorScheme,
 			karmaKittens: this.karmaKittens,
 			karmaZebras: this.karmaZebras,
-			paragonPoints: this.resPool.get('paragon').value,
 			ironWill: this.ironWill,
 			deadKittens: this.deadKittens,
 			cheatMode: this.cheatMode,
@@ -1762,8 +2038,8 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		return saveData;
 	},
 
-	migrateSave: function(save) {
-		if (save.saveVersion === undefined) {
+	migrateSave: function (save) {
+		if (isNaN(save.saveVersion)) {
 			save.saveVersion = 1;
 		}
 
@@ -1809,10 +2085,226 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			save.saveVersion = 3;
 		}
 
+		if (save.saveVersion === 3) {
+			// Use .on instead of .val and .enabled for all buildings
+			if (save.buildings) {
+				for (i = 0; i < save.buildings.length; i++) {
+					save.buildings[i].on = save.buildings[i].val;
+				}
+			}
+
+			save.saveVersion = 4;
+		}
+
+		if (save.saveVersion === 4) {
+			// Use .on instead of .val and .enabled for all buildings
+			if (save.religion && save.religion.ru) {
+				for (i = 0; i < save.religion.ru.length; i++) {
+					var saveRU = save.religion.ru[i];
+					// Hack to fix old saves
+					if (saveRU.researched && (saveRU.val == 0 || saveRU.val == null)) {
+						saveRU.val = 1;
+					}
+					saveRU.on = saveRU.val;
+				}
+			}
+			if (save.space) {
+				if (save.space.programs) {
+					for (i = 0; i < save.space.programs.length; i++) {
+						if (save.space.programs[i].researched) {
+							save.space.programs[i].on = 1;
+							save.space.programs[i].val = 1;
+						}
+					}
+				}
+				if (save.space.planets) {
+					for (i = 0; i < save.space.planets.length; i++) {
+						var planet = save.space.planets[i];
+						if (planet.buildings) {
+							for (var j = 0; j < planet.buildings.length; j++) {
+								var building = planet.buildings[j];
+								building.on = building.val;
+							}
+						}
+					}
+				}
+			}
+
+			save.saveVersion = 5;
+		}
+
+		if (save.saveVersion === 5) {
+			// Move energy into a true resource
+			if (save.time && save.time.energy && save.resources) {
+				var changement = false;
+				for (i = 0; i < save.resources.length; i++) {
+					var res = save.resources[i];
+					if (res.name === "temporalFlux") {
+						res.value = save.time.energy;
+						changement = true;
+						break;
+					}
+				}
+				if (!changement) {
+					var resTE = {
+						name: "temporalFlux",
+						value: save.time.energy
+					};
+					save.resources.push(resTE);
+				}
+			}
+
+			save.saveVersion = 6;
+		}
+
+		if (save.saveVersion === 6) {
+			if (save.religion) {
+				if (save.religion.zu) {
+					for (i = 0; i < save.religion.zu.length; i++) {
+						save.religion.zu[i].on = save.religion.zu[i].val;
+					}
+				}
+				if (save.religion.tu) {
+					for (i = 0; i < save.religion.tu.length; i++) {
+						save.religion.tu[i].on = save.religion.tu[i].val;
+					}
+				}
+			}
+			if (save.time) {
+				if (save.time.usedCryochambers) {
+					for (i = 0; i < save.time.usedCryochambers.length; i++) {
+						save.time.usedCryochambers[i].on = save.time.usedCryochambers[i].val;
+					}
+				}
+				if (save.time.cfu) {
+					for (i = 0; i < save.time.cfu.length; i++) {
+						save.time.cfu[i].on = save.time.cfu[i].val;
+					}
+				}
+				if (save.time.vsu) {
+					for (i = 0; i < save.time.vsu.length; i++) {
+						save.time.vsu[i].on = save.time.vsu[i].val;
+					}
+				}
+			}
+
+			save.saveVersion = 8;
+		}
+
+		if (save.saveVersion === 8) {
+			if (!save.challenges) {
+				save.challenges = {};
+			}
+			save.challenges.currentChallenge = null;
+
+			save.saveVersion = 9;
+		}
+
+		if (save.saveVersion === 9) {
+			if (save.buildings) {
+				for (i = 0; i < save.buildings.length; i++) {
+					save.buildings[i].unlockable = save.buildings[i].unlocked;
+					save.buildings[i].unlocked = false;
+				}
+			}
+			if (save.space && save.space.programs) {
+				for (i = 0; i < save.space.programs.length; i++) {
+					if (save.space.programs[i].name === "rorschachMission" && save.space.programs[i].on) {
+						var centaurusSystemMission = {
+							name: "centaurusSystemMission",
+							val: 0,
+							on: 0,
+							unlocked: true
+						};
+						save.space.programs.push(centaurusSystemMission);
+					}
+				}
+			}
+
+			save.saveVersion = 10;
+		}
+
+		if (save.saveVersion === 10) {
+			if (save.resources) {
+				for (i = 0; i < save.resources.length; i++) {
+					save.resources[i].unlocked = false;
+				}
+			}
+
+			save.saveVersion = 11;
+		}
+
+		if (save.saveVersion === 11) {
+			if (!save.challenges) {
+				save.challenges = {};
+			}
+			if (save.religion && save.religion.ru) {
+				for (i = 0; i < save.religion.ru.length; i++) {
+					if (save.religion.ru[i].name === "transcendence" && save.religion.ru[i].on) {
+						var atheism = {
+							name: "atheism",
+							researched: false,
+							unlocked: true
+						};
+						if (!Array.isArray(save.challenges.challenges)) {
+							save.challenges.challenges = [];
+						}
+						save.challenges.challenges.push(atheism);
+						break;
+					}
+				}
+			}
+
+			save.saveVersion = 12;
+		}
+
+		if (save.saveVersion === 12) {
+			if (save.religion && save.religion.tcratio && save.religion.tu) {
+				var transcendenceLevel = this.religion.getTriValueReligion(save.religion.tcratio) * 100;
+				transcendenceLevel = Math.round(Math.log(transcendenceLevel));
+				if (transcendenceLevel < 0) {
+					transcendenceLevel = 0;
+				}
+				for (i = 0; i < save.religion.tu.length; i++) {
+					if (transcendenceLevel >= this.religion.getTU(save.religion.tu[i].name).tier) {
+						save.religion.tu[i].unlocked = true;
+					}
+				}
+			}
+
+			save.saveVersion = 13;
+		}
+
+		if (save.saveVersion === 13) {
+			if (save.challenges && save.challenges.challenges) {
+				for (i = 0; i < save.challenges.challenges.length; i++) {
+					if (save.challenges.challenges[i].name === "atheism") {
+						save.challenges.challenges[i].unlocked = false;
+
+						if (save.science && save.science.techs) {
+							for (j = 0; j < save.science.techs.length; j++) {
+								if (save.science.techs[j].name === "voidSpace" && save.science.techs[j].researched) {
+									save.challenges.challenges[i].unlocked = true;
+									break;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+
+			save.saveVersion = 14;
+		}
+
 		return save;
 	},
 
 	importSave: function (data) {
+		if (typeof data !== 'string') {
+			return;
+		}
+		data = data.replace(/\s/g, '');
 		if (!data) {
 			return;
 		}
@@ -1838,6 +2330,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 			//reset everything before loading
 			this._loadJSON(this.blankSaveData);
+			this.time.set('timestamp', Date.now());
 			rollback = true;
 			this._loadJSON(saveData);
 
@@ -1899,8 +2392,6 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		this.container = container;
 		this.game = this;
 
-		this.breaksIronWillList = [];
-
 		this.update = dojo.hitch(this, this.update); //ugh
 
 		this.opts = new classes.KGSaveEdit.GenericItem(this, {
@@ -1914,7 +2405,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 		this.toolbar = new classes.KGSaveEdit.ui.Toolbar(this);
 
-		this.effectsMgr = new classes.KGSaveEdit.EffectsManager();
+		this.effectsMgr = new classes.KGSaveEdit.EffectsManager(this);
 
 		this.OptionsTab = new classes.KGSaveEdit.OptionsTab(this);
 		this.calendar = new classes.KGSaveEdit.Calendar(this);
@@ -1984,12 +2475,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	update: function (rerun) {
 		clearTimeout(this.updateTimer);
 
-		this.brokenIronWill = this.resPool.get('kittens').value > 0;
-		for (var i = this.breaksIronWillList.length - 1; !this.brokenIronWill && i >= 0; i--) {
-			if (this.breaksIronWillList[i].owned()) {
-				this.brokenIronWill = true;
-			}
-		}
+		this.brokenIronWill = this.resPool.get('kittens').value > 0 || this.game.getEffect('maxKittens') > 0;
 
 		if (this.brokenIronWill) {
 			if (this.ironWill) {

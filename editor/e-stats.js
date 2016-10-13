@@ -97,15 +97,15 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 			name: "jupiterAscending",
 			title: "Jupiter Ascending",
 			description: "Get to the space on a first year",
-			condition: function() {
-				return this.game.space.getProgram("orbitalLaunch").researched && this.game.calendar.year <= 1;
+			condition: function () {
+				return this.game.space.getProgram("orbitalLaunch").owned() && this.game.calendar.year <= 1;
 			}
 		}, {
 			name: "shadowOfTheColossus",
 			title: "Shadow Of The Colossus",
 			description: "Build a Ziggurat having only one kitten",
-			condition: function() {
-				return this.game.bld.get("ziggurat").val > 0 && this.game.village.maxKittens === 1;
+			condition: function () {
+				return this.game.bld.get("ziggurat").owned() && this.game.village.maxKittens === 1;
 			}
 		}, {
 			name: "sunGod",
@@ -180,7 +180,7 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 			},
 			hasStar: true,
 			starDescription: "In the grim and dark future of a catkind there are no resets",
-			starCondition: function() {
+			starCondition: function () {
 				return this.game.calendar.year >= 40000 + this.game.time.flux;
 			}
 		}, {
@@ -421,13 +421,11 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
 			name: "averageKittens",
 			title: "Avg. Kittens Born (Per Century)",
 			val: 0,
-			/*calculate: function (game) {
+			calculate: function (game) {
 				var years = game.stats.getStat("totalYears").val;
 				var kittens = game.stats.getStat("totalKittens").val;
 				return years != 0 ? kittens / Math.ceil(years / 100) : 0;
-			},//*/
-			unlocked: false,
-			readonly: true
+			}
 	}],
 
 	statsCurrentData: [{
@@ -442,20 +440,19 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
 			name: "averageKittens",
 			title: "Avg. Kittens Born (Per Century)",
 			val: 0,
-			/*calculate: function (game) {
+			calculate: function (game) {
 				var years = game.calendar.year;
 				var kittens = game.resPool.get("kittens").value;
 				return years != 0 ? kittens / Math.ceil(years / 100) : 0;
-			},//*/
-			readonly: true
+			}
 		}, {
 			name: "timePlayed",
 			title: "Time Played (Hours)",
 			val: 0,
-			/*calculate: function (game) {
+			calculate: function (game) {
 				var cDay = ((game.calendar.year * 400) + ((game.calendar.season - 1) * 100) + game.calendar.day);
 				return Math.round(cDay / 1800 * 10) / 10;
-			},//*/
+			}
 	}],
 
 	tabName: 'Stats',
@@ -497,11 +494,11 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
 		this.game.callMethods(this.statsCurrent, 'render', this.statsCurrentBlock);
 	},
 
-	getStat: function(name) {
+	getStat: function (name) {
 		return this.statsByName[name];
 	},
 
-	getStatCurrent: function(name) {
+	getStatCurrent: function (name) {
 		return this.statsCurrentByName[name];
 	},
 
@@ -509,12 +506,12 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
 		this.game.callMethods(this.allStats, 'update');
 	},
 
-	save: function(saveData){
+	save: function (saveData) {
 		saveData.stats = this.game.filterMetadata(this.stats, ["name", "val"]);
 		saveData.statsCurrent = this.game.filterMetadata(this.statsCurrent, ["name", "val"]);
 	},
 
-	load: function(saveData){
+	load: function (saveData) {
 		this.loadMetaData(saveData.stats, 'getStat', function (stat, saveStat) {
 			stat.set('val', num(saveStat.val));
 		});
@@ -532,7 +529,7 @@ dojo.declare('classes.KGSaveEdit.StatsMeta', classes.KGSaveEdit.GenericItem, {
 			innerHTML: '<td>' + this.title + '</td><td></td>'
 		}, parent);
 
-		if (this.readonly) {
+		if (this.calculate) {
 			this.valText = dojo.create('span', {
 				innerHTML: this.val
 			}, this.domNode.children[1]);
@@ -558,7 +555,7 @@ dojo.declare('classes.KGSaveEdit.StatsMeta', classes.KGSaveEdit.GenericItem, {
 			this.set('val', val, true, true);
 		}
 
-		if (this.readonly) {
+		if (this.calculate) {
 			this.valText.innerHTML = this.val;
 		}
 	}

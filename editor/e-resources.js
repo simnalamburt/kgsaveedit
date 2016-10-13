@@ -4,7 +4,7 @@ function capitalize(str) {
 	return str[0].toUpperCase() + str.slice(1);
 }
 
-require([], function () {
+require(["dojo/on"], function (on) {
 "use strict";
 
 dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
@@ -19,60 +19,81 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 	isLocked: false,
 
 	resourceData: [
-		{name: "catnip"},
 		{
+			name: "catnip",
+			calculatePerTick: true
+		}, {
 			name: "wood",
 			craftable: true,
-			tableID: 'resourceBlock'
-		},
-		{name: "minerals"},
-		{name: "coal"},
-		{name: "iron"},
-		{name: "titanium"},
-		{name: "gold"},
-		{name: "oil"}, {
+			tableID: 'resourceBlock',
+			calculatePerTick: true
+		}, {
+			name: "minerals",
+			calculatePerTick: true
+		}, {
+			name: "coal",
+			calculatePerTick: true
+		}, {
+			name: "iron",
+			calculatePerTick: true
+		}, {
+			name: "titanium",
+			calculatePerTick: true
+		}, {
+			name: "gold",
+			calculatePerTick: true
+		}, {
+			name: "oil",
+			calculatePerTick: true
+		}, {
 			name: "uranium",
-			color: "#4EA24E"
+			color: "#4EA24E",
+			calculatePerTick: true
 		}, {
 			name: "unobtainium",
-			color: "#A00000"
+			color: "#A00000",
+			calculatePerTick: true
 		}, {
 			name: "manpower",
 			title: "catpower",
 			transient: true,
-			color: "#DBA901"
+			color: "#DBA901",
+			calculatePerTick: true
 		}, {
 			name: "science",
 			transient: true,
-			color: "#01A9DB"
+			color: "#01A9DB",
+			calculatePerTick: true
 		}, {
 			name: "culture",
 			transient: true,
-			color: "#DF01D7"
+			color: "#DF01D7",
+			calculatePerTick: true
 		}, {
 			name: "faith",
 			transient: true,
-			color: "gray"
+			color: "gray",
+			calculatePerTick: true
 		}, {
 			name: "kittens",
 			transient: true,
 			inputClass: "integerInput",
 			showMax: true,
-			inputHandler: function() {
+			inputHandler: function () {
 				this.game.village.synchKittens();
 			},
-			getMaxValue: function() {
+			getMaxValue: function () {
 				return this.game.getEffect('maxKittens');
 			}
 		}, {
 			name: "zebras",
 			transient: true,
+			relockIfZero: true,
 			inputClass: "integerInput",
 			getMaxValue: function () {
 				var zMax = 0;
 				if (this.game.ironWill) {
-					zMax = num(Math.max(this.game.karmaZebrasNode.parsedValue,
-						this.game.science.get('archery').researched));
+					zMax = num(Math.max(this.game.karmaZebrasNode.parsedValue, this.game.science.get('archery').owned()));
 				} else if (this.game.prestige.getPerk('zebraDiplomacy').owned()) {
 					zMax = Math.floor(0.10 * this.game.karmaZebrasNode.parsedValue);
 				}
@@ -81,7 +102,8 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		}, {
 			name: "starchart",
 			transient: true,
-			color: "#9A2EFE"
+			color: "#9A2EFE",
+			calculatePerTick: true
 		}, {
 			name: "antimatter",
 			transient: true,
@@ -89,23 +111,31 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		}, {
 			name: "furs",
 			type: "uncommon",
-			transient: true
+			transient: true,
+			calculatePerTick: true
 		}, {
 			name: "ivory",
 			type: "uncommon",
-			transient: true
+			transient: true,
+			calculatePerTick: true
 		}, {
 			name: "spice",
 			type: "uncommon",
-			transient: true
+			transient: true,
+			calculatePerTick: true
 		}, {
 			name: "unicorns",
 			type: "rare",
-			transient: true
+			transient: true,
+			calculatePerTick: true
 		}, {
 			name: "alicorn",
 			title: "alicorns",
-			type: "rare"
+			type: "rare",
+			calculatePerTick: true,
+			inputHandler: function () {
+				this.game.upgradeItems({zigguratUpgrades: ["skyPalace", "unicornUtopia", "sunspire"]});
+			}
 		}, {
 			name: "necrocorn",
 			title: "necrocorns",
@@ -118,15 +148,16 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			name: "karma",
 			type: "rare",
 			inputParseFn: function (value) {
-				return this.game.getTriValue(Math.round(this.game.reverseTriValue(value, 5)), 5);
+				return this.game.getTriValue(Math.round(this.game.getTriValueOrigin(value, 5)), 5);
 			},
 			inputHandler: function () {
-				this.game.setInput(this.game.karmaKittensNode, Math.round(this.game.reverseTriValue(this.parsedValue, 5)), true);
+				this.game.setInput(this.game.karmaKittensNode, Math.round(this.game.getTriValueOrigin(this.parsedValue, 5)), true);
 				this.game.setInput(this.game.karmaKittensKarma, this.parsedValue, true);
 			}
 		}, {
 			name: "paragon",
 			color: "#6141CD",
+			// relockIfZero: true,
 			inputClass: "integerInput abbrInput"
 		}, {
 			name: "timeCrystal",
@@ -167,7 +198,32 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			style: {
 				"textShadow": "1px 0px 10px #FA2E9E",
 				"animation": "neon1 1.5s ease-in-out infinite alternate"
+			},
+			relockIfZero: true
+		}, {
+			name: "wrappingPaper",
+			title: "wrapping paper",
+			type: "exotic",
+			color: "#FA0EDE",
+			style: {
+				"textShadow": "1px 0px 10px #FA2E9E",
+				"animation": "neon1 1.5s ease-in-out infinite alternate"
 			}
+		}, {
+			name: "temporalFlux",
+			title: "temporal flux",
+			type: "exotic",
+			getMaxValue: function () {
+				return Math.round(
+					this.game.rate * 60 * 10 *
+						(1 + this.game.time.getCFU("temporalBattery").val * 0.25)
+				);
+			},
+			inputHandler: function () {
+				this.game.setInput(this.game.time.temporalFluxNode, this.parsedValue, true);
+			},
+			hardMaxLimit: true,
+			invisible: true
 		}, {
 			name: "beam",
 			craftable: true
@@ -184,7 +240,8 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		}, {
 			name: "steel",
 			craftable: true,
-			color: "gray"
+			color: "gray",
+			calculatePerTick: true
 		}, {
 			name: "gear",
 			craftable: true,
@@ -205,16 +262,12 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			name: "ship",
 			craftable: true,
 			color: "#FF7F50",
-			upgrades: {
-				buildings: ["harbor"]
-			}
+			upgrades: {buildings: ["harbor"]}
 		}, {
 			name: "tanker",
 			craftable: true,
 			color: "#CF4F20",
-			upgrades: {
-				buildings: ["harbor"]
-			}
+			upgrades: {buildings: ["harbor"]}
 		}, {
 			name: "kerosene",
 			craftable: true,
@@ -226,7 +279,8 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		}, {
 			name: "manuscript",
 			craftable: true,
-			color: "#01A9DB"
+			color: "#01A9DB",
+			calculatePerTick: true
 		}, {
 			name: "compedium",
 			title: "compendium",
@@ -238,9 +292,10 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			craftable: true,
 			color: "#01A9DB"
 		}, {
-			name : "thorium", //divinite
+			name: "thorium", //divinite
 			craftable: true,
-			color: "#4EA24E"
+			color: "#4EA24E",
+			calculatePerTick: true
 		}, {
 			name: "megalith",
 			craftable: true,
@@ -252,8 +307,40 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 	},
 
 	render: function () {
+		dojo.empty('resourceHeader');
 		dojo.empty('resourceBlock');
 		dojo.empty('craftableBlock');
+
+		var input = this.game._createCheckbox('Resources locked', 'resourceHeader', this, 'isLocked');
+		input.label.title = 'Show hidden resources on mouseover (ingame only)';
+
+		var div = dojo.create('div', {
+			id: 'ResourceToggleShowNode',
+			innerHTML: 'Show '
+		}, 'resourceHeader');
+
+		on(div, 'click', function () {
+			dojo.toggleClass('resourceColumn', 'showResourceProps', dojo.byId('resourceToggleShowProps').checked);
+		});
+
+		var label = dojo.create('label', {
+			innerHTML: ' <span>Per tick</span>'
+		}, div);
+		input = dojo.create('input', {
+			id: 'resourceToggleShowPertick',
+			name: 'resourceToggleShow',
+			type: 'radio'
+		}, label, 'first');
+		input.checked = true;
+
+		label = dojo.create('label', {
+			innerHTML: ' <span>Properties</span>'
+		}, div);
+		dojo.create('input', {
+			id: 'resourceToggleShowProps',
+			name: 'resourceToggleShow',
+			type: 'radio'
+		}, label, 'first');
 
 		for (var i = 0, len = this.resources.length; i < len; i++) {
 			var res = this.resources[i];
@@ -264,7 +351,7 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 	},
 
 	get: function (name) {
-		return this.resourcesByName[name] /* || {name: name, val: 0} */;
+		return this.resourcesByName[name];
 	},
 
 	update: function () {
@@ -278,7 +365,8 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		var game = this.game;
 		for (var i = this.resources.length - 1; i >= 0; i--) {
 			var res = this.resources[i];
-			var maxValue = game.bld.getEffect(res.name + "Max") || 0;
+
+			res.valueVirtual = res.value;
 
 			if (dojo.isFunction(res.getMaxValue)) {
 				res.maxValue = res.getMaxValue();
@@ -286,8 +374,7 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			}
 
 			// fixed bonus
-			maxValue += game.workshop.getEffect(res.name + "Max");
-			maxValue += game.space.getEffect(res.name + "Max");
+			var maxValue = game.getEffect(res.name + "Max");
 
 			maxValue = this.addResMaxRatios(res, maxValue);
 
@@ -299,15 +386,15 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		}
 	},
 
-	addBarnWarehouseRatio: function(effects){
+	addBarnWarehouseRatio: function (effects) {
 		var newEffects = {};
-		var barnRatio = this.game.workshop.getEffect("barnRatio");
-		var warehouseRatio = 1 + this.game.workshop.getEffect("warehouseRatio");
+		var barnRatio = this.game.getEffect("barnRatio");
+		var warehouseRatio = 1 + this.game.getEffect("warehouseRatio");
 
 		for (var name in effects) {
 			var effect = effects[name];
 
-			if (name === "catnipMax" && this.game.workshop.get("silos").researched){
+			if (name === "catnipMax" && this.game.workshop.get("silos").owned()) {
 				effect *= 1 + barnRatio * 0.25;
 			}
 
@@ -324,19 +411,19 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		return newEffects;
 	},
 
-	addResMaxRatios: function(res, maxValue){
-		maxValue += maxValue * this.game.prestige.getParagonStorageRatio();
+	addResMaxRatios: function (res, maxValue) {
+		if (res && res.getMaxValue) {
+			return maxValue;
+		}
 
-		if (res){
+		maxValue *= 1 + this.game.prestige.getParagonStorageRatio();
+
+		if (res) {
 			//Stuff for Refrigiration and (potentially) similar effects
-			maxValue *= ( 1 +
-				this.game.bld.getEffect(res.name + "MaxRatio") +
-				this.game.workshop.getEffect(res.name + "MaxRatio") +
-				this.game.space.getEffect(res.name + "MaxRatio")
-			);
+			maxValue *= 1 + this.game.getEffect(res.name + "MaxRatio");
 
-			if (!this.isNormalCraftableResource(res) && !res.transient){
-				maxValue *= (1 + this.game.religion.getEffect("tcResourceRatio"));
+			if (!this.isNormalCraftableResource(res) && !res.transient) {
+				maxValue *= 1 + this.game.getEffect("tcResourceRatio");
 			}
 		}
 
@@ -361,7 +448,7 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		return true;
 	},
 
-	isStorageLimited: function(prices) {
+	isStorageLimited: function (prices) {
 		if (prices && prices.length) {
 			for (var i = 0, len = prices.length; i < len; i++) {
 				var price = prices[i];
@@ -381,7 +468,7 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		return false;
 	},
 
-	getEnergyDelta: function() {
+	getEnergyDelta: function () {
 		if (this.game.opts.noEnergyPenalty) {
 			return 1.0;
 		}
@@ -393,8 +480,95 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		return delta;
 	},
 
-	isNormalCraftableResource: function(res) {
+	isNormalCraftableResource: function (res) {
 		return res.craftable && res.name !== "wood";
+	},
+
+	/**
+	 * Note: this function is just a placeholder to try to calculate resource conversions correctly
+	 * It affects .valueVirtual as it would affect .value ingame
+	 */
+	addRes: function (res, addedValue, event) {
+		if (this.game.calendar.day < 0 && !event || !addedValue) {
+			return 0;
+		}
+
+		var prevValue = res.value || 0;
+
+		if (res.maxValue) {
+			//if already overcap, allow to remain that way unless removing resources.
+			if (res.valueVirtual > res.maxValue) {
+				if (addedValue < 0) {
+					res.valueVirtual += addedValue;
+				}
+			} else {
+				res.valueVirtual += addedValue;
+				if (res.valueVirtual > res.maxValue) {
+					res.valueVirtual = res.maxValue;
+				}
+			}
+		} else {
+			res.valueVirtual += addedValue;
+		}
+
+		if (res.name === "void") { // Always an integer
+			res.valueVirtual = Math.floor(res.value);
+		}
+
+		if (isNaN(res.valueVirtual) || res.valueVirtual < 0) {
+			res.valueVirtual = 0;	//safe switch
+		}
+
+		if (res.name === "karma") {
+			var karmaKittens = Math.round(this.game.getTriValueOrigin(res.value, 5));
+			res.valueVirtual = this.game.getTriValue(karmaKittens, 5);
+		}
+
+		return res.valueVirtual - prevValue;
+	},
+
+	addResEvent: function (name, value) {
+		return this.addRes(this.get(name), value, false);
+	},
+
+	addResPerTick: function (name, value) {
+		return this.addRes(this.get(name), value, true);
+	},
+
+	/**
+	 * Format of from:
+	 * [ {res: "res1", amt: x1}, {res: "res2", amt: x2} ]
+	 * amt in the from array sets ratios between resources
+	 * The second amt parameter is the maximum number of times to convert
+	 */
+	getAmtDependsOnStock: function (from, amt) {
+		if (!amt) {
+			return 0;
+		}
+
+		var amtBeginni = amt;
+
+		// Cap amt based on available resources
+		// amt can decrease for each resource
+		for (var i = 0, length = from.length; i < length; i++) {
+			var resAvailable = this.get(from[i].res).value;
+			var resNeeded = from[i].amt * amt;
+
+			if (resAvailable < resNeeded) {
+				var amtAvailable = resAvailable / from[i].amt;
+				amt = Math.min(amt, amtAvailable);
+			} else {
+				// amtAvailable is amt
+			}
+		}
+
+		// Remove from resources
+		for (i in from) {
+			this.addResPerTick(from[i].res, -from[i].amt * amt);
+		}
+
+		// Return the percentage to decrease the productivity
+		return amt / amtBeginni;
 	},
 
 	save: function (saveData) {
@@ -422,22 +596,28 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 	valueIn: null,
 
 	name: 'Undefined',
+
 	value: 0,
-	perTick: 0,
 	maxValue: 0,
+	valueVirtual: 0, //cache value for calculating conversions
+
+	unlocked: false,
 	isHidden: false,
+	relockIfZero: false,
 	type: 'common',
+
+	perTickCached: 0,
 
 	render: function () {
 		var tr = dojo.create('tr', {'class': 'resource'});
 		this.domNode = tr;
+
+		if (this.invisible) {
+			dojo.addClass(tr, 'hidden');
+		}
 		if (this.type) {
 			dojo.addClass(tr, this.type);
 		}
-
-		var td = dojo.create('td', {}, tr);
-		var isHiddenNode = this.game._createCheckbox(null, td, this, 'isHidden');
-		isHiddenNode.label.title = 'Resource hidden';
 
 		this.nameNode = dojo.create('td', {
 			'class': 'nameNode',
@@ -464,11 +644,15 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 			this.valueNode.handler = this.inputHandler;
 		}
 
+		var td = dojo.create('td', {'class': 'resourceProps'}, tr);
+		this.game._createCheckbox('Unlocked', td, this, 'unlocked');
+		this.game._createCheckbox('Hidden', td, this, 'isHidden');
+
 		this.maxValueNode = dojo.create('td', null, tr);
 		this.perTickNode = dojo.create('td', {'class': 'perTickNode'}, tr);
 		this.registerTooltip(this.perTickNode);
 
-		if(this.name == "catnip"){
+		if (this.name === "catnip") {
 			this.weatherModNode = dojo.create('td', null, tr);
 		}
 	},
@@ -485,10 +669,6 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 		return num(value);
 	},
 
-	setValue: function (value, noHandlers) {
-		this.value = this.game.setInput(this.valueNode, value, noHandlers);
-	},
-
 	getTooltip: function (node) {
 		var tooltipBlock = dojo.byId('tooltipBlock');
 
@@ -498,7 +678,7 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 			return;
 		}
 
-		if (!this.perTickUI) {
+		if (!this.perTickCached) {
 			tooltipBlock.className = 'hidden';
 			return;
 		}
@@ -518,19 +698,25 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 	update: function () {
 		var value = this.value;
 		var maxValue = this.maxValue;
+
+		this.unlocked = value > 0 || this.unlockedNode.prevChecked;
+		if (this.relockIfZero && !value) {
+			this.unlocked = false;
+		}
+		this.unlockedNode.checked = this.unlocked;
+		this.game.toggleDisabled(this.unlockedNode, value > 0 || this.relockIfZero);
+
 		dojo.toggleClass(this.valueNode, 'resLimitNotice', maxValue > 0 && value > maxValue * 0.95);
-		dojo.toggleClass(this.valueNode, 'resLimitWarn',
-			maxValue > 0 && value > maxValue * 0.75 && value <= maxValue * 0.95);
+		dojo.toggleClass(this.valueNode, 'resLimitWarn', maxValue > 0 && value > maxValue * 0.75 && value <= maxValue * 0.95);
 
-		this.perTickNoAutomate = this.game.calcResourcePerTick(this.name);
-		//AUTOMATED STRUCTURES EFFECTS
-		var resRatioTick = this.game.getEffect(this.name + "PerTick");
-		this.perTickUI = this.perTickNoAutomate + resRatioTick;
+		this.perTickCached = 0;
+		if (this.calculatePerTick) {
+			this.perTickCached = this.game.calcResourcePerTick(this.name);
+		}
 
-		this.maxValueNode.textContent =
-			maxValue || this.showMax ? "/" + this.game.getDisplayValueExt(maxValue) : "";
+		this.maxValueNode.textContent = maxValue || this.showMax ? "/" + this.game.getDisplayValueExt(maxValue) : "";
 
-		var perTick = this.game.opts.usePerSecondValues ? this.perTickUI * this.game.rate : this.perTickUI;
+		var perTick = this.game.opts.usePerSecondValues ? this.perTickCached * this.game.rate : this.perTickCached;
 		var postfix = this.game.opts.usePerSecondValues ? "/sec" : "";
 		if (this.game.opts.usePercentageResourceValues && maxValue) {
 			perTick = perTick / maxValue * 100;
@@ -542,14 +728,16 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 		dojo.toggleClass(this.perTickNode, 'tooltipped', Boolean(perTick));
 
 		//weather mod
-		if(this.name == "catnip"){
+		if (this.name === "catnip") {
 			var season = this.game.calendar.getCurSeason();
 			var modifier = 0;
 			var modText = "";
 
-			if (season.modifiers[this.name] && this.perTickUI !== 0) {
+			if (season.modifiers[this.name] && this.perTickCached !== 0) {
 				modifier = (season.modifiers[this.name] + this.game.calendar.getWeatherMod() - 1) * 100;
-				modText = modifier ? "[" + (modifier > 0 ? "+" : "") + modifier.toFixed() + "%]" : "";
+				if (modifier) {
+					modText = "[" + (modifier > 0 ? "+" : "") + modifier.toFixed() + "%]";
+				}
 			}
 
 			this.weatherModNode.textContent = modText;
@@ -559,7 +747,13 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 	},
 
 	save: function () {
-		return {name: this.name, value: this.getValue(), isHidden: this.isHidden ? true : undefined};
+		var value = this.getValue();
+		return {
+			name: this.name,
+			value: value,
+			unlocked: this.unlocked,
+			isHidden: this.isHidden
+		};
 	}
 });
 

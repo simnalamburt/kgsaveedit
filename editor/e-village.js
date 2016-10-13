@@ -1,6 +1,6 @@
 /*global dojo, require, classes, num*/
 
-require(["dojo/on", "dojo/mouse"], function (on, mouse) {
+require(["dojo/on"], function (on) {
 "use strict";
 
 dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
@@ -60,7 +60,9 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			name: "priest",
 			title: "Priest",
 			description: "+0.0015 faith per tick",
-			requires: {tech: ["theology"]},
+			requires: function () {
+				return this.game.challenges.currentChallenge !== 'atheism' && this.game.science.get('theology').owned();
+			},
 			modifiers: {
 				"faith": 0.0015
 			}
@@ -99,6 +101,12 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 
 				self.modifiers = modifiers;
 			}
+		}, {
+			name: "engineer",
+			title: "Engineers",
+			description: "Engineer can operate one factory to automate resource production.",
+			requires: {tech: ["mechanization"]},
+			modifiers: {}
 	}],
 
 	traits: [
@@ -172,6 +180,14 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		return this.jobsByName[name];
 	},
 
+	getJobLimit: function (jobName) {
+		if (jobName === "engineer") {
+			return this.game.bld.get("factory").val;
+		} else {
+			return 100000;
+		}
+	},
+
 	getTrait: function (name) {
 		return this.traitsByName[name] || this.traitsByName.none;
 	},
@@ -182,7 +198,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		}, this.tabBlockNode);
 		this.freeKittensSpan = div.children[0];
 
-		this.jobsBlock = dojo.create('div', {
+		this.jobsBlock = dojo.create('table', {
 			id: 'jobsBlock',
 			'class': 'bottom-margin'
 		}, this.tabBlockNode);
@@ -327,13 +343,17 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		return this.game.resPool.get('kittens').value;
 	},
 
-	getFreeKittens: function(){
+	getFreeKittens: function () {
 		var total = 0;
 		for (var i = this.jobs.length - 1; i >= 0; i--) {
 			total += this.jobs[i].value;
 		}
 
 		return this.getKittens() - total;
+	},
+
+	getFreeEngineer: function () {
+		return this.game.workshop.freeEngineers;
 	},
 
 	getTabName: function () {
@@ -394,14 +414,14 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			res["manpower"] = num(res["manpower"]) + 0.15; //zebras are a bit stronger than kittens
 		}
 		if (zebras > 1) {
-			res["manpower"] += this.game.bld.getHyperbolicEffect((zebras - 1) * 0.05, 2);
+			res["manpower"] += this.game.getHyperbolicEffect((zebras - 1) * 0.05, 2);
 		}
 
 		return res;
 	},
 
 	updateResourceProduction: function () {
-		var productionRatio = (1 + this.game.workshop.getEffect("skillMultiplier")) / 4;
+		var productionRatio = (1 + this.game.getEffect("skillMultiplier")) / 4;
 
 		var res = {};
 
@@ -414,7 +434,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 					var mod = this.getValueModifierPerSkill(num(kitten.skills[kitten.job]));
 					for (var jobResMod in job.modifiers) {
 
-						var diff = job.modifiers[jobResMod] * (1 + ((mod - 1) * productionRatio));
+						var diff = job.modifiers[jobResMod] + job.modifiers[jobResMod] * ((mod - 1) * productionRatio);
 
 						if (diff > 0) {
 							if (kitten.isLeader) {
@@ -423,7 +443,11 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 							diff *= this.happiness; //alter positive resource production from jobs
 						}
 
-						res[jobResMod] = num(res[jobResMod]) + diff;
+						if (res[jobResMod]) {
+							res[jobResMod] += diff;
+						} else {
+							res[jobResMod] = diff;
+						}
 					}
 				}
 			}
@@ -436,20 +460,23 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		var numKittens = this.getKittens();
 
 		var unhappiness = (numKittens - 5) * 2;
-		unhappiness *= 1 + this.game.bld.getEffect("unhappinessRatio", true); //limit ratio by 1.0 by 75% hyperbolic falloff
+		unhappiness *= 1 + this.game.getEffect("unhappinessRatio"); //limit ratio by 1.0 by 75% hyperbolic falloff
 
 		if (numKittens > 5) {
 			happiness -= unhappiness; //every kitten takes 2% of production rate if >5
 		}
 
-		var happinessBonus = this.game.bld.getEffect("happiness");
+		var happinessBonus = this.game.getEffect("happiness");
 		happiness += happinessBonus;
 
 		//boost happiness/production by 10% for every uncommon/rare resource
 		var resources = this.game.resPool.resources;
 		for (var i = resources.length - 1; i >= 0; i--) {
-			if (resources[i].type !== "common" && resources[i].owned()) {
-				happiness += 10;
+			var res = resources[i];
+			if (res.type !== "common" && res.owned()) {
+				if (res.name !== "elderBox" || !this.game.resPool.get("wrappingPaper").owned()) {
+					happiness += 10;
+				}
 			}
 		}
 
@@ -457,7 +484,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			happiness += 30;
 		}
 
-		happiness += this.game.resPool.get("karma").getValue(); //+1% to the production per karma point
+		happiness += this.game.resPool.get("karma").value; //+1% to the production per karma point
 
 		var overpopulation = numKittens - this.maxKittens;
 		if (overpopulation > 0) {
@@ -543,12 +570,16 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	assignJobs: function (job, count) {
 		var free = this.getFreeKittens();
 		var jobObj = this.getJob(job);
+		if (!jobObj) {
+			return;
+		}
+		free = Math.min(free, this.getJobLimit(job) - jobObj.value);
 
 		if (count < 0) {
 			count = free;
 		}
-		count = Math.min(num(count) || 1, free);
-		if (!count || !jobObj || !jobObj.unlocked) {
+		count = Math.min(Number(count) || 1, free);
+		if (count <= 0 /*|| !jobObj.unlocked*/) {
 			return;
 		}
 
@@ -608,6 +639,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			}
 		}
 
+		this.unassignCraftJobs(jobObj, count);
 		jobObj.updateCount();
 
 		if (govern) {
@@ -615,6 +647,29 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		}
 		if (job === this.censusFilterNode.value) {
 			this.takeCensus();
+		}
+	},
+
+	unassignCraftJobs: function (job, amt) {
+		if (!job || job.name !== "engineer") {
+			return;
+		}
+		amt = (Number(amt) || 1) - this.game.workshop.freeEngineers;
+
+		if (amt > 0) {
+			for (var i = 0, len = this.game.workshop.crafts.length; i < len; i++) {
+				var craft = this.game.workshop.crafts[i];
+				if (craft.value > 0) {
+					var setVal = Math.min(craft.value, amt);
+					craft.set('value', craft.value - setVal, true);
+					amt -= setVal;
+					this.game.workshop.freeEngineers += setVal;
+				}
+
+				if (amt <= 0) {
+					break;
+				}
+			}
 		}
 	},
 
@@ -827,76 +882,55 @@ dojo.declare('classes.KGSaveEdit.JobMeta', classes.KGSaveEdit.MetaItem, {
 	value: 0,
 
 	render: function () {
-		this.domNode = dojo.create('div', {
-			'class': 'job btn modern',
-			innerHTML: '<div class="btnContent"><span>' + this.getName() + '</span></div>'
+		var job = this;
+
+		job.domNode = dojo.create('tr', {
+			'class': 'job',
+			innerHTML: '<td class="nameNode">' + (this.title || this.name) + '</td><td></td><td></td>'
 		});
-		this.buttonContent = this.domNode.children[0];
-		this.nameNode = this.buttonContent.children[0];
-		on(this.nameNode, 'click', dojo.hitch(this,
-			function() { this.assignJobs(1); }));
+		job.nameNode = job.domNode.children[0];
 
-		this.unassignLinks = this.addLinkList([{
-			id: "unassign",
-			title: "[&ndash;]",
-			handler: function() {
-				this.unassignJobs(1);
-			}
-		}, {
-			id: "unassign5",
-			title: "[-5]",
-			handler: function() {
-				this.unassignJobs(5);
-			}
-		}, {
-			id: "unassign25",
-			title: "[-25]",
-			handler: function() {
-				this.unassignJobs(25);
-			}
-		}, {
-			id: "unassignAll",
-			title: "[-all]",
-			handler: function() {
-				this.unassignJobs(this.value);
-			}
-		}]);
+		job.assignedNode = job.game._createInput({
+			'class': 'integerInput'
+		}, job.domNode.children[1], job);
 
-		this.assignLinks = this.addLinkList([{
-			id: "assign",
-			title: "[+]",
-			handler: function() {
-				this.assignJobs(1);
+		job.assignedNode.parseFn = function (value) {
+			return Math.min(value, this.game.village.getFreeKittens() + job.value, this.game.village.getJobLimit(job.name));
+		};
+
+		job.assignedNode.handler = function () {
+			if (this.value > job.value) {
+				job.assignJobs(this.parsedValue - job.value);
+			} else {
+				job.unassignJobs(job.value - this.parsedValue);
 			}
-		}, {
-			id: "assign5",
-			title: "[+5]",
-			handler: function() {
-				this.assignJobs(5);
-			}
-		}, {
-			id: "assign25",
-			title: "[+25]",
-			handler: function() {
-				this.assignJobs(25);
-			}
-		}, {
-			id: "assignall",
-			title: "[+all]",
-			handler: function() {
-				var freeKittens = this.game.village.getFreeKittens();
-				this.assignJobs(freeKittens);
-			}
-		}]);
+			this.parsedValue = job.value;
+		};
+
+		this.game._createLinkList(job, job.domNode.children[2], [
+			{html: '[+]', value: 1},
+			{html: '[+5]', value: 5},
+			{html: '[+25]', value: 25},
+			{html: '[+all]', value: 100000} //default job limit
+		], function (value) {
+			this.assignJobs(value);
+		});
+
+		this.game._createLinkList(job, job.domNode.children[2], [
+			{html: '[-]', value: 1},
+			{html: '[-5]', value: 5},
+			{html: '[-25]', value: 25},
+			{html: '[-all]', value: 100000}
+		], function (value) {
+			this.unassignJobs(value);
+		});
 
 		this.registerTooltip(this.domNode);
 	},
 
 	assignJobs: function (kittens) {
-		if (this.unlocked) {
-			this.game.village.assignJobs(this.name, kittens);
-			this.game.update();
-		}
+		this.game.village.assignJobs(this.name, kittens);
+		this.game.update();
 	},
 
 	unassignJobs: function (kittens) {
@@ -905,7 +939,7 @@ dojo.declare('classes.KGSaveEdit.JobMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	getName: function () {
-		return (this.title || this.name) + ' (' + this.value + ')';
+		return (this.title || this.name);
 	},
 
 	getPrices: function () { },
@@ -917,78 +951,11 @@ dojo.declare('classes.KGSaveEdit.JobMeta', classes.KGSaveEdit.MetaItem, {
 	update: function () {
 		this.unlocked = this.game.checkRequirements(this);
 		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
-		dojo.toggleClass(this.domNode, 'btnDisabled',
-			!this.unlocked || !this.game.village.getFreeKittens());
+		dojo.toggleClass(this.nameNode, 'btnDisabled', !this.unlocked || !this.game.village.getFreeKittens());
 	},
 
 	updateCount: function () {
-		this.nameNode.textContent = this.getName();
-	},
-
-	addLinkList: function(links) {
-		var linkList = {};
-
-		var linksDiv = dojo.create("div", {
-			'class': 'btnLinkContainer'
-		}, this.buttonContent);
-
-		var linksTooltip = dojo.create("div", {
-			className: "btnLinkList hidden"
-		}, linksDiv);
-
-		//linksTooltip.innerHTML = "<div>FOO</div><div>BAR</div><div>BAZ</div>";
-
-		if (!links.length){
-			return linkList;
-		}
-		//------------- root href --------------
-		var link = dojo.create("a", {
-			href: "#",
-			'class': 'btnLinkListRoot',
-			innerHTML: links[0].title
-		}, linksDiv);
-
-		//linksTooltip.style.left = link.offsetLeft; //hack hack hack
-
-		dojo.connect(link, 'click', this, dojo.partial(function(handler, event) {
-			event.stopPropagation();
-			event.preventDefault();
-
-			dojo.hitch(this, handler)();
-
-			this.update();
-		}, links[0].handler));
-
-		linkList[links[0].id] = { link : link };
-
-		if (links.length <= 1){
-			return linkList;
-		}
-
-		//-----------dropdown
-
-		dojo.connect(linksDiv, mouse.enter, this, dojo.partial(function(tooltip) { dojo.removeClass(tooltip, 'hidden'); }, linksTooltip));
-		dojo.connect(linksDiv, mouse.leave, this, dojo.partial(function(tooltip) { dojo.addClass(tooltip, 'hidden'); }, linksTooltip));
-
-		for (var i = 1, len = links.length; i < len; i++) {
-			link = dojo.create("a", {
-				href: "#",
-				innerHTML: links[i].title,
-				'class': 'btnLinkListLink'
-			}, linksTooltip);
-
-			dojo.connect(link, "onclick", this, dojo.partial(function(handler, event) {
-				event.stopPropagation();
-				event.preventDefault();
-
-				dojo.hitch(this, handler)();
-
-				this.update();
-			}, links[i].handler));
-			linkList[links[i].id] = { link : link };
-		}
-
-		return linkList;
+		this.game.setInput(this.assignedNode, this.value, true);
 	}
 });
 
@@ -1059,7 +1026,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		var block = dojo.create('div', {'class': 'blockContainer'}, this.domNode);
 		var div = dojo.create('div', {
 			'class': 'kittenSubBlock',
-			innerHTML : '[:3] '
+			innerHTML: '[:3] '
 		}, block);
 
 		this.nameBlock = dojo.create('span', null, div);
@@ -1292,7 +1259,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 	getSkillBonus: function (skillName, exp, rank) {
 		var bonus = "";
 		if (this.job === skillName) {
-			var productionRatio = (1 + this.game.workshop.getEffect("skillMultiplier")) / 4;
+			var productionRatio = (1 + this.game.getEffect("skillMultiplier")) / 4;
 			var mod = this.village.getValueModifierPerSkill(exp);
 			bonus = (mod - 1) * productionRatio;
 			bonus = bonus > 0 && this.isLeader ? (this.village.getLeaderBonus(rank) * (bonus + 1) - 1) : bonus;

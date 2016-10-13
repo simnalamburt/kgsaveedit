@@ -121,6 +121,10 @@ input.integerInput.timeInput {
 	color: coral;
 }
 
+.resource td {
+	white-space: nowrap;
+}
+
 .resource.rare .nameNode {
 	color: orange;
 	text-shadow: 1px 0px 10px coral;
@@ -221,11 +225,21 @@ input.integerInput.timeInput {
 	z-index: 50;
 }
 
+#resourceColumn:not(.showResourceProps) .resourceProps,
+#resourceColumn.showResourceProps .resourceProps ~ td {
+	display: none;
+}
+
 .bottom-margin,
 .bottom-spacer > :last-child,
 .tabBlock > :last-child,
 #governmentBlock:not(:empty) {
 	margin-bottom: 20px;
+}
+
+.planet .nameNode {
+	display: inline-block;
+	min-width: 125px;
 }
 
 #tooltipBlock {
@@ -299,6 +313,11 @@ input.integerInput.timeInput {
 	float: right;
 	font-size: 12px;
 	font-style: italic;
+}
+
+.challenge_tooltip {
+	text-align: center;
+	width: 200px;
 }
 
 .lightbox {
@@ -381,6 +400,11 @@ input.integerInput.timeInput {
 	padding-left: 4px;
 }
 
+.nameNode.btnLackResConvert {
+	border-left: 8px solid #FF3030;
+	padding-left: 4px;
+}
+
 #tabBlocks {
 	height: 100%;
 	width: 100%;
@@ -393,88 +417,55 @@ input.integerInput.timeInput {
 	padding-right: 20px;
 }
 
-.btn {
-    border: 1px solid black;
-    padding: 5px;
-    cursor: default;
-    width: 170px;
-    text-align: center;
-    margin-bottom: 10px;
-    cursor: pointer;
+.linkListRoot {
+	display: inline-block;
+	position: relative;
+	height: 26px;
+	line-height: 25px;
+	background-color: #ffffff;
+	border: 1px solid #000000;
+	cursor: pointer;
+	text-align: center;
 }
 
-.btn.btnDisabled {
-    cursor: inherit;
+.linkListRoot a {
+	padding: 0 4px;
+	height: 100%;
 }
 
-.btn a:hover {
+.linkListRoot > a {
+	padding: 0 6px;
+}
+
+.linkListRoot a:hover {
     color: orange;
     text-shadow: 1px 0px 10px coral;
 }
 
-.btn.modern {
-    font-family: Helvetica;
-    font-size: 14px;
-    border-radius: 3px;
-    border: 1px solid #888888;
-    padding: 0;
-    width: 264px;
+.linkListRoot + .linkListRoot {
+	border-left-width: 0;
 }
 
-.btn.modern:hover {
-    border-color: #777777;
-    background: #f9f9f9;
-}
-
-.btn.modern.btnDisabled {
-    border-color: #aaaaaa;
-}
-
-.btn.modern.btnDisabled:hover {
-    border-color: #aaaaaa;
-    background: inherit;
-}
-
-.modern .btnContent {
-    padding: 10px 0 10px 10px;
-}
-
-.btn.modern a {
-    background-color: #eeeeee;
-    border-left: 1px solid #888888;
-    padding: 10px !important;
-    margin: -10px 0;
-    min-width: 20px;
-    text-decoration: none;
-}
-
-.btn.bldEnabled.modern div.btnContent {
-    border-width: 0 0 0 8px;
-    padding: 10px 0px 10px 10px;
-}
-
-.btnLinkContainer {
-	position: relative;
-	float: right;
-	height: 100%;
-}
-
-.btnLinkList {
+.linkListTooltip {
 	position: absolute;
-	float: right;
-	margin-top: 35px;
+	top: 100%;
+	left: -0.5px;
 	z-index: 100;
+	border: 1px solid #000000;
+	background-color: #ffffff;
+	display: none;
 }
 
-.btnLinkListRoot {
+.linkListRoot:hover .linkListTooltip {
 	display: block;
-	float: right;
 }
 
-.btnLinkListLink {
-	display: block;
-	width: 30px;
-	cursor: pointer;
+.linkListTooltipLink {
+	height: 25px;
+}
+
+.linkListTooltipLink ~ div {
+	border-top: 1px solid #000000;
 }
 
 #censusBlock {
@@ -500,7 +491,6 @@ input.integerInput.timeInput {
 	margin-bottom: 5px;
 	padding: 5px;
 	min-height: 80px;
-	white-space: nowrap;
 }
 
 .kittenSubBlock {

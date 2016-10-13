@@ -12,8 +12,16 @@ dojo.declare('classes.KGSaveEdit.UpgradeMeta', classes.KGSaveEdit.MetaItem, {
 
 	constructor: function () { },
 
+	getName: function () {
+		var name = this.label || this.name;
+		if (this.researched) {
+			return name + ' (Complete)';
+		}
+		return name;
+	},
+
 	getEffect: function (name) {
-		if (!this.researched || !this.effects) {
+		if (!this.effects || !this.owned()) {
 			return 0;
 		}
 		return this.effects[name];
@@ -22,7 +30,7 @@ dojo.declare('classes.KGSaveEdit.UpgradeMeta', classes.KGSaveEdit.MetaItem, {
 	render: function () {
 		this.domNode = dojo.create('tr', {
 			'class': 'upgradeMeta',
-			innerHTML: '<td>' + (this.title || this.label || this.name) + '</td><td></td>'
+			innerHTML: '<td>' + (this.label || this.name) + '</td><td></td>'
 		});
 		this.nameNode = this.domNode.children[0];
 
@@ -75,7 +83,7 @@ dojo.declare('classes.KGSaveEdit.UpgradeMeta', classes.KGSaveEdit.MetaItem, {
 dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	techData: [{
 			name: "calendar",
-			title: "Calendar",
+			label: "Calendar",
 			description: "Develops the ability to predict when the seasons will change. This ability is essential for advanced agriculture.",
 			effectDesc: "Calendar provides a way of more precise time tracking",
 			prices: [
@@ -86,7 +94,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "What day is it again?"
 		}, {
 			name: "agriculture",
-			title: "Agriculture",
+			label: "Agriculture",
 			description: "The basis of all civilised life, Agriculture allows the working of land for food. Agriculture can significantly improve your food production.",
 			effectDesc: "Unlocks Farmers and Barns",
 			prices: [
@@ -97,7 +105,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "Best thing since sliced bread!"
 		}, {
 			name: "archery",
-			title: "Archery",
+			label: "Archery",
 			description: "Ranged weaponry known as a 'Bow'.",
 			effectDesc: "Unlocks Hunters",
 			prices: [
@@ -107,7 +115,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["agriculture"]}
 		}, {
 			name: "mining",
-			title: "Mining",
+			label: "Mining",
 			description: "Mining develops the ability to extract mineral resources from the bowels of Cath.",
 			effectDesc: "You can build Mines",
 			prices: [
@@ -118,7 +126,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "Pickaxes are easier to hold with opposable thumbs"
 		}, {
 			name: "metal",
-			title: "Metal Working",
+			label: "Metal Working",
 			description: "The first metal-working technology that provides your civilisation with sturdy, durable tools.",
 			effectDesc: "You can construct Smelters that convert ore into metal",
 			prices: [
@@ -128,7 +136,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["mining"]}
 		}, {
 			name: "animal",
-			title: "Animal Husbandry",
+			label: "Animal Husbandry",
 			description: "Domestication allows access to various animal resources via the pasture. Improves your food production.",
 			effectDesc: "Unlocks Pastures",
 			prices: [
@@ -138,7 +146,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["archery"]}
 		}, {
 			name: "brewery",
-			title: "Catnip Processing",
+			label: "Catnip Processing",
 			description: "Catnip Processing is a non-mandatory technology which improves the process of converting catnip to catnip wood.",
 			effectDesc: "Unlocks Catnip Enrichment.",
 			prices: [
@@ -147,7 +155,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			hidden: true // not used anymore
 		}, {
 			name: "civil",
-			title: "Civil Service",
+			label: "Civil Service",
 			description: "The creation of the first true state organ provides many benefits related to better management of your population.",
 			effectDesc: "Unlocks detailed information about your population",
 			prices: [
@@ -158,7 +166,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "Specialists in Herding Cats"
 		}, {
 			name: "math",
-			title: "Mathematics",
+			label: "Mathematics",
 			description: "Mathematics is the most basic building block upon which all physical science is based. Improves scientific development.",
 			effectDesc: "Allows construction of Academies, very efficient research buildings",
 			prices: [
@@ -169,7 +177,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "Purr equals Meow times Paw to the square"
 		}, {
 			name: "construction",
-			title: "Construction",
+			label: "Construction",
 			description: "Construction represents the advancement of the study of masonry, primarily by adding iron and other metals to the builder's toolbox. Benefits hunting and base infrastructure.",
 			effectDesc: "Allows your workers to construct the Lumber mill. Unlocks Composite Bows",
 			prices: [
@@ -180,7 +188,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "Making pillow forts smart!"
 		}, {
 			name: "engineering",
-			title: "Engineering",
+			label: "Engineering",
 			description: "Engineering is the science (or art perhaps) of designing complex materials, structures, devices, and systems.",
 			effectDesc: "Unlocks aqueducts",
 			prices: [
@@ -190,7 +198,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["construction"]}
 		}, {
 			name: "currency",
-			title: "Currency",
+			label: "Currency",
 			description: "Currency represents a certain amount of wealth. Can significantly boost your development in indirect ways.",
 			effectDesc: "Unlocks gold and trade",
 			prices: [
@@ -200,7 +208,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["civil"]}
 		}, {
 			name: "writing",
-			title: "Writing",
+			label: "Writing",
 			description: "Writing is the art of recording information on material. Writing can influence general happiness and cultural progress of your civilization.",
 			effectDesc: "Unlocks Amphitheatres",
 			prices: [
@@ -211,7 +219,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "Writing uses less ink than pawprints"
 		}, {
 			name: "philosophy",
-			title: "Philosophy",
+			label: "Philosophy",
 			description: "Philosophy is the first abstract science developed by catkind. Philosophy is a basis of spiritual and cultural progress.",
 			effectDesc: "Unlocks Temples",
 			prices: [
@@ -222,7 +230,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "I purr, therefore I am"
 		}, {
 			name: "machinery",
-			title: "Machinery",
+			label: "Machinery",
 			description: "Previous advances in metal working and science give birth to the concept of a machine, a device with multiple moving parts.\n" +
 				"Machinery introduces a concept of automation which reduces routine operations",
 			effectDesc: "Unlocks Steamworks, Crossbows, Printing press and Factory automation.",
@@ -233,7 +241,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["writing"]}
 		}, {
 			name: "steel",
-			title: "Steel",
+			label: "Steel",
 			description: "Development of the new Steel alloy advances further metal working. Benefits most of the aspects of development.",
 			effectDesc: "Unlocks Coal and Steel production",
 			prices: [
@@ -243,7 +251,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["writing"]}
 		}, {
 			name: "theology",
-			title: "Theology",
+			label: "Theology",
 			description: "Theology is the study of religion. Religion is a key concept affecting cultural, scientific and industrial development.",
 			effectDesc: "Unlocks religion",
 			prices: [
@@ -256,7 +264,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "What is that flaming ball in the sky anyway?"
 		}, {
 			name: "astronomy",
-			title: "Astronomy",
+			label: "Astronomy",
 			description: "Astronomy is the study of objects in space. Improves scientific development.",
 			effectDesc: "Unlocks Observatory and Star charts",
 			prices: [
@@ -267,7 +275,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["theology"]}
 		}, {
 			name: "navigation",
-			title: "Navigation",
+			label: "Navigation",
 			description: "Navigation allows serious advancements in sailing and shipbuilding technology. It should benefit economical development and can lead to discovery of new civilizations.",
 			effectDesc: "Unlocks the construction of Trade Ships and overseas trade.",
 			prices: [
@@ -278,7 +286,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["astronomy"]}
 		}, {
 			name: "architecture",
-			title: "Architecture",
+			label: "Architecture",
 			description: "Architecture allows construction of some new sophisticated structures.",
 			effectDesc: "Unlocks Mints and Mansions.",
 			prices: [
@@ -290,7 +298,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "Bigger, better cat towers!"
 		}, {
 			name: "physics",
-			title: "Physics",
+			label: "Physics",
 			description: "Physics is a study of laws of nature. Mostly improves your machinery effectiveness.",
 			effectDesc: "Unlocks some useful upgrades.",
 			prices: [
@@ -301,7 +309,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["navigation"]}
 		}, {
 			name: "metaphysics",
-			title: "Metaphysics",
+			label: "Metaphysics",
 			description: "Metaphysics is a traditional branch of philosophy concerned with explaining the fundamental nature of being and the world that encompasses it.\nAbsolutely useless.",
 			effectDesc: "Does nothing.",
 			prices: [
@@ -311,7 +319,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["physics"]}
 		}, {
 			name: "chemistry",
-			title: "Chemistry",
+			label: "Chemistry",
 			description: "The discovery of Chemistry allows the deeper study and understanding of natural elements and their interaction. As a result new resources may be unlocked.",
 			effectDesc: "Unlocks Oil and Oil Wells.",
 			prices: [
@@ -322,7 +330,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["physics"]}
 		}, {
 			name: "acoustics",
-			title: "Acoustics",
+			label: "Acoustics",
 			description: "Acoustics is the study of sound. Though not obviously useful, in a long run it may benefit civilizations thriving for cultural and religious development.",
 			effectDesc: "Unlocks Chapels",
 			prices: [
@@ -333,7 +341,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["architecture"]}
 		}, {
 			name: "drama",
-			title: "Drama and Poetry",
+			label: "Drama and Poetry",
 			description: "Drama and poetry are both forms of artistic expression.\nImproves cultural progress.",
 			effectDesc: "Unlocks Festivals and Cultural artifacts (TBD)",
 			prices: [
@@ -343,7 +351,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["acoustics"]}
 		}, {
 			name: "archeology",
-			title: "Geology",
+			label: "Geology",
 			description: "Geology is the science comprising of the study of Cath, the rocks of which it is composed, and the processes by which they change. Can potentially benefit your mining industry.",
 			effectDesc: "Unlocks Quarries and Geologists",
 			prices: [
@@ -355,7 +363,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "Different fossils of giant lizards were discovered. Apparently they all died in a sudden but inevitable betrayal."
 		}, {
 			name: "electricity",
-			title: "Electricity",
+			label: "Electricity",
 			description: "Electricity unlocks a new way to automate production, benefiting the catkind in all different areas.",
 			effectDesc: "Unlocks Magnetos",
 			prices: [
@@ -367,7 +375,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "Who knew running around on the carpet could generate such power?"
 		}, {
 			name: "biology",
-			title: "Biology",
+			label: "Biology",
 			description: "Biology deals with living organisms, their characteristics and their use in our society. Improves science and chemistry industry.",
 			effectDesc: "Unlocks Bio Labs",
 			prices: [
@@ -378,7 +386,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["archeology"]}
 		}, {
 			name: "biochemistry",
-			title: "Biochemistry",
+			label: "Biochemistry",
 			description: "Improves your chemistry and biology-related technologies.",
 			effectDesc: "Unlocks biofuel processing",
 			prices: [
@@ -389,7 +397,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["biology"]}
 		}, {
 			name: "genetics",
-			title: "Genetics",
+			label: "Genetics",
 			description: "Technology that further improves upon biology and chemistry. Affects your food industry.",
 			effectDesc: "Unlocks genetic engineering(?)",
 			prices: [
@@ -400,7 +408,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["biochemistry"]}
 		}, {
 			name: "industrialization",
-			title: "Industrialization",
+			label: "Industrialization",
 			description: "Industrialization represents the concept of mass-producing materials, from food products to machine parts.",
 			effectDesc: "Unlocks Advanced Automation and Barges",
 			prices: [
@@ -411,18 +419,18 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["electricity"]}
 		}, {
 			name: "mechanization",
-			title: "Mechanization",
+			label: "Mechanization",
 			description: "Mechanization provides a lot of ways to automate redundant tasks; hence improving craft, oil pumps and construction technologies.",
 			effectDesc: "Unlocks Factories, Pumpjacks and Concrete",
 			prices: [
 				{name: "science",   val: 115000},
 				{name: "blueprint", val: 45}
 			],
-			// unlocks: {tech: ["electronics"], crafts: ["concrate"], upgrades: ["pumpjack", "strenghtenBuild"]},
+			// unlocks: {tech: ["electronics"], crafts: ["concrate"], upgrades: ["pumpjack", "strenghtenBuild"], jobs: ["engineer"]},
 			requires: {tech: ["industrialization"]}
 		}, {
 			name: "metalurgy",
-			title: "Metallurgy",
+			label: "Metallurgy",
 			description: "Metallurgy improves the process of metal production, benefiting Smelters and Calciners",
 			effectDesc: "Unlocks Electrolytic Smelting and Oxidation",
 			prices: [
@@ -433,7 +441,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["industrialization"]}
 		}, {
 			name: "combustion",
-			title: "Combustion",
+			label: "Combustion",
 			description: "Combustion provides a number of ways to improve old coal-based automation technologies, such as Steamworks.",
 			effectDesc: "Unlocks Offset Printing, Oil Refinery and Fuel Injection",
 			prices: [
@@ -444,7 +452,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["industrialization"]}
 		}, {
 			name: "ecology",
-			title: "Ecology",
+			label: "Ecology",
 			description: "Ecology is a technology primary focused on the search for new cheap and safe energy sources.",
 			effectDesc: "Unlocks Solar Plants",
 			prices: [
@@ -455,29 +463,29 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["combustion"]}
 		}, {
 			name: "electronics",
-			title: "Electronics",
+			label: "Electronics",
 			description: "Electronics unlocks some high level upgrades mainly related to science",
 			effectDesc: "Unlocks Broadcast Towers, CAD Systems, Refrigeration and SETI",
 			prices: [
 				{name: "science",   val: 135000},
 				{name: "blueprint", val: 70}
 			],
-			// unlocks: {tech: ["nuclearFission", "rocketry", "robotics"], upgrades: ["cadSystems", "refrigeration", "seti", "factoryLogistics"], stages: [{bld:"amphitheatre", stage:1}]},
+			// unlocks: {tech: ["nuclearFission", "rocketry", "robotics"], upgrades: ["cadSystems", "refrigeration", "seti", "factoryLogistics"], stages: [{bld: "amphitheatre", stage: 1}]},
 			requires: {tech: ["mechanization"]}
 		}, {
 			name: "robotics",
-			title: "Robotics",
+			label: "Robotics",
 			description: "Robotics improves automated structures like Calciners",
 			effectDesc: "Unlocks Steel Plants, Hydro Plants, Tankers and Rotary Kilns",
 			prices: [
 				{name: "science",   val: 140000},
 				{name: "blueprint", val: 80}
 			],
-			// unlocks: {upgrades: ["steelPlants", "rotaryKiln"], crafts: ["tanker"], stages: [{bld:"aqueduct", stage:1}]},
+			// unlocks: {upgrades: ["steelPlants", "rotaryKiln", "assistance"], crafts: ["tanker"], stages: [{bld: "aqueduct", stage: 1}]},
 			requires: {tech: ["electronics"]}
 		}, {
 			name: "nuclearFission",
-			title: "Nuclear Fission",
+			label: "Nuclear Fission",
 			description: "Nuclear Fission unlocks Nuclear Reactors and nuclear-related upgrades",
 			effectDesc: "Unlocks Nuclear Reactors and Nuclear Vessel",
 			prices: [
@@ -488,7 +496,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["electronics"]}
 		}, {
 			name: "rocketry",
-			title: "Rocketry",
+			label: "Rocketry",
 			description: "Required for space exploration",
 			effectDesc: "Unlocks construction of spaceships",
 			prices: [
@@ -499,7 +507,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["electronics"]}
 		}, {
 			name: "oilProcessing",
-			title: "Oil Processing",
+			label: "Oil Processing",
 			description: "Unlocks advanced options of oil processing",
 			effectDesc: "Unlocks kerosene and factory processing(TBD)",
 			prices: [
@@ -510,7 +518,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["rocketry"]}
 		}, {
 			name: "sattelites",
-			title: "Satellites",
+			label: "Satellites",
 			description: "Satellites are machines that permanently orbit the planet outside its atmosphere",
 			effectDesc: "Unlocks deployment of satellites",
 			prices: [
@@ -522,7 +530,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			flavor: "Spreading cat videos at the speed of light"
 		}, {
 			name: "orbitalEngineering",
-			title: "Orbital Engineering",
+			label: "Orbital Engineering",
 			description: "Orbital Engineering allows kitten civilization to develop advanced space projects.",
 			effectDesc: "Unlocks Space Stations and the Hubble Telescope",
 			prices: [
@@ -533,18 +541,18 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["sattelites"]}
 		}, {
 			name: "thorium",
-			title: "Thorium",
+			label: "Thorium",
 			description: "TBD.",
 			effectDesc: "Unlocks Thorium Reactors",
 			prices: [
 				{name: "science",   val: 375000},
 				{name: "blueprint", val: 375}
 			],
-			// unlocks: {crafts: ["thorium"], /*upgrades: ["thoriumReactors"]*/}
+			// unlocks: {crafts: ["thorium"], upgrades: ["thoriumReactors", "thoriumEngine"]},
 			requires: {tech: ["orbitalEngineering"]}
 		}, {
 			name: "exogeology",
-			title: "Exogeology",
+			label: "Exogeology",
 			description: "Exogeology or Planetary Geology studies extraterestial metals and minerals.",
 			effectDesc: "Unlocks various Unobtainium upgrades",
 			prices: [
@@ -555,7 +563,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["orbitalEngineering"]}
 		}, {
 			name: "advExogeology",
-			title: "Advanced Exogeology",
+			label: "Advanced Exogeology",
 			description: "Advanced Exogeology studies new methods of unobtainium processing",
 			effectDesc: "Unlocks Eludium and Eludium upgrades",
 			prices: [
@@ -566,7 +574,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["exogeology"]}
 		}, {
 			name: "nanotechnology",
-			title: "Nanotechnology",
+			label: "Nanotechnology",
 			description: "TBD",
 			effectDesc: "Unlocks Nanosuits, Augmentations and PVC",
 			prices: [
@@ -577,7 +585,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["nuclearFission"]}
 		}, {
 			name: "superconductors",
-			title: "Superconductors",
+			label: "Superconductors",
 			description: "Superconductors are exotic materials that help to optimize energy efficiency of different technologies",
 			effectDesc: "Unlocks Cold Fusion and Space Manufacturing",
 			prices: [
@@ -588,7 +596,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["nanotechnology"]}
 		}, {
 			name: "antimatter",
-			title: "Antimatter",
+			label: "Antimatter",
 			description: "Antimatter provides some advanced sources of energy and generally benefits scientific advancement",
 			effectDesc: "Unlocks Antimatte Reactors and Antimatter Bases",
 			prices: [
@@ -599,29 +607,29 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["superconductors"]}
 		}, {
 			name: "terraformation",
-			title: "Terraformation",
+			label: "Terraformation",
 			description: "Terraformation technology focuses on use of the antimatter to change the climate of the Cath System exoplanets",
 			effectDesc: "Unlocks Terraforming Stations",
 			prices: [
-				{name : "science", val: 750000},
-				{name : "relic",   val: 5}
+				{name: "science", val: 750000},
+				{name: "relic",   val: 5}
 			],
 			// unlocks: {tech: ["hydroponics"], space: [{planet:"yarn", bld: "terraformingStation"}]},
 			requires: {tech: ["antimatter"]}
 		}, {
 			name: "hydroponics",
-			title: "Hydroponics",
+			label: "Hydroponics",
 			description: "A pinnacle of space engineering, hydroponic provides new sources of food supply for our distant colonies.",
 			effectDesc: "Unlocks Yarn Hydroponics",
 			prices: [
-				{name : "science", val: 1000000},
-				{name : "relic",   val: 25}
+				{name: "science", val: 1000000},
+				{name: "relic",   val: 25}
 			],
 			// unlocks: {space: [{planet:"yarn", bld: "hydroponics"}]},
 			requires: {tech: ["terraformation"]}
 		}, {
 			name: "particlePhysics",
-			title: "Particle Physics",
+			label: "Particle Physics",
 			description: "Particle physics takes us one step deeper into the understanding of the nature of matter and energy than its ancestor, Nuclear Physics",
 			effectDesc: "Unlocks Particle Accelerators, Railguns and Enriched Uranium",
 			prices: [
@@ -632,7 +640,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["nuclearFission"]}
 		}, {
 			name: "dimensionalPhysics",
-			title: "Dimensional Physics",
+			label: "Dimensional Physics",
 			description: "Dimensional Physics explores the concepts of space and time",
 			effectDesc: "Unlocks Energy Rifts and LHC",
 			prices: [
@@ -642,7 +650,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["particlePhysics"]}
 		}, {
 			name: "chronophysics",
-			title: "Chronophysics",
+			label: "Chronophysics",
 			description: "Chronophysics studies the nature of time and possibilities of temporal manipulations",
 			effectDesc: "Unlocks Chronospheres, Flux Reactors and Stasis Chambers",
 			prices: [
@@ -653,7 +661,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["particlePhysics"]}
 		}, {
 			name: "tachyonTheory",
-			title: "Tachyon Theory",
+			label: "Tachyon Theory",
 			description: "Tachyonic particles are hypothetical particles that always move faster than light.",
 			effectDesc: "Unlocks Tachyon Accelerators and Chronoforge",
 			prices: [
@@ -665,7 +673,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["chronophysics"]}
 		}, {
 			name: "cryptotheology",
-			title: "Cryptotheology",
+			label: "Cryptotheology",
 			description: "Cryptotheology applies the most arcane and unorthodox methods of the theology in order to answer the fundamental questions of universe and reality.",
 			effectDesc: "Unlocks Relic Station and Cryptotheology tree",
 			prices: [
@@ -676,16 +684,28 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["theology"]}
 		}, {
 			name: "voidSpace",
-			title: "Void Space",
+			label: "Void Space",
 			description: "Under the void",
 			effectDesc: "Unlocks Cryochambers",
 			prices: [
 				{name: "science",     val: 800000},
-				{name: "timeCrystal", val: 40},
+				{name: "timeCrystal", val: 30},
 				{name: "void",        val: 100}
 			],
-			// unlocks: {voidSpace: ["cryochambers"]}
+			// unlocks: {tech: ["paradoxalKnowledge"], upgrades: ["voidAspiration"], voidSpace: ["cryochambers"], challenges: ["atheism"]},
 			requires: {tech: ["tachyonTheory"]}
+		}, {
+			name: "paradoxalKnowledge",
+			label: "Paradoxal Knowledge",
+			description: "",
+			effectDesc: "Unlocks Chronocontrol and Ressource Retrieval",
+			prices: [
+				{name: "science",     val: 1000000},
+				{name: "timeCrystal", val: 40},
+				{name: "void",        val: 250}
+			],
+			// unlocks: {chronoforge: ["ressourceRetrieval"], voidSpace: ["chronocontrol"], upgrades: ["distorsion"]},
+			requires: {tech: ["voidSpace"]}
 	}],
 
 	tabName: 'Science',
@@ -748,14 +768,6 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 dojo.declare('classes.KGSaveEdit.ScienceMeta', classes.KGSaveEdit.UpgradeMeta, {
 	constructor: function () { },
 
-	getName: function () {
-		var name = this.title || this.name;
-		if (this.researched) {
-			return name + ' (completed)';
-		}
-		return name;
-	},
-
 	getDescription: function () {
 		if (this.researched) {
 			return this.description + '<br>Effect: ' + this.effectDesc;
@@ -771,6 +783,7 @@ dojo.declare('classes.KGSaveEdit.ScienceMeta', classes.KGSaveEdit.UpgradeMeta, {
 				if (prices[i].name === "science") {
 					prices[i].val *= 0.99;
 				}
+				break;
 			}
 		}
 		return prices;
@@ -781,7 +794,7 @@ dojo.declare('classes.KGSaveEdit.ScienceMeta', classes.KGSaveEdit.UpgradeMeta, {
 dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 	perksData: [{
 			name: "engeneering",
-			title: "Engineering",
+			label: "Engineering",
 			description: "Reduce all price ratios by 1%. Unlocks more price upgrades.",
 			prices: [
 				{name: "paragon", val: 5}
@@ -793,7 +806,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "megalomania",
-			title: "Megalomania",
+			label: "Megalomania",
 			description: "Unlocks additional megastructures.",
 			prices: [
 				{name: "paragon", val: 10}
@@ -802,7 +815,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			requires: {perks: ["engeneering"]}
 		}, {
 			name: "blackCodex",
-			title: "Black Codex",
+			label: "Black Codex",
 			description: "Unlocks unicorn graveyards.",
 			prices: [
 				{name: "paragon", val: 25}
@@ -811,7 +824,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			requires: {perks: ["megalomania"]}
 		}, {
 			name: "goldenRatio",
-			title: "Golden Ratio",
+			label: "Golden Ratio",
 			description: "Reduce all price ratios by ~1.618%",
 			prices: [
 				{name: "paragon", val: 50}
@@ -823,7 +836,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "divineProportion",
-			title: "Divine Proportion",
+			label: "Divine Proportion",
 			description: "Reduce all price ratios by 1.7%",
 			prices: [
 				{name: "paragon", val: 100}
@@ -835,7 +848,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "vitruvianFeline",
-			title: "Vitruvian Feline",
+			label: "Vitruvian Feline",
 			description: "Reduce all price ratios by 2%",
 			prices: [
 				{name: "paragon", val: 250}
@@ -847,7 +860,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "renaissance",
-			title: "Renaissance",
+			label: "Renaissance",
 			description: "Reduce all price ratios by 2.25%",
 			prices: [
 				{name: "paragon", val: 750}
@@ -858,7 +871,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "diplomacy",
-			title: "Diplomacy",
+			label: "Diplomacy",
 			description: "Races will be discovered earlier and with better standing. Unlocks more trade upgrades.",
 			prices: [
 				{name: "paragon", val: 5}
@@ -867,7 +880,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			unlocked: true
 		}, {
 			name: "zebraDiplomacy",
-			title: "Zebra Diplomacy",
+			label: "Zebra Diplomacy",
 			description: "Some zebras hunters will stay in the village.",
 			prices: [
 				{name: "paragon", val: 50}
@@ -875,7 +888,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			requires: {perks: ["diplomacy"]}
 		}, {
 			name: "chronomancy",
-			title: "Chronomancy",
+			label: "Chronomancy",
 			description: "Meteor and star events will happen faster.",
 			prices: [
 				{name: "paragon", val: 25}
@@ -884,7 +897,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			unlocked: true
 		}, {
 			name: "unicornmancy",
-			title: "Unicornmancy",
+			label: "Unicornmancy",
 			description: "Unicorn rifts and ivory meteors are more frequent.",
 			prices: [
 				{name: "paragon", val: 125}
@@ -892,7 +905,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			unlocked: true
 		}, {
 			name: "anachronomancy",
-			title: "Anachronomancy",
+			label: "Anachronomancy",
 			description: "Time crystals and chronophysics will be saved across resets.",
 			prices: [
 				{name: "paragon", val: 125}
@@ -900,7 +913,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			requires: {perks: ["chronomancy"]}
 		}, {
 			name: "carnivals",
-			title: "Carnivals",
+			label: "Carnivals",
 			description: "Festivals can now stack",
 			prices: [
 				{name: "paragon", val: 25}
@@ -909,7 +922,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			unlocked: true
 		}, {
 			name: "willenfluff",
-			title: "Venus of Willenfluff",
+			label: "Venus of Willenfluff",
 			description: "Kittens will arrive 75% faster.",
 			prices: [
 				{name: "paragon", val: 150}
@@ -920,7 +933,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "numerology",
-			title: "Numerology",
+			label: "Numerology",
 			description: "Certain years will have special effects.",
 			prices: [
 				{name: "paragon", val: 50}
@@ -929,7 +942,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			requires: {perks: ["carnivals"]}
 		}, {
 			name: "numeromancy",
-			title: "Numeromancy",
+			label: "Numeromancy",
 			description: "Certain years will have extra effects during Festivals.",
 			prices: [
 				{name: "paragon", val: 500}
@@ -938,7 +951,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			requires: {perks: ["numerology"]}
 		}, {
 			name: "malkuth",
-			title: "Malkuth",
+			label: "Malkuth",
 			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 500}
@@ -950,7 +963,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "yesod",
-			title: "Yesod",
+			label: "Yesod",
 			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 750}
@@ -962,7 +975,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "hod",
-			title: "Hod",
+			label: "Hod",
 			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 1250}
@@ -974,7 +987,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "netzach",
-			title: "Netzach",
+			label: "Netzach",
 			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 1750}
@@ -985,7 +998,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "voidOrder",
-			title: "Order of Void",
+			label: "Order of Void",
 			description: "Every priest will now give a minor bonus to faith accumulation",
 			prices: [
 				{name: "paragon", val: 75}
@@ -993,7 +1006,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 			requires: {perks: ["numerology"]}
 		}, {
 			name: "adjustmentBureau",
-			title: "Adjustment Bureau",
+			label: "Adjustment Bureau",
 			description: "Unlocks additional game challenges.",
 			prices: [
 				{name: "paragon", val: 5}
@@ -1015,7 +1028,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 		return this.perksByName[name];
 	},
 
-	getSpentParagon: function() {
+	getSpentParagon: function () {
 		var paragon = 0;
 		for (var i = this.perks.length - 1; i >= 0; i--) {
 			var perk = this.perks[i];
@@ -1035,22 +1048,23 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 		return paragon;
 	},
 
-	getParagonRatio: function() {
+	getParagonRatio: function () {
 		return 1.0 + this.getEffect("paragonRatio");
 	},
 
-	getParagonProductionRatio: function() {
+	getParagonProductionRatio: function () {
 		var paragonRatio = this.game.resPool.get("paragon").value * 0.01 * this.getParagonRatio();
-		return this.game.bld.getHyperbolicEffect(paragonRatio, 2 * this.getParagonRatio());
+		return this.game.getHyperbolicEffect(paragonRatio, 2 * this.getParagonRatio());
 	},
 
-	getParagonStorageRatio: function() {
+	getParagonStorageRatio: function () {
 		return (this.game.resPool.get("paragon").value / 1000) * this.getParagonRatio(); //every 100 paragon will give a 10% bonus to the storage capacity
 	},
 
 	render: function () {
 		this.domNode = dojo.create('table', {
 			id: 'metaphysicsBlock',
+			'class': 'bottom-margin',
 			innerHTML: '<tr><th colspan="2">Metaphysics</th></tr>'
 		}, this.game.science.tabBlockNode);
 		this.domNodeHeader = this.domNode.children[0];
@@ -1082,7 +1096,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	upgradeData: [{
 			name: "mineralHoes",
-			title: "Mineral Hoes",
+			label: "Mineral Hoes",
 			description: "Your farmers are 50% more effective",
 			prices: [
 				{name: "science",  val: 100},
@@ -1091,11 +1105,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			unlocked: true,
 			// unlocks: {upgrades: ["ironHoes"]},'
 			effects: {
-				"catnipRatio": 0.5
+				"catnipJobRatio": 0.5
 			}
 		}, {
 			name: "ironHoes",
-			title: "Iron Hoes",
+			label: "Iron Hoes",
 			description: "Your farmers are 30% more effective",
 			prices: [
 				{name: "science", val: 200},
@@ -1103,11 +1117,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: true,
 			effects: {
-				"catnipRatio": 0.3
+				"catnipJobRatio": 0.3
 			}
 		}, {
 			name: "mineralAxes",
-			title: "Mineral Axe",
+			label: "Mineral Axe",
 			description: "Woodcutters are 70% more effective",
 			prices: [
 				{name: "science",  val: 100},
@@ -1116,11 +1130,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			unlocked: true,
 			// unlocks: {upgrades: ["ironAxes"]},
 			effects: {
-				"woodRatio": 0.7
+				"woodJobRatio": 0.7
 			}
 		}, {
 			name: "ironAxes",
-			title: "Iron Axe",
+			label: "Iron Axe",
 			description: "Woodcutters are 50% more effective",
 			prices: [
 				{name: "science", val: 200},
@@ -1128,11 +1142,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: true,
 			effects: {
-				"woodRatio": 0.5
+				"woodJobRatio": 0.5
 			}
 		}, {
 			name: "steelAxe",
-			title: "Steel Axe",
+			label: "Steel Axe",
 			description: "Very sharp and durable axes. Woodcutters are 50% more effective",
 			prices: [
 				{name: "science", val: 20000},
@@ -1140,24 +1154,24 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["steel"]},
 			effects: {
-				"woodRatio": 0.5
+				"woodJobRatio": 0.5
 			}
 		}, {
 			name: "reinforcedSaw",
-			title: "Reinforced Saw",
+			label: "Reinforced Saw",
 			description: "Improve Lumber Mill efficiency by 20%",
-			prices:[
+			prices: [
 				{name: "science", val: 2500},
 				{name: "iron",    val: 1000}
 			],
 			requires: {tech: ["construction"]},
 			effects: {
-				"lumberMillRatio" : 0.2
+				"lumberMillRatio": 0.2
 			},
 			upgrades: {buildings: ["lumberMill"]}
 		}, {
 			name: "steelSaw",
-			title: "Steel Saw",
+			label: "Steel Saw",
 			description: "Improve Lumber Mill efficiency by 20%",
 			prices: [
 				{name: "science", val: 52000},
@@ -1171,7 +1185,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["lumberMill"]}
 		}, {
 			name: "titaniumSaw",
-			title: "Titanium Saw",
+			label: "Titanium Saw",
 			description: "Improve Lumber Mill efficiency by 15%",
 			prices: [
 				{name: "science",  val: 70000},
@@ -1185,7 +1199,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["lumberMill"]}
 		}, {
 			name: "alloySaw",
-			title: "Alloy Saw",
+			label: "Alloy Saw",
 			description: "Improve Lumber Mill efficiency by 15%",
 			prices: [
 				{name: "science", val: 85000},
@@ -1198,7 +1212,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["lumberMill"]}
 		}, {
 			name: "titaniumAxe",
-			title: "Titanium Axe",
+			label: "Titanium Axe",
 			description: "Indestructible axes. Woodcutters are 50% more effective.",
 			prices: [
 				{name: "science",  val: 38000},
@@ -1206,11 +1220,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["navigation"]},
 			effects: {
-				"woodRatio": 0.5
+				"woodJobRatio": 0.5
 			}
 		}, {
 			name: "alloyAxe",
-			title: "Alloy Axe",
+			label: "Alloy Axe",
 			description: "The more you use them, the sharper they are! Woodcutters are 50% more effective.",
 			prices: [
 				{name: "science", val: 70000},
@@ -1218,11 +1232,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["chemistry"]},
 			effects: {
-				"woodRatio": 0.5
+				"woodJobRatio": 0.5
 			}
 		}, {
 			name: "unobtainiumAxe",
-			title: "Unobtainium Axe",
+			label: "Unobtainium Axe",
 			description: "Those axes are literally unobtainable! Woodcutters are 50% more effective.",
 			prices: [
 				{name: "science",     val: 125000},
@@ -1230,12 +1244,12 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			// requires: {program: ["moonMission"]},
 			effects: {
-				"woodRatio": 0.5
+				"woodJobRatio": 0.5
 			},
 			hidden: true
 		}, {
 			name: "unobtainiumSaw",
-			title: "Unobtainium Saw",
+			label: "Unobtainium Saw",
 			description: "Improve Lumber Mill efficiency by 25%",
 			prices: [
 				{name: "science",     val: 145000},
@@ -1249,7 +1263,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			hidden: true
 		}, {
 			name: "stoneBarns",
-			title: "Expanded Barns",
+			label: "Expanded Barns",
 			description: "Barns store 75% more wood and iron",
 			prices: [
 				{name: "science",  val: 500},
@@ -1264,7 +1278,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["barn", "warehouse", "harbor"]}
 		}, {
 			name: "reinforcedBarns",
-			title: "Reinforced Barns",
+			label: "Reinforced Barns",
 			description: "Barns store 80% more wood and iron",
 			prices: [
 				{name: "science", val: 800},
@@ -1280,7 +1294,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["barn", "warehouse", "harbor"]}
 		}, {
 			name: "reinforcedWarehouses",
-			title: "Reinforced Warehouses",
+			label: "Reinforced Warehouses",
 			description: "Warehouses store 25% more resources",
 			prices: [
 				{name: "science",  val: 15000},
@@ -1296,7 +1310,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["barn", "warehouse", "harbor", "mint"]}
 		}, {
 			name: "titaniumBarns",
-			title: "Titanium Barns",
+			label: "Titanium Barns",
 			description: "Barns store twice as many resources",
 			prices: [
 				{name: "science",  val: 60000},
@@ -1311,7 +1325,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["barn", "warehouse", "harbor"]}
 		}, {
 			name: "alloyBarns",
-			title: "Alloy Barns",
+			label: "Alloy Barns",
 			description: "Barns store twice as many resources",
 			prices: [
 				{name: "science", val: 75000},
@@ -1325,7 +1339,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["barn", "warehouse", "harbor"]}
 		}, {
 			name: "concreteBarns",
-			title: "Concrete Barns",
+			label: "Concrete Barns",
 			description: "Barns store 75% more resources",
 			prices: [
 				{name: "science",  val: 100000},
@@ -1339,7 +1353,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["barn", "warehouse", "harbor"]}
 		}, {
 			name: "titaniumWarehouses",
-			title: "Titanium Warehouses",
+			label: "Titanium Warehouses",
 			description: "Warehouses store 50% more resources",
 			prices: [
 				{name: "science",  val: 70000},
@@ -1354,7 +1368,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["barn", "warehouse", "harbor", "mint"]}
 		}, {
 			name: "alloyWarehouses",
-			title: "Alloy Warehouses",
+			label: "Alloy Warehouses",
 			description: "Warehouses store 45% more resources",
 			prices: [
 				{name: "science",  val: 90000},
@@ -1368,7 +1382,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["barn", "warehouse", "harbor", "mint"]}
 		}, {
 			name: "concreteWarehouses",
-			title: "Concrete Warehouses",
+			label: "Concrete Warehouses",
 			description: "Warehouses store 35% more resources",
 			prices: [
 				{name: "science",  val: 100000},
@@ -1382,7 +1396,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["barn", "warehouse", "harbor", "mint"]}
 		}, {
 			name: "storageBunkers",
-			title: "Storage Bunkers",
+			label: "Storage Bunkers",
 			description: "Storage facilities store 20% more resources",
 			prices: [
 				{name: "science",     val: 25000},
@@ -1396,7 +1410,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["barn", "warehouse", "harbor", "mint"]}
 		}, {
 			name: "energyRifts",
-			title: "Energy Rifts",
+			label: "Energy Rifts",
 			description: "Accelerators will now create rifts to a pocket dimension",
 			prices: [
 				{name: "science",  val: 200000},
@@ -1407,7 +1421,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["accelerator"]}
 		}, {
 			name: "stasisChambers",
-			title: "Stasis Chambers",
+			label: "Stasis Chambers",
 			description: "Energy Rifts are twice as effective",
 			prices: [
 				{name: "science",     val: 235000},
@@ -1423,7 +1437,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["accelerator"]}
 		}, {
 			name: "voidEnergy",
-			title: "Void Energy",
+			label: "Void Energy",
 			description: "Energy Rifts are even more effective",
 			prices: [
 				{name: "science",     val: 275000},
@@ -1439,7 +1453,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["accelerator"]}
 		}, {
 			name: "darkEnergy",
-			title: "Dark Energy",
+			label: "Dark Energy",
 			description: "Energy Rifts are 2.5 times as effective",
 			prices: [
 				{name: "science",     val: 350000},
@@ -1453,7 +1467,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["accelerator"]}
 		}, {
 			name: "chronoforge",
-			title: "Chronoforge",
+			label: "Chronoforge",
 			description: "An alien technology related to time manipulation.",
 			prices: [
 				{name: "science",     val: 500000},
@@ -1463,7 +1477,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["tachyonTheory"]}
 		}, {
 			name: "tachyonAccelerators",
-			title: "Tachyon Accelerators",
+			label: "Tachyon Accelerators",
 			description: "Energy Rifts are 5 times as effective",
 			prices: [
 				{name: "science",     val: 500000},
@@ -1472,12 +1486,12 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["tachyonTheory"]},
 			effects: {
-				"acceleratorRatio": 2.5
+				"acceleratorRatio": 5
 			},
 			upgrades: {buildings: ["accelerator"]}
 		}, {
 			name: "fluxCondensator",
-			title: "Flux Condensator",
+			label: "Flux Condensator",
 			description: "Chronosphere will now affect craftable resources.",
 			prices: [
 				{name: "alloy",       val: 250},
@@ -1487,7 +1501,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["chronophysics"]}
 		}, {
 			name: "lhc",
-			title: "LHC",
+			label: "LHC",
 			description: "Every accelerator will provide a bonus to maximum science",
 			prices: [
 				{name: "science",     val: 250000},
@@ -1498,7 +1512,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["accelerator"]}
 		}, {
 			name: "photovoltaic",
-			title: "Photovoltaic Cells",
+			label: "Photovoltaic Cells",
 			description: "Solar Farms are 50% more effective",
 			prices: [
 				{name: "science",  val: 75000},
@@ -1511,7 +1525,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["pasture"]}
 		}, {
 			name: "solarSatellites",
-			title: "Solar Satellites",
+			label: "Solar Satellites",
 			description: "Satellites will now generate energy instead of consuming it",
 			prices: [
 				{name: "science", val: 225000},
@@ -1520,7 +1534,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["orbitalEngineering"]}
 		}, {
 			name: "cargoShips",
-			title: "Cargo Ships",
+			label: "Cargo Ships",
 			description: "Every ship will give a 1% bonus to Harbor capacity",
 			prices: [
 				{name: "science",   val: 55000},
@@ -1534,7 +1548,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			flavor: "It's like a tuna can, but bigger"
 		}, {
 			name: "barges",
-			title: "Barges",
+			label: "Barges",
 			description: "Harbors store more coal",
 			prices: [
 				{name: "science",   val: 100000},
@@ -1548,7 +1562,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["harbor"]}
 		}, {
 			name: "reactorVessel",
-			title: "Reactor Vessel",
+			label: "Reactor Vessel",
 			description: "Every reactor improves ship potential by 5%",
 			prices: [
 				{name: "science",  val: 135000},
@@ -1562,7 +1576,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["harbor"]}
 		}, {
 			name: "ironwood",
-			title: "Ironwood Huts",
+			label: "Ironwood Huts",
 			description: "Hut price ratio reduced by 50%",
 			prices: [
 				{name: "science", val: 30000},
@@ -1576,7 +1590,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "concreteHuts",
-			title: "Concrete Huts",
+			label: "Concrete Huts",
 			description: "Hut price ratio reduced by 30%",
 			prices: [
 				{name: "science",  val: 125000},
@@ -1589,7 +1603,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "unobtainiumHuts",
-			title: "Unobtainium Huts",
+			label: "Unobtainium Huts",
 			description: "Hut price ratio reduced by 25%",
 			prices: [
 				{name: "science",     val: 200000},
@@ -1602,7 +1616,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "eludiumHuts",
-			title: "Eludium Huts",
+			label: "Eludium Huts",
 			description: "Hut price ratio reduced by 10%",
 			prices: [
 				{name: "science", val: 275000},
@@ -1614,7 +1628,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "silos",
-			title: "Silos",
+			label: "Silos",
 			description: "Warehouses can now store catnip",
 			prices: [
 				{name: "science",   val: 50000},
@@ -1627,7 +1641,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			flavor: "With carpeting and climbing holds of course"
 		}, {
 			name: "refrigeration",
-			title: "Refrigeration",
+			label: "Refrigeration",
 			description: "Expands catnip limit by 75%",
 			prices: [
 				{name: "science",   val: 125000},
@@ -1640,7 +1654,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "compositeBow",
-			title: "Composite Bow",
+			label: "Composite Bow",
 			description: "An improved version of a bow which provides a permanent +50% boost to the catpower production",
 			prices: [
 				{name: "science", val: 500},
@@ -1649,11 +1663,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["construction"]},
 			effects: {
-				"manpowerRatio": 0.5
+				"manpowerJobRatio": 0.5
 			}
 		}, {
 			name: "crossbow",
-			title: "Crossbow",
+			label: "Crossbow",
 			description: "An improved version of a bow which provides a permanent +25% boost to the catpower production",
 			prices: [
 				{name: "science", val: 12000},
@@ -1661,11 +1675,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["machinery"]},
 			effects: {
-				"manpowerRatio": 0.25
+				"manpowerJobRatio": 0.25
 			}
 		}, {
 			name: "railgun",
-			title: "Railgun",
+			label: "Railgun",
 			description: "Deadly electromagnetic weapon. +25% boost to the catpower production",
 			prices: [
 				{name: "science",   val: 150000},
@@ -1674,11 +1688,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["particlePhysics"]},
 			effects: {
-				"manpowerRatio": 0.25
+				"manpowerJobRatio": 0.25
 			}
 		}, {
 			name: "bolas",
-			title: "Bolas",
+			label: "Bolas",
 			description: "Throwing weapon made of heavy stone weights. Your hunters are twice as effective",
 			prices: [
 				{name: "science",  val: 1000},
@@ -1692,7 +1706,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			flavor: "Weaponized yarn"
 		}, {
 			name: "huntingArmor",
-			title: "Hunting Armour",
+			label: "Hunting Armour",
 			description: "Hunters are 4 times as effective",
 			prices: [
 				{name: "science", val: 2000},
@@ -1705,7 +1719,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			flavor: "At least they are wearing something..."
 		}, {
 			name: "steelArmor",
-			title: "Steel Armour",
+			label: "Steel Armour",
 			description: "Hunters are a bit more effective",
 			prices: [
 				{name: "science", val: 10000},
@@ -1717,7 +1731,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "alloyArmor",
-			title: "Alloy Armour",
+			label: "Alloy Armour",
 			description: "Hunters are a bit more effective",
 			prices: [
 				{name: "science", val: 50000},
@@ -1729,7 +1743,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "nanosuits",
-			title: "Nanosuits",
+			label: "Nanosuits",
 			description: "Maximum catpower!",
 			prices: [
 				{name: "science", val: 185000},
@@ -1741,7 +1755,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "caravanserai",
-			title: "Caravanserai",
+			label: "Caravanserai",
 			description: "Your tradeposts have a very minor effect on race standing",
 			prices: [
 				{name: "science", val: 25000},
@@ -1756,7 +1770,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			flavor: "Now hiring: cuter kittens"
 		}, {
 			name: "advancedRefinement",
-			title: "Catnip Enrichment",
+			label: "Catnip Enrichment",
 			description: "Catnip refines twice as well",
 			prices: [
 				{name: "science", val: 500},
@@ -1764,13 +1778,13 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["construction"]},
 			handler: function (self) {
-				var price = self.researched ? 50 : 100;
+				var price = self.owned() ? 50 : 100;
 				self.game.workshop.getCraft("wood").prices = [{name: "catnip", val: price}];
 			},
 			flavor: "It's all fun and games 'til someone gets pounced"
 		}, {
 			name: "goldOre",
-			title: "Gold Ore",
+			label: "Gold Ore",
 			description: "Small percentage of ore will be smelted into gold",
 			prices: [
 				{name: "minerals", val: 800},
@@ -1782,7 +1796,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			flavor: "Shiny!"
 		}, {
 			name: "geodesy",
-			title: "Geodesy",
+			label: "Geodesy",
 			description: "Geologists are more effective and can find gold.",
 			prices: [
 				{name: "titanium",  val: 250},
@@ -1794,31 +1808,31 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			flavor: "Gold sniffing cats"
 		}, {
 			name: "register",
-			title: "Register",
+			label: "Register",
 			description: "Leader manage jobs depending on experience.",
-			prices:[
+			prices: [
 				{name: "gold",     val: 10},
 				{name: "science",  val: 500}
 			],
 			requires: {tech: ["writing"]},
 		}, {
 			name: "strenghtenBuild",
-			title: "Concrete Pillars",
+			label: "Concrete Pillars",
 			description: "Repair barn and warehouse cracks with concrete.",
-			prices:[
+			prices: [
 				{name: "science",  val: 100000},
 				{name: "concrate", val: 50}
 			],
 			// unlocks: {upgrades: ["concreteWarehouses", "concreteBarns", "concreteHuts"]},
 			requires: {tech: ["mechanization"]},
 			effects: {
-				"barnRatio" : 0.05,
-				"warehouseRatio" : 0.05
+				"barnRatio":      0.05,
+				"warehouseRatio": 0.05
 			},
 			upgrades: {buildings: ["barn", "warehouse", "harbor", "mint"]}
 		}, {
 			name: "miningDrill",
-			title: "Mining Drill",
+			label: "Mining Drill",
 			description: "Geologists are more effective",
 			prices: [
 				{name: "titanium", val: 1750},
@@ -1829,7 +1843,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {jobs: ["geologist"]}
 		}, {
 			name: "unobtainiumDrill",
-			title: "Unobtainium Drill",
+			label: "Unobtainium Drill",
 			description: "Geologists are even more effective",
 			prices: [
 				{name: "unobtainium", val: 250},
@@ -1840,7 +1854,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {jobs: ["geologist"]}
 		}, {
 			name: "coalFurnace",
-			title: "Coal Furnace",
+			label: "Coal Furnace",
 			description: "Smelters produce coal while burning wood",
 			prices: [
 				{name: "minerals", val: 5000},
@@ -1852,7 +1866,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			flavor: "So warm... so sleepy..."
 		}, {
 			name: "deepMining",
-			title: "Deep Mining",
+			label: "Deep Mining",
 			description: "Mines will also produce coal",
 			prices: [
 				{name: "iron",    val: 1200},
@@ -1864,7 +1878,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			flavor: "Yummy Canaries!"
 		}, {
 			name: "pyrolysis",
-			title: "Pyrolysis",
+			label: "Pyrolysis",
 			description: "Coal output is boosted by 20%",
 			prices: [
 				{name: "compedium", val: 5},
@@ -1872,11 +1886,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["physics"]},
 			effects: {
-				"coalRatio": 0.2
+				"coalSuperRatio": 0.2
 			}
 		}, {
 			name: "electrolyticSmelting",
-			title: "Electrolytic Smelting",
+			label: "Electrolytic Smelting",
 			description: "Smelters are twice as effective",
 			prices: [
 				{name: "titanium", val: 2000},
@@ -1888,7 +1902,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "oxidation",
-			title: "Oxidation",
+			label: "Oxidation",
 			description: "Calciners are twice as effective at producing iron and 4 times at producing titanium",
 			prices: [
 				{name: "steel",   val: 5000},
@@ -1900,7 +1914,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "steelPlants",
-			title: "Steel Plants",
+			label: "Steel Plants",
 			description: "10% of the calciners' iron output will be converted to steel",
 			prices: [
 				{name: "titanium", val: 3500},
@@ -1914,7 +1928,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "automatedPlants",
-			title: "Automated Plants",
+			label: "Automated Plants",
 			description: "Steel Plants are boosted by 25% of your craft ratio",
 			prices: [
 				{name: "alloy",   val: 750},
@@ -1927,7 +1941,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "nuclearPlants",
-			title: "Nuclear Plants",
+			label: "Nuclear Plants",
 			description: "Steel Plants are additionally boosted by 2% of your craft ratio per Reactor",
 			prices: [
 				{name: "uranium", val: 10000},
@@ -1935,11 +1949,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {upgrades: ["automatedPlants"]},
 			effects: {
-				"calcinerSteelReactorBonus" : 0.02
+				"calcinerSteelReactorBonus": 0.02
 			}
 		}, {
 			name: "rotaryKiln",
-			title: "Rotary Kiln",
+			label: "Rotary Kiln",
 			description: "Calciners are 75% more effective at producing iron and 3 times at producing titanium",
 			prices: [
 				{name: "titanium", val: 5000},
@@ -1952,7 +1966,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "fluidizedReactors",
-			title: "Fluidized Reactors",
+			label: "Fluidized Reactors",
 			description: "Calciners are twice as effective",
 			prices: [
 				{name: "alloy",   val: 200},
@@ -1964,7 +1978,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "nuclearSmelters",
-			title: "Nuclear Smelters",
+			label: "Nuclear Smelters",
 			description: "Smelters can now produce titanium",
 			prices: [
 				{name: "uranium", val: 250},
@@ -1973,7 +1987,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["nuclearFission"]}
 		}, {
 			name: "printingPress",
-			title: "Printing Press",
+			label: "Printing Press",
 			description: "Steamworks automatically print manuscripts",
 			prices: [
 				{name: "gear",    val: 45},
@@ -1983,7 +1997,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["steamworks"]}
 		}, {
 			name: "offsetPress",
-			title: "Offset Press",
+			label: "Offset Press",
 			description: "Printing press is 4 times as effective",
 			prices: [
 				{name: "gear",    val: 250},
@@ -1994,7 +2008,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["steamworks"]}
 		}, {
 			name: "photolithography",
-			title: "Photolithography",
+			label: "Photolithography",
 			description: "Printing press is 4 times as effective",
 			prices: [
 				{name: "alloy",   val: 1250},
@@ -2006,7 +2020,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["steamworks"]}
 		}, {
 			name: "factoryAutomation",
-			title: "Workshop Automation",
+			label: "Workshop Automation",
 			description: "Once per year Steamworks will convert small quantities of craftable resources to materials when they are at the limit",
 			prices: [
 				{name: "gear",    val: 25},
@@ -2016,7 +2030,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			flavor: "Includes autofeeders"
 		}, {
 			name: "advancedAutomation",
-			title: "Advanced Automation",
+			label: "Advanced Automation",
 			description: "Reduce Steamworks' maintainance cycle by 50%",
 			prices: [
 				{name: "gear",      val: 75},
@@ -2026,7 +2040,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["industrialization"]}
 		}, {
 			name: "pneumaticPress",
-			title: "Pneumatic Press",
+			label: "Pneumatic Press",
 			description: "Workshop automation will also convert iron to plates",
 			prices: [
 				{name: "gear",      val: 30},
@@ -2036,7 +2050,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["physics"]}
 		}, {
 			name: "combustionEngine",
-			title: "High Pressure Engine",
+			label: "High Pressure Engine",
 			description: "Reduces coal consumption of Steamworks by 20%",
 			prices: [
 				{name: "gear",      val: 25},
@@ -2045,13 +2059,13 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["steel"]},
 			effects: {
-				"coalRatioGlobal": 0.2
+				"coalRatioGlobalReduction": 0.2
 			},
 			upgrades: {buildings: ["steamworks"]},
 			flavor: "A better mousetrap"
 		}, {
 			name: "fuelInjectors",
-			title: "Fuel Injectors",
+			label: "Fuel Injectors",
 			description: "Reduces coal consumption of Steamworks by 20%",
 			prices: [
 				{name: "gear",    val: 250},
@@ -2061,11 +2075,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["combustion"]},
 			upgrades: {buildings: ["steamworks"]},
 			effects: {
-				"coalRatioGlobal": 0.2
+				"coalRatioGlobalReduction": 0.2
 			}
 		}, {
 			name: "factoryLogistics",
-			title: "Factory Logistics",
+			label: "Factory Logistics",
 			description: "Factories are providing bigger bonus to craft effectiveness",
 			prices: [
 				{name: "gear",     val: 250},
@@ -2073,11 +2087,10 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "science",  val: 100000}
 			],
 			requires: {tech: ["electronics"]},
-			upgrades: {buildings: ["factory"]},
-			effects: {}
+			upgrades: {buildings: ["factory"]}
 		}, {
 			name: "spaceManufacturing",
-			title: "Space Manufacturing",
+			label: "Space Manufacturing",
 			description: "Factories are providing bonus to Space Elevators and Orbital Arrays",
 			prices: [
 				{name: "titanium", val: 125000},
@@ -2087,7 +2100,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["factory"]}
 		}, {
 			name: "celestialMechanics",
-			title: "Celestial Mechanics",
+			label: "Celestial Mechanics",
 			description: "Celestial events and meteors will generate additional science",
 			prices: [
 				{name: "science", val: 250}
@@ -2095,7 +2108,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["math"]}
 		}, {
 			name: "astrolabe",
-			title: "Astrolabe",
+			label: "Astrolabe",
 			description: "Improves Observatory effectiveness by 50%",
 			prices: [
 				{name: "titanium",  val: 5},
@@ -2106,7 +2119,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["observatory"]}
 		}, {
 			name: "titaniumMirrors",
-			title: "Titanium Reflectors",
+			label: "Titanium Reflectors",
 			description: "Improved telescope reflectors.\nEvery observatory will give 2% to Library effectiveness",
 			prices: [
 				{name: "titanium",  val: 15},
@@ -2121,7 +2134,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			flavor: "Did that light spot just move?"
 		}, {
 			name: "unobtainiumReflectors",
-			title: "Unobtainium Reflectors",
+			label: "Unobtainium Reflectors",
 			description: "Improved telescope reflectors.\nEvery observatory will give additional 2% to Library effectiveness",
 			prices: [
 				{name: "unobtainium", val: 75},
@@ -2135,7 +2148,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["observatory"]}
 		}, {
 			name: "eludiumReflectors",
-			title: "Eludium Reflectors",
+			label: "Eludium Reflectors",
 			description: "Improved telescope reflectors.\nEvery observatory will give additional 2% to Library effectiveness",
 			prices: [
 				{name: "eludium", val: 15},
@@ -2148,7 +2161,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["observatory"]}
 		}, {
 			name: "hydroPlantTurbines",
-			title: "Hydro Plant Turbines",
+			label: "Hydro Plant Turbines",
 			description: "Unobtainium-based turbines. Hydro plants are 15% more effective.",
 			prices: [
 				{name: "unobtainium", val: 125},
@@ -2161,7 +2174,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["aqueduct"]}
 		}, {
 			name: "amBases",
-			title: "Antimatter Bases",
+			label: "Antimatter Bases",
 			description: "Reduce energy consumption for Lunar Bases by 50%",
 			prices: [
 				{name: "eludium", val: 15},
@@ -2170,7 +2183,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["antimatter"]},
 		}, {
 			name: "amReactors",
-			title: "Antimatter Reactors",
+			label: "Antimatter Reactors",
 			description: "Your Research Vessels and Space Beacons are twice as effective",
 			prices: [
 				{name: "eludium",    val: 35},
@@ -2183,7 +2196,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "amReactorsMK2",
-			title: "Advanced AM Reactors",
+			label: "Advanced AM Reactors",
 			description: "Your Research Vessels and Space Beacons are 75% more effective",
 			prices: [
 				{name: "eludium",    val: 70},
@@ -2195,7 +2208,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "relicStation",
-			title: "Relic Station",
+			label: "Relic Station",
 			description: "Upgrade Space Beacons with Relic research stations. Every Relic Station will reverse engineer relics yelding 0.01 relic per day",
 			prices: [
 				{name: "eludium",    val: 100},
@@ -2203,11 +2216,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["cryptotheology"]},
 			effects: {
-				"beaconRelicsPerTick": 0.01
+				"beaconRelicsPerDay": 0.01
 			}
 		}, {
 			name: "pumpjack",
-			title: "Pumpjack",
+			label: "Pumpjack",
 			description: "Improves effectiveness of oil wells by 45%",
 			prices: [
 				{name: "titanium", val: 250},
@@ -2216,12 +2229,12 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["mechanization"]},
 			effects: {
-				"oilRatio": 0.45
+				"oilWellRatio": 0.45
 			},
 			upgrades: {buildings: ["oilWell"]}
 		}, {
 			name: "biofuel",
-			title: "Biofuel processing",
+			label: "Biofuel processing",
 			description: "Biolabs will convert catnip into oil",
 			prices: [
 				{name: "titanium", val: 1250},
@@ -2231,7 +2244,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["biolab"]}
 		}, {
 			name: "unicornSelection",
-			title: "Unicorn Selection",
+			label: "Unicorn Selection",
 			description: "Improves Unicorn Pasture effectiveness by 25%",
 			prices: [
 				{name: "titanium", val: 1500},
@@ -2243,7 +2256,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "gmo",
-			title: "GM Catnip",
+			label: "GM Catnip",
 			description: "Genetically modified catnip that will improve biolab oil yield by 60%",
 			prices: [
 				{name: "titanium", val: 1500},
@@ -2257,7 +2270,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["biolab"]}
 		}, {
 			name: "cadSystems",
-			title: "CAD System",
+			label: "CAD System",
 			description: "All scientific buildings will improve effectiveness of blueprint crafting",
 			prices: [
 				{name: "titanium", val: 750},
@@ -2269,16 +2282,16 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "seti",
-			title: "SETI",
+			label: "SETI",
 			description: "A large array of electronic telescopes. Makes astronomical events automatic and silent",
 			prices: [
 				{name: "titanium", val: 250},
 				{name: "science",  val: 125000}
 			],
 			requires: {tech: ["electronics"]}
-		},{
+		}, {
 			name: "logistics",
-			title: "Logistics",
+			label: "Logistics",
 			description: "Kitten skills are 15% more effective",
 			prices: [
 				{name: "gear",     val: 100},
@@ -2287,11 +2300,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["industrialization"]},
 			effects: {
-				"skillMultiplier" : 0.15
+				"skillMultiplier": 0.15
 			}
 		}, {
 			name: "augumentation",
-			title: "Augmentations",
+			label: "Augmentations",
 			description: "Kitten skills are 25% more effective",
 			prices: [
 				{name: "titanium", val: 5000},
@@ -2300,11 +2313,24 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["nanotechnology"]},
 			effects: {
-				"skillMultiplier": 0.25
+				"skillMultiplier": 1
+			}
+		}, {
+			name: "assistance",
+			label: "Assistance",
+			description: "Building robots, workers do less effort and need less catnip",
+			prices: [
+				{name: "steel",   val: 10000},
+				{name: "gear",    val: 250},
+				{name: "science", val: 100000}
+			],
+			requires: {tech: ["robotics"]},
+			effects: {
+				"catnipDemandWorkerRatioGlobal": -0.25
 			}
 		}, {
 			name: "enrichedUranium",
-			title: "Enriched Uranium",
+			label: "Enriched Uranium",
 			description: "Reduce uranium consumption of reactors by 25%",
 			prices: [
 				{name: "titanium", val: 7500},
@@ -2318,7 +2344,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["reactor"]}
 		}, {
 			name: "coldFusion",
-			title: "Cold Fusion",
+			label: "Cold Fusion",
 			description: "Increase Reactors energy output by 25%",
 			prices: [
 				{name: "eludium", val: 25},
@@ -2330,22 +2356,22 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			},
 			upgrades: {buildings: ["reactor"]}
 		}, {
-			name: "oilRefinery",
-			title: "Oil Refinery",
-			description: "Improves effectiveness of oil wells by 35%",
+			name: "thoriumReactors",
+			label: "Thorium Reactors",
+			description: "Increase Reactors energy output by 25% by the addition of thorium",
 			prices: [
-				{name: "titanium", val: 1250},
-				{name: "gear",     val: 500},
-				{name: "science",  val: 125000}
+				{name: "thorium",  val: 10000},
+				{name: "science",  val: 400000}
 			],
-			requires: {tech: ["combustion"]},
+			requires: {tech: ["thorium"]},
 			effects: {
-				"oilRatio": 0.35
+				"reactorEnergyRatio":     0.25,
+				"reactorThoriumPerTick": -0.05
 			},
-			upgrades: {buildings: ["oilWell"]}
+			upgrades: {buildings: ["reactor"]}
 		}, {
 			name: "hubbleTelescope",
-			title: "Hubble Space Telescope",
+			label: "Hubble Space Telescope",
 			description: "Improves starchart production by 30%",
 			prices: [
 				{name: "alloy",   val: 1250},
@@ -2359,7 +2385,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "satnav",
-			title: "Satellite Navigation",
+			label: "Satellite Navigation",
 			description: "Every satellite reduce starchart requirement of ships by 1.25%",
 			prices: [
 				{name: "alloy",   val: 750},
@@ -2371,7 +2397,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "satelliteRadio",
-			title: "Satellite Radio",
+			label: "Satellite Radio",
 			description: "Every satellite will boost the effect of Broadcast Towers by 0.5%",
 			prices: [
 				{name: "alloy",   val: 5000},
@@ -2383,7 +2409,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "astrophysicists",
-			title: "Astrophysicists",
+			label: "Astrophysicists",
 			description: "Each scholar will now generate starcharts.",
 			prices: [
 				{name: "unobtainium", val: 350},
@@ -2393,7 +2419,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {jobs: ["scholar"]}
 		}, {
 			name: "mWReactor",
-			title: "Microwarp Reactors",
+			label: "Microwarp Reactors",
 			description: "A new eludium-based reactor for Lunar Outposts. Unobtainium production is 75% more effective.",
 			prices: [
 				{name: "eludium", val: 50},
@@ -2405,7 +2431,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["advExogeology"]}
 		}, {
 			name: "eludiumCracker",
-			title: "Planet Busters",
+			label: "Planet Busters",
 			description: "Hissmeowra's output is twice as effective.",
 			prices: [
 				{name: "eludium", val: 250},
@@ -2414,10 +2440,40 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["advExogeology"]},
 			effects: {
 				"crackerRatio": 1
+			},
+			upgrades: {program: ["planetCracker"]}
+		}, {
+			name: "thoriumEngine",
+			label: "Thorium Engine",
+			description: "A new rocket engine to go faster in space.",
+			prices: [
+				{name: "ship",     val: 10000},
+				{name: "gear",     val: 40000},
+				{name: "alloy",    val: 2000},
+				{name: "thorium",  val: 100000},
+				{name: "science",  val: 400000}
+			],
+			requires: {tech: ["thorium"]},
+			effects: {
+				"routeSpeed": 100
 			}
 		}, {
+			name: "oilRefinery",
+			label: "Oil Refinery",
+			description: "Improves effectiveness of oil wells by 35%",
+			prices: [
+				{name: "titanium", val: 1250},
+				{name: "gear",     val: 500},
+				{name: "science",  val: 125000}
+			],
+			requires: {tech: ["combustion"]},
+			effects: {
+				"oilWellRatio": 0.35
+			},
+			upgrades: {buildings: ["oilWell"]}
+		}, {
 			name: "oilDistillation",
-			title: "Oil Distillation",
+			label: "Oil Distillation",
 			description: "Oil output is improved by 75%.",
 			prices: [
 				{name: "titanium", val: 5000},
@@ -2426,11 +2482,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["rocketry"]},
 			upgrades: {buildings: ["oilWell"]},
 			effects: {
-				"oilRatio": 0.75
+				"oilWellRatio": 0.75
 			}
 		}, {
 			name: "factoryProcessing",
-			title: "Factory Processing",
+			label: "Factory Processing",
 			description: "Every factory will increase oil refinement effectiveness by 5%.",
 			prices: [
 				{name: "titanium", val: 7500},
@@ -2442,28 +2498,55 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			effects: {
 				"factoryRefineRatio": 0.05
 			}
+		}, {
+			name: "voidAspiration",
+			label: "Void Aspiration",
+			description: "Unlocks Void Hoover.",
+			prices: [
+				{name: "timeCrystal", val: 15},
+				{name: "antimatter",  val: 2000}
+			],
+			// unlocks: {voidSpace: ["voidHoover"]},
+			requires: {tech: ["voidSpace"]}
+		}, {
+			name: "distorsion",
+			label: "Distorsion",
+			description: "Improve Chronocontrol effectiveness.",
+			prices: [
+				{name: "timeCrystal", val: 25},
+				{name: "antimatter",  val: 2000},
+				{name: "void",        val: 1000},
+				{name: "science",     val: 300000}
+			],
+			requires: {tech: ["paradoxalKnowledge"]},
+			upgrades: {voidSpace: ["chronocontrol"]},
+			effects: {
+				"temporalParadoxDayBonus": 2
+			}
 	}],
 
 	craftData: [{
 			name: "wood",
-			title: "Refine catnip",
+			label: "Refine Catnip",
 			description: "A sturdy block of catnip wood. Difficult to process, but great building material.",
 			prices: [
 				{name: "catnip", val: 100}
 			],
 			unlocked: true,
-			ignoreBonuses: true
+			ignoreBonuses: true,
+			progressHandicap: 1
 		}, {
 			name: "beam",
-			title: "Wooden Beam",
+			label: "Wooden Beam",
 			description: "Simple support structure made of a wood. Required for advanced construction.",
 			prices: [
 				{name: "wood", val: 175}
 			],
-			unlocked: true
+			unlocked: true,
+			progressHandicap: 1
 		}, {
 			name: "slab",
-			title: "Stone Slab",
+			label: "Stone Slab",
 			description: "A small slab composed of minerals. Required for advanced construction.",
 			prices: [
 				{name: "minerals", val: 250}
@@ -2471,71 +2554,78 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			unlocked: true
 		}, {
 			name: "concrate",
-			title: "Concrete",
+			label: "Concrete",
 			description: "A block of reinforced concrete.",
 			prices: [
 				{name: "slab",  val: 2500},
 				{name: "steel", val: 25}
 			],
 			unlocked: false,
-			requires: {tech: ["mechanization"]}
+			requires: {tech: ["mechanization"]},
+			progressHandicap: 9
 		}, {
 			name: "plate",
-			title: "Metal Plate",
+			label: "Metal Plate",
 			description: "A metal plate. Required for advanced construction.",
 			prices: [
 				{name: "iron", val: 125}
 			],
-			unlocked: true
+			unlocked: true,
+			progressHandicap: 4
 		}, {
 			name: "steel",
-			title: "Steel",
+			label: "Steel",
 			description: "A durable metal made by smelting iron and coal. Required for construction of gears and complex machinery.",
 			prices: [
 				{name: "iron", val: 100},
 				{name: "coal", val: 100}
 			],
 			unlocked: false,
-			requires: {tech: ["steel"]}
+			requires: {tech: ["steel"]},
+			progressHandicap: 4
 		}, {
 			name: "gear",
-			title: "Gear",
+			label: "Gear",
 			description: "An integral part of automated structures.",
 			prices: [
 				{name: "steel", val: 15}
 			],
-			unlocked: true
+			unlocked: true,
+			progressHandicap: 5
 		}, {
 			name: "alloy",
-			title: "Alloy",
+			label: "Alloy",
 			description: "A durable alloy of steel, iron and titanium. Required for advanced buildings and upgrades.",
 			prices: [
 				{name: "steel",    val: 75},
 				{name: "titanium", val: 10}
 			],
 			unlocked: false,
-			requires: {tech: ["chemistry"]}
+			requires: {tech: ["chemistry"]},
+			progressHandicap: 7
 		}, {
 			name: "eludium",
-			title: "Eludium",
+			label: "Eludium",
 			description: "Extremely rare and expensive alloy of unobtanium and titanium.",
 			prices: [
 				{name: "alloy",       val: 2500},
 				{name: "unobtainium", val: 1000}
 			],
 			unlocked: false,
-			requires: {tech: ["advExogeology"]}
+			requires: {tech: ["advExogeology"]},
+			progressHandicap: 100
 		}, {
 			name: "scaffold",
-			title: "Scaffold",
+			label: "Scaffold",
 			description: "A large structure made of wood beams required for construction of very complex buildings and objects",
 			prices: [
 				{name: "beam", val: 50}
 			],
-			unlocked: true
+			unlocked: true,
+			progressHandicap: 2
 		}, {
 			name: "ship",
-			title: "Trade Ship",
+			label: "Trade Ship",
 			description: "Ships can be used to discover new civilisations. May improve chances of getting certain rare resources",
 			prices: [
 				{name: "scaffold",  val: 100},
@@ -2544,10 +2634,11 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["navigation"]},
-			upgrades: {buildings: ["harbor"]}
+			upgrades: {buildings: ["harbor"]},
+			progressHandicap: 20
 		}, {
 			name: "tanker",
-			title: "Tanker",
+			label: "Tanker",
 			description: "Increase maximum oil capacity by 500",
 			prices: [
 				{name: "ship",      val: 200},
@@ -2556,77 +2647,87 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["robotics"]},
-			upgrades: {buildings: ["harbor"]}
+			upgrades: {buildings: ["harbor"]},
+			progressHandicap: 20
 		}, {
 			name: "kerosene",
-			title: "Kerosene",
+			label: "Kerosene",
 			description: "A rocket fuel processed from oil",
 			prices: [
 				{name: "oil", val: 7500}
 			],
 			unlocked: false,
-			requires: {tech: ["oilProcessing"]}
+			requires: {tech: ["oilProcessing"]},
+			progressHandicap: 5
 		}, {
 			name: "parchment",
-			title: "Parchment",
+			label: "Parchment",
 			description: "A material for writing on made from animal skin, required for cultural buildings.",
 			prices: [
 				{name: "furs", val: 175}
 			],
 			unlocked: false,
-			requires: {tech: ["writing"]}
+			requires: {tech: ["writing"]},
+			progressHandicap: 1
 		}, {
 			name: "manuscript",
-			title: "Manuscript",
+			label: "Manuscript",
 			description: "Written document required for technological advancement.Every manuscript will give a minor bonus to a maximum culture (this effect has a diminishing return)",
 			prices: [
 				{name: "parchment", val: 25},
 				{name: "culture",   val: 400}
 			],
-			unlocked: true
+			unlocked: true,
+			progressHandicap: 2
 		}, {
 			name: "compedium",
-			title: "Compendium",
+			label: "Compendium",
 			description: "A sum of all modern knowledge of the catkind. Every compendium will give +10 to max science",
 			prices: [
 				{name: "manuscript", val: 50},
 				{name: "science",    val: 10000}
 			],
 			unlocked: false,
-			requires: {tech: ["philosophy"]}
+			requires: {tech: ["philosophy"]},
+			progressHandicap: 5
 		}, {
 			name: "blueprint",
-			title: "Blueprint",
+			label: "Blueprint",
 			description: "Strange piece of paper with blue lines.",
 			prices: [
 				{name: "compedium", val: 25},
 				{name: "science",   val: 25000}
 			],
 			unlocked: false,
-			requires: {tech: ["physics"]}
+			requires: {tech: ["physics"]},
+			progressHandicap: 10
 		}, {
 			name: "thorium",
-			title: "Thorium",
+			label: "Thorium",
 			description: "A highly radioactive and unstable fuel",
 			prices: [
 				{name: "uranium", val: 250}
 			],
 			unlocked: false,
-			requires: {tech: ["thorium"]}
+			requires: {tech: ["thorium"]},
+			progressHandicap: 5
 		}, {
 			name: "megalith",
-			title: "Megalith",
+			label: "Megalith",
 			description: "A massive block that can be used to construct enormous structures",
 			prices: [
 				{name: "slab",  val: 75},
 				{name: "beam",  val: 35},
 				{name: "plate", val: 5}
 			],
-			unlocked: true
+			unlocked: true,
+			progressHandicap: 5
 	}],
 
 	effectsBase: {
-		"scienceMax" : 0
+		"scienceMax": 0,
+		"oilMax":     0,
+		"cultureMax": 0
 	},
 
 	tabName: 'Workshop',
@@ -2658,7 +2759,15 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			'class': 'bottom-margin'
 		}, this.tabBlockNode);
 
-		this.craftsBlock = dojo.create('table', {id: 'workshopCraftsBlock'}, this.tabBlockNode);
+		this.freeEngineersBlock = dojo.create('div', {
+			id: 'workshopFreeEngineersBlock',
+			innerHTML: 'Free Engineers: <span>0 / 0</span>'
+		}, this.tabBlockNode);
+		this.freeEngineersNode = this.freeEngineersBlock.children[0];
+
+		this.craftsBlock = dojo.create('table', {
+			id: 'workshopCraftsBlock'
+		}, this.tabBlockNode);
 	},
 
 	render: function () {
@@ -2675,15 +2784,15 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 		}
 	},
 
-	get: function(upgradeName) {
+	get: function (upgradeName) {
 		return this.upgradesByName[upgradeName];
 	},
 
-	getCraft: function(craftName) {
+	getCraft: function (craftName) {
 		return this.craftsByName[craftName];
 	},
 
-	getCraftPrice: function(craft) {
+	getCraftPrice: function (craft) {
 		if (craft.name !== "ship") {
 			return craft.prices;
 		}
@@ -2691,11 +2800,10 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 		//special ship hack
 		var prices = dojo.clone(craft.prices);
 		for (var i = prices.length - 1; i >= 0; i--) {
-			if (prices[i].name === "starchart"){
+			if (prices[i].name === "starchart") {
 				prices[i].val = prices[i].val *
-					(1 - this.game.bld.getHyperbolicEffect(
-						this.getEffect("satnavRatio") * this.game.space.getProgram("sattelite").val,
-						0.75));
+					(1 - this.game.getHyperbolicEffect(this.getEffect("satnavRatio") * this.game.space.getProgram("sattelite").val, 0.75));
+				break;
 			}
 		}
 		return prices;
@@ -2704,6 +2812,25 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 	update: function () {
 		this.craftEffectivenessNode.innerHTML = "Craft effectiveness: +" +
 			(this.game.getCraftRatio() * 100).toFixed() + "%";
+
+		var count = 0;
+		for (var i = this.crafts.length - 1; i >= 0; i--) {
+			count += this.crafts[i].value;
+		}
+
+		var engineers = this.game.village.getJob('engineer').value;
+		this.freeEngineers = engineers - count;
+
+		if (isNaN(this.freeEngineers) || this.freeEngineers < 0) { //safe switch
+			for (i = this.crafts.length - 1; i >= 0; i--) {
+				this.crafts[i].set('value', 0);
+			}
+			this.freeEngineers = 0;
+		}
+
+		this.freeEngineersNode.innerHTML = this.freeEngineers + ' / ' + engineers;
+
+		dojo.toggleClass(this.freeEngineersBlock, 'spoiler', !this.game.science.get("mechanization").owned());
 
 		this.effectsBase["scienceMax"] = Math.floor(this.game.resPool.get("compedium").value * 10);
 		this.effectsBase["oilMax"] = Math.floor(this.game.resPool.get("tanker").value * 500);
@@ -2718,13 +2845,22 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 		return num(this.effectsBase[name]);
 	},
 
+	getEffectEngineer: function (resName) {
+		var craft = this.getCraft(resName);
+		var val = 0;
+		if (craft) {
+			val = ((1 / (60 * this.game.rate)) * craft.value / craft.progressHandicap) * this.game.getResCraftRatio({name: resName});
+		}
+		return val;
+	},
+
 	save: function (saveData) {
 		var upgrades = this.game.filterMetadata(this.upgrades, ["name", "unlocked", "researched"]);
-		var crafts = this.game.filterMetadata(this.crafts, ["name", "unlocked"]);
+		var crafts = this.game.filterMetadata(this.crafts, ["name", "unlocked", "value"]);
 
 		saveData.workshop = {
-			upgrades: upgrades,
-			crafts:   crafts,
+			upgrades:       upgrades,
+			crafts:         crafts,
 			hideResearched: Boolean(this.hideResearched)
 		};
 	},
@@ -2738,23 +2874,50 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 
 		this.loadMetaData(saveData.workshop.upgrades, 'get');
 
-		this.loadMetaData(saveData.workshop.crafts, 'getCraft', function (craft, saveCraft) {
-			craft.unlocked = Boolean(saveCraft.unlocked);
-		});
+		this.loadMetaData(saveData.workshop.crafts, 'getCraft');
 	}
 });
 
 
 dojo.declare('classes.KGSaveEdit.CraftMeta', classes.KGSaveEdit.MetaItem, {
+	unlocked: false,
+	value: 0,
+
 	hideEffects: true,
 
 	render: function () {
 		this.domNode = dojo.create('tr', {
 			'class': 'craft',
-			innerHTML: '<td>' + (this.title || this.name) + '</td><td></td><td></td>'
+			innerHTML: '<td>' + (this.label || this.name) + '</td><td></td><td></td><td></td>'
 		});
 		this.nameNode = this.domNode.children[0];
-		this.game._createCheckbox('Unlocked', this.domNode.children[1], this, 'unlocked');
+
+		var input = this.game._createInput({
+			'class': 'integerInput',
+			title: 'Crafting Engineers'
+		}, this.domNode.children[1], this, 'value');
+
+		input.parseFn = function (value) {
+			return Math.min(value, this.metaObj.value + this.game.village.getFreeEngineer());
+		};
+
+		this.game._createLinkList(this, this.domNode.children[2], [
+			{html: '[+]', value: 1},
+			{html: '[+5]', value: 5},
+			{html: '[+25]', value: 25}
+		], function (value) {
+			this.set('value', this.value + value);
+		});
+
+		this.game._createLinkList(this, this.domNode.children[2], [
+			{html: '[-]', value: 1},
+			{html: '[-5]', value: 5},
+			{html: '[-25]', value: 25}
+		], function (value) {
+			this.set('value', this.value - value);
+		});
+
+		this.game._createCheckbox('Unlocked', this.domNode.children[3], this, 'unlocked');
 
 		this.registerHighlight(this.domNode);
 		this.registerTooltip(this.domNode);
@@ -2773,6 +2936,11 @@ dojo.declare('classes.KGSaveEdit.CraftMeta', classes.KGSaveEdit.MetaItem, {
 
 	getPrices: function (simple) {
 		return dojo.clone(simple ? this.prices : this.game.workshop.getCraftPrice(this));
+	},
+
+	load: function (saveCraft) {
+		this.set('unlocked', Boolean(saveCraft.unlocked));
+		this.set('value', num(saveCraft.value));
 	}
 });
 

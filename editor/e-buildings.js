@@ -12,12 +12,15 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "catnip", val: 10}
 			],
 			priceRatio: 1.12,
+			unlockable: true,
+			unlockRatio: 0.3,
 			effects: {
 				"catnipPerTickBase": 0.125
 			},
 			flavor: "'Nip as far as the eye can see."
 		}, {
 			name: "pasture",
+			unlockRatio: 0.3,
 			stage: 0,
 			stages: [{
 				label: "Pasture",
@@ -35,7 +38,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				flavor: "Take a pint o' milk, Sir!"
 			}, {
 				label: "Solar Farm",
-				description: "Provides an additional source of energy.",
+				description: "Provides an additional source of energy depending on the seasons.",
 				prices: [
 					{name: "titanium", val: 250}
 				],
@@ -55,14 +58,17 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 					var effects = {
 						"energyProduction": 2
 					};
-					effects.energyProduction *= 1 + game.workshop.getEffect("solarFarmRatio");
+					effects.energyProduction *= 1 + game.getEffect("solarFarmRatio");
+					if (game.calendar.season === 3) {
+						effects.energyProduction *= 0.75;
+					}
 					stageMeta.effects = effects;
 				}
-				self.effects = stageMeta.effects || {};
 			}
 		}, {
 			name: "aqueduct",
 			label: "Aqueduct",
+			unlockRatio: 0.3,
 			stage: 0,
 			stages: [{
 				label: "Aqueduct",
@@ -92,7 +98,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				}
 			}],
 			requires: {tech: ["engineering"]},
-			calculateEffects: function (self, game) {
+			action: function (self, game) {
 				var stageMeta = self.stages[self.stage];
 				if (self.stage === 0) {
 					//do nothing
@@ -100,10 +106,9 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 					var effects = {
 						"energyProduction": 5
 					};
-					effects.energyProduction *= 1 + game.workshop.getEffect("hydroPlantRatio");
+					effects.energyProduction *= 1 + game.getEffect("hydroPlantRatio");
 					stageMeta.effects = effects;
 				}
-				self.effects = stageMeta.effects || {};
 			}
 		}, {
 			name: "hut",
@@ -113,7 +118,8 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "wood", val: 5}
 			],
 			priceRatio: 2.5,
-			breakIronWill: true,
+			unlockRatio: 0.3,
+			unlockable: true,
 			// unlocks: {tabs: ["village"]},
 			effects: {
 				"maxKittens":  2,
@@ -129,8 +135,8 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "minerals", val: 250}
 			],
 			priceRatio: 1.15,
+			unlockRatio: 0.3,
 			requires: {tech: ["construction"]},
-			breakIronWill: true,
 			effects: {
 				"maxKittens":  1,
 				"manpowerMax": 50
@@ -146,9 +152,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "titanium", val: 25}
 			],
 			priceRatio: 1.15,
-			ignorePriceCheck: true,
 			requires: {tech: ["architecture"]},
-			breakIronWill: true,
 			effects: {
 				"maxKittens":  1,
 				"manpowerMax": 50
@@ -162,15 +166,21 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "wood", val: 25}
 			],
 			priceRatio: 1.15,
+			unlockable: true,
+			unlockRatio: 0.3,
 			// unlocks: {tabs: ["science"], jobs: ["scholar"]},
-			effects: {},
+			effects: {
+				"scienceRatio": 0,
+				"scienceMax":   0,
+				"cultureMax":   0
+			},
 			calculateEffects: function (self, game) {
 				var effects = {
 					"scienceRatio": 0.1,
 					"scienceMax":   250,
 					"cultureMax":   10
 				};
-				var libraryRatio = game.workshop.getEffect("libraryRatio");
+				var libraryRatio = game.getEffect("libraryRatio");
 				effects["scienceMax"] *= 1 + game.bld.get("observatory").val * libraryRatio;
 				self.effects = effects;
 			},
@@ -185,12 +195,13 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "science",  val: 100}
 			],
 			priceRatio: 1.15,
+			unlockRatio: 0.3,
 			requires: {tech: ["math"]},
 			effects: {
 				"scienceRatio": 0.2,
-				"scienceMax":   500,
 				"learnRatio":   0.05,
-				"cultureMax":   25
+				"cultureMax":   25,
+				"scienceMax":   500
 			},
 			flavor: "Curiosity is the basis of science. Our cats died nobly"
 		}, {
@@ -204,15 +215,19 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "science",  val: 1000}
 			],
 			priceRatio: 1.10,
-			ignorePriceCheck: true,
 			requires: {tech: ["astronomy"]},
-			effects: {},
+			effects: {
+				"scienceRatio":          0,
+				"starEventChance":       0,
+				"starAutoSuccessChance": 0,
+				"scienceMax":            0
+			},
 			upgrades: {buildings: ["library"]},
-			calculateEffects: function (self, game) {
+			action: function (self, game) {
 				var effects = {
 					"scienceRatio":          0.25,
-					"starEventChance":       20,
-					"starAutoSuccessChance": 1,
+					"starEventChance":       0.002,
+					"starAutoSuccessChance": 0.01,
 					"scienceMax":            1000
 				};
 
@@ -220,7 +235,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 					effects["scienceMax"] = 1500;
 				}
 
-				var ratio = 1 + game.space.getEffect("observatoryRatio");
+				var ratio = 1 + game.getEffect("observatoryRatio");
 				effects["scienceMax"] *= ratio;
 				effects["scienceRatio"] *= ratio;
 
@@ -237,32 +252,47 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "science", val: 1500}
 			],
 			priceRatio: 1.10,
-			ignorePriceCheck: true,
 			requires: {tech: ["biology"]},
-			enabled: true,
-			effects: {},
+			effects: {
+				"scienceRatio": 0.35,
+				"refineRatio": 0.1,
+				"catnipPerTickCon": 0,
+				"oilPerTickProd": 0,
+				"scienceMax": 1500,
+				"energyConsumption": 0
+			},
 			calculateEffects: function (self, game) {
-				var effects = {
-					"scienceRatio":      0.35,
-					"refineRatio":       0.1,
-					"scienceMax":        1500
-				};
 				self.togglable = false;
-				self.tunable = false;
+				var energyCons = 0;
 
 				if (game.workshop.get("biofuel").owned()) {
 					self.togglable = true;
-					self.tunable = true;
+					energyCons = 1;
 
-					effects["catnipPerTick"] = -1;
-					effects["oilPerTick"] = 0.02 * (1 + game.workshop.getEffect("biofuelRatio"));
-					effects["energyConsumption"] = 1;
+					if (game.challenges.currentChallenge === "energy") {
+						energyCons *= 2;
+					}
 				}
 
-				self.effects = effects;
+				self.effects["energyConsumption"] = energyCons;
 			},
-			flavor: "New postdoc positions available.",
-			exportOn: true
+			action: function (self, game) {
+				if (game.workshop.get("biofuel").owned()) {
+
+					self.effects["catnipPerTickCon"] = -1;
+					self.effects["oilPerTickProd"] = 0.02 * (1 + game.getEffect("biofuelRatio"));
+
+					var amt = game.resPool.getAmtDependsOnStock(
+						[{res: "catnip", amt: -self.effects["catnipPerTickCon"]}],
+						self.on
+					);
+					self.effects["catnipPerTickCon"] *= amt;
+					self.effects["oilPerTickProd"] *= amt;
+
+					return amt;
+				}
+			},
+			flavor: "New postdoc positions available."
 		}, {
 			name: "barn",
 			label: "Barn",
@@ -271,8 +301,17 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "wood", val: 50}
 			],
 			priceRatio: 1.75,
+			unlockRatio: 0.3,
 			requires: {tech: ["agriculture"]},
-			effects: {},
+			effects: {
+				"catnipMax":   0,
+				"woodMax":     0,
+				"mineralsMax": 0,
+				"ironMax":     0,
+				"coalMax":     0,
+				"goldMax":     0,
+				"titaniumMax": 0
+			},
 			calculateEffects: function (self, game) {
 				var effects = {
 					"catnipMax":   5000,
@@ -296,9 +335,16 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "slab", val: 2}
 			],
 			priceRatio: 1.15,
-			ignorePriceCheck: true,
 			requires: {tech: ["construction"]},
-			effects: {},
+			effects: {
+				"catnipMax":   0,
+				"woodMax":     0,
+				"mineralsMax": 0,
+				"ironMax":     0,
+				"coalMax":     0,
+				"goldMax":     0,
+				"titaniumMax": 0
+			},
 			calculateEffects: function (self, game) {
 				var effects = {
 					"catnipMax":   0, //for tooltip order
@@ -327,9 +373,16 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "plate",    val: 75}
 			],
 			priceRatio: 1.15,
-			ignorePriceCheck: true,
 			requires: {tech: ["navigation"]},
-			effects: {},
+			effects: {
+				"catnipMax":   0,
+				"woodMax":     0,
+				"mineralsMax": 0,
+				"ironMax":     0,
+				"coalMax":     0,
+				"goldMax":     0,
+				"titaniumMax": 0
+			},
 			calculateEffects: function (self, game) {
 				var effects = {
 					"catnipMax":   2500,
@@ -341,15 +394,15 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 					"titaniumMax": 50
 				};
 
-				effects["coalMax"] *= 1 + game.workshop.getEffect("harborCoalRatio");
+				effects["coalMax"] *= 1 + game.getEffect("harborCoalRatio");
 
 				var cargoShips = game.workshop.get("cargoShips");
 				if (cargoShips.owned()) {
 					var shipVal = game.resPool.get("ship").value;
 
 					//100% to 225% with slow falldown on the 75%
-					var limit = 2.25 + game.workshop.getEffect("shipLimit") * game.bld.get("reactor").val;
-					var ratio = 1 + game.bld.getHyperbolicEffect(cargoShips.effects["harborRatio"] * shipVal, limit);
+					var limit = 2.25 + game.getEffect("shipLimit") * game.bld.get("reactor").val;
+					var ratio = 1 + game.getHyperbolicEffect(cargoShips.effects["harborRatio"] * shipVal, limit);
 
 					effects["catnipMax"] *=   ratio;
 					effects["woodMax"] *=     ratio;
@@ -374,10 +427,14 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			unlockRatio: 0.15,
 			// unlocks: {jobs: ["miner"]},
 			requires: {tech: ["mining"]},
-			effects: {},
+			effects: {
+				"mineralsRatio":   0,
+				"coalPerTickBase": 0
+			},
 			calculateEffects: function (self, game) {
 				var effects = {
-					"mineralsRatio": 0.2
+					"mineralsRatio":   0.2,
+					"coalPerTickBase": 0
 				};
 
 				if (game.workshop.get("deepMining").owned()) {
@@ -398,6 +455,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "slab",     val: 1000}
 			],
 			priceRatio: 1.15,
+			unlockRatio: 0.3,
 			requires: {tech: ["archeology"]},
 			effects: {
 				"mineralsRatio":   0.35,
@@ -412,45 +470,64 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "minerals", val: 200}
 			],
 			priceRatio: 1.15,
+			unlockRatio: 0.3,
 			requires: {tech: ["metal"]},
-			enabled: false,
 			togglable: true,
-			tunable: true,
 			effects: {
-				"woodPerTick":     -0.05,
-				"mineralsPerTick": -0.1,
-				"ironPerTick":      0.02
+				"woodPerTickCon":         -0.05,
+				"mineralsPerTickCon":     -0.1,
+				"ironPerTickAutoprod":     0.02,
+				"coalPerTickAutoprod":     0,
+				"goldPerTickAutoprod":     0,
+				"titaniumPerTickAutoprod": 0
 			},
 			action: function (self, game) {
-				self.effects = {
-					"woodPerTick":     -0.05,
-					"mineralsPerTick": -0.1,
-					"ironPerTick":      0.02
-				};
-				// TODO: How to integrate autoProdRatio with calculateEffects?
-
-				if (self.getOn() < 1) {
+				var on = this.getOn();
+				if (on < 1) {
 					return;
 				}
 
-				//--------------------------- hack hack hack hack --------------------------------
-				var autoProdRatio = game.bld.getAutoProductionRatio();
-				//--------------------------------------------------------------------------------
+				self.effects = {
+					"woodPerTickCon":          0,
+					"mineralsPerTickCon":      0,
+					"ironPerTickAutoprod":     0.02,
+					"coalPerTickAutoprod":     0,
+					"goldPerTickAutoprod":     0,
+					"titaniumPerTickAutoprod": 0
+				};
 
-				var smelterRatio = 1 + game.workshop.getEffect("smelterRatio");
-				self.effects["ironPerTick"] = 0.02 * smelterRatio * autoProdRatio;
+
+				var smelterRatio = 1 + game.getEffect("smelterRatio");
+				self.effects["ironPerTickAutoprod"] = 0.02 * smelterRatio;
 
 				if (game.workshop.get("goldOre").owned()) {
-					self.effects["goldPerTick"] = 0.001 * autoProdRatio;
+					self.effects["goldPerTickAutoprod"] = 0.001;
 				}
 
 				if (game.workshop.get("coalFurnace").owned()) {
-					self.effects["coalPerTick"] = 0.005 * smelterRatio * autoProdRatio;
+					self.effects["coalPerTickAutoprod"] = 0.005 * smelterRatio;
 				}
 
 				if (game.workshop.get("nuclearSmelters").owned()) {
-					self.effects["titaniumPerTick"] = 0.0015 * autoProdRatio;
+					self.effects["titaniumPerTickAutoprod"] = 0.0015;
 				}
+
+				self.effects["woodPerTickCon"] = -0.05;
+				self.effects["mineralsPerTickCon"] = -0.1;
+
+				var amt = game.resPool.getAmtDependsOnStock(
+					[{res: "wood",    amt: -self.effects["woodPerTickCon"]},
+					{res: "minerals", amt: -self.effects["mineralsPerTickCon"]}],
+					on
+				);
+				self.effects["woodPerTickCon"] *= amt;
+				self.effects["mineralsPerTickCon"] *= amt;
+				self.effects["ironPerTickAutoprod"] *= amt;
+				self.effects["goldPerTickAutoprod"] *= amt;
+				self.effects["coalPerTickAutoprod"] *= amt;
+				self.effects["titaniumPerTickAutoprod"] *= amt;
+
+				return amt;
 			},
 			flavor: "Watch your whiskers!"
 		}, {
@@ -464,47 +541,83 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "oil",       val: 500}
 			],
 			priceRatio: 1.15,
-			ignorePriceCheck: true,
 			requires: {tech: ["chemistry"]},
-			enabled: false,
 			togglable: true,
-			tunable: true,
 			isAutomationEnabled: true,
 			effects: {
-				"mineralsPerTick":  -1.5,
-				"ironPerTick":       0.15,
-				"titaniumPerTick":   0.0005,
-				"oilPerTick":       -0.024,
-				"energyConsumption": 1
+				"mineralsPerTickCon":      0,
+				"oilPerTickCon":           0,
+				"ironPerTickAutoprod":     0.15,
+				"titaniumPerTickAutoprod": 0.0005,
+				"energyConsumption":       0,
+				"ironPerTickCon":          0,
+				"coalPerTickCon":          0,
+				"steelPerTickProd":        0
+			},
+			calculateEffects: function (self, game) {
+				self.effects["energyConsumption"] = 1;
+				if (game.challenges.currentChallenge === "energy") {
+					self.effects["energyConsumption"] *= 2;
+				}
 			},
 			action: function (self, game) {
-				// TODO: How to integrate autoProdRatio with calculateEffects?
-
-				if (self.getOn() < 1) {
+				var on = self.getOn();
+				if (on < 1) {
 					return;
 				}
 
-				self.effects["coalPerTick"] = 0;
-				self.effects["steelPerTick"] = 0;
+				self.effects["oilPerTickCon"] = -0.024; //base + 0.01
+				self.effects["mineralsPerTickCon"] = -1.5;
+				var calcinerRatio = game.getEffect("calcinerRatio");
+				self.effects["titaniumPerTickAutoprod"] = 0.0005 * (1 + calcinerRatio * 3);
+				self.effects["ironPerTickAutoprod"] = 0.15 * (1 + calcinerRatio);
 
-				//--------------------------- hack hack hack hack --------------------------------
-				var autoProdRatio = game.bld.getAutoProductionRatio();
-				//--------------------------------------------------------------------------------
+				var amt = game.resPool.getAmtDependsOnStock(
+					[{res: "oil",     amt: -self.effects["oilPerTickCon"]},
+					{res: "minerals", amt: -self.effects["mineralsPerTickCon"]}],
+					on
+				);
+				self.effects["oilPerTickCon"] *= amt;
+				self.effects["mineralsPerTickCon"] *= amt;
+				self.effects["ironPerTickAutoprod"] *= amt;
+				self.effects["titaniumPerTickAutoprod"] *= amt;
 
-				var calcinerRatio = game.workshop.getEffect("calcinerRatio");
-				self.effects["titaniumPerTick"] = 0.0005 * (1 + calcinerRatio * 3) * autoProdRatio;
-				self.effects["ironPerTick"] = 0.15 * (1 + calcinerRatio) * autoProdRatio;
+				var amtFinal = amt;
 
-				var steelRatio = game.workshop.getEffect("calcinerSteelRatio");
+				var steelRatio = game.getEffect("calcinerSteelRatio");
 
-				if (steelRatio) {
+				if (steelRatio && self.isAutomationEnabled) {
 					// Second conversion of some of the iron that was just created, to steel
-					var newiron = self.effects["ironPerTick"] * (1 - steelRatio);
-					var difference = self.effects["ironPerTick"] - newiron;
-					self.effects["ironPerTick"] = newiron;
-					self.effects["coalPerTick"] = -difference;
-					self.effects["steelPerTick"] = difference / 100;
+					var difference = self.effects["ironPerTickAutoprod"] * steelRatio * game.bld.getAutoProductionRatio(); //HACK
+					// Cycle Effect
+					var effectsTemp = {};
+					effectsTemp["iron"] = difference;
+					game.calendar.cycleEffectsFestival(effectsTemp);
+					difference = effectsTemp["iron"];
+
+					self.effects["ironPerTickCon"] = -difference;
+					self.effects["coalPerTickCon"] = -difference;
+					self.effects["steelPerTickProd"] = difference / 100;
+
+					amt = game.resPool.getAmtDependsOnStock(
+						[{res: "iron", amt: -self.effects["ironPerTickCon"]},
+						{res: "coal",  amt: -self.effects["coalPerTickCon"]}],
+						on
+					);
+					self.effects["ironPerTickCon"] *= amt;
+					self.effects["coalPerTickCon"] *= amt;
+					self.effects["steelPerTickProd"] *= (amt *
+						(1 + game.getCraftRatio() * game.getEffect("calcinerSteelCraftRatio") +
+							game.bld.get("reactor").getOn() * game.getEffect("calcinerSteelReactorBonus")));
+
+					amtFinal = (amtFinal + amt) / 2;
+				} else {
+					self.effects["ironPerTickCon"] = 0;
+					self.effects["coalPerTickCon"] = 0;
+					self.effects["steelPerTickProd"] = 0;
 				}
+
+				return amtFinal;
 			}
 		}, {
 			name: "steamworks",
@@ -516,22 +629,25 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "blueprint", val: 1}
 			],
 			priceRatio: 1.25,
-			ignorePriceCheck: true,
 			requires: {tech: ["machinery"]},
-			enabled: false,
 			togglable: true,
-			effects: {},
+			togglableOnOff: true,
+			effects: {
+				"magnetoBoostRatio":     0.15,
+				"coalRatioGlobal":      -0.8,
+				"energyProduction":      1,
+				"manuscriptPerTickProd": 0
+			},
 			jammed: false,
 			isAutomationEnabled: true,
 			calculateEffects: function (self, game) {
-				var effects = {
-					"coalRatioGlobal":  -0.8, //to be revisited later
-					"magnetoBoostRatio": 0.15,
-					"energyProduction":  1
-				};
+				self.effects["coalRatioGlobal"] = -0.8 + game.getEffect("coalRatioGlobalReduction");
+			},
+			action: function (self, game) {
+				var amt = 0;
 
 				if (game.workshop.get("printingPress").owned()) {
-					var amt = 0.0005; // 2 per year per SW
+					amt = 0.0005; // 2 per year per SW
 
 					if (game.workshop.get("offsetPress").owned()) {
 						amt *= 4;
@@ -539,13 +655,10 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 					if (game.workshop.get("photolithography").owned()) {
 						amt *= 4;
 					}
-					effects["manuscriptPerTick"] = amt;
 				}
+				self.effects["manuscriptPerTickProd"] = amt * self.getOn();
 
-				var coalRatio = game.workshop.getEffect("coalRatioGlobal");
-				effects["coalRatioGlobal"] += coalRatio;
-
-				self.effects = effects;
+				//no factory automation stuff
 			},
 			flavor: "I just nap here and it looks like I'm working"
 		}, {
@@ -558,11 +671,8 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "blueprint", val: 1}
 			],
 			priceRatio: 1.25,
-			ignorePriceCheck: true,
 			requires: {tech: ["electricity"]},
-			enabled: false,
 			togglable: true,
-			tunable: true,
 			effects: {
 				"oilPerTick":      -0.05,
 				"magnetoRatio":     0.02,
@@ -578,17 +688,13 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "minerals", val: 250}
 			],
 			priceRatio: 1.15,
+			unlockRatio: 0.3,
 			requires: {tech: ["construction"]},
-			effects: {},
+			effects: {
+				"woodRatio": 0
+			},
 			calculateEffects: function (self, game) {
-				var effects = {
-					"woodRatio": 0.1
-				};
-
-				var ratio = 1 + game.workshop.getEffect("lumberMillRatio");
-				effects["woodRatio"] *= ratio;
-
-				self.effects = effects;
+				self.effects["woodRatio"] = 0.1 + game.getEffect("lumberMillRatio") * 0.1;
 			},
 			flavor: "Best log analysing tool"
 		}, {
@@ -601,33 +707,35 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "scaffold", val: 25}
 			],
 			priceRatio: 1.15,
-			ignorePriceCheck: true,
 			requires: {tech: ["chemistry"]},
-			effects: {},
+			effects: {
+				"oilPerTickBase":    0,
+				"oilMax":            0,
+				"energyConsumption": 0
+			},
 			calculateEffects: function (self, game) {
 				var effects = {
-					"oilMax":         1500,
-					"oilPerTickBase": 0.02
+					"oilPerTickBase":    0.02,
+					"oilMax":            1500,
+					"energyConsumption": 0
 				};
 
 				self.togglable = false;
-				self.tunable = false;
 
-				var ratio = 1 + game.workshop.getEffect("oilRatio");
+				var ratio = 1 + game.getEffect("oilWellRatio");
 				effects["oilPerTickBase"] *= ratio;
 
 				if (game.workshop.get("pumpjack").owned()) {
 					effects["energyConsumption"] = 1;
+					if (game.challenges.currentChallenge === "energy") {
+						effects["energyConsumption"] *= 2;
+					}
 					self.togglable = true;
-					self.tunable = true;
 				}
 
 				self.effects = effects;
 			},
-			flavor: "Rise early, work hard, strike oil.",
-			exportOn: true,
-			togglable: false,
-			tunable: false,
+			flavor: "Rise early, work hard, strike oil."
 		}, {
 			name: "workshop",
 			label: "Workshop",
@@ -637,15 +745,11 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "minerals", val: 400}
 			],
 			priceRatio: 1.15,
-			ignorePriceCheck: true,
+			unlockable: true,
+			unlockRatio: 0.0025,
 			// unlocks: {tabs: ["workshop"]},
-			effects: {},
-			calculateEffects: function(self, game) {
-				var effects = {
-					"craftRatio" : 0.06 //6% for craft output
-				};
-				effects["keroseneCraftRatio"] = game.workshop.getEffect("factoryRefineRatio");
-				self.effects = effects;
+			effects: {
+				"craftRatio": 0.06 //6% for craft output
 			},
 			flavor: "Free toys for workers"
 		}, {
@@ -658,13 +762,26 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "concrate", val: 15}
 			],
 			priceRatio: 1.15,
-			ignorePriceCheck: true,
 			requires: {tech: ["mechanization"]},
 			togglable: true,
-			tunable: true,
 			effects: {
-				"craftRatio":        0.05,
-				"energyConsumption": 2
+				"craftRatio":        0,
+				"energyConsumption": 0
+			},
+			calculateEffects: function (self, game) {
+				var effects = {
+					"craftRatio": 0.05,
+					"energyConsumption": 2
+				};
+
+				if (game.workshop.get("factoryLogistics").owned()) {
+					effects["craftRatio"] = 0.06;
+				}
+
+				if (game.challenges.currentChallenge === "energy") {
+					effects["energyConsumption"] *= 2;
+				}
+				self.effects = effects;
 			}
 		}, {
 			name: "reactor",
@@ -677,25 +794,36 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "blueprint", val: 25}
 			],
 			priceRatio: 1.15,
-			ignorePriceCheck: true,
 			requires: {tech: ["nuclearFission"]},
 			togglable: true,
-			tunable: true,
-			effects: {},
+			effects: {
+				"uraniumPerTick":   0,
+				"thoriumPerTick":   0,
+				"productionRatio":  0.05,
+				"uraniumMax":       250,
+				"energyProduction": 0
+			},
 			upgrades: {buildings: ["harbor"]},
 			calculateEffects: function (self, game) {
-				var effects = {
-					"uraniumPerTick":  -0.001,
-					"productionRatio":  0.05,
-					"uraniumMax":       250,
-					"energyProduction": 10
-				};
+				self.effects["uraniumPerTick"] = -0.001 * (1 - game.getEffect("uraniumRatio"));
+			},
+			action: function (self, game) {
+				self.effects["thoriumPerTick"] = game.getEffect("reactorThoriumPerTick");
+				self.effects["energyProduction"] = 10 * (1 + game.getEffect("reactorEnergyRatio"));
 
-				effects["uraniumPerTick"] *= (1 - game.workshop.getEffect("uraniumRatio"));
-				effects["energyProduction"] *= (1 + game.workshop.getEffect("reactorEnergyRatio"));
-
-				self.effects = effects;
-			}
+				if (game.workshop.get("thoriumReactors").owned()) {
+					if (typeof(self.isAutomationEnabled) === "undefined") {
+						self.isAutomationEnabled = true;
+					}
+					if (game.resPool.get("thorium").value === 0 || self.isAutomationEnabled === false) {
+						self.effects["thoriumPerTick"] = 0;
+						self.effects["energyProduction"] -= 2.5;
+					}
+				} else {
+					self.isAutomationEnabled = undefined;
+				}
+			},
+			isAutomationEnabled: undefined //yep
 		}, {
 			name: "accelerator",
 			label: "Accelerator",
@@ -706,41 +834,58 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "uranium",  val: 25}
 			],
 			priceRatio: 1.15,
-			ignorePriceCheck: true,
 			requires: {tech: ["particlePhysics"]},
 			togglable: true,
-			tunable: true,
-			effects: {},
+			effects: {
+				"titaniumPerTickCon":     0,
+				"uraniumPerTickAutoprod": 0,
+				"scienceMax":             0,
+				"catnipMax":              0,
+				"woodMax":                0,
+				"mineralsMax":            0,
+				"ironMax":                0,
+				"coalMax":                0,
+				"goldMax":                0,
+				"titaniumMax":            0,
+				"energyConsumption":      0
+			},
 			calculateEffects: function (self, game) {
-				var effects = {
-					"titaniumPerTick":  -0.015,
-					"uraniumPerTick":    0.0025,
-					"energyConsumption": 2
-				};
+				self.effects["energyConsumption"] = 2;
+				if (game.challenges.currentChallenge === "energy") {
+					self.effects["energyConsumption"] *= 2;
+				}
 
+				self.effects["scienceMax"] = 0;
 				if (game.workshop.get("lhc").owned()) {
-					effects["scienceMax"] = 2500;
+					self.effects["scienceMax"] = 2500;
 				}
 
 				//------------- limit upgrades ------------
-				var capRatio = 1 + game.workshop.getEffect("acceleratorRatio");
+				var capRatio = 0;
 				if (game.workshop.get("energyRifts").owned()) {
-					effects["catnipMax"]   = 30000 * capRatio;
-					effects["woodMax"]     = 20000 * capRatio;
-					effects["mineralsMax"] = 25000 * capRatio;
-					effects["ironMax"]     =  7500 * capRatio;
-					effects["coalMax"]     =  2500 * capRatio;
-					effects["goldMax"]     =   250 * capRatio;
-					effects["titaniumMax"] =   750 * capRatio;
+					capRatio = (1 + game.getEffect("acceleratorRatio"));
 				}
 
-				self.effects = effects;
+				self.effects["catnipMax"]   = 30000 * capRatio;
+				self.effects["woodMax"]     = 20000 * capRatio;
+				self.effects["mineralsMax"] = 25000 * capRatio;
+				self.effects["ironMax"]     =  7500 * capRatio;
+				self.effects["coalMax"]     =  2500 * capRatio;
+				self.effects["goldMax"]     =   250 * capRatio;
+				self.effects["titaniumMax"] =   750 * capRatio;
 			},
 			action: function (self, game) {
-				// TODO: How to integrate autoProdRatio with calculateEffects?
+				self.effects["titaniumPerTickCon"] =    -0.015;
+				self.effects["uraniumPerTickAutoprod"] = 0.0025;
 
-				var autoProdRatio = game.bld.getAutoProductionRatio(true);
-				self.effects["uraniumPerTick"] = 0.0025 * autoProdRatio;
+				var amt = game.resPool.getAmtDependsOnStock(
+					[{res: "titanium", amt: -self.effects["titaniumPerTickCon"]}],
+					self.getOn()
+				);
+				self.effects["titaniumPerTickCon"] *= amt;
+				self.effects["uraniumPerTickAutoprod"] *= amt;
+
+				return amt;
 			},
 			flavor: "Large Catron Collider"
 		}, {
@@ -753,15 +898,22 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "gold",     val: 10}
 			],
 			priceRatio: 1.15,
+			unlockRatio: 0.3,
 			requires: {tech: ["currency"]},
-			effects: {},
+			effects: {
+				"fursDemandRatio":  -0.04,
+				"ivoryDemandRatio": -0.04,
+				"spiceDemandRatio": -0.04,
+				"tradeRatio":        0.015,
+				"standingRatio":     0
+			},
 			calculateEffects: function (self, game) {
 				var effects = {
 					"fursDemandRatio":  -0.04,
 					"ivoryDemandRatio": -0.04,
 					"spiceDemandRatio": -0.04,
-					/*"silkDemandRatio":  -0.04,*/
-					"tradeRatio":        0.015
+					"tradeRatio":        0.015,
+					"standingRatio":     0
 				};
 
 				var seri = game.workshop.get("caravanserai");
@@ -782,36 +934,52 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "gold",     val: 500}
 			],
 			priceRatio: 1.15,
-			ignorePriceCheck: true,
 			requires: {tech: ["architecture"]},
-			enabled: false,
 			togglable: true,
-			tunable: true,
-			effects: {},
+			effects: {
+				"manpowerPerTickCon": 0,
+				"goldPerTickCon":     0,
+				"fursPerTickProd":    0,
+				"ivoryPerTickProd":   0,
+				"goldMax":            0
+			},
 			calculateEffects: function (self, game) {
 				self.effects = {
-					"mintEffect":       0.007,
-					"manpowerPerTick": -0.75,
-					"goldPerTick":     -0.005, //~5 smelters
-					"goldMax":          100 * (1 + game.workshop.getEffect("warehouseRatio"))
+					"manpowerPerTickCon": 0,
+					"goldPerTickCon":     0,
+					"fursPerTickProd":    0,
+					"ivoryPerTickProd":   0,
+					"goldMax":            100 * (1 + game.getEffect("warehouseRatio"))
 				};
 			},
 			action: function (self, game) {
-				// TODO: How to integrate max manpower with calculateEffects?
-
-				if (self.getOn() < 1) {
+				var on = self.getOn();
+				if (on < 1) {
 					return;
 				}
+				self.effects["manpowerPerTickCon"] = -0.75;
+				self.effects["goldPerTickCon"] =     -0.005; //~5 smelters
 
 				var manpower = game.resPool.get("manpower");
-				var mpratio = (manpower.maxValue * self.effects["mintEffect"]) / 100;
+				var mpratio = (manpower.maxValue * 0.007) / 100;
 
-				self.effects["fursPerTick"]  = mpratio * 1.25; //2
-				self.effects["ivoryPerTick"] = mpratio * 0.3;  //1.5
+				self.effects["fursPerTickProd"]  = mpratio * 1.25;	//2
+				self.effects["ivoryPerTickProd"] = mpratio * 0.3;	//1.5
+
+				var amt = game.resPool.getAmtDependsOnStock(
+					[{res: "manpower", amt: -self.effects["manpowerPerTickCon"]},
+					{res: "gold",      amt: -self.effects["goldPerTickCon"]}],
+					on
+				);
+				self.effects["manpowerPerTickCon"] *= amt;
+				self.effects["goldPerTickCon"] *= amt;
+				self.effects["fursPerTickProd"] *= amt;
+				self.effects["ivoryPerTickProd"] *= amt;
+
+				return amt;
 			}
 		}, {
 			name: "amphitheatre",
-			ignorePriceCheck: true,
 			stage: 0,
 			stages: [{
 				label: "Amphitheatre",
@@ -851,7 +1019,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				//very ugly and crappy stuff
 				var btower = self.stages[1];
 
-				btower.effects["cultureMax"] = 300;
+				btower.effects["cultureMax"] =         300;
 				btower.effects["culturePerTickBase"] = 1;
 
 				var energyRatio = (game.resPool.energyProd / game.resPool.energyCons);
@@ -859,17 +1027,15 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 					if (energyRatio > 1.75) {
 						energyRatio = 1.75;
 					}
-					btower.effects["cultureMax"] = Math.floor(300 * energyRatio);
-					btower.effects["culturePerTickBase"] = Math.floor(1 * energyRatio);
+					btower.effects["cultureMax"] = Math.floor((300 * energyRatio) * 1000) / 1000;
+					btower.effects["culturePerTickBase"] = Math.floor((1 * energyRatio) * 1000) / 1000;
 				}
 
-				var broadcastTowerRatio = game.workshop.getEffect("broadcastTowerRatio");
-				var totalRatio = game.space.getProgram("sattelite").val * broadcastTowerRatio;
+				var broadcastTowerRatio = game.getEffect("broadcastTowerRatio");
+				var totalRatio = game.space.getProgram("sattelite").getOn() * broadcastTowerRatio;
 
 				btower.effects["cultureMax"] *= (1 + totalRatio);
 				btower.effects["culturePerTickBase"] *= (1 + totalRatio);
-
-				self.effects = self.stages[self.stage].effects || {};
 			}
 		}, {
 			name: "chapel",
@@ -881,12 +1047,22 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "parchment", val: 250}
 			],
 			priceRatio: 1.15,
-			ignorePriceCheck: true,
 			requires: {tech: ["acoustics"]},
 			effects: {
-				"culturePerTickBase": 0.05,
-				"faithPerTickBase":   0.005,
-				"cultureMax":         200
+				"culturePerTickBase": 0,
+				"faithPerTickBase":   0,
+				"cultureMax":         0
+			},
+			calculateEffects: function (self, game) {
+				var effects = {
+					"culturePerTickBase": 0.05,
+					"faithPerTickBase":   0,
+					"cultureMax":         200
+				};
+				if (game.challenges.currentChallenge !== 'atheism') {
+					effects["faithPerTickBase"] = 0.005;
+				}
+				self.effects = effects;
 			}
 		}, {
 			name: "temple",
@@ -899,50 +1075,66 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "manuscript", val: 10}
 			],
 			priceRatio: 1.15,
-			ignorePriceCheck: true,
 			requires: {tech: ["philosophy"]},
-			effects: {},
+			effects: {
+				"culturePerTickBase": 0,
+				"faithPerTickBase":   0,
+				"happiness":          0,
+				"manpowerMax":        0,
+				"scienceMax":         0,
+				"cultureMax":         0,
+				"faithMax":           0
+			},
 			calculateEffects: function (self, game) {
 				var effects = {
 					"culturePerTickBase": 0.1,
-					"faithMax":           100
+					"faithPerTickBase":   0,
+					"happiness":          0,
+					"manpowerMax":        0,
+					"scienceMax":         0,
+					"cultureMax":         0,
+					"faithMax":           0
 				};
 
-				var theology = game.science.get("theology");
-				if (theology.owned()) {
-					effects["faithPerTickBase"] = 0.0015;
-				}
+				if (game.challenges.currentChallenge !== 'atheism') {
+					effects['faithMax'] = 100;
 
-				var stainedGlass = game.religion.getRU("stainedGlass");
-				if (stainedGlass.owned()) {
-					effects["culturePerTickBase"] += 0.05 * stainedGlass.val;
-				}
+					var theology = game.science.get("theology");
+					if (theology.owned()) {
+						effects["faithPerTickBase"] = 0.0015;
+					}
 
-				var scholastics = game.religion.getRU("scholasticism");
-				if (scholastics.owned()) {
-					effects["scienceMax"] = 400 + 100 * scholastics.val;
-				}
+					var stainedGlass = game.religion.getRU("stainedGlass");
+					if (stainedGlass.owned()) {
+						effects["culturePerTickBase"] += 0.05 * stainedGlass.val;
+					}
 
-				var sunAltar = game.religion.getRU("sunAltar");
-				if (sunAltar.owned()) {
-					effects["faithMax"] += 50 * sunAltar.val;
-					effects["happiness"] = 0.4 + 0.1 * sunAltar.val;
-				}
+					var scholastics = game.religion.getRU("scholasticism");
+					if (scholastics.owned()) {
+						effects["scienceMax"] = 400 + 100 * scholastics.val;
+					}
 
-				var goldenSpire = game.religion.getRU("goldenSpire");
-				if (goldenSpire.owned()) {
-					effects["faithMax"] *= (1 + (0.4 + 0.1 * goldenSpire.val));
-				}
+					var sunAltar = game.religion.getRU("sunAltar");
+					if (sunAltar.owned()) {
+						effects["faithMax"] += 50 * sunAltar.val;
+						effects["happiness"] = 0.4 + 0.1 * sunAltar.val;
+					}
 
-				var basilica = game.religion.getRU("basilica");
-				if (basilica.owned()) {
-					effects["cultureMax"] = 75 + 50 * basilica.val;
-					effects["culturePerTickBase"] += 0.2 + 0.05 * (basilica.val - 1);
-				}
+					var goldenSpire = game.religion.getRU("goldenSpire");
+					if (goldenSpire.owned()) {
+						effects["faithMax"] *= (1 + (0.4 + 0.1 * goldenSpire.val));
+					}
 
-				var templars = game.religion.getRU("templars");
-				if (templars.owned()) {
-					effects["manpowerMax"] = 50 + 25 * templars.val;
+					var basilica = game.religion.getRU("basilica");
+					if (basilica.owned()) {
+						effects["cultureMax"] = 75 + 50 * basilica.val;
+						effects["culturePerTickBase"] += 0.2 + 0.05 * (basilica.val - 1);
+					}
+
+					var templars = game.religion.getRU("templars");
+					if (templars.owned()) {
+						effects["manpowerMax"] = 50 + 25 * templars.val;
+					}
 				}
 
 				self.effects = effects;
@@ -956,6 +1148,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "unicorns", val: 2}
 			],
 			priceRatio: 1.75,
+			unlockRatio: 0.3,
 			requires: {tech: ["animal"]},
 			effects: {
 				"catnipDemandRatio":  -0.0015,
@@ -975,7 +1168,12 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			unlockRatio: 0.01,
 			requires: {tech: ["construction"]},
 			effects: {
-				"cultureMaxRatio": 0.1
+				"cultureMaxRatio": 0.08
+			},
+			calculateEffects: function (self, game) {
+				self.effects = {
+					cultureMaxRatio: 0.08 + game.getEffect("cultureMaxRatioBonus")
+				};
 			}
 		}, {
 			name: "chronosphere",
@@ -988,11 +1186,21 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				{name: "science",     val: 250000}
 			],
 			priceRatio: 1.25,
-			ignorePriceCheck: true,
 			requires: {tech: ["chronophysics"]},
 			effects: {
-				"resStasisRatio":    0.015,
-				"energyConsumption": 20
+				"resStasisRatio":     0,
+				"energyConsumption": 0
+			},
+			upgrades: {voidSpace: ["cryochambers"]},
+			calculateEffects: function (self, game) {
+				var effects = {
+					"resStasisRatio":    0.015, //1.5% of resources will be preserved
+					"energyConsumption": 20
+				};
+				if (game.challenges.currentChallenge === "energy") {
+					effects["energyConsumption"] *= 2;
+				}
+				self.effects = effects;
 			}
 	}],
 
@@ -1130,9 +1338,9 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			this.buildingsNames.push(bld.name);
 			this.buildingGroups.all.buildings.push(bld.name);
 
-			if (bld.breakIronWill) {
-				game.breaksIronWillList.push(bld);
-			} else {
+			var effects = bld.get('effects') || {};
+
+			if (!('maxKittens' in effects)) {
 				this.buildingGroups.iw.buildings.push(bld.name);
 			}
 		});
@@ -1236,15 +1444,15 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			"cultureMax":     100,
 			"uraniumMax":     250,
 			"unobtainiumMax": 150,
-			"antimatterMax":  1000
+			"antimatterMax":  100
 		};
 
-		if (this.game.ironWill){
-			if (this.game.workshop.get("huntingArmor").owned()){
+		if (this.game.ironWill) {
+			if (this.game.workshop.get("huntingArmor").owned()) {
 				effects["manpowerMax"] = 1000;
-			} else if (this.game.workshop.get("bolas").owned()){
+			} else if (this.game.workshop.get("bolas").owned()) {
 				effects["manpowerMax"] = 400;
-			} else if (this.game.workshop.get("compositeBow").owned()){
+			} else if (this.game.workshop.get("compositeBow").owned()) {
 				effects["manpowerMax"] = 200;
 			}
 		}
@@ -1252,14 +1460,14 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 		this.effectsBase = this.game.resPool.addBarnWarehouseRatio(effects);
 	},
 
-	getEffect: function(name, isHyperbolic) {
+	getEffect: function (name) {
 		var totalEffect = num(this.getEffectBase(name) + this.getEffectCached(name));
 
 		// Previously, catnip demand (or other buildings that both effected the same resource)
 		// could have theoretically had more than 100% reduction because they diminished separately,
 		// this takes the total effect and diminishes it as a whole.
-		if (isHyperbolic && totalEffect < 0) {
-			totalEffect = this.getHyperbolicEffect(totalEffect, 1.0);
+		if (this.game.isHyperbolic(name) && totalEffect < 0) {
+			totalEffect = this.game.getHyperbolicEffect(totalEffect, 1.0);
 		}
 
 		//probably not the best place to handle this mechanics
@@ -1310,37 +1518,21 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 		return autoProdRatio;
 	},
 
-	getHyperbolicEffect: function (effect, limit) {
-		var absEffect = Math.abs(effect);
-		var maxUndiminished = 0.75 * limit; //first 75% is free from diminishing returns
-		if (absEffect <= maxUndiminished) {
-			//Not high enough for diminishing returns to apply
-			return effect < 0 ? -absEffect : absEffect;
-		}
-
-		var diminishedPortion = absEffect - maxUndiminished;
-		var delta = 0.25 * limit; //Lower values will approach 1 more quickly.
-		// The last 25% will approach .25 but cannot actually reach it
-		var diminishedEffect = (1 - (delta / (diminishedPortion + delta))) * 0.25 * limit;
-		var totalEffect = maxUndiminished + diminishedEffect;
-		return effect < 0 ? -totalEffect : totalEffect;
-	},
-
-	getPriceRatio: function(bldName) {
+	getPriceRatio: function (bldName) {
 		var bld = this.getBuilding(bldName);
 		var ratio = bld.get('priceRatio');
 
 		var ratioBase = ratio - 1;
 
-		var ratioDiff = this.game.workshop.getEffect(bldName + "PriceRatio") || 0;
-		ratioDiff += this.game.prestige.getEffect("priceRatio") || 0;
+		var ratioDiff = this.game.getEffect(bldName + "PriceRatio") || 0;
+		ratioDiff += this.game.getEffect("priceRatio") || 0;
 
-		ratioDiff = this.getHyperbolicEffect(ratioDiff, ratioBase);
+		ratioDiff = this.game.getHyperbolicEffect(ratioDiff, ratioBase);
 
 		return ratio + ratioDiff;
 	},
 
-	getPrices: function(bldName, base) {
+	getPrices: function (bldName, base) {
 		return this.getBuilding(bldName).getPrices(base);
 	},
 
@@ -1368,8 +1560,9 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 
 	val: 0,
 	on: 0,
+	unlockable: false,
 	togglable: false,
-	tunable: false,
+	togglableOnOff: false,
 
 	constructor: function () { },
 
@@ -1424,10 +1617,9 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 			title: 'Number of active buildings'
 		}, this.onNodeSpan, this, 'on', 'first');
 
-		this.game._createInput({
-			'class': 'integerInput ownedInput',
+		this.game._createValInput({
 			title: 'Number of buildings'
-		}, this.domNode.children[1], this, 'val');
+		}, this.domNode.children[1], this);
 
 		this.toggleNode = dojo.create('input', {
 			type: 'button',
@@ -1435,14 +1627,15 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 			title: 'Toggle building'
 		}, this.domNode.children[2]);
 		on(this.toggleNode, 'click', function () {
-			self.enabled = !self.enabled;
+			self.set('on', self.on > 0 ? 0 : self.val);
 			self.game.update();
 		});
 
 		this.game._createCheckbox('Unlocked', this.domNode.children[3], this, 'unlocked');
 
 		if ('isAutomationEnabled' in this) {
-			this.game._createCheckbox('Automation on', this.domNode.children[3], this, 'isAutomationEnabled');
+			var input = this.game._createCheckbox('Automation on', this.domNode.children[3], this, 'isAutomationEnabled');
+			this.isAutomationEnabledLabel = input.label;
 		}
 
 		if ('jammed' in this) {
@@ -1482,7 +1675,15 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	getName: function () {
-		return (this.get('label') || this.get('name')) + ' (' + this.val + ')';
+		var name = this.get('label') || this.get('name');
+		var paren = '';
+		if (this.val > 0) {
+			paren = ' (' + this.val + ')';
+			if (this.togglable && !this.togglableOnOff) {
+				paren = ' (' + this.getOn() + '/' + this.val + ')';
+			}
+		}
+		return name + paren;
 	},
 
 	getDescription: function () {
@@ -1505,37 +1706,45 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 		return prices;
 	},
 
-	getEffect: function (name) {
-		var effects = this.effects || {};
-		var effect = num(effects[name]);
+	getEffect: function (effectName) {
+		var effects = this.get('effects') || {};
+		var effect;
 
-		if (this.togglable && name.slice(-3) !== 'Max' &&
-		!(this.name === 'biolab' && name.slice(-5) === 'Ratio')) {
-			effect *= this.getOn();
+		if (name === "coalRatioGlobal") {
+			effect = effects[effectName];
+		// Max effects and Ratio effects depends on constructed buildings
+		} else if (
+			effectName.indexOf("Max", effectName.length - 3) != -1 ||
+			effectName.indexOf("Ratio", effectName.length - 5) != -1
+		) {
+			effect = effects[effectName] * this.val;
 		} else {
-			effect *= this.val;
+			effect = effects[effectName] * this.getOn();
 		}
 
-		return effect;
+		return num(effect);
 	},
 
 	getOn: function () {
 		if (!this.togglable) {
-			return 0;
-		}
-		if (!this.tunable) {
-			return this.enabled ? this.val : 0;
+			return this.val;
+		} else if (this.togglableOnOff) {
+			return this.on > 0 ? this.val : 0;
 		}
 		return Math.min(this.on, this.val) || 0;
 	},
 
 	update: function () {
-		dojo.toggleClass(this.nameNode, 'btnEnabled',
-			Boolean(this.togglable && (this.enabled || this.getOn() > 0)));
+		if (!this.togglable) {
+			this.set('on', this.val);
+		}
+		var on = this.getOn();
 
-		dojo.toggleClass(this.onNodeSpan, 'hidden', !this.togglable || !this.tunable);
-		dojo.toggleClass(this.toggleNode, 'hidden', !this.togglable || this.tunable);
-		this.toggleNode.value = this.enabled ? 'Off' : 'On';
+		dojo.toggleClass(this.nameNode, 'btnEnabled', this.togglable && on > 0);
+
+		dojo.toggleClass(this.onNodeSpan, 'hidden', !this.togglable || this.togglableOnOff);
+		dojo.toggleClass(this.toggleNode, 'hidden', !this.togglableOnOff);
+		this.toggleNode.value = on > 0 ? 'Off' : 'On';
 
 		if (this.stages) {
 			var len = this.stages.length - 1;
@@ -1555,39 +1764,46 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 		this.nameNode.textContent = this.get('label') || this.get('name');
 		this.updateEnabled();
 
-		var activeGroup = this.game.bld.activeGroup;
-		dojo.toggleClass(this.domNode, 'hidden',
-			activeGroup.buildings.indexOf(this.name) < 0);
-
-		if (this.action) {
-			this.action(this, this.game);
+		if (this.isAutomationEnabledLabel) {
+			dojo.toggleClass(this.isAutomationEnabledLabel, 'hidden', this.isAutomationEnabled === undefined);
 		}
+
+		var activeGroup = this.game.bld.activeGroup;
+		dojo.toggleClass(this.domNode, 'hidden', activeGroup.buildings.indexOf(this.name) < 0);
+
+		if (this.action && on > 0) {
+			var amt = this.action(this, this.game);
+			if (amt !== undefined) {
+				this.lackResConvert = amt !== 1;
+			}
+		}
+		dojo.toggleClass(this.nameNode, 'btnLackResConvert', Boolean(this.lackResConvert));
 	},
 
 	updateUnlocked: function () {
-		var unlocked = this.ignorePriceCheck;
+		this.unlockable = this.game.checkRequirements(this, true);
 
-		if (!this.ignorePriceCheck) {
-			var prices = this.getPrices(true);
-			var unlockRatio = this.get('unlockRatio') || 0.3;
+		var unlocked = this.unlockable;
+		var unlockRatio = this.get('unlockRatio');
+
+		var prices = this.getPrices(true);
+		if (this.unlockable && prices.length && unlockRatio) {
 			unlocked = this.game.resPool.hasRes(prices, unlockRatio);
 		}
 		var disable = unlocked;
 
-		var req = this.game.checkRequirements(this, true);
-		if (!req) {
-			unlocked = false;
-			disable = true;
+		this.set('unlocked', unlocked || this.unlockedNode.prevChecked, true);
+		if (this.unlockable && !this.unlocked) {
+			this.unlockedNode.indeterminate = true;
 		}
 
-		this.set('unlocked', unlocked || (this.unlockedNode.prevChecked && req), true);
 		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
 		this.game.toggleDisabled(this.unlockedNode, disable);
 	},
 
 	save: function () {
-		var saveData = this.game.filterMetaObj(this, ["name", "unlocked", "enabled", "val", "on", "stage", "jammed", "isAutomationEnabled"]);
-		saveData.on = this.togglable || this.exportOn ? this.getOn() : undefined;
+		var saveData = this.game.filterMetaObj(this, ["name", "unlockable", "unlocked", "val", "on", "stage", "jammed", "isAutomationEnabled"]);
+		saveData.on = this.getOn();
 
 		return saveData;
 	},
@@ -1596,7 +1812,6 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 		this.set('val', num(saveBld.val));
 		this.set('unlocked', saveBld.unlocked);
 		this.set('on', num(saveBld.on));
-		this.enabled = saveBld.enabled;
 
 		if (this.isAutomationEnabledNode) {
 			this.set("isAutomationEnabled", saveBld.isAutomationEnabled);
@@ -1613,7 +1828,7 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	programData: [{
 			name: "orbitalLaunch",
-			title: "Orbital Launch",
+			label: "Orbital Launch",
 			description: "Launch a rocket to a space.",
 			prices: [
 				{name: "starchart", val: 250},
@@ -1621,11 +1836,12 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 100000},
 				{name: "oil",       val: 15000}
 			],
-			// unlocks: {planet: "cath", programs: ["moonMission"]}
-			unlocked: true
+			// unlocks: {planet: ["cath"], spaceMission: ["moonMission"]}
+			unlocked: true,
+			upgradable: false
 		}, {
 			name: "moonMission",
-			title: "Moon Mission",
+			label: "Moon Mission",
 			description: "Launch a rocket to Redmoon, a Cath planet satellite",
 			prices: [
 				{name: "starchart", val: 500},
@@ -1633,12 +1849,12 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 125000},
 				{name: "oil",       val: 45000}
 			],
-			// unlocks: {planet: "moon", programs: ["duneMission", "piscineMission"]}
+			// unlocks: {planet: ["moon"], spaceMission: ["duneMission", "piscineMission"]}
 			requires: {program: ["orbitalLaunch"]},
 			upgradable: false
 		}, {
 			name: "duneMission",
-			title: "Dune Mission",
+			label: "Dune Mission",
 			description: "Dune is a large and lifeless planet covered by sand and volcanic rock.",
 			prices: [
 				{name: "starchart", val: 1000},
@@ -1646,12 +1862,12 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 175000},
 				{name: "kerosene",  val: 75}
 			],
-			// unlocks: {planet: "dune", programs: ["heliosMission"]},
+			// unlocks: {planet: ["dune"], spaceMission: ["heliosMission"]},
 			requires: {program: ["moonMission"]},
 			upgradable: false
 		}, {
 			name: "piscineMission",
-			title: "Piscine Mission",
+			label: "Piscine Mission",
 			description: "Piscine is a gigantic aquatic planet composed of an acid body and a methane atmosphere",
 			prices: [
 				{name: "starchart", val: 1500},
@@ -1659,12 +1875,12 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 200000},
 				{name: "kerosene",  val: 250}
 			],
-			// unlocks: {planet: "piscine", programs: ["terminusMission"]},
+			// unlocks: {planet: ["piscine"], spaceMission: ["terminusMission"]},
 			requires: {program: ["moonMission"]},
 			upgradable: false
 		}, {
 			name: "heliosMission",
-			title: "Helios Mission",
+			label: "Helios Mission",
 			description: "Helios is a G2V spectral type star in the center of the Cath solar system.",
 			prices: [
 				{name: "starchart", val: 3000},
@@ -1672,12 +1888,12 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 250000},
 				{name: "kerosene",  val: 1250}
 			],
-			// unlocks: {planet: "helios", programs: ["yarnMission"]},
+			// unlocks: {planet: ["helios"], spaceMission: ["yarnMission"]},
 			requires: {program: ["duneMission"]},
 			upgradable: false
 		}, {
 			name: "terminusMission",
-			title: "T-minus Mission",
+			label: "T-minus Mission",
 			description: "Terminus is a supermassive ice giant at the far end of a Helios solar system.",
 			prices: [
 				{name: "starchart", val: 2500},
@@ -1685,12 +1901,12 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 225000},
 				{name: "kerosene",  val: 750}
 			],
-			// unlocks: {planet: "terminus", programs: ["kairoMission"]},
+			// unlocks: {planet: ["terminus"], spaceMission: ["kairoMission"]},
 			requires: {program: ["piscineMission"]},
 			upgradable: false
 		}, {
 			name: "kairoMission",
-			title: "Kairo Mission",
+			label: "Kairo Mission",
 			description: "Kairo is a dwarf planet in the far end of the Cath solar system.",
 			prices: [
 				{name: "starchart", val: 5000},
@@ -1698,12 +1914,12 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 300000},
 				{name: "kerosene",  val: 7500}
 			],
-			// unlocks: {planet: "kairo", programs: ["rorschachMission"]},
+			// unlocks: {planet: ["kairo"], spaceMission: ["rorschachMission"]},
 			requires: {program: ["terminusMission"]},
 			upgradable: false
 		}, {
 			name: "rorschachMission",
-			title: "???",
+			label: "???",
 			description: "???",
 			prices: [
 				{name: "starchart", val: 15000},
@@ -1711,11 +1927,12 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 500000},
 				{name: "kerosene",  val: 25000}
 			],
+			// unlocks: {spaceMission: ["centaurusSystemMission"]},
 			requires: {program: ["kairoMission"]},
 			upgradable: false
 		}, {
 			name: "yarnMission",
-			title: "Yarn Mission",
+			label: "Yarn Mission",
 			description: "Yarn is a class M planet with high moderate climate, seas and oxygen atmosphere.",
 			prices: [
 				{name: "starchart", val: 7500},
@@ -1723,325 +1940,365 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 350000},
 				{name: "kerosene",  val: 12000}
 			],
-			// unlocks: {planet: "yarn"},
+			// unlocks: {planet: ["yarn"]},
 			requires: {program: ["heliosMission"]},
+			upgradable: false
+		}, {
+			name: "centaurusSystemMission",
+			label: "Centaurus System Mission",
+			description: "Centaurus System is a warm faraway star system.",
+			prices: [
+				{name: "starchart", val: 100000},
+				{name: "titanium", 	val: 40000},
+				{name: "science", 	val: 400000},
+				{name: "kerosene", 	val: 30000},
+				{name: "thorium",   val: 50000}
+			],
+			// unlocks: {planet: ["centaurusSystem"]},
+			requires: {program: ["rorschachMission"]},
 			upgradable: false
 	}],
 
 	planetData: [{
 			name: "cath",
-			title: "Cath",
+			label: "Cath",
+			routeDays: 0,
 			buildings: [{
-				name: "spaceElevator",
-				title: "Space Elevator",
-				description: "Every S. Elevator reduces oil requirements for space missions by 5%",
-				prices: [
-					{name: "titanium",    val: 6000},
-					{name: "science",     val: 75000},
-					{name: "unobtainium", val: 50}
-				],
-				priceRatio: 1.15,
-				requires: {tech: ["orbitalEngineering", "nanotechnology"]},
-				upgradable: true,
-				togglable: false,
-				tunable: false,
-				effects: {},
-				calculateEffects: function (game, self) {
-					self.effects = {
-						"oilReductionRatio": 0.05,
-						"spaceRatio":        0.1,
-						"prodTransferBonus": 0.1
-					};
-				}
-			}, {
-				name: "sattelite",
-				title: "Satellite",
-				description: "Deploy a satellite. Satellites improve your observatory effectiveness by 5% and produce starcharts",
-				prices: [
-					{name: "starchart", val: 325},
-					{name: "titanium",  val: 2500},
-					{name: "science",   val: 100000},
-					{name: "oil",       val: 15000}
-				],
-				priceRatio: 1.08,
-				requires: {tech: ["sattelites"]},
-				upgradable: true,
-				togglable: true,
-				tunable: true,
-				effects: {
-					"observatoryRatio":     0.05,
-					"starchartPerTickBase": 0.001,
-					"energyConsumption":    1
-				},
-				upgrades: {buildings: ["observatory"]},
-				calculateEffects: function (game, self) {
-					self.effects = {
-						"observatoryRatio": 0.05,
-						"starchartPerTickBase": 0.001 * game.space.getAutoProductionRatio(),
-						"energyConsumption": 1,
-						"energyProduction": 0
-					};
-
-					self.togglable = true;
-					self.tunable = true;
-
-					if (game.workshop.get("solarSatellites").owned()) {
-						self.effects["energyConsumption"] = 0;
-						self.effects["energyProduction"] = 1;
-						self.togglable = false;
-						self.tunable = false;
+					name: "spaceElevator",
+					label: "Space Elevator",
+					description: "Every S. Elevator reduces oil requirements for space missions by 5%",
+					prices: [
+						{name: "titanium",    val: 6000},
+						{name: "science",     val: 75000},
+						{name: "unobtainium", val: 50}
+					],
+					priceRatio: 1.15,
+					requires: {tech: ["orbitalEngineering", "nanotechnology"]},
+					effects: {
+						"oilReductionRatio": 0,
+						"spaceRatio":        0,
+						"prodTransferBonus": 0
+					},
+					calculateEffects: function (self) {
+						self.effects = {
+							"oilReductionRatio": 0.05,
+							"spaceRatio":        0.01,
+							"prodTransferBonus": 0.001
+						};
 					}
-				},
-				exportOn: true
-			}, {
-				name: "spaceStation",
-				title: "Space Station",
-				description: "Deploy a space station. Each station generates science and provide a space for 2 astronauts",
-				prices: [
-					{name: "starchart", val: 425},
-					{name: "alloy",     val: 750},
-					{name: "science",   val: 150000},
-					{name: "oil",       val: 35000}
-				],
-				priceRatio: 1.12,
-				requires: {tech: ["orbitalEngineering"]},
-				upgradable: true,
-				togglable: true,
-				tunable: true,
-				breakIronWill: true,
-				effects: {},
-				calculateEffects: function (game, self) {
-					self.effects = {
-						"scienceRatio":      0.5,
-						"maxKittens":        2,
-						"energyConsumption": 10
-					};
-				}
+				}, {
+					name: "sattelite",
+					label: "Satellite",
+					description: "Deploy a satellite. Satellites improve your observatory effectiveness by 5% and produce starcharts",
+					prices: [
+						{name: "starchart", val: 325},
+						{name: "titanium",  val: 2500},
+						{name: "science",   val: 100000},
+						{name: "oil",       val: 15000}
+					],
+					priceRatio: 1.08,
+					requires: {tech: ["sattelites"]},
+					togglable: true,
+					effects: {
+						"observatoryRatio":          0,
+						"starchartPerTickBaseSpace": 0,
+						"energyConsumption":         0,
+						"energyProduction":          0
+					},
+					upgrades: {buildings: ["observatory"]},
+					calculateEffects: function (self, game) {
+						self.effects = {
+							"observatoryRatio":          0.05,
+							"starchartPerTickBaseSpace": 0.001,
+							"energyConsumption":         0,
+							"energyProduction":          0
+						};
+
+						self.togglable = true;
+
+
+						if (game.workshop.get("solarSatellites").owned()) {
+							self.effects["energyProduction"] = 1;
+							self.togglable = false;
+						} else {
+							self.effects["energyConsumption"] = 1;
+							if (game.challenges.currentChallenge === "energy") {
+								self.effects["energyConsumption"] *= 2;
+							}
+						}
+					}
+				}, {
+					name: "spaceStation",
+					label: "Space Station",
+					description: "Deploy a space station. Each station generates science and provide a space for 2 astronauts",
+					prices: [
+						{name: "starchart", val: 425},
+						{name: "alloy",     val: 750},
+						{name: "science",   val: 150000},
+						{name: "oil",       val: 35000}
+					],
+					priceRatio: 1.12,
+					requires: {tech: ["orbitalEngineering"]},
+					togglable: true,
+					effects: {
+						"maxKittens":        0,
+						"scienceRatio":      0,
+						"energyConsumption": 0
+					},
+					calculateEffects: function (self, game) {
+						self.effects = {
+							"scienceRatio":      0.5,
+							"maxKittens":        2,
+							"energyConsumption": 10
+						};
+						if (game.challenges.currentChallenge === "energy") {
+							self.effects["energyConsumption"] *= 2;
+						}
+					}
 			}],
 			requires: {program: ["orbitalLaunch"]}
 		}, {
 			name: "moon",
-			title: "Moon",
+			label: "Moon",
+			routeDays: 3,
 			buildings: [{
-				name: "moonOutpost",
-				title: "Lunar Outpost",
-				description: "Deploy a nuclear powered mining outpost on Redmoon",
-				prices: [
-					{name: "starchart", val: 650},
-					{name: "uranium",   val: 500},
-					{name: "alloy",     val: 750},
-					{name: "concrate",  val: 150},
-					{name: "science",   val: 100000},
-					{name: "oil",       val: 55000}
-				],
-				priceRatio: 1.12,
-				unlocked: true,
-				upgradable: true,
-				togglable: true,
-				tunable: true,
-				effects: {},
-				calculateEffects: function(game, self) {
-					self.effects = {
-						"uraniumPerTick":    -0.35,
-						"unobtainiumPerTick": 0.007 *
-							game.space.getAutoProductionRatio() *
-							(1 + game.workshop.getEffect("lunarOutpostRatio")),
-						"energyConsumption":  5
-					};
-				},
-			}, {
-				name: "moonBase",
-				title: "Moon base",
-				description: "Establish a base on a surface of Redmoon",
-				prices: [
-					{name: "starchart",   val: 700},
-					{name: "titanium",    val: 9500},
-					{name: "concrate",    val: 250},
-					{name: "science",     val: 100000},
-					{name: "unobtainium", val: 50},
-					{name: "oil",         val: 70000}
-				],
-				priceRatio: 1.12,
-				unlocked: true,
-				upgradable: true,
-				togglable: true,
-				tunable: true,
-				effects: {},
-				calculateEffects: function (game, self) {
-					self.effects = {
-						"catnipMax":         45000,
-						"woodMax":           25000,
-						"mineralsMax":       30000,
-						"ironMax":           9000,
-						"coalMax":           3500,
-						"titaniumMax":       1250,
-						"oilMax":            3500,
-						"unobtainiumMax":    150,
-						"energyConsumption": game.workshop.get("amBases").owned() ? 5: 10
-					};
-				}
+					name: "moonOutpost",
+					label: "Lunar Outpost",
+					description: "Deploy a nuclear powered mining outpost on Redmoon",
+					prices: [
+						{name: "starchart", val: 650},
+						{name: "uranium",   val: 500},
+						{name: "alloy",     val: 750},
+						{name: "concrate",  val: 150},
+						{name: "science",   val: 100000},
+						{name: "oil",       val: 55000}
+					],
+					priceRatio: 1.12,
+					togglable: true,
+					effects: {
+						"energyConsumption":       0,
+						"uraniumPerTickCon":       0,
+						"unobtainiumPerTickSpace": 0
+					},
+					calculateEffects: function (self, game) {
+						self.effects = {
+							"uraniumPerTickCon":      -0.35,
+							"unobtainiumPerTickSpace": 0.007 * (1 + game.getEffect("lunarOutpostRatio")),
+							"energyConsumption":       5
+						};
+						if (game.challenges.currentChallenge === "energy") {
+							self.effects["energyConsumption"] *= 2;
+						}
+					},
+					lackResConvert: false,
+					action: function (game, self) {
+						self.effects["uraniumPerTickCon"] = -0.35;
+						self.effects["unobtainiumPerTickSpace"] = 0.007 * (1 + game.getEffect("lunarOutpostRatio"));
+						var amt = game.resPool.getAmtDependsOnStock(
+							[{res: "uranium", amt: -self.effects["uraniumPerTickCon"]}],
+							self.getOn()
+						);
+						self.effects["uraniumPerTickCon"] *= amt;
+						self.effects["unobtainiumPerTickSpace"] *= amt;
+
+						return amt;
+					}
+				}, {
+					name: "moonBase",
+					label: "Moon base",
+					description: "Establish a base on a surface of Redmoon",
+					prices: [
+						{name: "starchart",   val: 700},
+						{name: "titanium",    val: 9500},
+						{name: "concrate",    val: 250},
+						{name: "science",     val: 100000},
+						{name: "unobtainium", val: 50},
+						{name: "oil",         val: 70000}
+					],
+					priceRatio: 1.12,
+					togglable: true,
+					effects: {
+						"catnipMax":         0,
+						"woodMax":           0,
+						"mineralsMax":       0,
+						"ironMax":           0,
+						"coalMax":           0,
+						"titaniumMax":       0,
+						"oilMax":            0,
+						"unobtainiumMax":    0,
+						"energyConsumption": 0
+					},
+					calculateEffects: function (self, game) {
+						self.effects = {
+							"catnipMax":         45000,
+							"woodMax":           25000,
+							"mineralsMax":       30000,
+							"ironMax":           9000,
+							"coalMax":           3500,
+							"titaniumMax":       1250,
+							"oilMax":            3500,
+							"unobtainiumMax":    150,
+							"energyConsumption": game.workshop.get("amBases").owned() ? 5 : 10
+						};
+						if (game.challenges.currentChallenge === "energy") {
+							self.effects["energyConsumption"] *= 2;
+						}
+					}
 			}],
 			requires: {program: ["moonMission"]}
 		}, {
 			name: "dune",
-			title: "Dune",
+			label: "Dune",
+			routeDays: 356,
 			buildings: [{
-				name: "planetCracker",
-				title: "Planet Cracker",
-				description: "USS Mining Vessel Hissmeowra that can crack an entire planet",
-				prices: [
-					{name: "starchart", val: 2500},
-					{name: "alloy",     val: 1750},
-					{name: "science",   val: 125000},
-					{name: "kerosene",  val: 50}
-				],
-				priceRatio: 1.18,
-				unlocked: true,
-				upgradable: true,
-				togglable: false,
-				tunable: false,
-				effects: {},
-				calculateEffects: function (game, self) {
-					self.effects = {
-						"uraniumPerTick": 0.3 *
-							(1 + game.workshop.getEffect("crackerRatio")) *
-							(1 + game.space.getEffect("spaceRatio")),
-						"uraniumMax":     1750
-					};
-				},
-				exportOn: true
+					name: "planetCracker",
+					label: "Planet Cracker",
+					description: "USS Mining Vessel Hissmeowra that can crack an entire planet",
+					prices: [
+						{name: "starchart", val: 2500},
+						{name: "alloy",     val: 1750},
+						{name: "science",   val: 125000},
+						{name: "kerosene",  val: 50}
+					],
+					priceRatio: 1.18,
+					effects: {
+						"uraniumPerTickSpace": 0,
+						"uraniumMax":          0
+					},
+					calculateEffects: function (self, game) {
+						self.effects = {
+							"uraniumPerTickSpace": 0.3 * (1 + game.getEffect("crackerRatio")),
+							"uraniumMax": 1750
+						};
+					}
+				}, {
+					name: "hydrofracturer",
+					label: "Hydraulic Fracturer",
+					description: "Produces a high-pressure stream of oil. Every Space Elevator will boost this production by 0.1% of the global production multiplier.",
+					prices: [
+						{name: "starchart", val: 750},
+						{name: "alloy",     val: 1025},
+						{name: "science",   val: 150000},
+						{name: "kerosene",  val: 100}
+					],
+					priceRatio: 1.18,
+					effects: {
+						"oilPerTickAutoprodSpace": 0
+					},
+					calculateEffects: function (self) {
+						self.effects = {
+							"oilPerTickAutoprodSpace": 0.5
+						};
+					}
+				}],
+				requires: {program: ["duneMission"]}
 			}, {
-				name: "hydrofracturer",
-				title: "Hydraulic Fracturer",
-				description: "Produces a high-pressure stream of oil. Every Space Elevator will boost this production by 0.1% of the global production multiplier.",
-				prices: [
-					{name: "starchart", val: 750},
-					{name: "alloy",     val: 1025},
-					{name: "science",   val: 150000},
-					{name: "kerosene",  val: 100}
-				],
-				priceRatio: 1.18,
-				unlocked: true,
-				upgradable: true,
-				togglable: false,
-				tunable: false,
-				effects: {},
-				calculateEffects: function(game, self) {
-					self.effects = {
-						"oilPerTick": 0.5
-							* game.space.getAutoProductionRatio(true /* use transfer bonus*/)
-					};
-				},
-				exportOn: true
-			}],
-			requires: {program: ["duneMission"]}
-		}, {
-			name: "piscine",
-			title: "Piscine",
-			buildings: [{
-				name: "researchVessel",
-				title: "Research Vessel",
-				description: "Mobile research space vessel.",
-				prices: [
-					{name: "starchart", val: 500},
-					{name: "alloy",     val: 2500},
-					{name: "titanium",  val: 12500},
-					{name: "kerosene",  val: 250}
-				],
-				priceRatio: 1.15,
-				unlocked: true,
-				upgradable: true,
-				togglable: false,
-				tunable: false,
-				effects: {},
-				calculateEffects: function(game, self) {
-					self.effects = {
-						"starchartPerTickBase": 0.01 * game.space.getAutoProductionRatio(),
-						"scienceMax":           10000 * (1 + game.workshop.getEffect("spaceScienceRatio"))
-					};
-				},
-				exportOn: true
-			}, {
-				name: "orbitalArray",
-				title: "Orbital Array",
-				description: "Provide a 2% production bonus to all space structures",
-				prices: [
-					{name: "eludium",  val: 100},
-					{name: "science",  val: 250000},
-					{name: "kerosene", val: 500}
-				],
-				priceRatio: 1.15,
-				unlocked: true,
-				upgradable: true,
-				togglable: true,
-				tunable: true,
-				effects: {},
-				calculateEffects: function(game, self) {
-					self.effects = {
-						"spaceRatio":        0.02,
-						"energyConsumption": 20
-					};
-				}
+				name: "piscine",
+				label: "Piscine",
+				routeDays: 256,
+				buildings: [{
+					name: "researchVessel",
+					label: "Research Vessel",
+					description: "Mobile research space vessel.",
+					prices: [
+						{name: "starchart", val: 500},
+						{name: "alloy",     val: 2500},
+						{name: "titanium",  val: 12500},
+						{name: "kerosene",  val: 250}
+					],
+					priceRatio: 1.15,
+					effects: {
+						"starchartPerTickBaseSpace": 0,
+						"scienceMax":                0
+					},
+					calculateEffects: function (self, game) {
+						self.effects = {
+							"starchartPerTickBaseSpace": 0.01,
+							"scienceMax":                10000 * (1 + game.getEffect("spaceScienceRatio"))
+						};
+					}
+				}, {
+					name: "orbitalArray",
+					label: "Orbital Array",
+					description: "Provide a 2% production bonus to all space structures",
+					prices: [
+						{name: "eludium",  val: 100},
+						{name: "science",  val: 250000},
+						{name: "kerosene", val: 500}
+					],
+					priceRatio: 1.15,
+					togglable: true,
+					effects: {
+						"spaceRatio": 0,
+						"energyConsumption": 0
+					},
+					calculateEffects: function (self, game) {
+						self.effects = {
+							"spaceRatio":        0.02,
+							"energyConsumption": 20
+						};
+						if (game.challenges.currentChallenge === "energy") {
+							self.effects["energyConsumption"] *= 2;
+						}
+					}
 			}],
 			requires: {program: ["piscineMission"]}
 		}, {
 			name: "helios",
-			title: "Helios",
+			label: "Helios",
+			routeDays: 227,
 			buildings: [{
-				name: "sunlifter",
-				title: "Sunlifter",
-				description: "Generates antimatter once per year. Inactive if energy production is negative",
-				prices: [
-					{name: "science",  val: 500000},
-					{name: "eludium",  val: 250},
-					{name: "kerosene", val: 2500}
-				],
-				priceRatio: 1.15,
-				unlocked: true,
-				upgradable: true,
-				togglable: false,
-				tunable: false,
-				effects: {},
-				calculateEffects: function(game, self) {
-					self.effects = {
-						"antimatterProduction": 1,
-						"energyProduction":     30,
-						"antimatter":           100
-					};
-				},
-				exportOn: true
-			},{
-				name: "containmentChamber",
-				title: "Containment Chamber",
-				description: "Increases antimatter storage space by 100.",
-				prices: [
-					{name: "science",  val: 500000},
-					{name: "kerosene", val: 2500}
-				],
-				priceRatio: 1.15,
-				unlocked: true,
-				upgradable: true,
-				togglable: false,
-				tunable: false,
-				effects: {
-					energyConsumption: 0,
-					antimatterMax: 0
-				},
-				calculateEffects: function(game, self) {
-					self.effects = {
-						"energyConsumption" : 50,
-						"antimatterMax": 100
-					};
-				},
-				exportOn: true
+					name: "sunlifter",
+					label: "Sunlifter",
+					description: "Generates antimatter once per year. Inactive if energy production is negative",
+					prices: [
+						{name: "science",  val: 500000},
+						{name: "eludium",  val: 250},
+						{name: "kerosene", val: 2500}
+					],
+					priceRatio: 1.15,
+					effects: {
+						"antimatterProduction": 0,
+						"energyProduction":     0
+					},
+					calculateEffects: function (self) {
+						self.effects = {
+							"antimatterProduction": 1,
+							"energyProduction":     30
+						};
+					}
+				}, {
+					name: "containmentChamber",
+					label: "Cont. Chamber",
+					description: "Increases antimatter storage space by 100.",
+					prices: [
+						{name: "science",  val: 500000},
+						{name: "kerosene", val: 2500}
+					],
+					priceRatio: 1.15,
+					togglable: true,
+					effects: {
+						"energyConsumption": 0,
+						"antimatterMax": 0
+					},
+					calculateEffects: function (self, game) {
+						self.effects = {
+							"antimatterMax": 100,
+							"energyConsumption": 50
+						};
+						if (game.challenges.currentChallenge === "energy") {
+							self.effects["energyConsumption"] *= 2;
+						}
+					}
 			}],
 			requires: {program: ["heliosMission"]}
 		}, {
 			name: "terminus",
-			title: "T-Minus",
+			label: "T-Minus",
+			routeDays: 457,
 			buildings: [{
 				name: "cryostation",
-				title: "Cryostation",
+				label: "Cryostation",
 				description: "A vast storage facility complex",
 				prices: [
 					{name: "eludium",  val: 25},
@@ -2050,10 +2307,17 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 					{name: "kerosene", val: 500}
 				],
 				priceRatio: 1.12,
-				unlocked: true,
-				upgradable: true,
-				effects: {},
-				calculateEffects: function(game, self) {
+				effects: {
+					"woodMax":        0,
+					"mineralsMax":    0,
+					"ironMax":        0,
+					"coalMax":        0,
+					"uraniumMax":     0,
+					"titaniumMax":    0,
+					"oilMax":         0,
+					"unobtainiumMax": 0
+				},
+				calculateEffects: function (self) {
 					self.effects = {
 						"woodMax":        200000,
 						"mineralsMax":    200000,
@@ -2064,15 +2328,16 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 						"oilMax":         25000,
 						"unobtainiumMax": 750
 					};
-				},
+				}
 			}],
 			requires: {program: ["terminusMission"]}
 		}, {
 			name: "kairo",
-			title: "Kairo",
+			label: "Kairo",
+			routeDays: 492,
 			buildings: [{
 				name: "spaceBeacon",
-				title: "Space Beacon",
+				label: "Space Beacon",
 				description: "An AM-powered space station used for research and interstellar navigation.",
 				prices: [
 					{name: "starchart",  val: 25000},
@@ -2081,66 +2346,89 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 					{name: "kerosene",   val: 7500}
 				],
 				priceRatio: 1.15,
-				unlocked: true,
-				upgradable: true,
-				togglable: false,
-				tunable: false,
-				effects: {},
-				calculateEffects: function(game, self){
+				effects: {
+					"starchartPerTickBaseSpace": 0,
+					"scienceMax":                0,
+					"relicPerDay":               0
+				},
+				calculateEffects: function (self, game) {
 					self.effects = {
-						"starchartPerTickBase": 0.025 * game.space.getAutoProductionRatio(),
-						"scienceMax":           25000 * (1 + game.workshop.getEffect("spaceScienceRatio")),
-						"relicPerDay":          game.workshop.getEffect("beaconRelicsPerTick")
+						"starchartPerTickBaseSpace": 0.025,
+						"scienceMax":                25000 * (1 + game.getEffect("spaceScienceRatio")),
+						"relicPerDay":               game.getEffect("beaconRelicsPerDay")
 					};
 				}
 			}],
 			requires: {program: ["kairoMission"]}
 		}, {
 			name: "yarn",
-			title: "Yarn",
+			label: "Yarn",
+			routeDays: 603,
 			buildings: [{
-				name: "terraformingStation",
-				title: "Terraforming Station",
-				description: "Explode a charge of antimatter to melt yarn ice and throw an oxygen into the atmosphere",
-				prices: [
-					{name: "antimatter", val: 25},
-					{name: "uranium",    val: 5000},
-					{name: "kerosene",   val: 5000}
-				],
-				priceRatio: 1.25,
-				requires: {tech: ["terraformation"]},
-				upgradable: true,
-				togglable: false,
-				tunable: false,
-				effects: {},
-				calculateEffects: function (game, self) {
-					self.effects = {
-						"maxKittens": 1
-						//"catnipPerTickBase": -100
-					};
-				}
-			}, {
-				name: "hydroponics",
-				title: "Hydroponics",
-				description: "State of the art automated hydroponic system. Increase catnip limit by 10%. Increase catnip production by 2.5%",
-				prices: [
-					{name: "kerosene", val: 500}
-				],
-				priceRatio: 1.15,
-				requires: {tech: ["hydroponics"]},
-				upgradable: true,
-				togglable: false,
-				tunable: false,
-				effects: {},
-				calculateEffects: function (game, self) {
-					self.effects = {
-						"catnipMaxRatio": 0.1,
-						"catnipRatio":    0.025
-					};
-				},
-				val: 0
+					name: "terraformingStation",
+					label: "Terraforming Station",
+					description: "Explode a charge of antimatter to melt yarn ice and throw an oxygen into the atmosphere",
+					prices: [
+						{name: "antimatter", val: 25},
+						{name: "uranium",    val: 5000},
+						{name: "kerosene",   val: 5000}
+					],
+					priceRatio: 1.25,
+					requires: {tech: ["terraformation"]},
+					effects: {
+						"maxKittens": 0
+					},
+					calculateEffects: function (self) {
+						self.effects = {
+							"maxKittens": 1
+						};
+					}
+				}, {
+					name: "hydroponics",
+					label: "Hydroponics",
+					description: "State of the art automated hydroponic system. Increase catnip limit by 10%. Increase catnip production by 2.5%",
+					prices: [
+						{name: "kerosene", val: 500}
+					],
+					priceRatio: 1.15,
+					requires: {tech: ["hydroponics"]},
+					effects: {
+						"catnipMaxRatio": 0,
+						"catnipRatio":    0
+					},
+					calculateEffects: function (self) {
+						self.effects = {
+							"catnipMaxRatio": 0.1,
+							"catnipRatio":    0.025
+						};
+					},
+					val: 0
 			}],
 			requires: {program: ["yarnMission"]}
+		}, {
+			name: "centaurusSystem",
+			label: "Centaurus System",
+			routeDays: 120000,
+			buildings: [{
+				name: "tectonic",
+				label: "Tectonic",
+				description: "Rip open the planet near the star Centaurus to collect magma energy.",
+				prices: [
+					{name: "science",    val: 600000},
+					{name: "antimatter", val: 500},
+					{name: "thorium",    val: 75000}
+				],
+				priceRatio: 1.25,
+				effects: {
+					"energyProduction": 0
+				},
+				calculateEffects: function (self) {
+					self.effects = {
+						"energyProduction": 25
+					};
+				}
+			}],
+			requires: {program: ["centaurusSystemMission"]}
 	}],
 
 	tabName: 'Space',
@@ -2157,18 +2445,17 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 
 	hideResearched: false,
 
-	constructor: function (game) {
+	constructor: function () {
 		this.programs = [];
 
 		this.registerMetaItems(this.programData, classes.KGSaveEdit.ProgramMeta, 'allPrograms', function (program) {
 			this.programs.push(program);
-			if (program.breakIronWill) {
-				game.breaksIronWillList.push(program);
-			}
 		});
 
 		this.registerMetaItems(this.planetData, classes.KGSaveEdit.GenericItem, 'planets', function (planet) {
 			planet.unlocked = false;
+			planet.reached = false;
+			planet.routeDaysMax = num(planet.routeDays);
 
 			var bld = planet.buildings || [];
 			planet.buildings = [];
@@ -2236,10 +2523,31 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				continue;
 			}
 			dojo.create('tr', {'colspan': 3, innerHTML: '&nbsp;'}, this.programsBlock);
+
 			var tr = dojo.create('tr', {
-				innerHTML: '<td colspan="3">' + (planet.title || planet.name) + '</td>'
+				'class': 'planet',
+				innerHTML: '<td colspan="3"></td>'
 			}, this.programsBlock);
-			planet.nameNode = tr.children[0];
+
+			planet.nameRow = tr;
+			planet.nameNode = dojo.create('span', {
+				'class': 'nameNode',
+				innerHTML: planet.label || planet.name
+			}, tr.children[0]);
+
+			var span = dojo.create('span', {
+				'class': 'planetRouteDaysSpan',
+				innerHTML: 'Flight time &nbsp;'
+			}, tr.children[0]);
+
+			var input = this.game._createInput({}, span, planet, 'routeDays');
+			input.parseFn = function (value) {
+				return Math.min(value, this.metaObj.routeDaysMax);
+			};
+
+			dojo.place(document.createTextNode(' '), span);
+
+			planet.routeDaysETANode = dojo.create('span', null, span);
 
 			for (var j = 0, bldlen = planet.buildings.length; j < bldlen; j++) {
 				program = planet.buildings[j];
@@ -2249,7 +2557,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 		}
 	},
 
-	getAutoProductionRatio: function(useTransferBonus) {
+	getAutoProductionRatio: function (useTransferBonus) {
 		var ratio = 1 + this.getEffect("spaceRatio");
 		if (useTransferBonus) {
 			ratio *= 1 + ((this.game.bld.getAutoProductionRatio(false, 0.05) - 1) * (this.getEffect("prodTransferBonus") / 100));
@@ -2257,25 +2565,34 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 
 		if (this.game.workshop.get("spaceManufacturing").owned()) {
 			var factory = this.game.bld.get("factory");
-			ratio *= 1 + factory.on * factory.effects["craftRatio"] * 0.75;
+			ratio *= 1 + factory.getOn() * factory.effects["craftRatio"] * 0.75;
 		}
 		return ratio;
 	},
 
 	update: function () {
-		this.game.callMethods(this.allPrograms, 'update');
+		var routeSpeed = this.game.getEffect("routeSpeed") || 1;
 
 		for (var i = this.planets.length - 1; i >= 0; i--) {
 			var planet = this.planets[i];
+
 			planet.unlocked = this.game.checkRequirements(planet, false);
+			planet.reached = !planet.routeDays && planet.unlocked;
 			if (planet.nameNode) {
 				dojo.toggleClass(planet.nameNode, 'spoiler', !planet.unlocked);
+
+				var eta = "";
+				if (planet.unlocked && planet.routeDays > 0) {
+					eta = "&nbsp; |&nbsp; ETA: " + this.game.toDisplayDays(Math.round(planet.routeDays / routeSpeed));
+				}
+				planet.routeDaysETANode.innerHTML = eta;
 			}
 		}
+		this.game.callMethods(this.allPrograms, 'update');
 	},
 
 	save: function (saveData) {
-		var planets = this.game.filterMetadata(this.planets, ["name", "buildings"]);
+		var planets = this.game.filterMetadata(this.planets, ["name", "buildings", "reached", "unlocked", "routeDays"]);
 
 		for (var i = 0; i < planets.length; i++) {
 			var planet = planets[i];
@@ -2299,6 +2616,10 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 		this.loadMetaData(saveData.space.programs, 'getProgram');
 
 		this.loadMetaData(saveData.space.planets, 'getPlanet', function (planet, savePlanet) {
+			planet.reached = savePlanet.reached;
+			// planet.unlocked = savePlanet.unlocked;
+			planet.set('routeDays', num(savePlanet.routeDays));
+
 			this.loadMetaData(savePlanet.buildings, 'getProgram');
 		});
 
@@ -2311,26 +2632,32 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 	val: 0,
 	on: 0,
 	unlocked: false,
-	researched: false,
-	upgradable: false,
+	upgradable: true,
+	togglable: false,
 
 	constructor: function () { },
 
 	owned: function () {
-		return this.researched || this.val > 0;
+		return this.val > 0;
 	},
 
 	getName: function () {
-		var name = this.title || this.name;
-		if (this.upgradable) {
-			return name +' (' + this.val + ')';
-		} else if (this.researched) {
-			return name + ' (Complete)';
+		var name = this.label || this.name;
+		if (!this.owned()) {
+			return name;
 		}
-		return name;
+		var paren = ' (' + this.val + ')';
+		if (this.upgradable) {
+			if (this.togglable) {
+				paren = ' (' + this.getOn() + '/' + this.val + ')';
+			}
+		} else {
+			paren = ' (Complete)';
+		}
+		return name + paren;
 	},
 
-	getPrice: function (basic) {
+	getPrices: function (basic) {
 		var prices = dojo.clone(this.prices) || [];
 		if (basic) {
 			return this.prices;
@@ -2349,10 +2676,10 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 			}
 		}
 
+		//separate for raisins
 		for (i = 0; i < len; i++) {
 			if (prices[i].name === "oil") {
-				var reductionRatio =
-					this.game.bld.getHyperbolicEffect(this.game.space.getEffect("oilReductionRatio"), 0.75);
+				var reductionRatio = this.game.getHyperbolicEffect(this.game.getEffect("oilReductionRatio"), 0.75);
 				prices[i].val *= 1 - reductionRatio;
 				break;
 			}
@@ -2365,9 +2692,6 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 		var effects = this.effects || {};
 		var effect = num(effects[name]);
 
-		if (!this.upgradable) {
-			return this.researched ? effect : 0;
-		}
 		if (this.togglable) {
 			return effect * this.getOn();
 		}
@@ -2376,10 +2700,7 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 
 	getOn: function () {
 		if (!this.upgradable || !this.togglable) {
-			return 0;
-		}
-		if (!this.tunable) {
-			return this.enabled ? this.val : 0;
+			return this.val;
 		}
 		return Math.min(this.on, this.val) || 0;
 	},
@@ -2387,7 +2708,7 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 	render: function () {
 		this.domNode = dojo.create('tr', {
 			'class': 'program',
-			innerHTML: '<td class="nameNode">' + (this.title || this.name) + '</td>' +
+			innerHTML: '<td class="nameNode">' + (this.label || this.name) + '</td>' +
 				'<td class="rightAlign"></td><td></td>'
 		});
 		this.nameNode = this.domNode.children[0];
@@ -2399,16 +2720,21 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 			title: 'Number of active programs'
 		}, this.onNodeSpan, this, 'on', 'first');
 
-		this.game._createInput({
-			'class': 'integerInput ownedInput',
+		this.game._createValInput({
 			title: 'Number of programs'
-		}, this.domNode.children[1], this, 'val');
+		}, this.domNode.children[1], this);
 
 		if (!this.planet) {
 			var input = this.game._createCheckbox('Unlocked', this.domNode.children[2], this, 'unlocked');
 			this.unlockedLabel = input.label;
-			input = this.game._createCheckbox('Launched', this.domNode.children[2], this, 'researched');
-			this.researchedLabel = input.label;
+
+			input = this.game._createCheckbox('Launched', this.domNode.children[2], this);
+			input.cbox.handler = function () {
+				var val = num(this.checked);
+				this.metaObj.set('val', val);
+				this.metaObj.set('on', val);
+			};
+			this.launchedLabel = input.label;
 		}
 
 		this.registerHighlight(this.domNode);
@@ -2416,60 +2742,57 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	update: function () {
-		var unlocked = this.game.checkRequirements(this);
+		var req = this.game.checkRequirements(this, true);
+		var unlocked = req;
+
 		if (this.unlockedNode) {
 			if (!unlocked && this.unlockedNode.prevChecked) {
 				unlocked = true;
 			}
 			this.unlockedNode.checked = unlocked;
+			this.game.toggleDisabled(this.unlockedNode, req);
 		}
-		this.unlocked = unlocked;
-		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
+		var spoiler = !unlocked;
 
-		if (!this.planet) {
+		if (this.planet) {
+			unlocked = this.planet.reached;
+			spoiler = !unlocked || !req;
+		} else {
 			dojo.toggleClass(this.valNode, 'hidden', !this.upgradable);
-			dojo.toggleClass(this.researchedLabel, 'hidden', this.upgradable);
+			dojo.toggleClass(this.launchedLabel, 'hidden', this.upgradable);
 
 			dojo.toggleClass(this.domNode, 'hidden',
 				this.game.space.hideResearched && !this.upgradable && this.owned());
 		}
+		this.unlocked = unlocked;
+		dojo.toggleClass(this.nameNode, 'spoiler', spoiler);
 
 		dojo.toggleClass(this.nameNode, 'btnEnabled',
-			Boolean(this.togglable && (this.enabled || this.getOn() > 0)));
-		dojo.toggleClass(this.onNodeSpan, 'hidden', !this.upgradable || !this.togglable || !this.tunable);
+			Boolean(this.togglable && this.getOn() > 0));
+		dojo.toggleClass(this.onNodeSpan, 'hidden', !this.upgradable || !this.togglable);
 
 		this.updateEnabled();
 
 		if (this.calculateEffects) {
-			this.calculateEffects(this.game, this);
-			this.game.calendar.cycleEffects(this.effects, this.name);
+			this.calculateEffects(this, this.game);
+			this.game.calendar.cycleEffectsBasics(this.effects, this.name);
+		}
+		if (this.action && this.val > 0) {
+			this.action(this.game, this);
+			this.game.calendar.cycleEffectsBasics(this.effects, this.name);
 		}
 	},
 
 	save: function () {
-		var saveData = this.game.filterMetaObj(this, ["name", "val", "on"]);
-		saveData.on = this.togglable || this.exportOn ? this.getOn() : undefined;
-
-		if (!this.planet) {
-			if (!this.upgradable) {
-				saveData.val = undefined;
-			}
-
-			saveData.unlocked = Boolean(this.unlocked);
-			saveData.researched = Boolean(this.researched || this.val > 0);
-		}
-
+		var saveData = this.game.filterMetaObj(this, ["name", "val", "on", "unlocked"]);
+		saveData.on = this.getOn();
 		return saveData;
 	},
 
 	load: function (saveData) {
-		var val = num(saveData.val);
-		this.set('val', val);
+		this.set('val', num(saveData.val));
 		this.set('on', num(saveData.on));
-		if (!this.planet) {
-			this.set('researched', Boolean(saveData.researched || val));
-			this.set('unlocked', Boolean(saveData.unlocked));
-		}
+		this.set('unlocked', Boolean(saveData.unlocked));
 	}
 });
 
