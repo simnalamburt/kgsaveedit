@@ -1,6 +1,6 @@
 /* global require dojo classes*/
 
-require(["dojo/on"], function (on) {
+require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 "use strict";
 
 
@@ -23,6 +23,10 @@ dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 		}, {
 			name: 'hideSell',
 			desc: "Hide 'sell' buttons",
+			src: 'game.opts'
+		}, {
+			name: 'disableCMBR',
+			desc: 'Disable global donate bonus',
 			src: 'game.opts'
 		}, {
 			name: 'noConfirm',
@@ -117,6 +121,8 @@ dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 		game._createInput({'class': 'integerInput'}, tr.children[1], game, 'karmaZebras');
 
 		dojo.place(game.console.domNode, this.tabBlockNode);
+
+		dojo.place(game.telemetry.domNode, this.tabBlockNode);
 	}
 });
 
@@ -638,11 +644,36 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 	currentChallenge: null,
 
 	challengesData: [{
+		name: "ironWill",
+		label: "Iron Will",
+		description: "Iron Will is a bit hidden challenge and you don't need to click here to enable it: reset the game and play without kittens.",
+		effectDesc: "Nothing",
+		unlocked: true,
+		invisible: true
+	}, {
 		name: "atheism",
 		label: "Atheism",
-		description: "Restart the game without faith bonus and reset with 1 kitten.",
+		description: "Restart the game without faith bonus.<br><br>Goal: Reset with at least one cryochamber.",
 		effectDesc: "Every level of transcendence will increase aprocrypha effectiveness by 10%.",
 		requires: {tech: ['voidSpace']}
+	}, {
+		name: "energy",
+		label: "Energy",
+		description: "Restart the game with consumption of energy multiply by 2.<br><br>Goal: Unlock all energy production buildings and build at least one of them.",
+		effectDesc: "Production bonuses cuts caused by negative energy are divided by 2.",
+		requires: function () {
+			return this.game.resPool.energyCons !== 0 || this.game.resPool.energyProd !== 0;
+		},
+		condition: function () {
+			return ((this.game.bld.get("pasture").val > 0 && this.game.bld.get("pasture").stage === 1) &&
+				(this.game.bld.get("aqueduct").val > 0 && this.game.bld.get("aqueduct").stage === 1) &&
+				this.game.bld.get("steamworks").val > 0 &&
+				this.game.bld.get("magneto").val > 0 &&
+				this.game.bld.get("reactor").val > 0 &&
+				this.game.space.getBuilding("sattelite").val > 0 &&
+				this.game.space.getBuilding("sunlifter").val > 0 &&
+				this.game.space.getBuilding("tectonic").val > 0);
+		}
 	}],
 
 	constructor: function (game) {
@@ -658,6 +689,10 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 
 	setCurrentChallenge: function (name) {
 		var setChallenge = this.getChallenge(name);
+		if (setChallenge && setChallenge.researched) {
+			setChallenge = null;
+		}
+
 		for (var i = this.challenges.length - 1; i >= 0; i--) {
 			var challenge = this.challenges[i];
 			challenge.activeChallengeNode.checked = challenge === setChallenge;
@@ -680,8 +715,26 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 	},
 
 	update: function () {
+		var currentChallenge = this.getChallenge(this.currentChallenge);
+		if (currentChallenge && currentChallenge.researched) {
+			this.setCurrentChallenge(null);
+		}
+
 		this.game.callMethods(this.challenges, 'update');
 		dojo.toggleClass(this.domNodeHeader, 'spoiler', !this.game.prestige.getPerk('adjustmentBureau').owned());
+
+		this.updateTabMarker();
+	},
+
+	updateTabMarker: function () {
+		var hasNew = false;
+		for (var i = this.challenges.length - 1; i >= 0; i--) {
+			if (this.challenges[i].isNew) {
+				hasNew = true;
+				break;
+			}
+		}
+		dojo.toggleClass(this.game.science.tabNode, 'newMarker', hasNew);
 	},
 
 	save: function (saveData) {
@@ -696,6 +749,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 			this.loadMetaData(saveData.challenges.challenges, 'getChallenge', function (challenge, saveChallenge) {
 				challenge.set('researched', Boolean(saveChallenge.researched));
 				challenge.set('unlocked', Boolean(saveChallenge.unlocked));
+				challenge.isNew = false;
 			});
 			this.setCurrentChallenge(saveData.challenges.currentChallenge);
 		}
@@ -707,7 +761,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 	unlocked: false,
 	researched: false,
 
-	hideEffects: true,
+	isNew: false,
 
 	getName: function () {
 		var name = this.label || this.name;
@@ -738,16 +792,30 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 	},
 
 	render: function () {
-		this.domNode = dojo.create('tr', {
+		var tr = dojo.create('tr', {
 			'class': 'challengeNode',
 			innerHTML: '<td class="nameNode">' + (this.label || this.name) + '</td><td></td>'
 		});
-		this.nameNode = this.domNode.children[0];
+		this.domNode = tr;
 
-		this.game._createCheckbox('Unlocked', this.domNode.children[1], this, 'unlocked');
-		this.game._createCheckbox('Complete', this.domNode.children[1], this, 'researched');
+		if (this.invisible) {
+			dojo.addClass(tr, 'hidden');
+		}
 
-		var input = this.game._createCheckbox('Active', this.domNode.children[1], this);
+		this.nameNode = tr.children[0];
+
+		on(this.nameNode, mouse.enter, dojo.hitch(this, function () {
+			if (this.isNew) {
+				this.isNew = false;
+				dojo.removeClass(this.nameNode, 'newMarker');
+				this.metaObj.updateTabMarker();
+			}
+		}));
+
+		this.game._createCheckbox('Unlocked', tr.children[1], this, 'unlocked');
+		this.game._createCheckbox('Complete', tr.children[1], this, 'researched');
+
+		var input = this.game._createCheckbox('Active', tr.children[1], this);
 		this.activeChallengeNode = input.cbox;
 		input.cbox.handler = function () {
 			this.game.challenges.setCurrentChallenge(this.checked ? this.metaObj.name : null);
@@ -762,6 +830,15 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 		this.unlockedNode.checked = this.unlocked;
 		this.game.toggleDisabled(this.unlockedNode, req);
 		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
+
+		if (!this.researched && this.activeChallengeNode.checked && this.condition && this.condition()) {
+			this.set('researched', true);
+			this.game.challenges.setCurrentChallenge(null);
+			this.isNew = true;
+		}
+
+		this.game.toggleDisabled(this.activeChallengeNode, this.researched);
+		dojo.toggleClass(this.nameNode, 'newMarker', this.isNew);
 	}
 });
 
@@ -776,6 +853,7 @@ dojo.declare("classes.KGSaveEdit.ui.Toolbar", null, {
 
 		this.addIcon(new classes.KGSaveEdit.ui.toolbar.ToolbarHappiness(game));
 		this.addIcon(new classes.KGSaveEdit.ui.toolbar.ToolbarEnergy(game));
+		this.addIcon(new classes.KGSaveEdit.ui.toolbar.ToolbarDonations(game));
 	},
 
 	addIcon: function (icon) {
@@ -895,8 +973,12 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarEnergy", classes.KGSaveEdit.u
 
 		var resPool = this.game.resPool;
 		var energy = resPool.energyProd - resPool.energyCons;
-		var delta = this.game.resPool.getEnergyDelta();
-		var penalty = energy >= 0 ? "" : "<br><br>Production modifier: <span style='color:red;'>-" + Math.floor((1 - delta) * 100) + "%</span>";
+
+		var penalty = "";
+		if (energy < 0) {
+			var delta = this.game.resPool.getEnergyDelta();
+			penalty = "<br><br>Production modifier: <span style='color:red;'>-" + Math.floor((1 - delta) * 100) + "%</span>";
+		}
 
 		tooltip.innerHTML = "Production: <span style='color:green;'>" +
 			this.game.getDisplayValueExt(resPool.energyProd, true, false) +
@@ -904,6 +986,99 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarEnergy", classes.KGSaveEdit.u
 			this.game.getDisplayValueExt(resPool.energyCons) +
 			"Wt</span>" + penalty;
 	}
+});
+
+
+//Cosmic Microwave Background Radiation
+
+dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarDonations", classes.KGSaveEdit.ui.ToolbarIcon, {
+	update: function () {
+		var server = this.game.server;
+		var nextTier = Math.floor((server.donateAmt || 0) / 100) + 1;
+
+		this.container.innerHTML = "$&nbsp;" + (server.donateAmt || 0) + "/" + (nextTier * 100) + "&nbsp;" +
+			'<a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3H8PQGAN8V8YU">+</a>';
+	},
+
+	getTooltip: function () {
+		var tooltip = dojo.byId('tooltipBlock');
+		tooltip.className = '';
+
+		var html = '';
+		if (this.game.opts.disableCMBR) {
+			html = "Production bonus disabled";
+		} else {
+			var bonus = this.game.getCMBRBonus() * 100;
+			html = "Donations pool.<br> Every donation goes to the global pool that affects everyone playing the game.<br><br>Production bonus: " +  this.game.getDisplayValueExt(bonus, true, false) + "%" +
+				"<br>Storage bonus: " + this.game.getDisplayValueExt(bonus, true, false) + "%";
+		}
+
+		tooltip.innerHTML = html;
+	}
+});
+
+
+dojo.declare("classes.KGSaveEdit.Telemetry", null, {
+	guid: null,
+	warnOnNewGuid: false,
+
+	domNode: null,
+
+	constructor: function () {
+		this.guid = this.generateGuid();
+	},
+
+	render: function () {
+		this.domNode = dojo.create('div', {
+			'id': 'telemetryNode',
+			'class': 'bottom-margin',
+			innerHTML: 'Save ID: <span class="monospace">' + this.guid + '</span> &nbsp;<input type="button" value="New ID">'
+		});
+
+		this.guidNode = this.domNode.children[0];
+
+		on(this.domNode.children[1], 'click', dojo.hitch(this, function () {
+			if (!this.warnOnNewGuid || confirm('Are you sure you want to create a new save ID?')) {
+				this.setGuid();
+			}
+		}));
+	},
+
+	setGuid: function (guid) {
+		this.warnOnNewGuid = Boolean(guid);
+		this.guid = guid || this.generateGuid();
+		if (this.domNode) {
+			this.guidNode.innerHTML = this.guid;
+		}
+	},
+
+	generateGuid: function () {
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+			var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+			return v.toString(16);
+		});
+	},
+
+	save: function (data) {
+		data["telemetry"] = {
+			guid: this.guid
+		};
+	},
+
+	load: function (data) {
+		var guid;
+		if (data["telemetry"]) {
+			guid = data["telemetry"].guid;
+		}
+		this.setGuid(guid);
+	}
+});
+
+
+//TODO: to be replaced with actuall server call
+
+dojo.declare("classes.KGSaveEdit.Server", null, {
+	donateAmt: 185.21
 });
 
 

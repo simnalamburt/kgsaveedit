@@ -418,6 +418,11 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 
 		maxValue *= 1 + this.game.prestige.getParagonStorageRatio();
 
+		//+COSMIC RADIATION
+		if (!this.game.disableCMBR) {
+			maxValue *= 1 + (this.game.getCMBRBonus());
+		}
+
 		if (res) {
 			//Stuff for Refrigiration and (potentially) similar effects
 			maxValue *= 1 + this.game.getEffect(res.name + "MaxRatio");
@@ -469,15 +474,18 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 	},
 
 	getEnergyDelta: function () {
-		if (this.game.opts.noEnergyPenalty) {
-			return 1.0;
+		if (this.energyCons === 0) {
+			return 0;
+		} else {
+			var delta = this.energyProd / this.energyCons;
+			if (delta < 0.25) {
+				delta = 0.25;
+			}
+			if (this.game.challenges.getChallenge("energy").researched === true) {
+				delta = 1 - (1 - delta) / 2;
+			}
+			return delta;
 		}
-
-		var delta = this.energyProd / this.energyCons;
-		if (delta < 0.25) {
-			delta = 0.25;
-		}
-		return delta;
 	},
 
 	isNormalCraftableResource: function (res) {

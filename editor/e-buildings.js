@@ -1715,7 +1715,7 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 		// Max effects and Ratio effects depends on constructed buildings
 		} else if (
 			effectName.indexOf("Max", effectName.length - 3) != -1 ||
-			effectName.indexOf("Ratio", effectName.length - 5) != -1
+			(this.name === "biolab" && effectName.indexOf("Ratio", effectName.length - 5) !== -1)
 		) {
 			effect = effects[effectName] * this.val;
 		} else {
@@ -1802,7 +1802,7 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	save: function () {
-		var saveData = this.game.filterMetaObj(this, ["name", "unlockable", "unlocked", "val", "on", "stage", "jammed", "isAutomationEnabled"]);
+		var saveData = this.game.filterMetaObj(this, ["name", "unlocked", "val", "on", "stage", "jammed", "isAutomationEnabled"]);
 		saveData.on = this.getOn();
 
 		return saveData;

@@ -10,7 +10,7 @@
 		<div id="topBar" class="header">
 			<span class="smallText">
 				Kittens Game Save Editor by <a href="https://coderpatsy.bitbucket.io/">patsy</a>, updated by Guest93,
-				for <a href="http://bloodrizer.ru/games/kittens/">Kittens Game</a> version 1.3.0.0
+				for <a href="http://bloodrizer.ru/games/kittens/">Kittens Game</a> version 1.3.1.0
 				by <a href="http://bloodrizer.ru/">bloodrizer</a>
 			</span>
 
@@ -66,17 +66,17 @@
 		});
 	</script>
 
-	<script src="editor/e-core.js?v=1.3.0.0"></script>
-	<script src="editor/e-misc.js?v=1.3.0.0"></script>
-	<script src="editor/e-resources.js?v=1.3.0.0"></script>
-	<script src="editor/e-upgrades.js?v=1.3.0.0"></script>
-	<script src="editor/e-buildings.js?v=1.3.0.0"></script>
-	<script src="editor/e-religion.js?v=1.3.0.0"></script>
-	<script src="editor/e-space.js?v=1.3.0.0"></script>
-	<script src="editor/e-time.js?v=1.3.0.0"></script>
-	<script src="editor/e-village.js?v=1.3.0.0"></script>
-	<script src="editor/e-stats.js?v=1.3.0.0"></script>
-	<script src="editor/e-main.js?v=1.3.0.0"></script>
+	<script src="editor/e-core.js?v=1.3.1.0"></script>
+	<script src="editor/e-misc.js?v=1.3.1.0"></script>
+	<script src="editor/e-resources.js?v=1.3.1.0"></script>
+	<script src="editor/e-upgrades.js?v=1.3.1.0"></script>
+	<script src="editor/e-buildings.js?v=1.3.1.0"></script>
+	<script src="editor/e-religion.js?v=1.3.1.0"></script>
+	<script src="editor/e-space.js?v=1.3.1.0"></script>
+	<script src="editor/e-time.js?v=1.3.1.0"></script>
+	<script src="editor/e-village.js?v=1.3.1.0"></script>
+	<script src="editor/e-stats.js?v=1.3.1.0"></script>
+	<script src="editor/e-main.js?v=1.3.1.0"></script>
 
 	<script>
 	var gamePage = new classes.KGSaveEdit.saveEdit(dojo.byId('editContainer'));
@@ -96,14 +96,13 @@
 			// 	function (event) { event.preventDefault(); });
 			// apparently the above consistently fails on certain elements and I have no clue why the [expletive], considering the elements are identical to others that do get prevented
 			document.documentElement.addEventListener('click', function (event) {
-				if (event.target && event.target.href && event.target.href.slice(-1) === '#') {
+				if (event && event.target && event.target.href && event.target.href.slice(-1) === '#') {
 					event.preventDefault();
 				}
 			}, true); // use capture
 
 			on(dojo.byId('showImport'), 'click', function () {
-				dojo.query('.lightbox').addClass('hidden');
-				dojo.removeClass('importBlock', 'hidden');
+				game._toggleLightbox('importBlock');
 				dojo.addClass('importError', 'hidden');
 
 				var area = dojo.byId('importSaveArea');
@@ -134,8 +133,7 @@
 			});
 
 			on(dojo.byId('showExport'), 'click', function () {
-				dojo.query('.lightbox').addClass('hidden');
-				dojo.removeClass('exportBlock', 'hidden');
+				game._toggleLightbox('exportBlock');
 
 				var area = dojo.byId('exportSaveArea');
 				area.value = gamePage.exportSave(true);

@@ -238,7 +238,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 		}, {
 			name: "moon",
 			label: "Moon",
-			routeDays: 3,
+			routeDays: 30,
 			buildings: [{
 					name: "moonOutpost",
 					label: "Lunar Outpost",
@@ -424,7 +424,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 		}, {
 			name: "helios",
 			label: "Helios",
-			routeDays: 227,
+			routeDays: 1200,
 			buildings: [{
 					name: "sunlifter",
 					label: "Sunlifter",
@@ -473,7 +473,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 		}, {
 			name: "terminus",
 			label: "T-Minus",
-			routeDays: 457,
+			routeDays: 2500,
 			buildings: [{
 				name: "cryostation",
 				label: "Cryostation",
@@ -512,7 +512,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 		}, {
 			name: "kairo",
 			label: "Kairo",
-			routeDays: 492,
+			routeDays: 5000,
 			buildings: [{
 				name: "spaceBeacon",
 				label: "Space Beacon",
@@ -541,7 +541,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 		}, {
 			name: "yarn",
 			label: "Yarn",
-			routeDays: 603,
+			routeDays: 3800,
 			buildings: [{
 					name: "terraformingStation",
 					label: "Terraforming Station",
@@ -648,6 +648,10 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 		return this.allProgramsByName[name];
 	},
 
+	getBuilding: function (name) {
+		return this.allProgramsByName[name];
+	},
+
 	getPlanet: function (name) {
 		return this.planetsByName[name];
 	},
@@ -655,8 +659,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 	getEffect: function (name) {
 		var totalEffect = this.getEffectCached(name);
 
-		if (name === "spaceRatio" &&
-		this.game.resPool.energyCons > this.game.resPool.energyProd) {
+		if (name === "spaceRatio" && this.game.resPool.energyCons > this.game.resPool.energyProd) {
 			var delta = this.game.resPool.getEnergyDelta();
 			totalEffect *= delta;
 		}
@@ -796,7 +799,11 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 		this.loadMetaData(saveData.space.planets, 'getPlanet', function (planet, savePlanet) {
 			planet.reached = savePlanet.reached;
 			// planet.unlocked = savePlanet.unlocked;
-			planet.set('routeDays', num(savePlanet.routeDays));
+			var routeDays = savePlanet.routeDays;
+			if (typeof routeDays === 'undefined') {
+				routeDays = planet.routeDaysMax;
+			}
+			planet.set('routeDays', num(routeDays));
 
 			this.loadMetaData(savePlanet.buildings, 'getProgram');
 		});
@@ -933,8 +940,8 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 		var spoiler = !unlocked;
 
 		if (this.planet) {
-			unlocked = this.planet.reached;
-			spoiler = !unlocked || !req;
+			unlocked = this.planet.reached && req;
+			spoiler = !unlocked;
 		} else {
 			dojo.toggleClass(this.valNode, 'hidden', !this.upgradable);
 			dojo.toggleClass(this.launchedLabel, 'hidden', this.upgradable);

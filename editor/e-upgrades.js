@@ -542,7 +542,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 		}, {
 			name: "thorium",
 			label: "Thorium",
-			description: "TBD.",
+			description: "Thorium is an extremely radioactive and energy efficient isotope that can be used in various space era upgrades.",
 			effectDesc: "Unlocks Thorium Reactors",
 			prices: [
 				{name: "science",   val: 375000},
@@ -598,12 +598,12 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			name: "antimatter",
 			label: "Antimatter",
 			description: "Antimatter provides some advanced sources of energy and generally benefits scientific advancement",
-			effectDesc: "Unlocks Antimatte Reactors and Antimatter Bases",
+			effectDesc: "Unlocks Antimatter Reactors, AM-Drive, AM-Fission and Antimatter Bases",
 			prices: [
 				{name: "science", val: 500000},
 				{name: "relic",   val: 1}
 			],
-			// unlocks: {upgrades: ["amReactors", "amBases"], tech: ["terraformation"]},
+			// unlocks: {upgrades: ["amReactors", "amBases", "amDrive", "amFission"], tech: ["terraformation"]},
 			requires: {tech: ["superconductors"]}
 		}, {
 			name: "terraformation",
@@ -698,7 +698,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			name: "paradoxalKnowledge",
 			label: "Paradoxal Knowledge",
 			description: "",
-			effectDesc: "Unlocks Chronocontrol and Ressource Retrieval",
+			effectDesc: "Unlocks Chronocontrol and Resource Retrieval",
 			prices: [
 				{name: "science",     val: 1000000},
 				{name: "timeCrystal", val: 40},
@@ -2182,6 +2182,31 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["antimatter"]},
 		}, {
+			name: "amDrive",
+			label: "Antimatter Drive",
+			description: "Antimatter-powered rocket engine",
+			prices: [
+				{name: "antimatter", val: 125},
+				{name: "science",    val: 450000}
+			],
+			requires: {tech: ["antimatter"]},
+			effects: {
+				"routeSpeed": 25
+			}
+		}, {
+			name: "amFission",
+			label: "Antimatter Fission",
+			description: "Engineers are 25% more effective at production of eludium",
+			prices: [
+				{name: "antimatter", val: 175},
+				{name: "thorium",    val: 7500},
+				{name: "science",    val: 525000}
+			],
+			requires: {tech: ["antimatter"]},
+			effects: {
+				"eludiumAutomationBonus": 0.25
+			}
+		}, {
 			name: "amReactors",
 			label: "Antimatter Reactors",
 			description: "Your Research Vessels and Space Beacons are twice as effective",
@@ -2455,7 +2480,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["thorium"]},
 			effects: {
-				"routeSpeed": 100
+				"routeSpeed": 50
 			}
 		}, {
 			name: "oilRefinery",
@@ -2522,6 +2547,23 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {voidSpace: ["chronocontrol"]},
 			effects: {
 				"temporalParadoxDayBonus": 2
+			}
+		}, {
+			name: "turnSmoothly",
+			label: "Turn smoothly",
+			description: "Improve Chronocontrol effectiveness.",
+			effects: {
+				"temporalFluxProductionChronosphere": 1
+			},
+			prices: [
+				{name: "unobtainium",  val: 100000},
+				{name: "timeCrystal",  val: 25},
+				{name: "void",         val: 750},
+				{name: "temporalFlux", val: 6500}
+			],
+			requires: {voidSpace: ["chronocontrol"]},
+			upgrades: {
+				buildings: ["chronosphere"]
 			}
 	}],
 
@@ -2849,7 +2891,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 		var craft = this.getCraft(resName);
 		var val = 0;
 		if (craft) {
-			val = ((1 / (60 * this.game.rate)) * craft.value / craft.progressHandicap) * this.game.getResCraftRatio({name: resName});
+			var craftBonus = this.game.getEffect(resName + "AutomationBonus") || 0;
+			return ((1 / (60 * this.game.rate)) * (1 + craftBonus) * craft.value / craft.progressHandicap) * this.game.getResCraftRatio({name: resName});
 		}
 		return val;
 	},

@@ -207,9 +207,7 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 			ach.unlocked = Boolean(ach.unlocked);
 			ach.newAch = false;
 
-			if (ach.hasStar) {
-				ach.starUnlocked = Boolean(ach.starUnlocked);
-			}
+			ach.starUnlocked = Boolean(ach.starUnlocked);
 		});
 	},
 
@@ -227,14 +225,14 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 		var enterU = function () {
 			if (this.newAch) {
 				this.newAch = false;
-				dojo.removeClass(this.unlockedLabel, 'newAchievement');
+				dojo.removeClass(this.unlockedLabel, 'newMarker');
 				this.metaObj.updateTabMark();
 			}
 		};
 		var enterS = function () {
 			if (this.newStarAch) {
 				this.newStarAch = false;
-				dojo.removeClass(this.starUnlockedLabel, 'newAchievement');
+				dojo.removeClass(this.starUnlockedLabel, 'newMarker');
 				this.metaObj.updateTabMark();
 			}
 		};
@@ -301,7 +299,7 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 				if (s !== ach.starUnlocked) {
 					ach.newStarAch = ach.starUnlocked;
 				}
-				dojo.toggleClass(ach.starUnlockedLabel, 'newAchievement', ach.newStarAch);
+				dojo.toggleClass(ach.starUnlockedLabel, 'newMarker', ach.newStarAch);
 
 				ach.starText.innerHTML = ach.starUnlocked ? '&#9733;' : '&#9734;';
 			}
@@ -316,12 +314,12 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 			if (u !== ach.unlocked) {
 				ach.newAch = ach.unlocked;
 			}
-			dojo.toggleClass(ach.unlockedLabel, 'newAchievement', ach.newAch);
+			dojo.toggleClass(ach.unlockedLabel, 'newMarker', ach.newAch);
 
 			newAch = newAch || ach.newStarAch || ach.newAch;
 		}
 
-		dojo.toggleClass(this.tabWrapper, 'newAchievement', newAch);
+		dojo.toggleClass(this.tabWrapper, 'newMarker', newAch);
 	},
 
 	updateTabMark: function () {
@@ -333,7 +331,7 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 				break;
 			}
 		}
-		dojo.toggleClass(this.tabWrapper, 'newAchievement', newAch);
+		dojo.toggleClass(this.tabWrapper, 'newMarker', newAch);
 	},
 
 	save: function (saveData) {

@@ -160,6 +160,10 @@ input.integerInput.timeInput {
 	visibility: hidden;
 }
 
+.monospace {
+	font-family: monospace;
+}
+
 #topBar {
 	position: absolute;
 	top: 2px;
@@ -169,7 +173,7 @@ input.integerInput.timeInput {
 	padding: 0 10px;
 	border-bottom: 1px solid gray;
 	overflow: hidden;
-	box-shadow: 1px 0px 2px #888;
+	box-shadow: 1px 0px 2px #888888;
 	white-space: nowrap;
 	clear: both;
 	z-index: 50;
@@ -190,9 +194,9 @@ input.integerInput.timeInput {
 }
 
 .toolbarIcon {
-    padding-right: 15px;
-    font-size: 12px;
-    cursor: default;
+	padding-right: 15px;
+	font-size: 12px;
+	cursor: default;
 }
 
 .toolbarIcon:hover {
@@ -322,19 +326,19 @@ input.integerInput.timeInput {
 
 .lightbox {
 	box-sizing: content-box;
-    position: absolute;
-    border: 1px solid black;
-    width: 600px;
-    height: 300px;
+	position: absolute;
+	border: 1px solid black;
+	width: 600px;
+	height: 300px;
 
-    left: 50%;
-    top: 50%;
+	left: 50%;
+	top: 50%;
 
-    margin-top: -150px;
-    margin-left: -300px;
+	margin-top: -150px;
+	margin-left: -300px;
 
-    background-color: #ffffff;
-    padding: 20px;
+	background-color: #ffffff;
+	padding: 20px;
 	z-index: 100;
 }
 
@@ -382,7 +386,7 @@ input.integerInput.timeInput {
 }
 
 .btnDisabled {
-    color: #999999;
+	color: #999999;
 }
 
 .building .nameNode,
@@ -438,8 +442,8 @@ input.integerInput.timeInput {
 }
 
 .linkListRoot a:hover {
-    color: orange;
-    text-shadow: 1px 0px 10px coral;
+	color: orange;
+	text-shadow: 1px 0px 10px coral;
 }
 
 .linkListRoot + .linkListRoot {
@@ -504,7 +508,7 @@ input.integerInput.timeInput {
 	font-weight: bold;
 }
 
-.newAchievement:after {
+.newMarker:after {
 	content: ' New!';
 	color: red;
 	font-style: italic;

@@ -24,12 +24,12 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		}, {
 			name: "scholar",
 			title: "Scholar",
-			description: "+0.04 science per tick",
+			description: "+0.035 science per tick",
 			requires: {buildings: ["library"]},
 			modifiers: {},
 			calculateEffects: function (self, game) {
 				var modifiers = {
-					"science": 0.04
+					"science": 0.035
 				};
 
 				if (game.workshop.get("astrophysicists").owned()) {

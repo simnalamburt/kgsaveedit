@@ -85,7 +85,7 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 			{name: "antimatter",  val: 1000}
 		],
 		priceRatio: 1.25,
-		requires: {"upgrades": ["voidAspiration"]},
+		requires: {upgrades: ["voidAspiration"]},
 		effects: {
 			"temporalParadoxVoid": 1
 		}
@@ -99,7 +99,8 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 			{name: "temporalFlux", val: 3000}
 		],
 		priceRatio: 1.25,
-		requires: {"upgrades": ["distorsion"]},
+		// unlocks: {upgrades: ["turnSmoothly"]},
+		requires: {tech: ["paradoxalKnowledge"]},
 		effects: {
 			"temporalParadoxDay": 1,
 			"energyConsumption": 15

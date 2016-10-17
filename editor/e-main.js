@@ -136,9 +136,9 @@ dojo.declare('classes.KGSaveEdit.EffectsManager', null, {
 			// Miscellaneous
 
 			"observatoryRatio": {
-                title: "Observatory's science ratio",
-                type: "ratio"
-            },
+				title: "Observatory's science ratio",
+				type: "ratio"
+			},
 
 			"magnetoBoostRatio": {
 				title: "Magneto boost",
@@ -209,21 +209,21 @@ dojo.declare('classes.KGSaveEdit.EffectsManager', null, {
 			"energyConsumption": {
 				title: "Energy consumption",
 				type: "energy"
-            },
+			},
 
 			//production
 
-            "productionRatio": {
-                title: "Production bonus",
-                type: "ratio"
-            },
+			"productionRatio": {
+				title: "Production bonus",
+				type: "ratio"
+			},
 
-            "magnetoRatio": {
-                title: "Production bonus",
-                type: "ratio"
-            },
+			"magnetoRatio": {
+				title: "Production bonus",
+				type: "ratio"
+			},
 
-            "spaceRatio": {
+			"spaceRatio": {
 				title: "Space production bonus",
 				type: "ratio"
 			},
@@ -233,339 +233,339 @@ dojo.declare('classes.KGSaveEdit.EffectsManager', null, {
 				type: "ratio"
 			},
 
-            //starEvent
+			//starEvent
 
-            "starEventChance": {
-                title: "Astronomical event chance",
-                type: "ratio"
-            },
+			"starEventChance": {
+				title: "Astronomical event chance",
+				type: "ratio"
+			},
 
-            "starAutoSuccessChance": {
-                title: "Auto astronomical event chance",
-                type: "ratio"
-            },
+			"starAutoSuccessChance": {
+				title: "Auto astronomical event chance",
+				type: "ratio"
+			},
 
-            //in the tab workshop
-            "lumberMillRatio": {
-                title: "Lumber Mill bonus",
-                type: "ratio"
-            },
+			//in the tab workshop
+			"lumberMillRatio": {
+				title: "Lumber Mill bonus",
+				type: "ratio"
+			},
 
-            "barnRatio": {
-                title: "Barn expansion",
-                type: "ratio"
-            },
+			"barnRatio": {
+				title: "Barn expansion",
+				type: "ratio"
+			},
 
-            "warehouseRatio": {
-                title: "Warehouse expansion",
-                type: "ratio"
-            },
+			"warehouseRatio": {
+				title: "Warehouse expansion",
+				type: "ratio"
+			},
 
-            "acceleratorRatio": {
-                title: "Accelerator expansion",
-                type: "ratio"
-            },
+			"acceleratorRatio": {
+				title: "Accelerator expansion",
+				type: "ratio"
+			},
 
-            "harborRatio": {
-                title: "Harbor'ship expansion",
-                type: "ratio"
-            },
+			"harborRatio": {
+				title: "Harbor'ship expansion",
+				type: "ratio"
+			},
 
-            "harborCoalRatio": {
-                title: "Harbor coal expansion",
-                type: "ratio"
-            },
+			"harborCoalRatio": {
+				title: "Harbor coal expansion",
+				type: "ratio"
+			},
 
-            "catnipMaxRatio": {
-                title: "Catnip storage expansion",
-                type: "ratio"
-            },
+			"catnipMaxRatio": {
+				title: "Catnip storage expansion",
+				type: "ratio"
+			},
 
-            "hunterRatio": {
-                title: "Hunts know-how",
-                type: "ratio"
-            },
+			"hunterRatio": {
+				title: "Hunts know-how",
+				type: "ratio"
+			},
 
-            "solarFarmRatio": {
-                title: "Solar Farm bonus",
-                type: "ratio"
-            },
+			"solarFarmRatio": {
+				title: "Solar Farm bonus",
+				type: "ratio"
+			},
 
-            "shipLimit": {
-                title: "Ship limit effect",
-                type: "ratio"
-            },
+			"shipLimit": {
+				title: "Ship limit effect",
+				type: "ratio"
+			},
 
-            "hutPriceRatio": {
-                title: "Hut price reduction",
-                type: "ratio"
-            },
+			"hutPriceRatio": {
+				title: "Hut price reduction",
+				type: "ratio"
+			},
 
-            "coalSuperRatio": {
-                title: "Coal bonus",
-                type: "ratio"
-            },
+			"coalSuperRatio": {
+				title: "Coal bonus",
+				type: "ratio"
+			},
 
-            "smelterRatio": {
-                title: "Smelter bonus",
-                type: "ratio"
-            },
+			"smelterRatio": {
+				title: "Smelter bonus",
+				type: "ratio"
+			},
 
-            "calcinerRatio": {
-                title: "Calciner bonus",
-                type: "ratio"
-            },
+			"calcinerRatio": {
+				title: "Calciner bonus",
+				type: "ratio"
+			},
 
-            "calcinerSteelRatio": {
-                title: "Calciner steel production",
-                type: "ratio"
-            },
+			"calcinerSteelRatio": {
+				title: "Calciner steel production",
+				type: "ratio"
+			},
 
-            "calcinerSteelCraftRatio": {
-                title: "Steel plants's calciner bonuss",
-                type: "ratio"
-            },
+			"calcinerSteelCraftRatio": {
+				title: "Steel plants's calciner bonuss",
+				type: "ratio"
+			},
 
-            "calcinerSteelReactorBonus": {
-                title: "Calciner steel production bonus",
-                type: "ratio"
-            },
+			"calcinerSteelReactorBonus": {
+				title: "Calciner steel production bonus",
+				type: "ratio"
+			},
 
-            "libraryRatio": {
-                title: "Library bonus",
-                type: "ratio"
-            },
+			"libraryRatio": {
+				title: "Library bonus",
+				type: "ratio"
+			},
 
-            "hydroPlantRatio": {
-                title: "Hydro Plant bonus",
-                type: "ratio"
-            },
+			"hydroPlantRatio": {
+				title: "Hydro Plant bonus",
+				type: "ratio"
+			},
 
-            "spaceScienceRatio": {
-                title: "Space science bonus",
-                type: "ratio"
-            },
+			"spaceScienceRatio": {
+				title: "Space science bonus",
+				type: "ratio"
+			},
 
-            "oilWellRatio": {
-                title: "Oil bonus",
-                type: "ratio"
-            },
+			"oilWellRatio": {
+				title: "Oil bonus",
+				type: "ratio"
+			},
 
-            "unicornsGlobalRatio": {
-                title: "Unicorns bonus",
-                type: "ratio"
-            },
+			"unicornsGlobalRatio": {
+				title: "Unicorns bonus",
+				type: "ratio"
+			},
 
-            "biofuelRatio": {
-                title: "Bio Fuel bonus",
-                type: "ratio"
-            },
+			"biofuelRatio": {
+				title: "Bio Fuel bonus",
+				type: "ratio"
+			},
 
-            "blueprintCraftRatio": {
-                title: "Blueprint craft bonus",
-                type: "ratio"
-            },
+			"blueprintCraftRatio": {
+				title: "Blueprint craft bonus",
+				type: "ratio"
+			},
 
-            "skillMultiplier": {
-                title: "Kitten's skill effect",
-                type: "ratio"
-            },
+			"skillMultiplier": {
+				title: "Kitten's skill effect",
+				type: "ratio"
+			},
 
-            "uraniumRatio": {
-                title: "Uranium savings",
-                type: "ratio"
-            },
+			"uraniumRatio": {
+				title: "Uranium savings",
+				type: "ratio"
+			},
 
-            "reactorEnergyRatio": {
-                title: "Reactor energy bonus",
-                type: "ratio"
-            },
+			"reactorEnergyRatio": {
+				title: "Reactor energy bonus",
+				type: "ratio"
+			},
 
 			"reactorThoriumPerTick": {
-                title: "Reactor thorium consumption",
-                type: "perTick"
-            },
+				title: "Reactor thorium consumption",
+				type: "perTick"
+			},
 
-            "starchartGlobalRatio": {
-                title: "Starchart bonus",
-                type: "ratio"
-            },
+			"starchartGlobalRatio": {
+				title: "Starchart bonus",
+				type: "ratio"
+			},
 
-            "satnavRatio": {
-                title: "Ship's cost savings",
-                type: "ratio"
-            },
+			"satnavRatio": {
+				title: "Ship's cost savings",
+				type: "ratio"
+			},
 
-            "broadcastTowerRatio": {
-                title: "Broadcast Tower bonus",
-                type: "ratio"
-            },
+			"broadcastTowerRatio": {
+				title: "Broadcast Tower bonus",
+				type: "ratio"
+			},
 
-            "cultureMaxRatio": {
-                title: "Max Culture bonus",
-                type: "ratio"
-            },
+			"cultureMaxRatio": {
+				title: "Max Culture bonus",
+				type: "ratio"
+			},
 
-            "lunarOutpostRatio": {
-                title: "Lunar Outpost bonus",
-                type: "ratio"
-            },
+			"lunarOutpostRatio": {
+				title: "Lunar Outpost bonus",
+				type: "ratio"
+			},
 
-            "crackerRatio": {
-                title: "Cracker bonus",
-                type: "ratio"
-            },
+			"crackerRatio": {
+				title: "Cracker bonus",
+				type: "ratio"
+			},
 
-            "factoryRefineRatio": {
-                title: "Factory refine bonus",
-                type: "ratio"
-            },
+			"factoryRefineRatio": {
+				title: "Factory refine bonus",
+				type: "ratio"
+			},
 
-            "timeRatio": {
-                title: "Temporal flux bonus",
-                type: "ratio"
-            },
+			"timeRatio": {
+				title: "Temporal flux bonus",
+				type: "ratio"
+			},
 
-            "temporalParadoxVoid": {
-                title: "Max void",
-                type: "perDay"
-            },
+			"temporalParadoxVoid": {
+				title: "Max void",
+				type: "perDay"
+			},
 
-            "temporalParadoxDay": {
-                title: "Day in temporal paradox",
-                type: "fixed"
-            },
+			"temporalParadoxDay": {
+				title: "Day in temporal paradox",
+				type: "fixed"
+			},
 
-            "temporalParadoxDayBonus": {
-                title: "Day in temporal paradox",
-                type: "fixed"
-            },
+			"temporalParadoxDayBonus": {
+				title: "Day in temporal paradox",
+				type: "fixed"
+			},
 
 			"unicornsRatioReligion": {
-                title: "Unicorns bonus",
-                type: "ratio"
-            },
+				title: "Unicorns bonus",
+				type: "ratio"
+			},
 
 			"riftChance": {
-                title: "Unicorns rift chance",
-                type: "fixed"
-            },
+				title: "Unicorns rift chance",
+				type: "fixed"
+			},
 
 			"ivoryMeteorChance": {
-                title: "Ivory meteor chance",
-                type: "fixed"
-            },
+				title: "Ivory meteor chance",
+				type: "fixed"
+			},
 
-            "ivoryMeteorRatio": {
-                title: "Ivory meteor bonus",
-                type: "ratio"
-            },
+			"ivoryMeteorRatio": {
+				title: "Ivory meteor bonus",
+				type: "ratio"
+			},
 
 			"alicornChance": {
-                title: "Alicorns descent chance",
-                type: "fixed"
-            },
+				title: "Alicorns descent chance",
+				type: "fixed"
+			},
 
 			"tcRefineRatio": {
-                title: "Alicorns sacrifice bonus",
-                type: "ratio"
-            },
+				title: "Alicorns sacrifice bonus",
+				type: "ratio"
+			},
 
 			"corruptionRatio": {
-                title: "Corruption ratio",
-                type: "ratio"
-            },
+				title: "Corruption ratio",
+				type: "ratio"
+			},
 
 			"cultureMaxRatioBonus": {
-                title: "Ziggurat's max culture bonus",
-                type: "ratio"
-            },
+				title: "Ziggurat's max culture bonus",
+				type: "ratio"
+			},
 
 			"faithRatioReligion": {
-                title: "Faith bonus",
-                type: "ratio"
-            },
+				title: "Faith bonus",
+				type: "ratio"
+			},
 
 			"relicRefineRatio": {
-                title: "Relic refine bonus",
-                type: "ratio"
-            },
+				title: "Relic refine bonus",
+				type: "ratio"
+			},
 
 			"blsLimit": {
-                title: "Max BLS",
-                type: "integerRatio"
-            },
+				title: "Max BLS",
+				type: "integerRatio"
+			},
 
 			"tcResourceRatio": {
-                title: "Max resources bonus",
-                type: "ratio"
-            },
+				title: "Max resources bonus",
+				type: "ratio"
+			},
 
-            "shatterTCGain": {
-                title: "Shatter TC ressources retrieved",
-                type: "ratio"
-            },
+			"shatterTCGain": {
+				title: "Shatter TC ressources retrieved",
+				type: "ratio"
+			},
 
 			"priceRatio": {
-                title: "Building's prices",
-                type: "ratio"
-            },
+				title: "Building's prices",
+				type: "ratio"
+			},
 
 			"kittenGrowthRatio": {
-                title: "Kittens birth rate",
-                type: "ratio"
-            },
+				title: "Kittens birth rate",
+				type: "ratio"
+			},
 
 			// cycleEffects
 			"spaceElevator-prodTransferBonus": {
-                title: "Space Elevator - Transferred cath production bonus",
-                type: "ratio"
-            },
+				title: "Space Elevator - Transferred cath production bonus",
+				type: "ratio"
+			},
 
 			"sattelite-starchartPerTickBaseSpace": {
-                title: "Sattelite - Startchar production",
-                type: "ratio"
-            },
+				title: "Sattelite - Startchar production",
+				type: "ratio"
+			},
 
 			"sattelite-observatoryRatio": {
-                title: "Sattelite - Observatory's science ratio",
-                type: "ratio"
-            },
+				title: "Sattelite - Observatory's science ratio",
+				type: "ratio"
+			},
 
 			"spaceStation-scienceRatio": {
-                title: "Space Station - Science bonus",
-                type: "ratio"
-            },
+				title: "Space Station - Science bonus",
+				type: "ratio"
+			},
 
 			"moonOutpost-unobtainiumPerTickSpace": {
-                title: "Lunar Outpost - Unobtainium conversion",
-                type: "ratio"
-            },
+				title: "Lunar Outpost - Unobtainium conversion",
+				type: "ratio"
+			},
 
 			"planetCracker-uraniumPerTickSpace": {
-                title: "Planet Cracker - Uranium conversion",
-                type: "ratio"
-            },
+				title: "Planet Cracker - Uranium conversion",
+				type: "ratio"
+			},
 
 			"hydrofracturer-oilPerTickAutoprodSpace": {
-                title: "Hydraulic Fracturer - Oil conversion",
-                type: "ratio"
-            },
+				title: "Hydraulic Fracturer - Oil conversion",
+				type: "ratio"
+			},
 
 			"researchVessel-starchartPerTickBaseSpace": {
-                title: "Research Vessel - Starchart production",
-                type: "ratio"
-            },
+				title: "Research Vessel - Starchart production",
+				type: "ratio"
+			},
 
 			"sunlifter-energyProduction": {
-                title: "Sunlifter - Energy production",
-                type: "ratio"
-            },
+				title: "Sunlifter - Energy production",
+				type: "ratio"
+			},
 
 			"spaceBeacon-starchartPerTickBaseSpace": {
-                title: "Space Beacon - Starchart production",
-                type: "ratio"
-            }
+				title: "Space Beacon - Starchart production",
+				type: "ratio"
+			}
 
 		}
 	}
@@ -581,7 +581,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	ironWill: true,
 	cheatMode: false,
 
-	saveVersion: 14,
+	saveVersion: 15,
 
 	opts: null,
 
@@ -911,7 +911,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			return plusSign + floatVal;
 		}
 
-		if (floatVal.toFixed() == floatVal){
+		if (floatVal.toFixed() == floatVal) {
 			var toFixed = floatVal.toFixed();
 			return plusSign + toFixed;
 		} else {
@@ -1000,6 +1000,13 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 	getTriValueOrigin: function (value, stripe) {
 		return (Math.pow(value * 2 + 1, 2) - 1) * stripe / 8;
+	},
+
+	//CMBR is capped by 20%
+
+	getCMBRBonus: function () {
+		var ratio = this.server.donateAmt / 1000;
+		return this.getHyperbolicEffect(ratio, 0.2);
 	},
 
 	getCraftRatio: function () {
@@ -1443,6 +1450,11 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		var religionProductionBonus = this.religion.getProductionBonus();
 		perTick *= 1 + (religionProductionBonus / 100);
 
+		//+COSMIC RADIATION
+		if (!this.opts.disableCMBR) {
+			perTick *= (1 + this.getCMBRBonus());
+		}
+
 		//ParagonSpaceProductionRatio definition 4/4
 		paragonSpaceProductionRatio += paragonSpaceProductionRatio * religionProductionBonus / 100;
 
@@ -1778,6 +1790,13 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		return true;
 	},
 
+	_toggleLightbox: function (ele) {
+		dojo.query('.lightbox').addClass('hidden');
+		if (ele && dojo.hasClass(ele, 'lightbox')) {
+			dojo.removeClass(ele, 'hidden');
+		}
+	},
+
 	_createLinkList: function (metaObj, parentNode, listData, handler) {
 		var game = this;
 
@@ -2018,8 +2037,10 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			cheatMode: this.cheatMode,
 
 			opts: this.filterMetaObj(this.opts, ["usePerSecondValues", "usePercentageResourceValues",
-				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter"])
+				"highlightUnavailable", "hideSell", "disableCMBR", "noConfirm", "IWSmelter"])
 		};
+
+		this.telemetry.save(saveData);
 
 		if (compress) {
 			saveData = LZString.compressToBase64(JSON.stringify(saveData));
@@ -2286,6 +2307,11 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			save.saveVersion = 14;
 		}
 
+		if (save.saveVersion == 14) {
+			//removed
+			save.saveVersion = 15;
+		}
+
 		return save;
 	},
 
@@ -2313,13 +2339,13 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				return false;
 			}
 
-			//console.log(json);
 			var saveData = JSON.parse(json);
-
 
 			//reset everything before loading
 			this._loadJSON(this.blankSaveData);
 			this.time.set('timestamp', Date.now());
+			this.telemetry.setGuid();
+
 			rollback = true;
 			this._loadJSON(saveData);
 
@@ -2356,6 +2382,8 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 		this.callMethods(this.managers, 'load', saveData);
 
+		this.telemetry.load(saveData);
+
 		if (saveData.game) {
 			var data = saveData.game;
 
@@ -2372,7 +2400,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			}
 
 			this.loadMetaFields(this.opts, data.opts, ["usePerSecondValues", "usePercentageResourceValues",
-				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter"]);
+				"highlightUnavailable", "hideSell", "disableCMBR", "noConfirm", "IWSmelter"]);
 		}
 	},
 
@@ -2399,6 +2427,9 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		this.OptionsTab = new classes.KGSaveEdit.OptionsTab(this);
 		this.calendar = new classes.KGSaveEdit.Calendar(this);
 		this.console = new classes.KGSaveEdit.Console(this);
+		this.telemetry = new classes.KGSaveEdit.Telemetry();
+		this.server = new classes.KGSaveEdit.Server();
+
 		this.resPool = new classes.KGSaveEdit.Resources(this);
 		this.village = new classes.KGSaveEdit.VillageManager(this);
 		this.time = new classes.KGSaveEdit.TimeManager(this);
@@ -2438,6 +2469,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 		this.calendar.render();
 		this.console.render();
+		this.telemetry.render();
 
 		this.resPool.render();
 
