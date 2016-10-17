@@ -476,6 +476,10 @@ input.integerInput.timeInput {
 	max-width: 520px;
 }
 
+.censusLine {
+	margin-bottom: 5px;
+}
+
 #censusPageBlock {
 	white-space: nowrap;
 }
@@ -489,6 +493,7 @@ input.integerInput.timeInput {
 	margin-top: 5px;
 }
 
+#massEditKittensBlock,
 .kittenBlock {
 	white-space: nowrap;
 	border: 1px solid gray;
