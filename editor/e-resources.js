@@ -419,7 +419,7 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		maxValue *= 1 + this.game.prestige.getParagonStorageRatio();
 
 		//+COSMIC RADIATION
-		if (!this.game.disableCMBR) {
+		if (!this.game.opts.disableCMBR) {
 			maxValue *= 1 + (this.game.getCMBRBonus());
 		}
 
@@ -719,7 +719,7 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 
 		this.perTickCached = 0;
 		if (this.calculatePerTick) {
-			this.perTickCached = this.game.calcResourcePerTick(this.name);
+			this.perTickCached = this.game.fixFloatPointNumber(this.game.calcResourcePerTick(this.name));
 		}
 
 		this.maxValueNode.textContent = maxValue || this.showMax ? "/" + this.game.getDisplayValueExt(maxValue) : "";

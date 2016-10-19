@@ -1,0 +1,9 @@
+{
+  "donateAmt": 427.61,
+
+  "telemetryUrl": "http://127.0.0.1:9091/events/",
+
+  "showMotd": true,
+  "motdTitle": "MOTD",
+  "motdContent": "Praise the sun!"
+}

@@ -107,7 +107,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			}
 		}, {
 			name: "engineer",
-			title: "Engineers",
+			title: "Engineer",
 			description: "Engineer can operate one factory to automate resource production.",
 			requires: {tech: ["mechanization"]},
 			modifiers: {}

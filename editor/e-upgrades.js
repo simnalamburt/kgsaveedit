@@ -343,7 +343,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			name: "drama",
 			label: "Drama and Poetry",
 			description: "Drama and poetry are both forms of artistic expression.\nImproves cultural progress.",
-			effectDesc: "Unlocks Festivals and Cultural artifacts (TBD)",
+			effectDesc: "Unlocks Festivals and Cultural artifacts",
 			prices: [
 				{name: "science",   val: 90000},
 				{name: "parchment", val: 5000}
@@ -509,7 +509,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			name: "oilProcessing",
 			label: "Oil Processing",
 			description: "Unlocks advanced options of oil processing",
-			effectDesc: "Unlocks kerosene and factory processing(TBD)",
+			effectDesc: "Unlocks kerosene and factory processing",
 			prices: [
 				{name: "science",   val: 215000},
 				{name: "blueprint", val: 150}
@@ -575,7 +575,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 		}, {
 			name: "nanotechnology",
 			label: "Nanotechnology",
-			description: "TBD",
+			description: "Nanotechnology is manipulation of matter on an atomic, molecular, and sub-molecular scale. Can potentially improve your energy and resource production.",
 			effectDesc: "Unlocks Nanosuits, Augmentations and PVC",
 			prices: [
 				{name: "science",   val: 200000},
@@ -2803,7 +2803,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 
 		this.freeEngineersBlock = dojo.create('div', {
 			id: 'workshopFreeEngineersBlock',
-			innerHTML: 'Free Engineers: <span>0 / 0</span>'
+			innerHTML: 'Free engineers: <span>0 / 0</span>'
 		}, this.tabBlockNode);
 		this.freeEngineersNode = this.freeEngineersBlock.children[0];
 

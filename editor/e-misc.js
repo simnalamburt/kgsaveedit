@@ -106,14 +106,14 @@ dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 		game.karmaKittensNode.handler = function () {
 			var value = this.game.getTriValue(this.parsedValue, 5);
 			this.game.setInput(this.game.karmaKittensKarma, value, true);
-			this.game.resPool.get('karma').setValue(value, true);
+			this.game.resPool.get('karma').set('value', value, true);
 		};
 
 		game.karmaKittensKarma.parseFn = function (value) {
 			return this.game.getTriValue(Math.round(this.game.getTriValueOrigin(value, 5)), 5);
 		};
 		game.karmaKittensKarma.handler = function () {
-			this.game.resPool.get('karma').setValue(this.parsedValue, true);
+			this.game.resPool.get('karma').set('value', this.parsedValue, true);
 			this.game.setInput(this.game.karmaKittensNode, Math.round(this.game.getTriValueOrigin(this.parsedValue, 5)), true);
 		};
 
@@ -651,12 +651,6 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 		unlocked: true,
 		invisible: true
 	}, {
-		name: "atheism",
-		label: "Atheism",
-		description: "Restart the game without faith bonus.<br><br>Goal: Reset with at least one cryochamber.",
-		effectDesc: "Every level of transcendence will increase aprocrypha effectiveness by 10%.",
-		requires: {tech: ['voidSpace']}
-	}, {
 		name: "energy",
 		label: "Energy",
 		description: "Restart the game with consumption of energy multiply by 2.<br><br>Goal: Unlock all energy production buildings and build at least one of them.",
@@ -674,6 +668,12 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 				this.game.space.getBuilding("sunlifter").val > 0 &&
 				this.game.space.getBuilding("tectonic").val > 0);
 		}
+	}, {
+		name: "atheism",
+		label: "Atheism",
+		description: "Restart the game without faith bonus.<br><br>Goal: Reset with at least one cryochamber.",
+		effectDesc: "Every level of transcendence will increase aprocrypha effectiveness by 10%.",
+		requires: {tech: ['voidSpace']}
 	}],
 
 	constructor: function (game) {
@@ -1009,7 +1009,7 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarDonations", classes.KGSaveEdi
 			html = "Production bonus disabled";
 		} else {
 			var bonus = this.game.getCMBRBonus() * 100;
-			html = "Donations pool.<br> Every donation goes to the global pool that affects everyone playing the game.<br><br>Production bonus: " +  this.game.getDisplayValueExt(bonus, true, false) + "%" +
+			html = "Donations pool.<br><br> Every donation goes to the global pool that affects everyone playing the game.<br> This effect has a diminishing return.<br><br>Production bonus: " +  this.game.getDisplayValueExt(bonus, true, false) + "%" +
 				"<br>Storage bonus: " + this.game.getDisplayValueExt(bonus, true, false) + "%";
 		}
 
@@ -1019,12 +1019,14 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarDonations", classes.KGSaveEdi
 
 
 dojo.declare("classes.KGSaveEdit.Telemetry", null, {
+	game: null,
 	guid: null,
 	warnOnNewGuid: false,
 
 	domNode: null,
 
-	constructor: function () {
+	constructor: function (game) {
+		this.game = game;
 		this.guid = this.generateGuid();
 	},
 
@@ -1075,10 +1077,41 @@ dojo.declare("classes.KGSaveEdit.Telemetry", null, {
 });
 
 
-//TODO: to be replaced with actuall server call
-
 dojo.declare("classes.KGSaveEdit.Server", null, {
-	donateAmt: 185.21
+	game: null,
+
+	donateAmt: 0,
+	telemetryUrl: null,
+
+	showMotd: true,
+	motdTitle: null,
+	motdContent: null,
+
+	constructor: function (game) {
+		this.game = game;
+	},
+
+	refresh: function () {
+		var self = this;
+
+		console.log("Loading server settings...");
+		$.ajax({
+			cache: false,
+			url: "server.json",
+			dataType: "json",
+			success: function (json) {
+				self.donateAmt = json.donateAmt || 0;
+				self.telemetryUrl = json.telemetryUrl;
+
+				self.showMotd = json.showMotd;
+				self.motdTitle = json.motdTitle;
+				self.motdContent = json.motdContent;
+				self.game.update();
+			}
+		}).fail(function (err) {
+			console.log("Unable to parse server.json configuration:", err);
+		});
+	}
 });
 
 

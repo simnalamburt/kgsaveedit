@@ -269,7 +269,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 						}
 					},
 					lackResConvert: false,
-					action: function (game, self) {
+					action: function (self, game) {
 						self.effects["uraniumPerTickCon"] = -0.35;
 						self.effects["unobtainiumPerTickSpace"] = 0.007 * (1 + game.getEffect("lunarOutpostRatio"));
 						var amt = game.resPool.getAmtDependsOnStock(
@@ -963,7 +963,10 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 			this.game.calendar.cycleEffectsBasics(this.effects, this.name);
 		}
 		if (this.action && this.val > 0) {
-			this.action(this.game, this);
+			var amt = this.action(this, this.game);
+			if (typeof amt !== "undefined") {
+				this.lackResConvert = amt !== 1 && this.getOn() !== 0;
+			}
 			this.game.calendar.cycleEffectsBasics(this.effects, this.name);
 		}
 	},

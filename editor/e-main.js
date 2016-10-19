@@ -824,7 +824,6 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 	toDisplayPercentage: function (percentage, precision, precisionFixed) {
 		percentage *= 100;
-
 		if (precisionFixed) {
 			// Prevent 100% whereas it's not really reached
 			percentage -= 1 / Math.pow(10, precision);
@@ -832,21 +831,23 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				percentage = 0;
 			}
 		} else {
-			if (percentage - Math.trunc(percentage) != 0) {
+			percentage = this.fixFloatPointNumber(percentage);
+			// Seek optimal precision
+			if (percentage - Math.floor(percentage) !== 0) {
 				precision = 1;
-				if (percentage * 10 - Math.trunc(percentage * 10) != 0) {
+				if (percentage * 10 - Math.floor(percentage * 10) !== 0) {
 					precision = 2;
-					if (percentage * 100 - Math.trunc(percentage * 100) != 0) {
+					if (percentage * 100 - Math.floor(percentage * 100) !== 0) {
 						precision = 3;
-						if (percentage * 1000 - Math.trunc(percentage * 1000) != 0) {
+						if (percentage * 1000 - Math.floor(percentage * 1000) !== 0) {
 							precision = 4;
-							if (percentage * 10000 - Math.trunc(percentage * 10000) != 0) {
+							if (percentage * 10000 - Math.floor(percentage * 10000) !== 0) {
 								precision = 5;
-								if (percentage * 100000 - Math.trunc(percentage * 100000) != 0) {
+								if (percentage * 100000 - Math.floor(percentage * 100000) !== 0) {
 									precision = 6;
-									if (percentage * 1000000 - Math.trunc(percentage * 1000000) != 0) {
+									if (percentage * 1000000 - Math.floor(percentage * 1000000) !== 0) {
 										precision = 7;
-										if (percentage * 10000000 - Math.trunc(percentage * 10000000) != 0) {
+										if (percentage * 10000000 - Math.floor(percentage * 10000000) !== 0) {
 											precision = 8;
 										}
 									}
@@ -918,6 +919,15 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			toFixed = floatVal.toFixed(precision);
 			return plusSign + toFixed + mantisa;
 		}
+	},
+
+	fixFloatPointNumber: function (number) {
+		// Adjust value because of floating-point error
+		var numberAdjusted = Math.floor(number * 10000000) / 10000000;
+		if (Math.round((number - numberAdjusted) * 10000000)) {
+			numberAdjusted = Math.floor((number + 0.000000000000010) * 10000000) / 10000000;
+		}
+		return numberAdjusted;
 	},
 
 	getUnlockByName: function (unlockId, type) {
@@ -1319,7 +1329,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	getResourcePerTickConvertion: function (resName) {
-		return this.getEffect(resName + "PerTickCon");
+		return this.fixFloatPointNumber(this.getEffect(resName + "PerTickCon"));
 	},
 
 	toDisplaySeconds: function (secondsRaw) {
@@ -2037,7 +2047,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			cheatMode: this.cheatMode,
 
 			opts: this.filterMetaObj(this.opts, ["usePerSecondValues", "usePercentageResourceValues",
-				"highlightUnavailable", "hideSell", "disableCMBR", "noConfirm", "IWSmelter"])
+				"highlightUnavailable", "hideSell", "disableCMBR", "disableTelemetry", "noConfirm", "IWSmelter"])
 		};
 
 		this.telemetry.save(saveData);
@@ -2400,7 +2410,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			}
 
 			this.loadMetaFields(this.opts, data.opts, ["usePerSecondValues", "usePercentageResourceValues",
-				"highlightUnavailable", "hideSell", "disableCMBR", "noConfirm", "IWSmelter"]);
+				"highlightUnavailable", "hideSell", "disableCMBR", "disableTelemetry", "noConfirm", "IWSmelter"]);
 		}
 	},
 
@@ -2416,6 +2426,8 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			usePercentageResourceValues: false,
 			highlightUnavailable: false,
 			hideSell: false,
+			disableCMBR: false,
+			disableTelemetry: true,
 			noConfirm: false,
 			IWSmelter: true
 		});
@@ -2426,9 +2438,11 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 		this.OptionsTab = new classes.KGSaveEdit.OptionsTab(this);
 		this.calendar = new classes.KGSaveEdit.Calendar(this);
+
 		this.console = new classes.KGSaveEdit.Console(this);
-		this.telemetry = new classes.KGSaveEdit.Telemetry();
-		this.server = new classes.KGSaveEdit.Server();
+		this.telemetry = new classes.KGSaveEdit.Telemetry(this);
+		this.server = new classes.KGSaveEdit.Server(this);
+		this.server.refresh();
 
 		this.resPool = new classes.KGSaveEdit.Resources(this);
 		this.village = new classes.KGSaveEdit.VillageManager(this);
@@ -2493,7 +2507,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	updateTimer: null,
 
 
-	update: function (rerun) {
+	update: function () {
 		clearTimeout(this.updateTimer);
 
 		this.brokenIronWill = this.resPool.get('kittens').value > 0 || this.game.getEffect('maxKittens') > 0;
@@ -2526,7 +2540,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			dojo.query('.tabBlock', 'tabBlocksContainer').addClass('hidden');
 		}
 
-		this.callMethods(this.managers, 'update', rerun);
+		this.callMethods(this.managers, 'update');
 
 		var energyProd = this.getEffect("energyProduction");
 		var energyCons = this.getEffect("energyConsumption");
@@ -2538,16 +2552,6 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			this.resPool.energyProd = energyProd;
 			this.resPool.energyCons = energyCons;
 
-			dojo.forEach(this.bld.buildings, function (bld) {
-				if (bld.action) {
-					bld.action(bld, bld.game);
-				}
-			});
-			dojo.forEach(this.space.allPrograms, function (bld) {
-				if (bld.action) {
-					bld.action(bld.game, bld);
-				}
-			});
 			this.bld.invalidateCachedEffects();
 			this.space.invalidateCachedEffects();
 		}
@@ -2556,7 +2560,8 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		this.resPool.update();
 		this.toolbar.update();
 
-		if (rerun) {
+		if (this.rerun) {
+			this.rerun = false;
 			if (dojo.isFunction(this.tooltipUpdateFunc)) {
 				this.tooltipUpdateFunc();
 			} else {
@@ -2568,7 +2573,8 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			// run twice to make sure everything's up to date
 			// since some things are dependent on other things being run and it's a complicated mess
 			// the game masks this problem because it ticks and renders parts only some of the time
-			this.update(true);
+			this.rerun = true;
+			this.update();
 			return;
 		}
 	}

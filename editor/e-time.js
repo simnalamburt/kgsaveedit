@@ -204,7 +204,7 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 			return Math.min(value, temporalFlux.maxValue);
 		};
 		input.handler = function () {
-			temporalFlux.setValue(this.parsedValue, true);
+			temporalFlux.set('value', this.parsedValue, true);
 		};
 
 		this.energyMaxBlock = tr.children[2];
