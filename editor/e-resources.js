@@ -592,7 +592,8 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		}
 		this.loadMetaData.call(this, saveData.resources, 'get', function (res, saveRes) {
 			res.set('value', num(saveRes.value));
-			res.set('isHidden', num(saveRes.isHidden));
+			res.set('unlocked', Boolean(saveRes.unlocked));
+			res.set('isHidden', Boolean(saveRes.isHidden));
 		});
 	}
 });

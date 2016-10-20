@@ -2342,7 +2342,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "assistance",
-			label: "Assistance",
+			label: "Robotic Assistance",
 			description: "Building robots, workers do less effort and need less catnip",
 			prices: [
 				{name: "steel",   val: 10000},
@@ -2593,7 +2593,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			prices: [
 				{name: "minerals", val: 250}
 			],
-			unlocked: true
+			unlocked: true,
+			progressHandicap: 1
 		}, {
 			name: "concrate",
 			label: "Concrete",

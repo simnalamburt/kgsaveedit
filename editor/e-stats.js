@@ -542,7 +542,7 @@ dojo.declare('classes.KGSaveEdit.StatsMeta', classes.KGSaveEdit.GenericItem, {
 		var val = this.val;
 
 		if (this.calculate) {
-			val = this.calculate(this.game) || 0;
+			// val = this.calculate(this.game) || 0;
 		}
 
 		if (this.compareVal && this.game.editorOptions.fixStats) {
