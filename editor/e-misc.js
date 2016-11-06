@@ -4,54 +4,54 @@ require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 "use strict";
 
 
-dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
+dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 	options: [{
-			name: 'useWorkers',
-			desc: 'Use web worker (game works correctly in background tab, may cause performance issues)'
+			name: "useWorkers",
+			desc: "Use web worker (game works correctly in background tab, may cause performance issues)"
 		}, {
-			name: 'forceHighPrecision',
-			desc: 'Use high precision for resource values'
+			name: "forceHighPrecision",
+			desc: "Use high precision for resource values"
 		}, {
-			name: 'usePerSecondValues',
-			desc: 'Use per second values <i>(per tick otherwise)</i>',
-			src: 'game.opts'
+			name: "usePerSecondValues",
+			desc: "Use per second values <i>(per tick otherwise)</i>",
+			src: "game.opts"
 		}, {
-			name: 'usePercentageResourceValues',
-			desc: 'Use percentage resource production values',
-			src: 'game.opts'
+			name: "usePercentageResourceValues",
+			desc: "Use percentage resource production values",
+			src: "game.opts"
 		}, {
-			name: 'highlightUnavailable',
-			desc: 'Highlight buildings limited by storage space',
-			src: 'game.opts'
+			name: "highlightUnavailable",
+			desc: "Highlight buildings limited by storage space",
+			src: "game.opts"
 		}, {
-			name: 'hideSell',
-			desc: "Hide 'sell' buttons",
-			src: 'game.opts'
+			name: "hideSell",
+			desc: 'Hide "sell" buttons',
+			src: "game.opts"
 		}, {
-			name: 'disableCMBR',
-			desc: 'Disable global donate bonus',
-			src: 'game.opts'
+			name: "disableCMBR",
+			desc: "Disable global donate bonus",
+			src: "game.opts"
 		}, {
-			name: 'noConfirm',
-			desc: 'Do not confirm when clearing all jobs',
-			src: 'game.opts'
+			name: "noConfirm",
+			desc: "Do not confirm when clearing all jobs",
+			src: "game.opts"
 		}, {
-			name: 'IWSmelter',
-			desc: 'Smelters turn off at 95% max Iron in Iron Will mode',
-			src: 'game.opts',
+			name: "IWSmelter",
+			desc: "Smelters turn off at 95% max Iron in Iron Will mode",
+			src: "game.opts",
 			seperator: true
 		}, {
-			name: 'ironWill',
-			desc: 'Iron Will'
+			name: "ironWill",
+			desc: "Iron Will"
 		}, {
-			name: 'cheatMode',
-			desc: 'Cheat mode',
+			name: "cheatMode",
+			desc: "Cheat mode",
 			seperator: true
 	}],
 	scheme: null,
 
 	constructor: function () {
-		this.tabName = 'Options &amp; Settings';
+		this.tabName = "Options &amp; Settings";
 	},
 
 	renderTabBlock: function () {
@@ -60,26 +60,26 @@ dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 		dojo.place(game.server.domNode, this.tabBlockNode);
 		dojo.place(game.calendar.domNode, this.tabBlockNode);
 
-		dojo.place(document.createTextNode('Color scheme: '), this.tabBlockNode);
-		var scheme = dojo.create('select', {
-			id: 'setColorScheme',
+		dojo.place(document.createTextNode("Color scheme: "), this.tabBlockNode);
+		var scheme = dojo.create("select", {
+			id: "setColorScheme",
 			innerHTML: '<option value="">Classic</option><option value="dark">Inverted</option><option value="grassy">Grassy</option><option value="sleek">Sleek (By Kida)</option>'
 		}, this.tabBlockNode);
 		scheme.game = game;
 		this.scheme = scheme;
-		scheme.defaultVal = this.game.colorScheme || '';
+		scheme.defaultVal = this.game.colorScheme || "";
 
-		on(scheme, 'change', function () {
+		on(scheme, "change", function () {
 			this.game.colorScheme = this.value;
 			this.game.update();
 		});
 
-		dojo.place('<br><br>', scheme, 'after');
+		dojo.place("<br><br>", scheme, "after");
 
 		for (var i = 0; i < this.options.length; i++) {
 			var option = this.options[i];
-			var ref = option.src === 'game.opts' ? game.opts : game;
-			var div = dojo.create('div', null, this.tabBlockNode);
+			var ref = option.src === "game.opts" ? game.opts : game;
+			var div = dojo.create("div", null, this.tabBlockNode);
 			game._createCheckbox(option.desc, div, ref, option.name);
 
 			if (option.seperator) {
@@ -88,39 +88,39 @@ dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 		}
 
 		// Dead Kittens & Karma
-		var table = dojo.create('table', {'class': 'bottom-margin'}, this.tabBlockNode);
+		var table = dojo.create("table", {class: "bottom-margin"}, this.tabBlockNode);
 
-		var tr = dojo.create('tr', {
-			innerHTML: '<td>DeadKittens</td><td></td>'
+		var tr = dojo.create("tr", {
+			innerHTML: "<td>DeadKittens</td><td></td>"
 		}, table);
-		game._createInput({'class': 'integerInput'}, tr.children[1], game, 'deadKittens');
+		game._createInput({class: "integerInput"}, tr.children[1], game, "deadKittens");
 
-		tr = dojo.create('tr', {
-			innerHTML: '<td>karmaKittens</td><td>&nbsp; &harr; &nbsp;</td>'
+		tr = dojo.create("tr", {
+			innerHTML: "<td>karmaKittens</td><td>&nbsp; &harr; &nbsp;</td>"
 		}, table);
 		var td = tr.children[1];
 
-		game._createInput({id: 'karmaKittensNode', 'class': 'integerInput'},
-			td, game, 'karmaKittens', 'first');
-		game.karmaKittensKarma = game._createInput({'class': 'abbrInput'}, td);
-		dojo.place(document.createTextNode(' Karma'), td);
+		game._createInput({id: "karmaKittensNode", class: "integerInput"},
+			td, game, "karmaKittens", "first");
+		game.karmaKittensKarma = game._createInput({class: "abbrInput"}, td);
+		dojo.place(document.createTextNode(" Karma"), td);
 
 		game.karmaKittensNode.handler = function () {
 			var value = this.game.getTriValue(this.parsedValue, 5);
 			this.game.setInput(this.game.karmaKittensKarma, value, true);
-			this.game.resPool.get('karma').set('value', value, true);
+			this.game.resPool.get("karma").set("value", value, true);
 		};
 
 		game.karmaKittensKarma.parseFn = function (value) {
 			return this.game.getTriValue(Math.round(this.game.getTriValueOrigin(value, 5)), 5);
 		};
 		game.karmaKittensKarma.handler = function () {
-			this.game.resPool.get('karma').set('value', this.parsedValue, true);
+			this.game.resPool.get("karma").set("value", this.parsedValue, true);
 			this.game.setInput(this.game.karmaKittensNode, Math.round(this.game.getTriValueOrigin(this.parsedValue, 5)), true);
 		};
 
-		tr = dojo.create('tr', {innerHTML: '<td>karmaZebras</td><td><td>'}, table);
-		game._createInput({'class': 'integerInput'}, tr.children[1], game, 'karmaZebras');
+		tr = dojo.create("tr", {innerHTML: "<td>karmaZebras</td><td><td>"}, table);
+		game._createInput({class: "integerInput"}, tr.children[1], game, "karmaZebras");
 
 		dojo.place(game.console.domNode, this.tabBlockNode);
 
@@ -129,7 +129,7 @@ dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 });
 
 
-dojo.declare('classes.KGSaveEdit.Calendar', classes.KGSaveEdit.core, {
+dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.core, {
 	game: null,
 
 	seasons: [{
@@ -315,111 +315,111 @@ dojo.declare('classes.KGSaveEdit.Calendar', classes.KGSaveEdit.core, {
 		var game = this.game;
 
 		var i, len;
-		var table = dojo.create('table', {
-			id: 'calendarBlock',
-			'class': 'bottom-margin',
+		var table = dojo.create("table", {
+			id: "calendarBlock",
+			class: "bottom-margin",
 			innerHTML: '<tr><th colspan="2">Calendar</th></tr>'
 		});
 		this.domNode = table;
 
-		var tr = dojo.create('tr', {
-			innerHTML: '<td>Year</td><td></td>'
+		var tr = dojo.create("tr", {
+			innerHTML: "<td>Year</td><td></td>"
 		}, table);
 		var td = tr.children[1];
-		game._createInput({id: 'yearNode', 'class': 'integerInput'},
-			td, this, 'year');
+		game._createInput({id: "yearNode", class: "integerInput"},
+			td, this, "year");
 
-		dojo.place(document.createTextNode(' \u00A0'), td); //insert &nbsp; equivalent
+		dojo.place(document.createTextNode(" \u00A0"), td); //insert &nbsp; equivalent
 
-		this.milleniumParagonSpan = dojo.create('a', {
-			id: 'milleniumParagonSpan',
-			href: '#', 'class': 'hidden',
-			innerHTML: '(+0 paragon)'
+		this.milleniumParagonSpan = dojo.create("a", {
+			id: "milleniumParagonSpan",
+			href: "#", class: "hidden",
+			innerHTML: "(+0 paragon)"
 		}, td);
 
-		on(this.milleniumParagonSpan, 'click', dojo.hitch(this, function () {
+		on(this.milleniumParagonSpan, "click", dojo.hitch(this, function () {
 			this.refYear = this.year;
-			var paragon = this.game.resPool.get('paragon');
-			paragon.set('value', paragon.value + Math.floor(Math.max(this.year - this.refYear, 0) / 1000));
+			var paragon = this.game.resPool.get("paragon");
+			paragon.set("value", paragon.value + Math.floor(Math.max(this.year - this.refYear, 0) / 1000));
 			this.game.update();
 		}));
 
-		tr = dojo.create('tr', {
-			innerHTML: '<td>Cycle</td><td></td>'
+		tr = dojo.create("tr", {
+			innerHTML: "<td>Cycle</td><td></td>"
 		}, table);
-		this.cycleNode = dojo.create('select', {id: 'cycleNode'}, tr.children[1]);
+		this.cycleNode = dojo.create("select", {id: "cycleNode"}, tr.children[1]);
 		this.cycleNode.defaultVal = 0;
 
 		for (i = 0, len = this.cycles.length; i < len; i++) {
 			var cycle = this.cycles[i];
-			dojo.create('option', {
+			dojo.create("option", {
 				value: i,
-				innerHTML: cycle.glyph + ' ' + cycle.title
+				innerHTML: cycle.glyph + " " + cycle.title
 			}, this.cycleNode);
 		}
 
-		on(this.cycleNode, 'change', dojo.hitch(this, function () {
+		on(this.cycleNode, "change", dojo.hitch(this, function () {
 			this.cycle = this.cycleNode.selectedIndex;
 			this.game.update();
 		}));
 
-		tr = dojo.create('tr', {
-			innerHTML: '<td>Cycle year</td><td></td>'
+		tr = dojo.create("tr", {
+			innerHTML: "<td>Cycle year</td><td></td>"
 		}, table);
-		game._createInput({id: 'cycleYearNode', 'class': 'integerInput shortInt'},
-			tr.children[1], this, 'cycleYear');
+		game._createInput({id: "cycleYearNode", class: "integerInput shortInt"},
+			tr.children[1], this, "cycleYear");
 
-		tr = dojo.create('tr', {
-			innerHTML: '<td>Season</td><td></td>'
+		tr = dojo.create("tr", {
+			innerHTML: "<td>Season</td><td></td>"
 		}, table);
-		this.seasonNode = dojo.create('select', {id: 'seasonNode'}, tr.children[1]);
+		this.seasonNode = dojo.create("select", {id: "seasonNode"}, tr.children[1]);
 		this.seasonNode.defaultVal = 0;
 
 		for (i = 0, len = this.seasons.length; i < len; i++) {
 			var season = this.seasons[i];
-			season.optionNode = dojo.create('option', {
+			season.optionNode = dojo.create("option", {
 				value: i,
 				innerHTML: season.title
 			}, this.seasonNode);
 		}
 
-		on(this.seasonNode, 'change', dojo.hitch(this, function () {
+		on(this.seasonNode, "change", dojo.hitch(this, function () {
 			this.season = this.seasonNode.selectedIndex;
 			this.game.update();
 		}));
 
-		tr = dojo.create('tr', {
-			innerHTML: '<td>Weather</td><td></td>'
+		tr = dojo.create("tr", {
+			innerHTML: "<td>Weather</td><td></td>"
 		}, table);
-		this.weatherSel = dojo.create('select', {
-			id: 'weatherSel',
+		this.weatherSel = dojo.create("select", {
+			id: "weatherSel",
 			innerHTML: '<option value="">---</option><option value="warm">Warm</option><option value="cold">Cold</option>'
 		}, tr.children[1]);
-		this.weatherSel.defaultVal = '';
+		this.weatherSel.defaultVal = "";
 
-		on(this.weatherSel, 'change', dojo.hitch(this, function () {
+		on(this.weatherSel, "change", dojo.hitch(this, function () {
 			this.weather = this.weatherSel.value || null;
 			this.game.update();
 		}));
 
-		tr = dojo.create('tr', {
-			innerHTML: '<td>Day</td><td></td>'
+		tr = dojo.create("tr", {
+			innerHTML: "<td>Day</td><td></td>"
 		}, table);
-		var input = game._createInput({id: 'dayNode'}, tr.children[1], this, 'day');
+		var input = game._createInput({id: "dayNode"}, tr.children[1], this, "day");
 
-		tr = dojo.create('tr', {
-			innerHTML: '<td>Festival days</td><td></td>'
+		tr = dojo.create("tr", {
+			innerHTML: "<td>Festival days</td><td></td>"
 		}, table);
-		game._createInput({id: 'festivalDaysNode', 'class': 'integerInput abbrInput'},
-			tr.children[1], this, 'festivalDays');
+		game._createInput({id: "festivalDaysNode", class: "integerInput abbrInput"},
+			tr.children[1], this, "festivalDays");
 
-		tr = dojo.create('tr', {
-			innerHTML: '<td>Paradox timer</td><td></td>',
-			title: 'Seasons until temporal paradox'
+		tr = dojo.create("tr", {
+			innerHTML: "<td>Paradox timer</td><td></td>",
+			title: "Seasons until temporal paradox"
 		}, table);
 
-		input = game._createInput({id: 'futureSeasonTemporalParadoxNode', 'class': 'integerInput'},
-			tr.children[1], this, 'futureSeasonTemporalParadox');
+		input = game._createInput({id: "futureSeasonTemporalParadoxNode", class: "integerInput"},
+			tr.children[1], this, "futureSeasonTemporalParadox");
 		input.minValue = -1;
 	},
 
@@ -455,11 +455,11 @@ dojo.declare('classes.KGSaveEdit.Calendar', classes.KGSaveEdit.core, {
 
 	update: function () {
 		var paragon = Math.floor(Math.max(this.year - this.refYear, 0) / 1000);
-		this.milleniumParagonSpan.innerHTML = '(+' + paragon + ' paragon)';
-		dojo.toggleClass(this.milleniumParagonSpan, 'hidden', !paragon);
+		this.milleniumParagonSpan.innerHTML = "(+" + paragon + " paragon)";
+		dojo.toggleClass(this.milleniumParagonSpan, "hidden", !paragon);
 
-		this.dayNode.minValue = -10 - this.game.getEffect('temporalParadoxDay');
-		this.set('day', this.day); //refresh value
+		this.dayNode.minValue = -10 - this.game.getEffect("temporalParadoxDay");
+		this.set("day", this.day); //refresh value
 
 		var hasCome = this.game.challenges.currentChallenge === "winterIsComing";
 		for (var i = this.seasons.length - 1; i >= 0; i--) {
@@ -469,8 +469,8 @@ dojo.declare('classes.KGSaveEdit.Calendar', classes.KGSaveEdit.core, {
 	},
 
 	save: function (saveData) {
-		saveData.calendar = this.game.filterMetaObj(this, ['year', 'day', 'season',
-			'weather', 'festivalDays', 'cycle', 'cycleYear', 'futureSeasonTemporalParadox']);
+		saveData.calendar = this.game.filterMetaObj(this, ["year", "day", "season",
+			"weather", "festivalDays", "cycle", "cycleYear", "futureSeasonTemporalParadox"]);
 	},
 
 	load: function (saveData) {
@@ -484,15 +484,15 @@ dojo.declare('classes.KGSaveEdit.Calendar', classes.KGSaveEdit.core, {
 		this.season = this.seasonNode.selectedIndex;
 		this.game.setSelectByValue(this.cycleNode, data.cycle);
 		this.cycle = this.cycleNode.selectedIndex;
-		this.set('cycleYear', data.cycleYear || 0);
-		this.set('futureSeasonTemporalParadox', data.futureSeasonTemporalParadox || -1);
+		this.set("cycleYear", data.cycleYear || 0);
+		this.set("futureSeasonTemporalParadox", data.futureSeasonTemporalParadox || -1);
 
 		this.refYear = this.year;
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.Console', classes.KGSaveEdit.core, {
+dojo.declare("classes.KGSaveEdit.Console", classes.KGSaveEdit.core, {
 	game: null,
 	domNode: null,
 
@@ -521,27 +521,27 @@ dojo.declare('classes.KGSaveEdit.Console', classes.KGSaveEdit.core, {
 	render: function () {
 		var game = this.game;
 
-		this.domNode = dojo.create('table', {
-			id: 'logFiltersBlock',
-			'class': 'bottom-margin',
+		this.domNode = dojo.create("table", {
+			id: "logFiltersBlock",
+			class: "bottom-margin",
 			innerHTML: '<tr><th colspan="2">Log filters</th></tr>'
 		});
 		for (var tag in this.filters) {
 			var filter = this.filters[tag];
 
-			var tr = dojo.create('tr', {
-				'class': 'logFilter',
-				innerHTML: '<td>' + filter.title + '</td><td></td>'
+			var tr = dojo.create("tr", {
+				class: "logFilter",
+				innerHTML: "<td>" + filter.title + "</td><td></td>"
 			}, this.domNode);
-			game._createCheckbox('Unlocked', tr.children[1], filter, 'unlocked');
-			game._createCheckbox('Enabled', tr.children[1], filter, 'enabled');
+			game._createCheckbox("Unlocked", tr.children[1], filter, "unlocked");
+			game._createCheckbox("Enabled", tr.children[1], filter, "enabled");
 		}
 	},
 
 	save: function (saveData) {
 		var saveFilters = {};
 		for (var tag in this.filters) {
-			saveFilters[tag] = this.game.filterMetaObj(this.filters[tag], ['title', 'enabled', 'unlocked']);
+			saveFilters[tag] = this.game.filterMetaObj(this.filters[tag], ["title", "enabled", "unlocked"]);
 		}
 
 		saveData.console = {
@@ -555,15 +555,15 @@ dojo.declare('classes.KGSaveEdit.Console', classes.KGSaveEdit.core, {
 			var filter = this.filters[tag];
 			if (filter) {
 				var saveFilter = saveFilters[tag];
-				filter.set('unlocked', Boolean(saveFilter.unlocked));
-				filter.set('enabled', Boolean(saveFilter.enabled));
+				filter.set("unlocked", Boolean(saveFilter.unlocked));
+				filter.set("enabled", Boolean(saveFilter.enabled));
 			}
 		}
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.DiplomacyManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
+dojo.declare("classes.KGSaveEdit.DiplomacyManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	raceData: [
 		{name: "lizards",    title: "Lizards"},
 		{name: "sharks",     title: "Sharks"},
@@ -575,12 +575,12 @@ dojo.declare('classes.KGSaveEdit.DiplomacyManager', [classes.KGSaveEdit.UI.Tab, 
 		{name: "leviathans", title: "Leviathans", hidden: true, energy: 0, duration: 0}
 	],
 
-	tabName: 'Trade',
+	tabName: "Trade",
 	races: null,
 	racesByName: null,
 
 	constructor: function () {
-		this.registerMetaItems(this.raceData, classes.KGSaveEdit.GenericItem, 'races', function (race) {
+		this.registerMetaItems(this.raceData, classes.KGSaveEdit.GenericItem, "races", function (race) {
 			race.unlocked = Boolean(race.unlocked);
 			race.collapsed = Boolean(race.collapsed);
 			race.duration = 0;
@@ -589,26 +589,26 @@ dojo.declare('classes.KGSaveEdit.DiplomacyManager', [classes.KGSaveEdit.UI.Tab, 
 	},
 
 	renderTabBlock: function () {
-		this.diplomacyBlock = dojo.create('table', {id: 'diplomacyBlock'}, this.tabBlockNode);
+		this.diplomacyBlock = dojo.create("table", {id: "diplomacyBlock"}, this.tabBlockNode);
 
 		for (var i = 0, len = this.races.length; i < len; i++) {
 			var race = this.races[i];
 
-			race.domNode = dojo.create('tr', {
-				'class': 'tradeRace',
-				innerHTML: '<td>' + race.title + '</td><td></td><td></td>'
+			race.domNode = dojo.create("tr", {
+				class: "tradeRace",
+				innerHTML: "<td>" + race.title + "</td><td></td><td></td>"
 			}, this.diplomacyBlock);
 			race.nameNode = race.domNode.children[0];
 
-			this.game._createCheckbox('Unlocked', race.domNode.children[1], race, 'unlocked');
-			this.game._createCheckbox('Collapsed', race.domNode.children[1], race, 'collapsed');
+			this.game._createCheckbox("Unlocked", race.domNode.children[1], race, "unlocked");
+			this.game._createCheckbox("Collapsed", race.domNode.children[1], race, "collapsed");
 		}
 
-		race = this.get('leviathans');
-		race.domNode.children[2].textContent = 'Days left ';
-		this.game._createInput({'class': 'integerInput'}, race.domNode.children[2], race, 'duration');
-		dojo.place(document.createTextNode(' Energy '), race.domNode.children[2]);
-		this.game._createInput({'class': 'integerInput'}, race.domNode.children[2], race, 'energy');
+		race = this.get("leviathans");
+		race.domNode.children[2].textContent = "Days left ";
+		this.game._createInput({class: "integerInput"}, race.domNode.children[2], race, "duration");
+		dojo.place(document.createTextNode(" Energy "), race.domNode.children[2]);
+		this.game._createInput({class: "integerInput"}, race.domNode.children[2], race, "energy");
 	},
 
 	get: function (name) {
@@ -617,8 +617,8 @@ dojo.declare('classes.KGSaveEdit.DiplomacyManager', [classes.KGSaveEdit.UI.Tab, 
 
 	getTabName: function () {
 		var name = this.tabName;
-		if (this.get('leviathans').unlocked) {
-			name += ' (!)';
+		if (this.get("leviathans").unlocked) {
+			name += " (!)";
 		}
 		return name;
 	},
@@ -639,7 +639,7 @@ dojo.declare('classes.KGSaveEdit.DiplomacyManager', [classes.KGSaveEdit.UI.Tab, 
 	update: function () {
 		for (var i = this.races.length - 1; i >= 0; i--) {
 			var race = this.races[i];
-			dojo.toggleClass(race.nameNode, 'spoiler', !race.unlocked);
+			dojo.toggleClass(race.nameNode, "spoiler", !race.unlocked);
 		}
 	},
 
@@ -654,11 +654,11 @@ dojo.declare('classes.KGSaveEdit.DiplomacyManager', [classes.KGSaveEdit.UI.Tab, 
 
 	load: function (saveData) {
 		if (saveData.diplomacy) {
-			this.loadMetaData(saveData.diplomacy.races, 'get', function (race, saveRace) {
-				race.set('unlocked', Boolean(saveRace.unlocked));
-				race.set('collapsed', Boolean(saveRace.collapsed));
-				race.set('duration', saveRace.duration || 0);
-				race.set('energy', saveRace.energy || 0);
+			this.loadMetaData(saveData.diplomacy.races, "get", function (race, saveRace) {
+				race.set("unlocked", Boolean(saveRace.unlocked));
+				race.set("collapsed", Boolean(saveRace.collapsed));
+				race.set("duration", saveRace.duration || 0);
+				race.set("energy", saveRace.energy || 0);
 			});
 		}
 	}
@@ -715,7 +715,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 		label: "Atheism",
 		description: "Restart the game without faith bonus.<br><br>Goal: Reset with at least one cryochamber.",
 		effectDesc: "Every level of transcendence will increase aprocrypha effectiveness by 10%.",
-		requires: {tech: ['voidSpace']}
+		requires: {tech: ["voidSpace"]}
 	}, {
 		name: "1000Years",
 		label: "1000 years",
@@ -730,7 +730,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 		this.game = game;
 		this.challenges = [];
 
-		this.registerMetaItems(this.challengesData, classes.KGSaveEdit.ChallengeMeta, 'challenges');
+		this.registerMetaItems(this.challengesData, classes.KGSaveEdit.ChallengeMeta, "challenges");
 	},
 
 	getChallenge: function (name) {
@@ -754,8 +754,8 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 	},
 
 	render: function () {
-		this.domNode = dojo.create('table', {
-			id: 'challengesBlock',
+		this.domNode = dojo.create("table", {
+			id: "challengesBlock",
 			innerHTML: '<tr><th colspan="2">Challenges</th></tr>'
 		}, this.game.science.tabBlockNode);
 		this.domNodeHeader = this.domNode.children[0];
@@ -773,8 +773,8 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 			this.setCurrentChallenge(null, true);
 		}
 
-		this.game.callMethods(this.challenges, 'update');
-		dojo.toggleClass(this.domNodeHeader, 'spoiler', !this.game.prestige.getPerk('adjustmentBureau').owned());
+		this.game.callMethods(this.challenges, "update");
+		dojo.toggleClass(this.domNodeHeader, "spoiler", !this.game.prestige.getPerk("adjustmentBureau").owned());
 
 		this.updateTabMarker();
 	},
@@ -787,7 +787,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 				break;
 			}
 		}
-		dojo.toggleClass(this.game.science.tabNode, 'newMarker', hasNew);
+		dojo.toggleClass(this.game.science.tabNode, "newMarker", hasNew);
 	},
 
 	save: function (saveData) {
@@ -799,9 +799,9 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 
 	load: function (saveData) {
 		if (saveData.challenges) {
-			this.loadMetaData(saveData.challenges.challenges, 'getChallenge', function (challenge, saveChallenge) {
-				challenge.set('researched', Boolean(saveChallenge.researched));
-				challenge.set('unlocked', Boolean(saveChallenge.unlocked));
+			this.loadMetaData(saveData.challenges.challenges, "getChallenge", function (challenge, saveChallenge) {
+				challenge.set("researched", Boolean(saveChallenge.researched));
+				challenge.set("unlocked", Boolean(saveChallenge.unlocked));
 				challenge.isNew = false;
 			});
 			this.setCurrentChallenge(saveData.challenges.currentChallenge);
@@ -823,15 +823,15 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 	getName: function () {
 		var name = this.label || this.name;
 		if (this.name === this.game.challenges.currentChallenge) {
-			name += ' (Current)';
+			name += " (Current)";
 		} else if (this.researched) {
-			name += ' (Complete)';
+			name += " (Complete)";
 		}
 		return name;
 	},
 
 	getDescription: function () {
-		var start = this.description || '';
+		var start = this.description || "";
 		if (this.researched) {
 			start += "<br><br>Gain: " + this.effectDesc;
 		} else {
@@ -842,21 +842,21 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 	},
 
 	getTooltip: function () {
-		var tooltip = dojo.byId('tooltipBlock');
-		tooltip.className = 'challenge_tooltip';
+		var tooltip = dojo.byId("tooltipBlock");
+		tooltip.className = "challenge_tooltip";
 
 		tooltip.innerHTML = this.getDescription();
 	},
 
 	render: function () {
-		var tr = dojo.create('tr', {
-			'class': 'challengeNode',
-			innerHTML: '<td class="nameNode">' + (this.label || this.name) + '</td><td></td>'
+		var tr = dojo.create("tr", {
+			class: "challengeNode",
+			innerHTML: '<td class="nameNode">' + (this.label || this.name) + "</td><td></td>"
 		});
 		this.domNode = tr;
 
 		if (this.invisible) {
-			dojo.addClass(tr, 'hidden');
+			dojo.addClass(tr, "hidden");
 		}
 
 		this.nameNode = tr.children[0];
@@ -864,15 +864,15 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 		on(this.nameNode, mouse.enter, dojo.hitch(this, function () {
 			if (this.isNew) {
 				this.isNew = false;
-				dojo.removeClass(this.nameNode, 'newMarker');
+				dojo.removeClass(this.nameNode, "newMarker");
 				this.metaObj.updateTabMarker();
 			}
 		}));
 
-		this.game._createCheckbox('Unlocked', tr.children[1], this, 'unlocked');
-		this.game._createCheckbox('Complete', tr.children[1], this, 'researched');
+		this.game._createCheckbox("Unlocked", tr.children[1], this, "unlocked");
+		this.game._createCheckbox("Complete", tr.children[1], this, "researched");
 
-		var input = this.game._createCheckbox('Active', tr.children[1], this);
+		var input = this.game._createCheckbox("Active", tr.children[1], this);
 		this.activeChallengeNode = input.cbox;
 		input.cbox.handler = function () {
 			this.game.challenges.setCurrentChallenge(this.checked ? this.metaObj.name : null);
@@ -886,7 +886,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 		this.unlocked = req || this.unlockedNode.prevChecked;
 		this.unlockedNode.checked = this.unlocked;
 		this.game.toggleDisabled(this.unlockedNode, req);
-		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
+		dojo.toggleClass(this.nameNode, "spoiler", !this.unlocked);
 
 		var challenges = this.game.challenges;
 
@@ -909,7 +909,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 		}
 
 		this.game.toggleDisabled(this.activeChallengeNode, this.researched);
-		dojo.toggleClass(this.nameNode, 'newMarker', this.isNew);
+		dojo.toggleClass(this.nameNode, "newMarker", this.isNew);
 	}
 });
 
@@ -934,11 +934,11 @@ dojo.declare("classes.KGSaveEdit.ui.Toolbar", null, {
 
 	render: function (container) {
 		dojo.empty(container);
-		this.game.callMethods(this.icons, 'render', container);
+		this.game.callMethods(this.icons, "render", container);
 	},
 
 	update: function () {
-		this.game.callMethods(this.icons, 'update');
+		this.game.callMethods(this.icons, "update");
 	}
 });
 
@@ -978,14 +978,14 @@ dojo.declare("classes.KGSaveEdit.ui.ToolbarIcon", classes.KGSaveEdit.TooltipItem
 
 dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarHappiness", classes.KGSaveEdit.ui.ToolbarIcon, {
 	update: function () {
-		dojo.toggleClass(this.container, 'hidden', this.game.village.getKittens() <= 5);
+		dojo.toggleClass(this.container, "hidden", this.game.village.getKittens() <= 5);
 		this.container.innerHTML = "(:3)&nbsp;" + Math.floor(this.game.village.happiness * 100) + "%";
 		dojo.addClass(this.container, "coral");
 	},
 
 	getTooltip: function () {
-		var tooltip = dojo.byId('tooltipBlock');
-		tooltip.className = '';
+		var tooltip = dojo.byId("tooltipBlock");
+		tooltip.className = "";
 
 		var base = this.game.getEffect("happiness");
 		//var population = this.game.village.getKittens() *  2;
@@ -1029,19 +1029,19 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarHappiness", classes.KGSaveEdi
 
 dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarEnergy", classes.KGSaveEdit.ui.ToolbarIcon, {
 	update: function () {
-		dojo.toggleClass(this.container, 'hidden', !this.game.science.get("electricity").owned());
+		dojo.toggleClass(this.container, "hidden", !this.game.science.get("electricity").owned());
 
 		var resPool = this.game.resPool;
 		var energy = resPool.energyProd - resPool.energyCons;
 		this.container.innerHTML = "&#9889;&nbsp;" + this.game.getDisplayValueExt(energy) + "Wt";
 
-		dojo.toggleClass(this.container, 'green', energy >= 0);
-		dojo.toggleClass(this.container, 'red', energy < 0);
+		dojo.toggleClass(this.container, "green", energy >= 0);
+		dojo.toggleClass(this.container, "red", energy < 0);
 	},
 
 	getTooltip: function () {
-		var tooltip = dojo.byId('tooltipBlock');
-		tooltip.className = '';
+		var tooltip = dojo.byId("tooltipBlock");
+		tooltip.className = "";
 
 		var resPool = this.game.resPool;
 		var energy = resPool.energyProd - resPool.energyCons;
@@ -1077,8 +1077,8 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarMOTD", classes.KGSaveEdit.ui.
 	},
 
 	getTooltip: function () {
-		var tooltip = dojo.byId('tooltipBlock');
-		tooltip.className = '';
+		var tooltip = dojo.byId("tooltipBlock");
+		tooltip.className = "";
 		var html = "Message of the day:<br />N/A";
 
 		var server = this.game.server;
@@ -1105,10 +1105,10 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarDonations", classes.KGSaveEdi
 	},
 
 	getTooltip: function () {
-		var tooltip = dojo.byId('tooltipBlock');
-		tooltip.className = '';
+		var tooltip = dojo.byId("tooltipBlock");
+		tooltip.className = "";
 
-		var html = '';
+		var html = "";
 		if (this.game.opts.disableCMBR) {
 			html = "Production bonus disabled";
 		} else {
@@ -1135,16 +1135,16 @@ dojo.declare("classes.KGSaveEdit.Telemetry", null, {
 	},
 
 	render: function () {
-		this.domNode = dojo.create('div', {
-			'id': 'telemetryNode',
-			'class': 'bottom-margin',
+		this.domNode = dojo.create("div", {
+			"id": "telemetryNode",
+			class: "bottom-margin",
 			innerHTML: 'Save ID: <span class="monospace">' + this.guid + '</span> &nbsp;<input type="button" value="New ID">'
 		});
 
 		this.guidNode = this.domNode.children[0];
 
-		on(this.domNode.children[1], 'click', dojo.hitch(this, function () {
-			if (!this.warnOnNewGuid || confirm('Are you sure you want to create a new save ID?')) {
+		on(this.domNode.children[1], "click", dojo.hitch(this, function () {
+			if (!this.warnOnNewGuid || confirm("Are you sure you want to create a new save ID?")) {
 				this.setGuid();
 			}
 		}));
@@ -1159,8 +1159,8 @@ dojo.declare("classes.KGSaveEdit.Telemetry", null, {
 	},
 
 	generateGuid: function () {
-		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-			var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+			var r = Math.random() * 16 | 0, v = c === "x" ? r : (r & 0x3 | 0x8);
 			return v.toString(16);
 		});
 	},
@@ -1197,14 +1197,14 @@ dojo.declare("classes.KGSaveEdit.Server", classes.KGSaveEdit.core, {
 	},
 
 	render: function () {
-		this.domNode = dojo.create('div', {
-			'class': 'bottom-margin',
-			innerHTML: 'Donations $'
+		this.domNode = dojo.create("div", {
+			class: "bottom-margin",
+			innerHTML: "Donations $"
 		});
 
 		var input = this.game._createInput({
-			'class': 'dollarInput'
-		}, this.domNode, this, 'donateAmt');
+			class: "dollarInput"
+		}, this.domNode, this, "donateAmt");
 
 		input.parseFn = function (value) {
 			return num(value.toFixed(2));
@@ -1223,7 +1223,7 @@ dojo.declare("classes.KGSaveEdit.Server", classes.KGSaveEdit.core, {
 			url: "server.json",
 			dataType: "json",
 			success: function (json) {
-				self.donateAmtDefault = self.set('donateAmt', json.donateAmt || 0);
+				self.donateAmtDefault = self.set("donateAmt", json.donateAmt || 0);
 				self.telemetryUrl = json.telemetryUrl;
 
 				self.showMotd = json.showMotd;

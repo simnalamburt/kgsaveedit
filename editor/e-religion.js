@@ -3,7 +3,7 @@
 require([], function () {
 "use strict";
 
-dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
+dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	zigguratUpgradesData: [{
 			name: "unicornTomb",
 			label: "Unicorn Tomb",
@@ -28,7 +28,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			priceRatio: 1.15,
 			// unlocks: {"zigguratUpgrades": ["ivoryCitadel"]},
-			requires: {'zigguratUpgrades': ['unicornTomb']},
+			requires: {"zigguratUpgrades": ["unicornTomb"]},
 			effects: {
 				"unicornsRatioReligion": 0.1,
 				"riftChance":            5
@@ -43,7 +43,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			priceRatio: 1.15,
 			// unlocks: {"zigguratUpgrades": ["skyPalace"]},
-			requires: {'zigguratUpgrades': ['ivoryTower']},
+			requires: {"zigguratUpgrades": ["ivoryTower"]},
 			effects: {
 				"unicornsRatioReligion": 0.25,
 				"ivoryMeteorChance":     5
@@ -58,7 +58,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			priceRatio: 1.15,
 			// unlocks: {"zigguratUpgrades": ["unicornUtopia"]},
-			requires: {'zigguratUpgrades': ['ivoryCitadel']},
+			requires: {"zigguratUpgrades": ["ivoryCitadel"]},
 			effects: {
 				"unicornsRatioReligion": 0.5,
 				"ivoryMeteorRatio":      0.05,
@@ -82,7 +82,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			priceRatio: 1.15,
 			// unlocks: {"zigguratUpgrades": ["sunspire"]},
-			requires: {'zigguratUpgrades': ['skyPalace']},
+			requires: {"zigguratUpgrades": ["skyPalace"]},
 			effects: {
 				"unicornsRatioReligion": 2.5,
 				"ivoryMeteorRatio":      0.15,
@@ -106,7 +106,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "tears", val: 25000}
 			],
 			priceRatio: 1.15,
-			requires: {'zigguratUpgrades': ['unicornUtopia']},
+			requires: {"zigguratUpgrades": ["unicornUtopia"]},
 			effects: {
 				"unicornsRatioReligion": 5,
 				"ivoryMeteorRatio":      0.5,
@@ -385,17 +385,17 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 	corruption: 0,
 	tcratio: 0,
 
-	hasTranscendeceUpgrade: false, //cache for getRU('transcendence').owned()
+	hasTranscendeceUpgrade: false, //cache for getRU("transcendence").owned()
 
-	tabName: 'Religion',
+	tabName: "Religion",
 	getVisible: function () {
 		return this.game.resPool.get("faith").unlocked || (this.game.challenges.currentChallenge === "atheism" && this.game.bld.get("ziggurat").owned());
 	},
 
 	constructor: function () {
-		this.registerMetaItems(this.zigguratUpgradesData, classes.KGSaveEdit.ZigguratMeta, 'zigguratUpgrades');
-		this.registerMetaItems(this.religionUpgradesData, classes.KGSaveEdit.ReligionMeta, 'religionUpgrades');
-		this.registerMetaItems(this.transcendenceUpgradesData, classes.KGSaveEdit.TranscendenceMeta, 'transcendenceUpgrades');
+		this.registerMetaItems(this.zigguratUpgradesData, classes.KGSaveEdit.ZigguratMeta, "zigguratUpgrades");
+		this.registerMetaItems(this.religionUpgradesData, classes.KGSaveEdit.ReligionMeta, "religionUpgrades");
+		this.registerMetaItems(this.transcendenceUpgradesData, classes.KGSaveEdit.TranscendenceMeta, "transcendenceUpgrades");
 
 		this.meta.push(this.zigguratUpgrades, this.religionUpgrades, this.transcendenceUpgrades);
 	},
@@ -463,47 +463,47 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 	},
 
 	renderTabBlock: function () {
-		this.zigguratBlock = dojo.create('table', {
-			id: 'zigguratBlock',
-			'class': 'bottom-margin',
+		this.zigguratBlock = dojo.create("table", {
+			id: "zigguratBlock",
+			class: "bottom-margin",
 			innerHTML: '<tr><th colspan="2">Ziggurats</th></tr>'
 		}, this.tabBlockNode);
 		this.zigguratBlockHeader = this.zigguratBlock.children[0];
 
-		var table = dojo.create('table', {'class': 'bottom-margin'}, this.tabBlockNode);
+		var table = dojo.create("table", {class: "bottom-margin"}, this.tabBlockNode);
 
-		var tr = dojo.create('tr', {
+		var tr = dojo.create("tr", {
 			innerHTML: '<td>Total faith</td><td></td><td id="solarBonusSpan"></td>'
 		}, table);
-		this.game._createInput({'class': 'abbrInput'}, tr.children[1], this, 'faith');
+		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "faith");
 		this.solarBonusSpan = tr.children[2];
 
-		tr = dojo.create('tr', {
+		tr = dojo.create("tr", {
 			innerHTML: '<td>Apocrypha bonus</td><td></td><td id="apocryphaBonusSpan"></td>'
 		}, table);
-		this.game._createInput({'class': 'abbrInput'}, tr.children[1], this, 'faithRatio');
+		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "faithRatio");
 		this.apocryphaBonusSpan = tr.children[2];
 
-		tr = dojo.create('tr', {
-			innerHTML: '<td>Corruption timer</td><td></td><td></td>'
+		tr = dojo.create("tr", {
+			innerHTML: "<td>Corruption timer</td><td></td><td></td>"
 		}, table);
-		this.game._createInput({'class': 'abbrInput'}, tr.children[1], this, 'corruption');
+		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "corruption");
 
-		tr = dojo.create('tr', {
-			innerHTML: '<td>Transcendence Ratio</td><td></td><td></td>'
+		tr = dojo.create("tr", {
+			innerHTML: "<td>Transcendence Ratio</td><td></td><td></td>"
 		}, table);
-		this.game._createInput({'class': 'abbrInput'}, tr.children[1], this, 'tcratio');
+		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "tcratio");
 		this.transcendenceLevelSpan = tr.children[2];
 
-		this.religionBlock = dojo.create('table', {
-			id: 'religionBlock',
-			'class': 'bottom-margin',
+		this.religionBlock = dojo.create("table", {
+			id: "religionBlock",
+			class: "bottom-margin",
 			innerHTML: '<tr><th colspan="2">Order of the Sun</th></tr>'
 		}, this.tabBlockNode);
 		this.religionBlockHeader = this.religionBlock.children[0];
 
-		this.transcendenceBlock = dojo.create('table', {
-			id: 'transcendenceBlock',
+		this.transcendenceBlock = dojo.create("table", {
+			id: "transcendenceBlock",
 			innerHTML: '<tr><th colspan="2">Cryptotheology</th></tr>'
 		}, this.tabBlockNode);
 		this.transcendenceBlockHeader = this.transcendenceBlock.children[0];
@@ -530,20 +530,20 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 	},
 
 	update: function () {
-		this.hasTranscendeceUpgrade = this.getRU('transcendence').owned(true);
-		this.game.callMethods(this.zigguratUpgrades, 'update');
-		this.game.callMethods(this.religionUpgrades, 'update');
-		this.game.callMethods(this.transcendenceUpgrades, 'update');
+		this.hasTranscendeceUpgrade = this.getRU("transcendence").owned(true);
+		this.game.callMethods(this.zigguratUpgrades, "update");
+		this.game.callMethods(this.religionUpgrades, "update");
+		this.game.callMethods(this.transcendenceUpgrades, "update");
 
-		var isAtheism = this.game.challenges.currentChallenge === 'atheism';
+		var isAtheism = this.game.challenges.currentChallenge === "atheism";
 
-		dojo.toggleClass(this.zigguratBlockHeader, 'spoiler', !this.game.bld.get('ziggurat').owned());
-		dojo.toggleClass(this.religionBlockHeader, 'spoiler', isAtheism);
-		dojo.toggleClass(this.transcendenceBlockHeader, 'spoiler', isAtheism || !this.game.science.get('cryptotheology').owned());
+		dojo.toggleClass(this.zigguratBlockHeader, "spoiler", !this.game.bld.get("ziggurat").owned());
+		dojo.toggleClass(this.religionBlockHeader, "spoiler", isAtheism);
+		dojo.toggleClass(this.transcendenceBlockHeader, "spoiler", isAtheism || !this.game.science.get("cryptotheology").owned());
 
-		var text = '';
+		var text = "";
 
-		if (this.getRU('solarRevolution').owned()) {
+		if (this.getRU("solarRevolution").owned()) {
 			var bonus = this.getProductionBonus();
 			text = " (+" + this.game.getDisplayValueExt(bonus) + "% bonus)";
 		}
@@ -552,10 +552,10 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 		var ratio = this.getFaithBonus();
 		this.apocryphaBonusSpan.textContent = " [" + this.game.getDisplayValueExt(ratio * 100, true, false, 1) + "%]";
 
-		text = '';
+		text = "";
 		var level = this.getTranscendenceLevel();
 		if (level > 0) {
-			text = '[' + level + ']';
+			text = "[" + level + "]";
 		}
 		this.transcendenceLevelSpan.textContent = text;
 	},
@@ -584,25 +584,25 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 			return;
 		}
 
-		this.set('faith', num(saveData.religion.faith));
-		this.set('corruption', num(saveData.religion.corruption));
-		this.set('faithRatio', num(saveData.religion.faithRatio));
-		this.set('tcratio', num(saveData.religion.tcratio));
+		this.set("faith", num(saveData.religion.faith));
+		this.set("corruption", num(saveData.religion.corruption));
+		this.set("faithRatio", num(saveData.religion.faithRatio));
+		this.set("tcratio", num(saveData.religion.tcratio));
 
-		this.loadMetaData(saveData.religion.zu, 'getZU');
-		this.loadMetaData(saveData.religion.ru, 'getRU');
-		this.loadMetaData(saveData.religion.tu, 'getTU');
+		this.loadMetaData(saveData.religion.zu, "getZU");
+		this.loadMetaData(saveData.religion.ru, "getRU");
+		this.loadMetaData(saveData.religion.tu, "getTU");
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.ZigguratMeta', classes.KGSaveEdit.MetaItem, {
+dojo.declare("classes.KGSaveEdit.ZigguratMeta", classes.KGSaveEdit.MetaItem, {
 	val: 0,
 	on: 0,
 	unlocked: false,
 
 	getName: function () {
-		return (this.label || this.name) + ' (' + this.val + ')';
+		return (this.label || this.name) + " (" + this.val + ")";
 	},
 
 	owned: function () {
@@ -610,9 +610,9 @@ dojo.declare('classes.KGSaveEdit.ZigguratMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	render: function () {
-		this.domNode = dojo.create('tr', {
-			'class': 'zigguratUpgrade',
-			innerHTML: '<td>' + (this.label || this.name) + '</td><td></td>'
+		this.domNode = dojo.create("tr", {
+			class: "zigguratUpgrade",
+			innerHTML: "<td>" + (this.label || this.name) + "</td><td></td>"
 		});
 		this.nameNode = this.domNode.children[0];
 		this.game._createValInput(null, this.domNode.children[1], this);
@@ -632,17 +632,17 @@ dojo.declare('classes.KGSaveEdit.ZigguratMeta', classes.KGSaveEdit.MetaItem, {
 	update: function () {
 		this.updateEnabled();
 		this.unlocked = this.game.checkRequirements(this);
-		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
+		dojo.toggleClass(this.nameNode, "spoiler", !this.unlocked);
 	},
 
 	load: function (saveData) {
-		this.set('val', num(saveData.val));
-		this.set('unlocked', Boolean(saveData.unlocked));
+		this.set("val", num(saveData.val));
+		this.set("unlocked", Boolean(saveData.unlocked));
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
+dojo.declare("classes.KGSaveEdit.ReligionMeta", classes.KGSaveEdit.MetaItem, {
 	val: 0,
 	on: 0,
 	upgradable: false,
@@ -658,9 +658,9 @@ dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
 		var name = this.label || this.name;
 		if (this.owned()) {
 			if (this.upgradable && this.game.religion.hasTranscendeceUpgrade) {
-				name += ' (' + this.val + ')';
+				name += " (" + this.val + ")";
 			} else {
-				name += ' (complete)';
+				name += " (complete)";
 			}
 		}
 		return name;
@@ -688,15 +688,15 @@ dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	render: function () {
-		this.domNode = dojo.create('tr', {
-			'class': 'religionUpgrade',
-			innerHTML: '<td>' + (this.label || this.name) + '</td><td></td>'
+		this.domNode = dojo.create("tr", {
+			class: "religionUpgrade",
+			innerHTML: "<td>" + (this.label || this.name) + "</td><td></td>"
 		});
 		this.nameNode = this.domNode.children[0];
 
-		var input = this.game._createCheckbox('Bought', this.domNode.children[1], this);
+		var input = this.game._createCheckbox("Bought", this.domNode.children[1], this);
 		this.ownedCheckbox = input.cbox;
-		dojo.addClass(input.cbox, 'ownedInput');
+		dojo.addClass(input.cbox, "ownedInput");
 		input.cbox.handler = function () {
 			var ru = this.metaObj;
 			if (this.checked !== Boolean(ru.val)) {
@@ -718,26 +718,26 @@ dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
 
 	update: function () {
 		this.updateEnabled();
-		dojo.toggleClass(this.nameNode, 'spoiler', this.game.religion.faith < this.faith);
+		dojo.toggleClass(this.nameNode, "spoiler", this.game.religion.faith < this.faith);
 
 		var t = Boolean(this.upgradable && this.game.religion.hasTranscendeceUpgrade);
-		dojo.toggleClass(this.ownedCheckbox.parentNode, 'hidden', t);
-		dojo.toggleClass(this.valNode, 'invisible', !t);
+		dojo.toggleClass(this.ownedCheckbox.parentNode, "hidden", t);
+		dojo.toggleClass(this.valNode, "invisible", !t);
 	},
 
 	load: function (saveData) {
-		this.set('val', num(saveData.val));
+		this.set("val", num(saveData.val));
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.TranscendenceMeta', classes.KGSaveEdit.MetaItem, {
+dojo.declare("classes.KGSaveEdit.TranscendenceMeta", classes.KGSaveEdit.MetaItem, {
 	val: 0,
 	on: 0,
 	unlocked: false,
 
 	getName: function () {
-		return (this.label || this.name) + ' (' + this.val + ')';
+		return (this.label || this.name) + " (" + this.val + ")";
 	},
 
 	owned: function () {
@@ -745,9 +745,9 @@ dojo.declare('classes.KGSaveEdit.TranscendenceMeta', classes.KGSaveEdit.MetaItem
 	},
 
 	render: function () {
-		this.domNode = dojo.create('tr', {
-			'class': 'transcendenceUpgrade',
-			innerHTML: '<td>' + (this.label || this.name) + '</td><td></td>'
+		this.domNode = dojo.create("tr", {
+			class: "transcendenceUpgrade",
+			innerHTML: "<td>" + (this.label || this.name) + "</td><td></td>"
 		});
 		this.nameNode = this.domNode.children[0];
 		this.game._createValInput(null, this.domNode.children[1], this);
@@ -764,12 +764,12 @@ dojo.declare('classes.KGSaveEdit.TranscendenceMeta', classes.KGSaveEdit.MetaItem
 	update: function () {
 		this.updateEnabled();
 		this.unlocked = this.game.religion.getTranscendenceLevel() >= this.tier;
-		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
+		dojo.toggleClass(this.nameNode, "spoiler", !this.unlocked);
 	},
 
 	load: function (saveData) {
-		this.set('val', num(saveData.val));
-		this.set('unlocked', Boolean(saveData.unlocked));
+		this.set("val", num(saveData.val));
+		this.set("unlocked", Boolean(saveData.unlocked));
 	}
 });
 

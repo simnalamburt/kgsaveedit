@@ -3,8 +3,8 @@
 require([], function () {
 "use strict";
 
-dojo.declare('classes.KGSaveEdit.UpgradeMeta', classes.KGSaveEdit.MetaItem, {
-	name: 'Undefined',
+dojo.declare("classes.KGSaveEdit.UpgradeMeta", classes.KGSaveEdit.MetaItem, {
+	name: "Undefined",
 	unlocked: false,
 	researched: false,
 
@@ -15,7 +15,7 @@ dojo.declare('classes.KGSaveEdit.UpgradeMeta', classes.KGSaveEdit.MetaItem, {
 	getName: function () {
 		var name = this.label || this.name;
 		if (this.researched) {
-			return name + ' (Complete)';
+			return name + " (Complete)";
 		}
 		return name;
 	},
@@ -28,15 +28,15 @@ dojo.declare('classes.KGSaveEdit.UpgradeMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	render: function () {
-		this.domNode = dojo.create('tr', {
-			'class': 'upgradeMeta',
-			innerHTML: '<td>' + (this.label || this.name) + '</td><td></td>'
+		this.domNode = dojo.create("tr", {
+			class: "upgradeMeta",
+			innerHTML: "<td>" + (this.label || this.name) + "</td><td></td>"
 		});
 		this.nameNode = this.domNode.children[0];
 
-		this.game._createCheckbox('Unlocked', this.domNode.children[1], this, 'unlocked');
-		this.game._createCheckbox('Researched', this.domNode.children[1], this, 'researched');
-		dojo.addClass(this.researchedNode, 'ownedInput');
+		this.game._createCheckbox("Unlocked", this.domNode.children[1], this, "unlocked");
+		this.game._createCheckbox("Researched", this.domNode.children[1], this, "researched");
+		dojo.addClass(this.researchedNode, "ownedInput");
 
 		this.registerHighlight(this.domNode);
 		this.registerTooltip(this.domNode);
@@ -47,13 +47,13 @@ dojo.declare('classes.KGSaveEdit.UpgradeMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	update: function (hideResearched) {
-		// dojo.toggleClass(this.domNode, 'metaOwned', this.researched);
+		// dojo.toggleClass(this.domNode, "metaOwned", this.researched);
 
 		var hideme = hideResearched && this.researched;
 		if (!hideme && this.hidden) {
 			hideme = !this.unlocked && !this.researched;
 		}
-		dojo.toggleClass(this.domNode, 'hidden', Boolean(hideme));
+		dojo.toggleClass(this.domNode, "hidden", Boolean(hideme));
 
 		var req = this.game.checkRequirements(this);
 		if (req) {
@@ -68,19 +68,19 @@ dojo.declare('classes.KGSaveEdit.UpgradeMeta', classes.KGSaveEdit.MetaItem, {
 			}
 		}
 
-		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
+		dojo.toggleClass(this.nameNode, "spoiler", !this.unlocked);
 		this.game.toggleDisabled(this.unlockedNode, req);
 		this.updateEnabled();
 	},
 
 	load: function (saveData) {
-		this.set('unlocked', Boolean(saveData.unlocked), false, true);
-		this.set('researched', Boolean(saveData.researched));
+		this.set("unlocked", Boolean(saveData.unlocked), false, true);
+		this.set("researched", Boolean(saveData.researched));
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
+dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	techData: [{
 			name: "calendar",
 			label: "Calendar",
@@ -712,9 +712,9 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["voidSpace"]}
 	}],
 
-	tabName: 'Science',
+	tabName: "Science",
 	getVisible: function () {
-		return this.game.bld.get('library').owned();
+		return this.game.bld.get("library").owned();
 	},
 
 	techs: null,
@@ -723,17 +723,17 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 	hideResearched: false,
 
 	constructor: function () {
-		this.registerMetaItems(this.techData, classes.KGSaveEdit.ScienceMeta, 'techs');
+		this.registerMetaItems(this.techData, classes.KGSaveEdit.ScienceMeta, "techs");
 		this.meta.push(this.techs);
 	},
 
 	renderTabBlock: function () {
-		var div = dojo.create('div', {'class': 'bottom-margin'}, this.tabBlockNode);
-		this.game._createCheckbox('Hide researched techs', div, this, 'hideResearched');
+		var div = dojo.create("div", {class: "bottom-margin"}, this.tabBlockNode);
+		this.game._createCheckbox("Hide researched techs", div, this, "hideResearched");
 
-		this.techsBlock = dojo.create('table', {
-			id: 'techsBlock',
-			'class': 'bottom-margin'
+		this.techsBlock = dojo.create("table", {
+			id: "techsBlock",
+			class: "bottom-margin"
 		}, this.tabBlockNode);
 	},
 
@@ -746,7 +746,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 	},
 
 	update: function () {
-		this.game.callMethods(this.techs, 'update', this.hideResearched);
+		this.game.callMethods(this.techs, "update", this.hideResearched);
 	},
 
 	get: function (name) {
@@ -763,18 +763,18 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 	load: function (saveData) {
 		if (saveData.science) {
 			this.game.setCheckbox(this.hideResearchedNode, saveData.science.hideResearched);
-			this.loadMetaData(saveData.science.techs, 'get');
+			this.loadMetaData(saveData.science.techs, "get");
 		}
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.ScienceMeta', classes.KGSaveEdit.UpgradeMeta, {
+dojo.declare("classes.KGSaveEdit.ScienceMeta", classes.KGSaveEdit.UpgradeMeta, {
 	constructor: function () { },
 
 	getDescription: function () {
 		if (this.researched) {
-			return this.description + '<br>Effect: ' + this.effectDesc;
+			return this.description + "<br>Effect: " + this.effectDesc;
 		}
 		return this.description;
 	},
@@ -786,7 +786,7 @@ dojo.declare('classes.KGSaveEdit.ScienceMeta', classes.KGSaveEdit.UpgradeMeta, {
 });
 
 
-dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
+dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 	perksData: [{
 			name: "engeneering",
 			label: "Engineering",
@@ -1015,7 +1015,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 	perksByName: null,
 
 	constructor: function () {
-		this.registerMetaItems(this.perksData, classes.KGSaveEdit.UpgradeMeta, 'perks');
+		this.registerMetaItems(this.perksData, classes.KGSaveEdit.UpgradeMeta, "perks");
 		this.meta.push(this.perks);
 	},
 
@@ -1031,7 +1031,7 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 				if (perk.prices) {
 					for (var j = perk.prices.length - 1; j >= 0; j--) {
 						var price = perk.prices[j];
-						if (price && price.name === 'paragon') {
+						if (price && price.name === "paragon") {
 							paragon += price.val || 0;
 						}
 					}
@@ -1076,9 +1076,9 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 	},
 
 	render: function () {
-		this.domNode = dojo.create('table', {
-			id: 'metaphysicsBlock',
-			'class': 'bottom-margin',
+		this.domNode = dojo.create("table", {
+			id: "metaphysicsBlock",
+			class: "bottom-margin",
 			innerHTML: '<tr><th colspan="2">Metaphysics</th></tr>'
 		}, this.game.science.tabBlockNode);
 		this.domNodeHeader = this.domNode.children[0];
@@ -1091,8 +1091,8 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 	},
 
 	update: function () {
-		this.game.callMethods(this.perks, 'update', this.game.science.hideResearched);
-		dojo.toggleClass(this.domNodeHeader, 'spoiler', !this.game.science.get('metaphysics').owned());
+		this.game.callMethods(this.perks, "update", this.game.science.hideResearched);
+		dojo.toggleClass(this.domNodeHeader, "spoiler", !this.game.science.get("metaphysics").owned());
 	},
 
 	save: function (saveData) {
@@ -1102,12 +1102,12 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 	},
 
 	load: function (saveData) {
-		this.loadMetaData(saveData.prestige.perks, 'getPerk');
+		this.loadMetaData(saveData.prestige.perks, "getPerk");
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
+dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	upgradeData: [{
 			name: "mineralHoes",
 			label: "Mineral Hoes",
@@ -1117,7 +1117,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "minerals", val: 275}
 			],
 			unlocked: true,
-			// unlocks: {upgrades: ["ironHoes"]},'
+			// unlocks: {upgrades: ["ironHoes"]},
 			effects: {
 				"catnipJobRatio": 0.5
 			}
@@ -2873,9 +2873,9 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 		"cultureMax": 0
 	},
 
-	tabName: 'Workshop',
+	tabName: "Workshop",
 	getVisible: function () {
-		return this.game.bld.get('workshop').owned();
+		return this.game.bld.get("workshop").owned();
 	},
 
 	upgrades: null,
@@ -2886,30 +2886,30 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 	hideResearched: false,
 
 	constructor: function () {
-		this.registerMetaItems(this.upgradeData, classes.KGSaveEdit.UpgradeMeta, 'upgrades');
-		this.registerMetaItems(this.craftData, classes.KGSaveEdit.CraftMeta, 'crafts');
+		this.registerMetaItems(this.upgradeData, classes.KGSaveEdit.UpgradeMeta, "upgrades");
+		this.registerMetaItems(this.craftData, classes.KGSaveEdit.CraftMeta, "crafts");
 		this.meta.push(this.upgrades);
 	},
 
 	renderTabBlock: function () {
-		this.craftEffectivenessNode = dojo.create('div', null, this.tabBlockNode);
+		this.craftEffectivenessNode = dojo.create("div", null, this.tabBlockNode);
 
-		var div = dojo.create('div', {'class': 'bottom-margin'}, this.tabBlockNode);
-		this.game._createCheckbox('Hide researched upgrades', div, this, 'hideResearched');
+		var div = dojo.create("div", {class: "bottom-margin"}, this.tabBlockNode);
+		this.game._createCheckbox("Hide researched upgrades", div, this, "hideResearched");
 
-		this.upgradesBlock = dojo.create('table', {
-			id: 'upgradesBlock',
-			'class': 'bottom-margin'
+		this.upgradesBlock = dojo.create("table", {
+			id: "upgradesBlock",
+			class: "bottom-margin"
 		}, this.tabBlockNode);
 
-		this.freeEngineersBlock = dojo.create('div', {
-			id: 'workshopFreeEngineersBlock',
-			innerHTML: 'Free engineers: <span>0 / 0</span>'
+		this.freeEngineersBlock = dojo.create("div", {
+			id: "workshopFreeEngineersBlock",
+			innerHTML: "Free engineers: <span>0 / 0</span>"
 		}, this.tabBlockNode);
 		this.freeEngineersNode = this.freeEngineersBlock.children[0];
 
-		this.craftsBlock = dojo.create('table', {
-			id: 'workshopCraftsBlock'
+		this.craftsBlock = dojo.create("table", {
+			id: "workshopCraftsBlock"
 		}, this.tabBlockNode);
 	},
 
@@ -2961,27 +2961,27 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			count += this.crafts[i].value;
 		}
 
-		var engineers = this.game.village.getJob('engineer').value;
+		var engineers = this.game.village.getJob("engineer").value;
 		this.freeEngineers = engineers - count;
 
 		if (isNaN(this.freeEngineers) || this.freeEngineers < 0) { //safe switch
 			for (i = this.crafts.length - 1; i >= 0; i--) {
-				this.crafts[i].set('value', 0);
+				this.crafts[i].set("value", 0);
 			}
 			this.freeEngineers = 0;
 		}
 
-		this.freeEngineersNode.innerHTML = this.freeEngineers + ' / ' + engineers;
+		this.freeEngineersNode.innerHTML = this.freeEngineers + " / " + engineers;
 
-		dojo.toggleClass(this.freeEngineersBlock, 'spoiler', !this.game.science.get("mechanization").owned());
+		dojo.toggleClass(this.freeEngineersBlock, "spoiler", !this.game.science.get("mechanization").owned());
 
 		this.effectsBase["scienceMax"] = Math.floor(this.game.resPool.get("compedium").value * 10);
 		this.effectsBase["oilMax"] = Math.floor(this.game.resPool.get("tanker").value * 500);
 		var cultureBonusRaw = Math.floor(this.game.resPool.get("manuscript").value);
 		this.effectsBase["cultureMax"] = this.game.getTriValue(cultureBonusRaw, 0.01);
 
-		this.game.callMethods(this.upgrades, 'update', this.hideResearched);
-		this.game.callMethods(this.crafts, 'update');
+		this.game.callMethods(this.upgrades, "update", this.hideResearched);
+		this.game.callMethods(this.crafts, "update");
 	},
 
 	getEffectBase: function (name) {
@@ -3014,16 +3014,16 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			return;
 		}
 
-		this.set('hideResearched', saveData.workshop.hideResearched);
+		this.set("hideResearched", saveData.workshop.hideResearched);
 
-		this.loadMetaData(saveData.workshop.upgrades, 'get');
+		this.loadMetaData(saveData.workshop.upgrades, "get");
 
-		this.loadMetaData(saveData.workshop.crafts, 'getCraft');
+		this.loadMetaData(saveData.workshop.crafts, "getCraft");
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.CraftMeta', classes.KGSaveEdit.MetaItem, {
+dojo.declare("classes.KGSaveEdit.CraftMeta", classes.KGSaveEdit.MetaItem, {
 	unlocked: false,
 	value: 0,
 	progress: 0,
@@ -3054,40 +3054,40 @@ dojo.declare('classes.KGSaveEdit.CraftMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	render: function () {
-		this.domNode = dojo.create('tr', {
-			'class': 'craft',
-			innerHTML: '<td>' + (this.label || this.name) + '</td><td></td><td></td><td> &nbsp;Progress </td>'
+		this.domNode = dojo.create("tr", {
+			class: "craft",
+			innerHTML: "<td>" + (this.label || this.name) + "</td><td></td><td></td><td> &nbsp;Progress </td>"
 		});
 		this.nameNode = this.domNode.children[0];
 
 		var input = this.game._createInput({
-			'class': 'integerInput',
-			title: 'Crafting Engineers'
-		}, this.domNode.children[1], this, 'value');
+			class: "integerInput",
+			title: "Crafting Engineers"
+		}, this.domNode.children[1], this, "value");
 
 		input.parseFn = function (value) {
 			return Math.min(value, this.metaObj.value + this.game.village.getFreeEngineer());
 		};
 
 		this.game._createLinkList(this, this.domNode.children[2], [
-			{html: '[+]', value: 1},
-			{html: '[+5]', value: 5},
-			{html: '[+25]', value: 25}
+			{html: "[+]", value: 1},
+			{html: "[+5]", value: 5},
+			{html: "[+25]", value: 25}
 		], function (value) {
-			this.set('value', this.value + value);
+			this.set("value", this.value + value);
 		});
 
 		this.game._createLinkList(this, this.domNode.children[2], [
-			{html: '[-]', value: 1},
-			{html: '[-5]', value: 5},
-			{html: '[-25]', value: 25}
+			{html: "[-]", value: 1},
+			{html: "[-5]", value: 5},
+			{html: "[-25]", value: 25}
 		], function (value) {
-			this.set('value', this.value - value);
+			this.set("value", this.value - value);
 		});
 
-		this.game._createCheckbox('Unlocked', this.domNode.children[3], this, 'unlocked', 'first');
+		this.game._createCheckbox("Unlocked", this.domNode.children[3], this, "unlocked", "first");
 
-		this.game._createInput(null, this.domNode.children[3], this, 'progress');
+		this.game._createInput(null, this.domNode.children[3], this, "progress");
 
 		this.registerHighlight(this.domNode);
 		this.registerTooltip(this.domNode);
@@ -3095,7 +3095,7 @@ dojo.declare('classes.KGSaveEdit.CraftMeta', classes.KGSaveEdit.MetaItem, {
 
 	update: function () {
 		var req = this.game.checkRequirements(this);
-		this.set('unlocked', req || this.unlockedNode.prevChecked, true);
+		this.set("unlocked", req || this.unlockedNode.prevChecked, true);
 		this.game.toggleDisabled(this.unlockedNode, req);
 
 		//check and cache if you can't craft even once due to storage limits
@@ -3109,8 +3109,8 @@ dojo.declare('classes.KGSaveEdit.CraftMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	load: function (saveCraft) {
-		this.set('unlocked', Boolean(saveCraft.unlocked));
-		this.set('value', num(saveCraft.value));
+		this.set("unlocked", Boolean(saveCraft.unlocked));
+		this.set("value", num(saveCraft.value));
 	}
 });
 

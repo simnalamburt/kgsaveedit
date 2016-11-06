@@ -3,7 +3,7 @@
 require(["dojo/on"], function (on) {
 "use strict";
 
-dojo.declare('classes.KGSaveEdit.EffectsManager', null, {
+dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 	game: null,
 
 	constructor: function (game) {
@@ -606,7 +606,7 @@ dojo.declare('classes.KGSaveEdit.EffectsManager', null, {
 	}
 });
 
-dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
+dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 	rate: 5,
 
 	karmaKittens: 0,
@@ -640,21 +640,21 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 	//shamelessly copied from Sandcastle Builder code
 	postfixes: [
-		{limit: 1e210, divisor: 1e210, postfix: ['Q', ' Quita']},
-		{limit:  1e42, divisor:  1e42, postfix: ['W', ' Wololo']},
-		{limit:  1e39, divisor:  1e39, postfix: ['L', ' Lotta']},
-		{limit:  1e36, divisor:  1e36, postfix: ['F', ' Ferro']},
-		{limit:  1e33, divisor:  1e33, postfix: ['H', ' Helo']}, //or Ballard
-		{limit:  1e30, divisor:  1e30, postfix: ['S', ' Squilli']},
-		{limit:  1e27, divisor:  1e27, postfix: ['U', ' Umpty']},
-		{limit:  1e24, divisor:  1e24, postfix: ['Y', ' Yotta']},
-		{limit:  1e21, divisor:  1e21, postfix: ['Z', ' Zeta']},
-		{limit:  1e18, divisor:  1e18, postfix: ['E', ' Exa']},
-		{limit:  1e15, divisor:  1e15, postfix: ['P', ' Peta']},
-		{limit:  1e12, divisor:  1e12, postfix: ['T', ' Tera']},
-		{limit:   1e9, divisor:   1e9, postfix: ['G', ' Giga']},
-		{limit:   1e6, divisor:   1e6, postfix: ['M', ' Mega']},
-		{limit:   9e3, divisor:   1e3, postfix: ['K', ' Kilo']} //WHAT
+		{limit: 1e210, divisor: 1e210, postfix: ["Q", " Quita"]},
+		{limit:  1e42, divisor:  1e42, postfix: ["W", " Wololo"]},
+		{limit:  1e39, divisor:  1e39, postfix: ["L", " Lotta"]},
+		{limit:  1e36, divisor:  1e36, postfix: ["F", " Ferro"]},
+		{limit:  1e33, divisor:  1e33, postfix: ["H", " Helo"]}, //or Ballard
+		{limit:  1e30, divisor:  1e30, postfix: ["S", " Squilli"]},
+		{limit:  1e27, divisor:  1e27, postfix: ["U", " Umpty"]},
+		{limit:  1e24, divisor:  1e24, postfix: ["Y", " Yotta"]},
+		{limit:  1e21, divisor:  1e21, postfix: ["Z", " Zeta"]},
+		{limit:  1e18, divisor:  1e18, postfix: ["E", " Exa"]},
+		{limit:  1e15, divisor:  1e15, postfix: ["P", " Peta"]},
+		{limit:  1e12, divisor:  1e12, postfix: ["T", " Tera"]},
+		{limit:   1e9, divisor:   1e9, postfix: ["G", " Giga"]},
+		{limit:   1e6, divisor:   1e6, postfix: ["M", " Mega"]},
+		{limit:   9e3, divisor:   1e3, postfix: ["K", " Kilo"]} //WHAT
 	],
 
 	/**
@@ -663,14 +663,14 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	 * Can read a single display postfix if the input displays its value with postfixes
 	**/
 	parseInput: function (ele) {
-		if (ele.type !== 'text' || dojo.hasClass(ele, 'textInput')) {
+		if (ele.type !== "text" || dojo.hasClass(ele, "textInput")) {
 			return ele.value;
 		}
 
-		var str = ele.value.replace(/[^\d\-\+\.A-Z]/gi, '');
+		var str = ele.value.replace(/[^\d\-\+\.A-Z]/gi, "");
 		var value = parseFloat(str);
 
-		if (dojo.hasClass(ele, 'abbrInput') && !isNaN(value) && /\d[A-Z]$/i.test(str)) {
+		if (dojo.hasClass(ele, "abbrInput") && !isNaN(value) && /\d[A-Z]$/i.test(str)) {
 			var post = str.slice(-1).toUpperCase();
 			for (var i = 0, len = ele.game.postfixes.length; i < len; i++) {
 				var p = ele.game.postfixes[i];
@@ -681,7 +681,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			}
 		}
 
-		if (dojo.hasClass(ele, 'integerInput')) {
+		if (dojo.hasClass(ele, "integerInput")) {
 			value = Math.floor(value);
 		}
 		if (dojo.isFunction(ele.parseFn)) {
@@ -702,9 +702,9 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		var args = [].slice.call(arguments);
 		var fn = this.setInput;
 
-		if (ele.nodeName.toLowerCase() === 'select') {
+		if (ele.nodeName.toLowerCase() === "select") {
 			fn = this.setSelectByValue;
-		} else if (ele.type === 'checkbox') {
+		} else if (ele.type === "checkbox") {
 			fn = this.setCheckbox;
 		}
 		return fn.apply(this, args);
@@ -717,8 +717,8 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	 * Sets prevChecked (used to revert automatic changes) unless noPrev is truthy
 	**/
 	setInput: function (ele, value, noHandlers, noPrev) {
-		if (dojo.hasClass(ele, 'textInput')) {
-			if (typeof value === 'string' && ele !== document.activeElement) {
+		if (dojo.hasClass(ele, "textInput")) {
+			if (typeof value === "string" && ele !== document.activeElement) {
 				ele.value = value;
 			}
 			return ele.value;
@@ -746,7 +746,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		}
 
 		value = ele.parsedValue;
-		var abbr = dojo.hasClass(ele, 'abbrInput');
+		var abbr = dojo.hasClass(ele, "abbrInput");
 
 		if (ele !== document.activeElement) {
 			var displayValue = value;
@@ -769,7 +769,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	 * Calls handlers on the checkbox and associated object unless noHandlers is truthy
 	**/
 	setCheckbox: function (ele, checked, noPrev, noHandlers) {
-		if (!ele || ele.type !== 'checkbox') {
+		if (!ele || ele.type !== "checkbox") {
 			return;
 		}
 		ele.indeterminate = false;
@@ -798,7 +798,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			return;
 		}
 		var option = dojo.query('option[value="' + value + '"]', ele)[0];
-		if (!option && 'defaultVal' in ele) {
+		if (!option && "defaultVal" in ele) {
 			option = dojo.query('option[value="' + ele.defaultVal + '"]', ele)[0];
 		}
 		if (!option) {
@@ -816,7 +816,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			return;
 		}
 		ele.disabled = disabled;
-		dojo.toggleClass(ele.parentNode, 'locked', Boolean(disabled));
+		dojo.toggleClass(ele.parentNode, "locked", Boolean(disabled));
 		if (extraClass) {
 			dojo.toggleClass(ele.parentNode, extraClass, Boolean(disabled));
 		}
@@ -976,36 +976,36 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 	getUnlockByName: function (unlockId, type) {
 		switch (type) {
-			case 'tech':
+			case "tech":
 				return this.science.get(unlockId);
-			case 'jobs':
+			case "jobs":
 				return this.village.getJob(unlockId);
-			case 'crafts':
+			case "crafts":
 				return this.workshop.getCraft(unlockId);
-			case 'upgrades':
+			case "upgrades":
 				return this.workshop.get(unlockId);
-			/* case 'tabs':
+			/* case "tabs":
 				return this.getTab(unlockId); */
-			case 'buildings':
+			case "buildings":
 				return this.bld.get(unlockId);
-			case 'stages':
+			case "stages":
 				return this.bld.get(unlockId.bld);
-			case 'program':
+			case "program":
 			case "spaceMission":
-			case 'spaceBuilding':
+			case "spaceBuilding":
 				return this.space.getProgram(unlockId);
-			case 'perks':
+			case "perks":
 				return this.prestige.getPerk(unlockId);
-			case 'zigguratUpgrades':
+			case "zigguratUpgrades":
 				return this.religion.getZU(unlockId);
-			case 'religionUpgrades':
+			case "religionUpgrades":
 				return this.religion.getRU(unlockId);
-			case 'chronoforge':
+			case "chronoforge":
 				return this.time.getCFU(unlockId);
-			case 'voidSpace':
+			case "voidSpace":
 				return this.time.getVSU(unlockId);
 			default:
-				console.log('Couldn\'t get unlock ', unlockId, ' of type ', type);
+				console.log("Couldn't get unlock ", unlockId, " of type ", type);
 				return false;
 		}
 	},
@@ -1112,22 +1112,22 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	_renderPriceLine: function (tooltip, price, indent) {
-		var priceItemNode = dojo.create('div', {'class': 'tooltipPriceNode'}, tooltip);
+		var priceItemNode = dojo.create("div", {class: "tooltipPriceNode"}, tooltip);
 
 		var res = this.resPool.get(price.name);
 		var resValue = res.getValue();
 		var hasRes = (resValue >= price.val);
 
 
-		var nameSpan = dojo.create('span', {
-			'class': 'tooltipPriceName',
+		var nameSpan = dojo.create("span", {
+			class: "tooltipPriceName",
 			innerHTML: res.title || res.name
 		}, priceItemNode);
 
 		var asterisk = res.maxValue && ((price.val > res.maxValue && !indent) || price.baseVal > res.maxValue) ? "*" : ""; //mark limit issues with asterisk
 
-		var priceSpan = dojo.create('span', {
-			'class': 'tooltipPriceSpan' + (hasRes ? '' : ' noRes'),
+		var priceSpan = dojo.create("span", {
+			class: "tooltipPriceSpan" + (hasRes ? "" : " noRes"),
 			innerHTML: hasRes ? this.getDisplayValueExt(price.val) :
 				this.getDisplayValueExt(resValue) + " / " + this.getDisplayValueExt(price.val) + asterisk
 		}, priceItemNode);
@@ -1184,9 +1184,9 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		}
 
 		if (!hideTitle) {
-			dojo.create('div', {
-				'class': 'tooltipEffectsTitle',
-				innerHTML: 'Effects:'
+			dojo.create("div", {
+				class: "tooltipEffectsTitle",
+				innerHTML: "Effects:"
 			}, tooltip);
 		}
 
@@ -1196,7 +1196,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			var effectValue = effectsList[effectName];
 			if (effectValue !== 0) {
 				var effectMeta = this.getEffectMeta(effectName);
-				var effectClass = 'tooltipEffect';
+				var effectClass = "tooltipEffect";
 
 				if (!effectMeta) {
 					effectMeta = {};
@@ -1206,7 +1206,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				var res = this.resPool.get(effectMeta.resName);
 
 				if (effectMeta.resName && res && !res.unlocked) {
-					effectClass += ' spoiler'; //mark resource-related effects if we did not unlocked this effect yet
+					effectClass += " spoiler"; //mark resource-related effects if we did not unlocked this effect yet
 				}
 
 				//display resMax values with global ratios like Refrigeration and Paragon
@@ -1233,9 +1233,9 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 					displayEffectValue = this.getDisplayValueExt(effectValue);
 				}
 
-				dojo.create('div', {
-					'class': effectClass,
-					innerHTML: displayEffectName + ': ' + displayEffectValue
+				dojo.create("div", {
+					class: effectClass,
+					innerHTML: displayEffectName + ": " + displayEffectValue
 				}, tooltip);
 			}
 		}
@@ -1464,7 +1464,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 		// *PARAGON BONUS
 		var paragonProductionRatio = this.prestige.getParagonProductionRatio();
-		if (resName === 'catnip' && this.challenges.currentChallenge === 'winterIsComing') {
+		if (resName === "catnip" && this.challenges.currentChallenge === "winterIsComing") {
 			paragonProductionRatio = 0; //winter has come
 		}
 
@@ -1656,7 +1656,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 
 		// *PARAGON BONUS
 		var paragonProductionRatio = this.prestige.getParagonProductionRatio();
-		if (resName === 'catnip' && this.challenges.currentChallenge === 'winterIsComing') {
+		if (resName === "catnip" && this.challenges.currentChallenge === "winterIsComing") {
 			paragonProductionRatio = 0; //winter has come
 		}
 
@@ -1831,12 +1831,12 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			return false;
 		}
 
-		var metaReqs = meta[isStage ? 'stageRequires' : 'requires'];
+		var metaReqs = meta[isStage ? "stageRequires" : "requires"];
 		if (!metaReqs) {
 			if (defaultUnlocked !== undefined && defaultUnlocked !== null) {
 				return Boolean(defaultUnlocked);
 			}
-			return Boolean(meta[isStage ? 'stageUnlocked' : 'unlocked']);
+			return Boolean(meta[isStage ? "stageUnlocked" : "unlocked"]);
 		}
 
 		if (dojo.isFunction(metaReqs)) {
@@ -1857,9 +1857,9 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	_toggleLightbox: function (ele) {
-		dojo.query('.lightbox').addClass('hidden');
-		if (ele && dojo.hasClass(ele, 'lightbox')) {
-			dojo.removeClass(ele, 'hidden');
+		dojo.query(".lightbox").addClass("hidden");
+		if (ele && dojo.hasClass(ele, "lightbox")) {
+			dojo.removeClass(ele, "hidden");
 		}
 	},
 
@@ -1867,29 +1867,29 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		var game = this;
 
 		var data = listData[0];
-		var root = dojo.create('div', {
-			'class': 'linkListRoot',
-			innerHTML: '<a>' + data.html + '</a>'
+		var root = dojo.create("div", {
+			class: "linkListRoot",
+			innerHTML: "<a>" + data.html + "</a>"
 		}, parentNode);
 		root.children[0].valueProp = data.value;
 
-		var tooltip = dojo.create('div', {
-			'class': 'linkListTooltip'
+		var tooltip = dojo.create("div", {
+			class: "linkListTooltip"
 		}, root);
 
 		for (var i = 1; i < listData.length; i++) {
 			data = listData[i];
-			var link = dojo.create('div', {
-				'class': 'linkListTooltipLink',
-				innerHTML: '<a>' + data.html + '</a>'
+			var link = dojo.create("div", {
+				class: "linkListTooltipLink",
+				innerHTML: "<a>" + data.html + "</a>"
 			}, tooltip);
 			link.children[0].valueProp = data.value;
 		}
 
-		on(root, 'click', function (event) {
+		on(root, "click", function (event) {
 			if (!event || !event.target) { return; }
 			var link = event.target;
-			if (link.tagName.toLowerCase() === 'a' && 'valueProp' in link) {
+			if (link.tagName.toLowerCase() === "a" && "valueProp" in link) {
 				handler.call(metaObj, link.valueProp);
 				game.update();
 			}
@@ -1897,15 +1897,15 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Create a numeric input element and attaches an 'input' event handler to it
+	 * Create a numeric input element and attaches an "input" event handler to it
 	 * Automatically updates metaObj[dataProp] if both are set
 	**/
 	_createInput: function (attrs, parentNode, metaObj, dataProp, pos, noUpdate) {
-		var input = dojo.create('input', attrs, parentNode, pos || 'last');
-		input.type = 'text';
+		var input = dojo.create("input", attrs, parentNode, pos || "last");
+		input.type = "text";
 		input.game = this;
 
-		if (dojo.hasClass(input, 'textInput')) {
+		if (dojo.hasClass(input, "textInput")) {
 			return input;
 		}
 
@@ -1917,7 +1917,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			input.metaObj = metaObj;
 			if (dataProp) {
 				input.dataProp = dataProp;
-				metaObj[dataProp + 'Node'] = input;
+				metaObj[dataProp + "Node"] = input;
 				value = metaObj[dataProp];
 			}
 		}
@@ -1926,7 +1926,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		input.parsedValue = value;
 		input.prevValue = value;
 
-		on(input, 'input', function () {
+		on(input, "input", function () {
 			var value = this.game.parseInput(this);
 
 			if (this.parsedValue !== value) {
@@ -1944,11 +1944,11 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			}
 		});
 
-		on(input, 'blur', function () {
+		on(input, "blur", function () {
 			this.game.setInput(this);
 		});
 
-		on(input, 'focus', function () {
+		on(input, "focus", function () {
 			var val = this.parsedValue || 0;
 			if (String(val) !== this.value) {
 				this.value = val;
@@ -1966,14 +1966,14 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		if (!attrs) {
 			attrs = {};
 		}
-		var c = attrs['class'];
-		attrs['class'] = 'ownedInput integerInput' + (c ? ' ' + c : '');
+		var c = attrs["class"];
+		attrs["class"] = "ownedInput integerInput" + (c ? " " + c : "");
 
-		var input = this._createInput(attrs, parentNode, metaObj, 'val', pos, noUpdate);
+		var input = this._createInput(attrs, parentNode, metaObj, "val", pos, noUpdate);
 
 		input.handler = function () {
 			if (!metaObj.togglable || (metaObj.togglableOnOff && metaObj.on > 0)) {
-				metaObj.set('on', this.parsedValue, true);
+				metaObj.set("on", this.parsedValue, true);
 			}
 		};
 		return input;
@@ -1984,23 +1984,23 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	 * Automatically updates metaObj[dataProp] if both are set
 	**/
 	_createCheckbox: function (text, parentNode, metaObj, prop, pos) {
-		var label = dojo.create('label', {innerHTML: ' '}, parentNode, pos || 'last');
-		var cbox = dojo.create('input', {type: 'checkbox'}, label, 'first');
-		var span = dojo.create('span', {innerHTML: text || ''}, label);
+		var label = dojo.create("label", {innerHTML: " "}, parentNode, pos || "last");
+		var cbox = dojo.create("input", {type: "checkbox"}, label, "first");
+		var span = dojo.create("span", {innerHTML: text || ""}, label);
 
 		if (metaObj) {
 			label.metaObj = metaObj;
 			cbox.metaObj = metaObj;
 			if (prop) {
 				cbox.dataProp = prop;
-				metaObj[prop + 'Node'] = cbox;
+				metaObj[prop + "Node"] = cbox;
 				cbox.checked = metaObj[prop];
 			}
 		}
 		cbox.game = this;
 		cbox.prevChecked = cbox.checked;
 
-		on(cbox, 'click', function () {
+		on(cbox, "click", function () {
 			this.prevChecked = this.checked;
 			if (this.metaObj && this.dataProp) {
 				this.metaObj[this.dataProp] = this.checked;
@@ -2026,7 +2026,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				meta.handler(meta);
 			}
 
-			if (dojo.hasClass(ele, 'ownedInput')) {
+			if (dojo.hasClass(ele, "ownedInput")) {
 				if (meta.metaObj && meta.metaObj.invalidateCachedEffects) {
 					meta.metaObj.invalidateCachedEffects();
 				}
@@ -2090,7 +2090,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		this.calendar.save(saveData);
 		this.console.save(saveData);
 
-		this.callMethods(this.managers, 'save', saveData);
+		this.callMethods(this.managers, "save", saveData);
 
 		saveData.game = {
 			forceShowLimits: this.forceShowLimits,
@@ -2383,10 +2383,10 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	importSave: function (data) {
-		if (typeof data !== 'string') {
+		if (typeof data !== "string") {
 			return;
 		}
-		data = data.replace(/\s/g, '');
+		data = data.replace(/\s/g, "");
 		if (!data) {
 			return;
 		}
@@ -2419,14 +2419,14 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		} catch (ex) {
 			console.error("Unable to load game data: ", ex);
 			// console.trace();
-			success = 'ERROR';
+			success = "ERROR";
 			if (rollback) {
 				this.__loadBlankJSON();
 			}
 		}
 
 		this.village.synchKittens(true);
-		// this.callMethods(this.managers, 'invalidateCachedEffects');
+		// this.callMethods(this.managers, "invalidateCachedEffects");
 		this.calculateAllEffects();
 		this.update();
 
@@ -2436,7 +2436,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	_loadBlankJSON: function () {
 		this._loadJSON(this.blankSaveData);
 
-		this.time.set('timestamp', Date.now());
+		this.time.set("timestamp", Date.now());
 		this.telemetry.setGuid();
 		this.server.motdContentPrevious = this.server.motdContent;
 	},
@@ -2457,7 +2457,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		this.calendar.load(saveData);
 		this.console.load(saveData);
 
-		this.callMethods(this.managers, 'load', saveData);
+		this.callMethods(this.managers, "load", saveData);
 
 		this.telemetry.load(saveData);
 
@@ -2468,12 +2468,12 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 				"deadKittens", "useWorkers", "cheatMode", "forceHighPrecision"]);
 
 			this.OptionsTab.scheme.value = this.colorScheme;
-			this.ironWill = ('ironWill' in data) ? Boolean(data.ironWill) : true;
+			this.ironWill = ("ironWill" in data) ? Boolean(data.ironWill) : true;
 
 			var paragonPoints = num(data.paragonPoints);
 
-			if (paragonPoints > this.resPool.get('paragon').value) {
-				this.resPool.get('paragon').set('value', paragonPoints);
+			if (paragonPoints > this.resPool.get("paragon").value) {
+				this.resPool.get("paragon").set("value", paragonPoints);
 			}
 
 			this.loadMetaFields(this.opts, data.opts, ["usePerSecondValues", "usePercentageResourceValues",
@@ -2538,12 +2538,12 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	},
 
 	render: function () {
-		var span = dojo.byId('toolbarBlock');
+		var span = dojo.byId("toolbarBlock");
 		dojo.empty(span);
 		this.toolbar.render(span);
 
-		var tabContainer = dojo.byId('tabContainer');
-		var tabBlocksContainer = dojo.byId('tabBlocksContainer');
+		var tabContainer = dojo.byId("tabContainer");
+		var tabBlocksContainer = dojo.byId("tabBlocksContainer");
 
 		dojo.empty(tabContainer);
 		dojo.empty(tabBlocksContainer);
@@ -2564,7 +2564,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			tab.renderTabBlock();
 		}
 
-		this.callMethods(this.managers, 'render');
+		this.callMethods(this.managers, "render");
 
 		this.calculateAllEffects();
 		this.update();
@@ -2578,7 +2578,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 	update: function () {
 		clearTimeout(this.updateTimer);
 
-		this.brokenIronWill = this.resPool.get('kittens').value > 0 || this.game.getEffect('maxKittens') > 0;
+		this.brokenIronWill = this.resPool.get("kittens").value > 0 || this.game.getEffect("maxKittens") > 0;
 
 		if (this.brokenIronWill) {
 			if (this.ironWill) {
@@ -2590,25 +2590,25 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 		this.ironWillNode.checked = this.ironWill;
 		this.toggleDisabled(this.ironWillNode, this.brokenIronWill);
 
-		// this.callMethods(this.managers, 'invalidateCachedEffects');
-		this.callMethods(this.tabs, 'updateTab');
+		// this.callMethods(this.managers, "invalidateCachedEffects");
+		this.callMethods(this.tabs, "updateTab");
 
 		this.calendar.update();
 		this.resPool.updateMax();
 
 		var tab = this.activeTab;
-		if (!tab || !tab.tabNode || dojo.hasClass(tab.tabWrapper, 'hidden')) {
+		if (!tab || !tab.tabNode || dojo.hasClass(tab.tabWrapper, "hidden")) {
 			tab = this.tabs[0];
 		}
 
 		if (tab && tab.tabNode) {
 			tab.tabNode.click();
 		} else {
-			dojo.query('.activeTab', 'tabContainer').removeClass('activeTab');
-			dojo.query('.tabBlock', 'tabBlocksContainer').addClass('hidden');
+			dojo.query(".activeTab", "tabContainer").removeClass("activeTab");
+			dojo.query(".tabBlock", "tabBlocksContainer").addClass("hidden");
 		}
 
-		this.callMethods(this.managers, 'update');
+		this.callMethods(this.managers, "update");
 
 		var energyProd = this.getEffect("energyProduction");
 		var energyCons = this.getEffect("energyConsumption");
@@ -2633,7 +2633,7 @@ dojo.declare('classes.KGSaveEdit.saveEdit', classes.KGSaveEdit.core, {
 			if (dojo.isFunction(this.tooltipUpdateFunc)) {
 				this.tooltipUpdateFunc();
 			} else {
-				dojo.addClass('tooltipBlock', 'hidden');
+				dojo.addClass("tooltipBlock", "hidden");
 			}
 
 			this.updateTimer = setTimeout(this.update, this.updateTimeDelay);

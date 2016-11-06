@@ -14,11 +14,11 @@ require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 /**
  * Super class. Contains a method to set any property and also update the associated form element, if any
 **/
-dojo.declare('classes.KGSaveEdit.core', null, {
+dojo.declare("classes.KGSaveEdit.core", null, {
 	set: function (key, value) {
-		if (this[key + 'Node'] && this[key + 'Node'].dataProp === key) {
+		if (this[key + "Node"] && this[key + "Node"].dataProp === key) {
 			var args = [].slice.call(arguments, 2);
-			args = [this[key + 'Node'], value].concat(args);
+			args = [this[key + "Node"], value].concat(args);
 			value = this.game.setEle.apply(this.game, args);
 		}
 		this[key] = value;
@@ -26,7 +26,7 @@ dojo.declare('classes.KGSaveEdit.core', null, {
 	}
 });
 
-dojo.declare('classes.KGSaveEdit.UI.Tab', classes.KGSaveEdit.core, {
+dojo.declare("classes.KGSaveEdit.UI.Tab", classes.KGSaveEdit.core, {
 	game: null,
 
 	tabNode: null,
@@ -34,7 +34,7 @@ dojo.declare('classes.KGSaveEdit.UI.Tab', classes.KGSaveEdit.core, {
 	tabWrapper: null,
 	isVisible: true,
 
-	tabName: 'Undefined',
+	tabName: "Undefined",
 
 	constructor: function (game) {
 		this.game = game;
@@ -50,32 +50,32 @@ dojo.declare('classes.KGSaveEdit.UI.Tab', classes.KGSaveEdit.core, {
 
 	renderTab: function () {
 		//wrap tab link for css
-		this.tabWrapper = dojo.create('span', {
-			'class': 'wrapper separated' + (this.isVisible ? '' : ' spoiler')
+		this.tabWrapper = dojo.create("span", {
+			class: "wrapper separated" + (this.isVisible ? "" : " spoiler")
 		});
 
-		this.tabNode = dojo.create('a', {
-			'class': 'tab',
-			href: '#',
+		this.tabNode = dojo.create("a", {
+			class: "tab",
+			href: "#",
 			innerHTML: this.getTabName(),
 		}, this.tabWrapper);
 
-		this.tabBlockNode = dojo.create('div', {
-			'class': 'tabBlock hidden' + (this.tabBlockClass ? ' ' + this.tabBlockClass : '')
+		this.tabBlockNode = dojo.create("div", {
+			class: "tabBlock hidden" + (this.tabBlockClass ? " " + this.tabBlockClass : "")
 		});
 
-		on(this.tabNode, 'click', dojo.hitch(this, function (event) {
+		on(this.tabNode, "click", dojo.hitch(this, function (event) {
 			event.preventDefault();
-			dojo.query('.activeTab', 'tabContainer').removeClass('activeTab');
-			dojo.query('.tabBlock', 'tabBlocksContainer').addClass('hidden');
-			dojo.addClass(this.tabNode, 'activeTab');
-			dojo.removeClass(this.tabBlockNode, 'hidden');
+			dojo.query(".activeTab", "tabContainer").removeClass("activeTab");
+			dojo.query(".tabBlock", "tabBlocksContainer").addClass("hidden");
+			dojo.addClass(this.tabNode, "activeTab");
+			dojo.removeClass(this.tabBlockNode, "hidden");
 			this.game.activeTab = this;
 		}));
 
 		if (this.game.activeTab === this) {
-			dojo.addClass(this.tabNode, 'activeTab');
-			dojo.removeClass(this.tabBlockNode, 'hidden');
+			dojo.addClass(this.tabNode, "activeTab");
+			dojo.removeClass(this.tabBlockNode, "hidden");
 		}
 	},
 
@@ -84,11 +84,11 @@ dojo.declare('classes.KGSaveEdit.UI.Tab', classes.KGSaveEdit.core, {
 	updateTab: function () {
 		this.tabNode.innerHTML = this.getTabName();
 		this.isVisible = this.getVisible();
-		dojo.toggleClass(this.tabWrapper, 'spoiler', !this.isVisible);
+		dojo.toggleClass(this.tabWrapper, "spoiler", !this.isVisible);
 	}
 });
 
-dojo.declare('classes.KGSaveEdit.Manager', classes.KGSaveEdit.core, {
+dojo.declare("classes.KGSaveEdit.Manager", classes.KGSaveEdit.core, {
 	game: null,
 	effectsCached: null,
 	meta: null,
@@ -113,9 +113,9 @@ dojo.declare('classes.KGSaveEdit.Manager', classes.KGSaveEdit.core, {
 	 */
 	registerMetaItems: function (dataArray, ClassObj, key, fn) {
 		var arr = this[key] || [];
-		var byName = this[key + 'ByName'] || {};
+		var byName = this[key + "ByName"] || {};
 		this[key] = arr;
-		this[key + 'ByName'] = byName;
+		this[key + "ByName"] = byName;
 
 		for (var i = 0; i < dataArray.length; i++) {
 			var item = new ClassObj(this.game, dataArray[i]);
@@ -199,7 +199,7 @@ dojo.declare('classes.KGSaveEdit.Manager', classes.KGSaveEdit.core, {
 			if (meta) {
 				if (loadFn) {
 					loadFn.call(this, meta, saveMeta);
-				} else if ('load' in meta) {
+				} else if ("load" in meta) {
 					meta.load(saveMeta);
 				}
 			}
@@ -208,10 +208,10 @@ dojo.declare('classes.KGSaveEdit.Manager', classes.KGSaveEdit.core, {
 });
 
 
-dojo.declare('classes.KGSaveEdit.GenericItem', classes.KGSaveEdit.core, {
+dojo.declare("classes.KGSaveEdit.GenericItem", classes.KGSaveEdit.core, {
 	game: null,
 
-	name: 'Undefined',
+	name: "Undefined",
 
 	constructor: function (game, data) {
 		this.game = game;
@@ -221,7 +221,7 @@ dojo.declare('classes.KGSaveEdit.GenericItem', classes.KGSaveEdit.core, {
 });
 
 
-dojo.declare('classes.KGSaveEdit.TooltipItem', classes.KGSaveEdit.core, {
+dojo.declare("classes.KGSaveEdit.TooltipItem", classes.KGSaveEdit.core, {
 	getTooltip: function () {
 		return "Unimplemented";
 	},
@@ -239,16 +239,16 @@ dojo.declare('classes.KGSaveEdit.TooltipItem', classes.KGSaveEdit.core, {
 			return;
 		}
 
-		var tooltip = dojo.byId('tooltipBlock');
+		var tooltip = dojo.byId("tooltipBlock");
 
 		var updateTooltip = dojo.hitch(this, function () {
-			tooltip.removeAttribute('style');
-			tooltip.innerHTML = '';
+			tooltip.removeAttribute("style");
+			tooltip.innerHTML = "";
 
 			var viewPos = dojo.position(tooltip.parentNode);
 			this.getTooltip(node);
 
-			if (dojo.hasClass(tooltip, 'hidden')) {
+			if (dojo.hasClass(tooltip, "hidden")) {
 				return;
 			}
 
@@ -261,8 +261,8 @@ dojo.declare('classes.KGSaveEdit.TooltipItem', classes.KGSaveEdit.core, {
 
 			pos.left = Math.min(pos.left, viewPos.w - 25 - tooltipPos.w);
 
-			tooltip.style.top = pos.top + 'px';
-			tooltip.style.left = pos.left + 'px';
+			tooltip.style.top = pos.top + "px";
+			tooltip.style.left = pos.left + "px";
 		});
 
 		on(node, mouse.enter, dojo.hitch(this, function () {
@@ -271,16 +271,16 @@ dojo.declare('classes.KGSaveEdit.TooltipItem', classes.KGSaveEdit.core, {
 		}));
 
 		on(node, mouse.leave, dojo.hitch(this, function () {
-			tooltip.removeAttribute('style');
-			tooltip.innerHTML = '';
-			dojo.addClass(tooltip, 'hidden');
+			tooltip.removeAttribute("style");
+			tooltip.innerHTML = "";
+			dojo.addClass(tooltip, "hidden");
 			this.game.tooltipUpdateFunc = null;
 		}));
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.MetaItem', [classes.KGSaveEdit.GenericItem, classes.KGSaveEdit.TooltipItem], {
+dojo.declare("classes.KGSaveEdit.MetaItem", [classes.KGSaveEdit.GenericItem, classes.KGSaveEdit.TooltipItem], {
 	render: function () { },
 
 	owned: function () {
@@ -318,13 +318,13 @@ dojo.declare('classes.KGSaveEdit.MetaItem', [classes.KGSaveEdit.GenericItem, cla
 				hasRes = false;
 			}
 		}
-		dojo.toggleClass(this.nameNode, 'limited', this.game.opts.highlightUnavailable && limited);
-		dojo.toggleClass(this.nameNode, 'btnDisabled', limited || !hasRes);
+		dojo.toggleClass(this.nameNode, "limited", this.game.opts.highlightUnavailable && limited);
+		dojo.toggleClass(this.nameNode, "btnDisabled", limited || !hasRes);
 	},
 
 	registerHighlight: function (node) {
 		on(node, mouse.enter, dojo.hitch(this, function () {
-			dojo.query('.highlited').removeClass('highlited');
+			dojo.query(".highlited").removeClass("highlited");
 
 			var prices = this.getPrices(true);
 			var resPool = this.game.resPool;
@@ -332,32 +332,32 @@ dojo.declare('classes.KGSaveEdit.MetaItem', [classes.KGSaveEdit.GenericItem, cla
 				for (var i = prices.length - 1; i >= 0; i--) {
 					var res = resPool.get(prices[i].name);
 					if (res) {
-						dojo.addClass(res.domNode, 'highlited');
+						dojo.addClass(res.domNode, "highlited");
 					}
 				}
 			}
 		}));
 
 		on(node, mouse.leave, function () {
-			dojo.query('.highlited').removeClass('highlited');
+			dojo.query(".highlited").removeClass("highlited");
 		});
 	},
 
 	getTooltip: function () {
-		var tooltip = dojo.byId('tooltipBlock');
-		tooltip.className = 'button_tooltip';
+		var tooltip = dojo.byId("tooltipBlock");
+		tooltip.className = "button_tooltip";
 
 		if (this.getName) {
-			dojo.create('div', {
-				'class': 'tooltipName',
+			dojo.create("div", {
+				class: "tooltipName",
 				innerHTML: this.getName()
 			}, tooltip);
 		}
 
 		var descBlock;
 		if (this.description || this.getDescription) {
-			descBlock = dojo.create('div', {
-				'class': 'tooltipDesc',
+			descBlock = dojo.create("div", {
+				class: "tooltipDesc",
 				innerHTML: this.getDescription ? this.getDescription() : this.description
 			}, tooltip);
 		}
@@ -365,7 +365,7 @@ dojo.declare('classes.KGSaveEdit.MetaItem', [classes.KGSaveEdit.GenericItem, cla
 		var prices = this.getPrices ? this.getPrices() : this.prices;
 		if (prices) {
 			if (descBlock) {
-				dojo.addClass(descBlock, 'tooltipDescBottom');
+				dojo.addClass(descBlock, "tooltipDescBottom");
 			}
 			this.game.renderPrices(tooltip, prices);
 		}
@@ -375,8 +375,8 @@ dojo.declare('classes.KGSaveEdit.MetaItem', [classes.KGSaveEdit.GenericItem, cla
 		}
 
 		if (this.flavor) {
-			dojo.create('div', {
-				'class': 'tooltipFlavor',
+			dojo.create("div", {
+				class: "tooltipFlavor",
 				innerHTML: this.flavor
 			}, tooltip);
 		}

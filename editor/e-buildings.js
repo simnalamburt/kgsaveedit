@@ -3,7 +3,7 @@
 require(["dojo/on"], function (on) {
 "use strict";
 
-dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
+dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	buildingsData: [{
 			name: "field",
 			label: "Catnip field",
@@ -1075,7 +1075,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 					"faithPerTickBase":   0,
 					"cultureMax":         200
 				};
-				if (game.challenges.currentChallenge !== 'atheism') {
+				if (game.challenges.currentChallenge !== "atheism") {
 					effects["faithPerTickBase"] = 0.005;
 				}
 				self.effects = effects;
@@ -1112,8 +1112,8 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 					"faithMax":           0
 				};
 
-				if (game.challenges.currentChallenge !== 'atheism') {
-					effects['faithMax'] = 100;
+				if (game.challenges.currentChallenge !== "atheism") {
+					effects["faithMax"] = 100;
 
 					var theology = game.science.get("theology");
 					if (theology.owned()) {
@@ -1222,35 +1222,35 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 
 	buildingGroupsData: {
 		all: {
-			name: 'all',
-			title: 'All',
+			name: "all",
+			title: "All",
 			buildings: [],
 			alwaysVisible: true
 		},
 		allEnabled: {
-			name: 'allEnabled',
-			title: 'Enabled',
+			name: "allEnabled",
+			title: "Enabled",
 			filterFn: function (bld) {
-				return bld.unlocked && !dojo.hasClass(bld.nameNode, 'btnDisabled');
+				return bld.unlocked && !dojo.hasClass(bld.nameNode, "btnDisabled");
 			},
 			alwaysVisible: true
 		},
 		togglable: {
-			name: 'togglable',
-			title: 'Togglable',
+			name: "togglable",
+			title: "Togglable",
 			filterFn: function (bld) {
 				return bld.togglable;
 			},
 			alwaysVisible: true
 		},
 		iw: {
-			name: 'iw',
-			title: 'Iron Will',
+			name: "iw",
+			title: "Iron Will",
 			buildings: []
 		},
 		food: {
-			name: 'food',
-			title: 'Food',
+			name: "food",
+			title: "Food",
 			buildings: ["field", "pasture", "aqueduct"]
 			/* filterFn: function () {
 				var bld = ["field"];
@@ -1264,28 +1264,28 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			} */
 		},
 		population: {
-			name: 'population',
-			title: 'Population',
+			name: "population",
+			title: "Population",
 			buildings: ["hut", "logHouse", "mansion"]
 		},
 		science: {
-			name: 'science',
-			title: 'Science',
+			name: "science",
+			title: "Science",
 			buildings: ["library", "academy", "observatory", "biolab"]
 		},
 		storage: {
-			name: 'storage',
-			title: 'Storage',
+			name: "storage",
+			title: "Storage",
 			buildings: ["barn", "warehouse", "harbor"]
 		},
 		resource: {
-			name: 'resource',
-			title: 'Resource',
+			name: "resource",
+			title: "Resource",
 			buildings: ["mine", "quarry", "lumberMill", "oilWell", "accelerator"]
 		},
 		industry: {
-			name: 'industry',
-			title: 'Industry',
+			name: "industry",
+			title: "Industry",
 			buildings: ["steamworks", "magneto", "smelter", "calciner", "factory", "reactor"]
 			/* filterFn: function () {
 				if (KEdt.bld.get("pasture").stage > 0) {
@@ -1298,18 +1298,18 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			} */
 		},
 		culture: {
-			name: 'culture',
-			title: 'Culture',
+			name: "culture",
+			title: "Culture",
 			buildings: ["amphitheatre", "chapel", "temple"]
 		},
 		other: {
-			name: 'other',
-			title: 'Other',
+			name: "other",
+			title: "Other",
 			buildings: ["workshop", "tradepost", "mint", "unicornPasture"]
 		},
 		megastructures: {
-			name: 'megastructures',
-			title: 'Mega Structures',
+			name: "megastructures",
+			title: "Mega Structures",
 			buildings: ["ziggurat", "chronosphere"]
 		}
 	},
@@ -1335,8 +1335,8 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 	buildingsByName: null,
 	buildingGroups: null,
 
-	tabName: 'Bonfire',
-	tabBlockClass: 'shortInt',
+	tabName: "Bonfire",
+	tabBlockClass: "shortInt",
 
 	constructor: function (game) {
 		this.buildingsNames = [];
@@ -1350,13 +1350,13 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 		}
 		this.activeGroup = this.buildingGroups.all;
 
-		this.registerMetaItems(this.buildingsData, classes.KGSaveEdit.BuildingMeta, 'buildings', function (bld) {
+		this.registerMetaItems(this.buildingsData, classes.KGSaveEdit.BuildingMeta, "buildings", function (bld) {
 			this.buildingsNames.push(bld.name);
 			this.buildingGroups.all.buildings.push(bld.name);
 
-			var effects = bld.get('effects') || {};
+			var effects = bld.get("effects") || {};
 
-			if (!('maxKittens' in effects)) {
+			if (!("maxKittens" in effects)) {
 				this.buildingGroups.iw.buildings.push(bld.name);
 			}
 		});
@@ -1364,18 +1364,18 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 	},
 
 	renderTabBlock: function () {
-		this.buildingGroupsBlock = dojo.create('div', {
-			id: 'buildingGroupsBlock',
-			'class': 'bottom-margin'
+		this.buildingGroupsBlock = dojo.create("div", {
+			id: "buildingGroupsBlock",
+			class: "bottom-margin"
 		}, this.tabBlockNode);
 
-		this.buildingsBlock = dojo.create('table', {id: 'buildingsBlock'}, this.tabBlockNode);
+		this.buildingsBlock = dojo.create("table", {id: "buildingsBlock"}, this.tabBlockNode);
 	},
 
 	render: function () {
 		var onclick = function () {
-			dojo.query('.activeGroup', 'buildingGroupsBlock').removeClass('activeGroup');
-			dojo.addClass(this.domNode, 'activeGroup');
+			dojo.query(".activeGroup", "buildingGroupsBlock").removeClass("activeGroup");
+			dojo.addClass(this.domNode, "activeGroup");
 			this.game.bld.activeGroup = this;
 			this.game.update();
 		};
@@ -1384,18 +1384,18 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			var group = this.buildingGroups[name];
 
 			//wrap tab link for css
-			group.nodeWrapper = dojo.create('span', {'class': 'separated'}, this.buildingGroupsBlock);
+			group.nodeWrapper = dojo.create("span", {class: "separated"}, this.buildingGroupsBlock);
 
-			group.domNode = dojo.create('a', {
-				'class': 'buildGroup',
-				href: '#',
+			group.domNode = dojo.create("a", {
+				class: "buildGroup",
+				href: "#",
 				innerHTML: group.title || group.name,
 			}, group.nodeWrapper);
 
-			on(group.domNode, 'click', dojo.hitch(group, onclick));
+			on(group.domNode, "click", dojo.hitch(group, onclick));
 
 			if (this.activeGroup === group) {
-				dojo.addClass(group.domNode, 'activeGroup');
+				dojo.addClass(group.domNode, "activeGroup");
 			}
 		}
 
@@ -1408,7 +1408,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 
 	update: function () {
 		this.calculateEffectsBase();
-		this.game.callMethods(this.buildings, 'updateUnlocked');
+		this.game.callMethods(this.buildings, "updateUnlocked");
 
 		var group;
 		for (var name in this.buildingGroups) {
@@ -1416,8 +1416,8 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			group.hasVisibleBuildings = group.alwaysVisible;
 
 			var i, bld;
-			if (group.name === 'iw') {
-				group.hasVisibleBuildings = this.game.ironWill && this.get('library').owned();
+			if (group.name === "iw") {
+				group.hasVisibleBuildings = this.game.ironWill && this.get("library").owned();
 			} else if (group.filterFn) {
 				group.buildings = [];
 				for (i = this.buildings.length - 1; i >= 0; i--) {
@@ -1437,17 +1437,17 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				}
 			}
 
-			dojo.toggleClass(group.nodeWrapper, 'hidden', !group.hasVisibleBuildings);
+			dojo.toggleClass(group.nodeWrapper, "hidden", !group.hasVisibleBuildings);
 		}
 
 		if (!this.activeGroup || !this.activeGroup.hasVisibleBuildings) {
 			group = this.buildingGroups.all;
-			dojo.query('.activeGroup', 'buildingGroupsBlock').removeClass('activeGroup');
-			dojo.addClass(group.domNode, 'activeGroup');
+			dojo.query(".activeGroup", "buildingGroupsBlock").removeClass("activeGroup");
+			dojo.addClass(group.domNode, "activeGroup");
 			this.game.bld.activeGroup = group;
 		}
 
-		this.game.callMethods(this.buildings, 'update');
+		this.game.callMethods(this.buildings, "update");
 	},
 
 	calculateEffectsBase: function () {
@@ -1531,7 +1531,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 
 	getPriceRatio: function (bldName) {
 		var bld = this.getBuilding(bldName);
-		var ratio = bld.get('priceRatio');
+		var ratio = bld.get("priceRatio");
 
 		var ratioBase = ratio - 1;
 
@@ -1548,7 +1548,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 	},
 
 	save: function (saveData) {
-		saveData.buildings = this.game.mapMethods(this.buildings, 'save');
+		saveData.buildings = this.game.mapMethods(this.buildings, "save");
 
 		if (!saveData.bldData) {
 			saveData.bldData = {};
@@ -1558,7 +1558,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 	},
 
 	load: function (saveData) {
-		this.loadMetaData(saveData.buildings, 'get');
+		this.loadMetaData(saveData.buildings, "get");
 
 		this.groupBuildings = saveData.bldData.groupBuildings;
 		this.twoRows = saveData.bldData.twoRows;
@@ -1566,7 +1566,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 });
 
 
-dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
+dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 	domNode: null,
 
 	val: 0,
@@ -1582,25 +1582,25 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 	render: function () {
 		var self = this;
 
-		this.domNode = dojo.create('tr', {
-			'class': 'building',
+		this.domNode = dojo.create("tr", {
+			class: "building",
 			innerHTML: '<td></td><td class="rightAlign"></td><td></td><td></td>'
 		});
 
 		var td = this.domNode.children[0];
-		this.nameNode = dojo.create('span', {
-			'class': 'nameNode',
-			innerHTML: this.get('label') || this.get('name')
+		this.nameNode = dojo.create("span", {
+			class: "nameNode",
+			innerHTML: this.get("label") || this.get("name")
 		}, td);
 
 		if (this.stages) {
-			this.stageUpNode = dojo.create('input', {
-				type: 'button',
-				value: '^',
-				'class': 'stageBtn hidden',
-				title: 'Upgrade building'
+			this.stageUpNode = dojo.create("input", {
+				type: "button",
+				value: "^",
+				class: "stageBtn hidden",
+				title: "Upgrade building"
 			}, td);
-			on(this.stageUpNode, 'click', function () {
+			on(this.stageUpNode, "click", function () {
 				if (self.stage < self.stages.length - 1 && self.stages[self.stage + 1].stageUnlocked) {
 					self.stage++;
 					self.game.upgradeItems({buildings: [self.name]});
@@ -1608,13 +1608,13 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 				self.game.update();
 			});
 
-			this.stageDownNode = dojo.create('input', {
-				type: 'button',
-				value: 'V',
-				'class': 'stageBtn hidden',
-				title: 'Downgrade building'
+			this.stageDownNode = dojo.create("input", {
+				type: "button",
+				value: "V",
+				class: "stageBtn hidden",
+				title: "Downgrade building"
 			}, td);
-			on(this.stageDownNode, 'click', function () {
+			on(this.stageDownNode, "click", function () {
 				if (self.stage > 0) {
 					self.stage--;
 					self.game.upgradeItems({buildings: [self.name]});
@@ -1623,37 +1623,37 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 			});
 		}
 
-		this.onNodeSpan = dojo.create('span', {innerHTML: ' / '}, this.domNode.children[1]);
+		this.onNodeSpan = dojo.create("span", {innerHTML: " / "}, this.domNode.children[1]);
 
 		this.game._createInput({
-			'class': 'integerInput ownedInput',
-			title: 'Number of active buildings'
-		}, this.onNodeSpan, this, 'on', 'first');
+			class: "integerInput ownedInput",
+			title: "Number of active buildings"
+		}, this.onNodeSpan, this, "on", "first");
 
 		this.game._createValInput({
-			title: 'Number of buildings'
+			title: "Number of buildings"
 		}, this.domNode.children[1], this);
 
-		this.toggleNode = dojo.create('input', {
-			type: 'button',
-			value: 'On',
-			title: 'Toggle building'
+		this.toggleNode = dojo.create("input", {
+			type: "button",
+			value: "On",
+			title: "Toggle building"
 		}, this.domNode.children[2]);
-		on(this.toggleNode, 'click', function () {
-			self.set('on', self.on > 0 ? 0 : self.val);
+		on(this.toggleNode, "click", function () {
+			self.set("on", self.on > 0 ? 0 : self.val);
 			self.game.update();
 		});
 
-		var input = this.game._createCheckbox('Unlocked', this.domNode.children[3], this, 'unlocked');
-		dojo.toggleClass(input.label, 'hidden', !this.get('unlockRatio'));
+		var input = this.game._createCheckbox("Unlocked", this.domNode.children[3], this, "unlocked");
+		dojo.toggleClass(input.label, "hidden", !this.get("unlockRatio"));
 
 		if (this.hasOwnProperty("isAutomationEnabled")) {
-			input = this.game._createCheckbox('Automation on', this.domNode.children[3], this, 'isAutomationEnabled');
+			input = this.game._createCheckbox("Automation on", this.domNode.children[3], this, "isAutomationEnabled");
 			this.isAutomationEnabledLabel = input.label;
 		}
 
-		if ('jammed' in this) {
-			this.game._createCheckbox('Jammed', this.domNode.children[3], this, 'jammed');
+		if ("jammed" in this) {
+			this.game._createCheckbox("Jammed", this.domNode.children[3], this, "jammed");
 		}
 
 		this.registerHighlight(this.domNode);
@@ -1670,9 +1670,9 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 
 	//special consideration for staged buildings
 	set: function (key, value) {
-		if (this[key + 'Node'] && this[key + 'Node'].dataProp === key) {
+		if (this[key + "Node"] && this[key + "Node"].dataProp === key) {
 			var args = [].slice.call(arguments, 2);
-			args = [this[key + 'Node'], value].concat(args);
+			args = [this[key + "Node"], value].concat(args);
 			value = this.game.setEle.apply(this.game, args);
 		}
 
@@ -1689,19 +1689,19 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	getName: function () {
-		var name = this.get('label') || this.get('name');
-		var paren = '';
+		var name = this.get("label") || this.get("name");
+		var paren = "";
 		if (this.val > 0) {
-			paren = ' (' + this.val + ')';
+			paren = " (" + this.val + ")";
 			if (this.togglable && !this.togglableOnOff) {
-				paren = ' (' + this.getOn() + '/' + this.val + ')';
+				paren = " (" + this.getOn() + "/" + this.val + ")";
 			}
 		}
 		return name + paren;
 	},
 
 	getDescription: function () {
-		var desc = this.get('description');
+		var desc = this.get("description");
 		if (this.jammed) {
 			return desc + "<br>" + "***Maintenance***";
 		}
@@ -1710,7 +1710,7 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 
 	getPrices: function (simple) {
 		var ratio = this.game.bld.getPriceRatio(this.name);
-		var prices = dojo.clone(this.get('prices')) || {};
+		var prices = dojo.clone(this.get("prices")) || {};
 
 		if (!simple) {
 			for (var i = 0, len = prices.length; i < len; i++) {
@@ -1721,7 +1721,7 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	getEffect: function (effectName) {
-		var effects = this.get('effects') || {};
+		var effects = this.get("effects") || {};
 		var effect;
 
 		if (effectName === "coalRatioGlobal") {
@@ -1750,15 +1750,15 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 
 	update: function () {
 		if (!this.togglable) {
-			this.set('on', this.val);
+			this.set("on", this.val);
 		}
 		var on = this.getOn();
 
-		dojo.toggleClass(this.nameNode, 'btnEnabled', this.togglable && on > 0);
+		dojo.toggleClass(this.nameNode, "btnEnabled", this.togglable && on > 0);
 
-		dojo.toggleClass(this.onNodeSpan, 'hidden', !this.togglable || this.togglableOnOff);
-		dojo.toggleClass(this.toggleNode, 'hidden', !this.togglableOnOff);
-		this.toggleNode.value = on > 0 ? 'Off' : 'On';
+		dojo.toggleClass(this.onNodeSpan, "hidden", !this.togglable || this.togglableOnOff);
+		dojo.toggleClass(this.toggleNode, "hidden", !this.togglableOnOff);
+		this.toggleNode.value = on > 0 ? "Off" : "On";
 
 		if (this.stages) {
 			var len = this.stages.length - 1;
@@ -1770,16 +1770,16 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 				stage.stageUnlocked = this.game.checkRequirements(stage, false, true);
 			}
 
-			dojo.toggleClass(this.stageDownNode, 'hidden', !this.stage);
-			dojo.toggleClass(this.stageUpNode, 'hidden',
+			dojo.toggleClass(this.stageDownNode, "hidden", !this.stage);
+			dojo.toggleClass(this.stageUpNode, "hidden",
 				this.stage === len || !this.stages[this.stage + 1].stageUnlocked);
 		}
 
-		this.nameNode.textContent = this.get('label') || this.get('name');
+		this.nameNode.textContent = this.get("label") || this.get("name");
 		this.updateEnabled();
 
 		var activeGroup = this.game.bld.activeGroup;
-		dojo.toggleClass(this.domNode, 'hidden', activeGroup.buildings.indexOf(this.name) < 0);
+		dojo.toggleClass(this.domNode, "hidden", activeGroup.buildings.indexOf(this.name) < 0);
 
 		if (this.action && on > 0) {
 			var amt = this.action(this, this.game);
@@ -1789,16 +1789,16 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 		}
 
 		if (this.isAutomationEnabledLabel) {
-			dojo.toggleClass(this.isAutomationEnabledLabel, 'hidden', !this.showAutomation);
+			dojo.toggleClass(this.isAutomationEnabledLabel, "hidden", !this.showAutomation);
 		}
-		dojo.toggleClass(this.nameNode, 'btnLackResConvert', Boolean(this.lackResConvert));
+		dojo.toggleClass(this.nameNode, "btnLackResConvert", Boolean(this.lackResConvert));
 	},
 
 	updateUnlocked: function () {
 		this.unlockable = this.game.checkRequirements(this, true);
 
 		var unlocked = this.unlockable;
-		var unlockRatio = this.get('unlockRatio');
+		var unlockRatio = this.get("unlockRatio");
 
 		var prices = this.getPrices(true);
 		if (this.unlockable && prices.length && unlockRatio) {
@@ -1806,9 +1806,9 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 		}
 		var disable = !this.unlockable || unlocked;
 
-		this.set('unlocked', unlocked || this.unlockedNode.prevChecked, true);
+		this.set("unlocked", unlocked || this.unlockedNode.prevChecked, true);
 
-		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
+		dojo.toggleClass(this.nameNode, "spoiler", !this.unlocked);
 		this.game.toggleDisabled(this.unlockedNode, disable);
 	},
 
@@ -1824,18 +1824,18 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	load: function (saveBld) {
-		this.set('val', num(saveBld.val));
-		this.set('unlocked', saveBld.unlocked);
-		this.set('on', num(saveBld.on));
+		this.set("val", num(saveBld.val));
+		this.set("unlocked", saveBld.unlocked);
+		this.set("on", num(saveBld.on));
 
 		if (this.isAutomationEnabledNode) {
-			this.set('isAutomationEnabled', Boolean(saveBld.isAutomationEnabled));
+			this.set("isAutomationEnabled", Boolean(saveBld.isAutomationEnabled));
 		}
 		if (this.jammedNode) {
-			this.set('jammed', saveBld.jammed);
+			this.set("jammed", saveBld.jammed);
 		}
 		if (this.stages) {
-			this.set('stage', num(saveBld.stage));
+			this.set("stage", num(saveBld.stage));
 		}
 	}
 });

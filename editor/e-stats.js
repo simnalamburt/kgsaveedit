@@ -3,83 +3,83 @@
 require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 "use strict";
 
-dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
+dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	achievementsData: [{
 			name: "unicornConspiracy",
 			title: "Unicorn Conspiracy",
 			description: "Lift the shroud of the Unicorn conspiracy!",
 			condition: function () {
-				return this.game.resPool.get('unicorns').owned();
+				return this.game.resPool.get("unicorns").owned();
 			}
 		}, {
 			name: "uniception",
 			title: "Uniception",
 			description: "Find the conspiracy within the conspiracy",
 			condition: function () {
-				return this.game.resPool.get('tears').owned();
+				return this.game.resPool.get("tears").owned();
 			}
 		}, {
 			name: "sinsOfEmpire",
 			title: "Sins of a Solar Empire",
 			description: "Wait, seriously?",
 			condition: function () {
-				return this.game.resPool.get('alicorn').owned();
+				return this.game.resPool.get("alicorn").owned();
 			}
 		}, {
 			name: "anachronox",
 			title: "Anachronox",
 			description: "Please stop",
 			condition: function () {
-				return this.game.resPool.get('timeCrystal').owned();
+				return this.game.resPool.get("timeCrystal").owned();
 			}
 		}, {
 			name: "deadSpace",
 			title: "Dead Space",
 			description: "In space no one can hear you meow.",
 			condition: function () {
-				return this.game.resPool.get('necrocorn').owned();
+				return this.game.resPool.get("necrocorn").owned();
 			}
 		}, {
 			name: "ironWill",
 			title: "Iron Will",
 			description: "You truly deserved this",
 			condition: function () {
-				return this.game.ironWill && !this.game.resPool.get('kittens').owned() && this.game.bld.get("mine").owned();
+				return this.game.ironWill && !this.game.resPool.get("kittens").owned() && this.game.bld.get("mine").owned();
 			}
 		}, {
 			name: "uberkatzhen",
 			title: "Uberkatzchen",
 			description: "What does not kill you makes you stronger",
 			condition: function () {
-				return this.game.ironWill && !this.game.resPool.get('kittens').owned() && this.game.bld.get("warehouse").owned();
+				return this.game.ironWill && !this.game.resPool.get("kittens").owned() && this.game.bld.get("warehouse").owned();
 			}
 		}, {
 			name: "hundredYearsSolitude",
 			title: "One Hundred Years of Solitude",
 			description: "How far is too far?",
 			condition: function () {
-				return this.game.ironWill && !this.game.resPool.get('kittens').owned() && this.game.bld.get("steamworks").owned();
+				return this.game.ironWill && !this.game.resPool.get("kittens").owned() && this.game.bld.get("steamworks").owned();
 			}
 		}, {
 			name: "soilUptuned",
 			title: "Virgin Soil Upturned",
 			description: "Have 45 pastures in Iron Will mode",
 			condition: function () {
-				return this.game.ironWill && !this.game.resPool.get('kittens').owned() && this.game.bld.get("pasture").val >= 45;
+				return this.game.ironWill && !this.game.resPool.get("kittens").owned() && this.game.bld.get("pasture").val >= 45;
 			}
 		}, {
 			name: "atlasUnmeowed",
 			title: "Atlas Unmeowed",
 			description: "Construct a magneto in Iron Will mode",
 			condition: function () {
-				return this.game.ironWill && !this.game.resPool.get('kittens').owned() && this.game.bld.get("magneto").owned();
+				return this.game.ironWill && !this.game.resPool.get("kittens").owned() && this.game.bld.get("magneto").owned();
 			}
 		}, {
 			name: "meowMeowRevolution",
 			title: "Meow Meow Revolution",
 			description: "Construct a factory in Iron Will mode",
 			condition: function () {
-				return this.game.ironWill && !this.game.resPool.get('kittens').owned() && this.game.bld.get("factory").owned();
+				return this.game.ironWill && !this.game.resPool.get("kittens").owned() && this.game.bld.get("factory").owned();
 			}
 		}, {
 			name: "spaceOddity",
@@ -91,7 +91,7 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 			hasStar: true,
 			starDescription: "Get Moon Program in IW without any paragon points",
 			starCondition: function () {
-				return this.game.ironWill && this.game.space.getProgram("moonMission").owned() && this.game.resPool.get('paragon').value < 10;
+				return this.game.ironWill && this.game.space.getProgram("moonMission").owned() && this.game.resPool.get("paragon").value < 10;
 			}
 		}, {
 			name: "jupiterAscending",
@@ -119,7 +119,7 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 			title: "Heart Of Darkness",
 			description: "Become the chieftain of a zebra tribe. (How is this even possible?)",
 			condition: function () {
-				return this.game.resPool.get('zebras').value > 1;
+				return this.game.resPool.get("zebras").value > 1;
 			}
 		}, {
 			name: "winterIsComing",
@@ -150,21 +150,21 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 			title: "Lotus Eater Machine",
 			description: "Break the cycle of reincarnations",
 			condition: function () {
-				return this.game.resPool.get('karma').owned();
+				return this.game.resPool.get("karma").owned();
 			}
 		}, {
 			name: "serenity",
 			title: "Serenity",
 			description: "Have 50 kittens without losing any of them",
 			condition: function () {
-				return this.game.resPool.get('kittens').value >= 50 && this.game.deadKittens === 0;
+				return this.game.resPool.get("kittens").value >= 50 && this.game.deadKittens === 0;
 			}
 		}, {
 			name: "utopiaProject",
 			title: "Utopia Project",
 			description: "Get a total happiness of over 150%",
 			condition: function () {
-				return this.game.village.happiness >= 1.5 && this.game.resPool.get('kittens').value > 35;
+				return this.game.village.happiness >= 1.5 && this.game.resPool.get("kittens").value > 35;
 			},
 			hasStar: true,
 			starDescription: "Get a total happiness of over 500%",
@@ -197,13 +197,13 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 			}
 	}],
 
-	tabName: 'Achievements',
+	tabName: "Achievements",
 
 	achievements: null,
 	achievementsByName: null,
 
 	constructor: function () {
-		this.registerMetaItems(this.achievementsData, classes.KGSaveEdit.GenericItem, 'achievements', function (ach) {
+		this.registerMetaItems(this.achievementsData, classes.KGSaveEdit.GenericItem, "achievements", function (ach) {
 			ach.unlocked = Boolean(ach.unlocked);
 			ach.newAch = false;
 
@@ -216,8 +216,8 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 	},
 
 	renderTabBlock: function () {
-		this.achievementsBlock = dojo.create('table', {
-			id: 'achievementsBlock'
+		this.achievementsBlock = dojo.create("table", {
+			id: "achievementsBlock"
 		}, this.tabBlockNode);
 	},
 
@@ -225,14 +225,14 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 		var enterU = function () {
 			if (this.newAch) {
 				this.newAch = false;
-				dojo.removeClass(this.unlockedLabel, 'newMarker');
+				dojo.removeClass(this.unlockedLabel, "newMarker");
 				this.metaObj.updateTabMark();
 			}
 		};
 		var enterS = function () {
 			if (this.newStarAch) {
 				this.newStarAch = false;
-				dojo.removeClass(this.starUnlockedLabel, 'newMarker');
+				dojo.removeClass(this.starUnlockedLabel, "newMarker");
 				this.metaObj.updateTabMark();
 			}
 		};
@@ -240,20 +240,20 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 		for (var i = 0, len = this.achievements.length; i < len; i++) {
 			var ach = this.achievements[i];
 
-			ach.domNode = dojo.create('tr', {
-				'class': 'achievement',
+			ach.domNode = dojo.create("tr", {
+				class: "achievement",
 				innerHTML: '<td title="' + ach.description + '">' +
-					(ach.title || ach.name) + '</td><td></td><td></td>'
+					(ach.title || ach.name) + "</td><td></td><td></td>"
 			}, this.achievementsBlock);
 			ach.nameNode = ach.domNode.children[0];
 
-			var input = this.game._createCheckbox('Earned', ach.domNode.children[1], ach, 'unlocked');
+			var input = this.game._createCheckbox("Earned", ach.domNode.children[1], ach, "unlocked");
 			ach.unlockedLabel = input.label;
 			on(input.label, mouse.enter, dojo.hitch(ach, enterU));
 
 			if (ach.hasStar) {
-				input = this.game._createCheckbox((ach.starUnlocked ? '&#9733;' : '&#9734;'),
-					ach.domNode.children[2], ach, 'starUnlocked');
+				input = this.game._createCheckbox((ach.starUnlocked ? "&#9733;" : "&#9734;"),
+					ach.domNode.children[2], ach, "starUnlocked");
 				ach.starUnlockedLabel = input.label;
 				ach.starText = input.text;
 				if (ach.starDescription) {
@@ -299,9 +299,9 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 				if (s !== ach.starUnlocked) {
 					ach.newStarAch = ach.starUnlocked;
 				}
-				dojo.toggleClass(ach.starUnlockedLabel, 'newMarker', ach.newStarAch);
+				dojo.toggleClass(ach.starUnlockedLabel, "newMarker", ach.newStarAch);
 
-				ach.starText.innerHTML = ach.starUnlocked ? '&#9733;' : '&#9734;';
+				ach.starText.innerHTML = ach.starUnlocked ? "&#9733;" : "&#9734;";
 			}
 
 			if (unlocked) {
@@ -314,12 +314,12 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 			if (u !== ach.unlocked) {
 				ach.newAch = ach.unlocked;
 			}
-			dojo.toggleClass(ach.unlockedLabel, 'newMarker', ach.newAch);
+			dojo.toggleClass(ach.unlockedLabel, "newMarker", ach.newAch);
 
 			newAch = newAch || ach.newStarAch || ach.newAch;
 		}
 
-		dojo.toggleClass(this.tabWrapper, 'newMarker', newAch);
+		dojo.toggleClass(this.tabWrapper, "newMarker", newAch);
 	},
 
 	updateTabMark: function () {
@@ -331,7 +331,7 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 				break;
 			}
 		}
-		dojo.toggleClass(this.tabWrapper, 'newMarker', newAch);
+		dojo.toggleClass(this.tabWrapper, "newMarker", newAch);
 	},
 
 	save: function (saveData) {
@@ -340,24 +340,24 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 
 	load: function (saveData) {
 		//ugh
-		this.game.bld.loadMetaData.call(this, saveData.achievements, 'get', function (ach, saveAch) {
-			ach.set('unlocked', saveAch.unlocked);
+		this.game.bld.loadMetaData.call(this, saveData.achievements, "get", function (ach, saveAch) {
+			ach.set("unlocked", saveAch.unlocked);
 			ach.newAch = false;
 			if (ach.hasStar) {
-				ach.set('starUnlocked', saveAch.starUnlocked);
+				ach.set("starUnlocked", saveAch.starUnlocked);
 			}
 		});
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
+dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	statsData: [{
 			name: "totalKittens",
 			title: "Total kittens",
 			val: 0,
 			compareVal: function (game) {
-				return game.resPool.get('kittens').value;
+				return game.resPool.get("kittens").value;
 			},
 			unlocked: true
 		}, {
@@ -385,7 +385,7 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
 			title: "Total paragon",
 			val: 0,
 			compareVal: function (game) {
-				var paragon = game.resPool.get('paragon').value;
+				var paragon = game.resPool.get("paragon").value;
 				if (game.editorOptions.includeSpentParagon) {
 					paragon += game.prestige.getSpentParagon();
 				}
@@ -399,7 +399,7 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
 			name: "unicornsSacrificed",
 			title: "Unicorns sacrificed",
 			val: 0,
-			inputClass: 'integerInput abbrInput'
+			inputClass: "integerInput abbrInput"
 		}, {
 			name: "buildingsConstructed",
 			title: "Buildings Constructed",
@@ -454,9 +454,9 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
 			}
 	}],
 
-	tabName: 'Stats',
+	tabName: "Stats",
 	getVisible: function () {
-		return this.game.karmaKittens > 0 || this.game.science.get('math').owned();
+		return this.game.karmaKittens > 0 || this.game.science.get("math").owned();
 	},
 
 	stats: null,
@@ -473,24 +473,24 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
 			this.allStats.push(stat);
 		};
 
-		this.registerMetaItems(this.statsData, classes.KGSaveEdit.StatsMeta, 'stats', statHandler);
-		this.registerMetaItems(this.statsCurrentData, classes.KGSaveEdit.StatsMeta, 'statsCurrent', statHandler);
+		this.registerMetaItems(this.statsData, classes.KGSaveEdit.StatsMeta, "stats", statHandler);
+		this.registerMetaItems(this.statsCurrentData, classes.KGSaveEdit.StatsMeta, "statsCurrent", statHandler);
 	},
 
 	renderTabBlock: function () {
-		dojo.create('div', {innerHTML: 'ALL-TIME STATS'}, this.tabBlockNode);
-		this.statsBlock = dojo.create('table', {
-			id: 'statsBlock',
-			'class': 'bottom-margin'
+		dojo.create("div", {innerHTML: "ALL-TIME STATS"}, this.tabBlockNode);
+		this.statsBlock = dojo.create("table", {
+			id: "statsBlock",
+			class: "bottom-margin"
 		}, this.tabBlockNode);
 
-		dojo.create('div', {innerHTML: 'CURRENT GAME STATS'}, this.tabBlockNode);
-		this.statsCurrentBlock = dojo.create('table', {id: 'statsCurrentBlock'}, this.tabBlockNode);
+		dojo.create("div", {innerHTML: "CURRENT GAME STATS"}, this.tabBlockNode);
+		this.statsCurrentBlock = dojo.create("table", {id: "statsCurrentBlock"}, this.tabBlockNode);
 	},
 
 	render: function () {
-		this.game.callMethods(this.stats, 'render', this.statsBlock);
-		this.game.callMethods(this.statsCurrent, 'render', this.statsCurrentBlock);
+		this.game.callMethods(this.stats, "render", this.statsBlock);
+		this.game.callMethods(this.statsCurrent, "render", this.statsCurrentBlock);
 	},
 
 	getStat: function (name) {
@@ -502,7 +502,7 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
 	},
 
 	update: function () {
-		this.game.callMethods(this.allStats, 'update');
+		this.game.callMethods(this.allStats, "update");
 	},
 
 	save: function (saveData) {
@@ -511,31 +511,31 @@ dojo.declare('classes.KGSaveEdit.StatsManager', [classes.KGSaveEdit.UI.Tab, clas
 	},
 
 	load: function (saveData) {
-		this.loadMetaData(saveData.stats, 'getStat', function (stat, saveStat) {
-			stat.set('val', num(saveStat.val));
+		this.loadMetaData(saveData.stats, "getStat", function (stat, saveStat) {
+			stat.set("val", num(saveStat.val));
 		});
-		this.loadMetaData(saveData.statsCurrent, 'getStatCurrent', function (stat, saveStat) {
-			stat.set('val', num(saveStat.val));
+		this.loadMetaData(saveData.statsCurrent, "getStatCurrent", function (stat, saveStat) {
+			stat.set("val", num(saveStat.val));
 		});
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.StatsMeta', classes.KGSaveEdit.GenericItem, {
+dojo.declare("classes.KGSaveEdit.StatsMeta", classes.KGSaveEdit.GenericItem, {
 	render: function (parent) {
-		this.domNode = dojo.create('tr', {
-			'class': 'statastic',
-			innerHTML: '<td>' + this.title + '</td><td></td>'
+		this.domNode = dojo.create("tr", {
+			class: "statastic",
+			innerHTML: "<td>" + this.title + "</td><td></td>"
 		}, parent);
 
 		if (this.calculate) {
-			this.valText = dojo.create('span', {
+			this.valText = dojo.create("span", {
 				innerHTML: this.val
 			}, this.domNode.children[1]);
 		} else {
 			this.game._createInput({
-				'class': this.inputClass || 'integerInput'
-			}, this.domNode.children[1], this, 'val');
+				class: this.inputClass || "integerInput"
+			}, this.domNode.children[1], this, "val");
 		}
 	},
 
@@ -551,7 +551,7 @@ dojo.declare('classes.KGSaveEdit.StatsMeta', classes.KGSaveEdit.GenericItem, {
 		}
 
 		if (val !== this.val) {
-			this.set('val', val, true, true);
+			this.set("val", val, true, true);
 		}
 
 		if (this.calculate) {

@@ -3,7 +3,7 @@
 require(["dojo/on"], function (on) {
 "use strict";
 
-dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
+dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	game: null,
 
 	flux: 0, /* Amount of years skipped by CF time jumps */
@@ -144,9 +144,9 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 		}
 	}],
 
-	tabName: 'Time',
+	tabName: "Time",
 	getVisible: function () {
-		return this.game.science.get('calendar').owned() || this.getVSU('usedCryochambers').owned();
+		return this.game.science.get("calendar").owned() || this.getVSU("usedCryochambers").owned();
 	},
 
 	effectsBase: {
@@ -163,8 +163,8 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 		this.game = game;
 		this.timestamp = Date.now();
 
-		this.registerMetaItems(this.cfuData, classes.KGSaveEdit.CFUMeta, 'cfu');
-		this.registerMetaItems(this.vsuData, classes.KGSaveEdit.VSUMeta, 'vsu');
+		this.registerMetaItems(this.cfuData, classes.KGSaveEdit.CFUMeta, "cfu");
+		this.registerMetaItems(this.vsuData, classes.KGSaveEdit.VSUMeta, "vsu");
 
 		this.meta.push(this.cfu, this.vsu);
 	},
@@ -185,56 +185,56 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 		var game = this.game;
 
 		// Timestamp Node
-		var div = dojo.create('div', {
-			id: 'timestampBlock',
-			'class': 'bottom-margin',
+		var div = dojo.create("div", {
+			id: "timestampBlock",
+			class: "bottom-margin",
 			innerHTML: '<span class="nameNode">Last save time</span> '
 		}, this.tabBlockNode);
 
-		dojo.create('small', {
-			title: 'Times are in milliseconds since January 1, 1970, 00:00:00 UTC.\nFor more information, click here.',
+		dojo.create("small", {
+			title: "Times are in milliseconds since January 1, 1970, 00:00:00 UTC.\nFor more information, click here.",
 			innerHTML: '<a class="help" href="http://www.epochconverter.com/" target="_blank">[?]</a>'
 		}, div);
 
-		dojo.place(document.createTextNode(' '), div);
+		dojo.place(document.createTextNode(" "), div);
 
 		game._createInput({
-			id: 'timestampNode',
-			'class': 'integerInput timeInput',
-			title: 'Timestamp of last save'
-		}, div, this, 'timestamp');
+			id: "timestampNode",
+			class: "integerInput timeInput",
+			title: "Timestamp of last save"
+		}, div, this, "timestamp");
 
-		dojo.place(document.createTextNode(' '), div);
-		var btn = dojo.create('a', {
-			href: '#',
-			innerHTML: 'Set to current time'
+		dojo.place(document.createTextNode(" "), div);
+		var btn = dojo.create("a", {
+			href: "#",
+			innerHTML: "Set to current time"
 		}, div);
-		on(btn, 'click', dojo.hitch(this, function () {
-			this.set('timestamp', Date.now());
+		on(btn, "click", dojo.hitch(this, function () {
+			this.set("timestamp", Date.now());
 		}));
 
-		this.timeBlock = dojo.create('table', {
-			id: 'timeBlock',
-			'class': 'bottom-margin',
+		this.timeBlock = dojo.create("table", {
+			id: "timeBlock",
+			class: "bottom-margin",
 			innerHTML: '<tr><th colspan="3">Time</th></tr>'
 		}, this.tabBlockNode);
 
 		// Energy Node
-		var temporalFlux = this.game.resPool.get('temporalFlux');
+		var temporalFlux = this.game.resPool.get("temporalFlux");
 		var str = "/" + temporalFlux.maxValue;
 		if (temporalFlux.value > 0) {
 			str +=  " (" + this.game.toDisplaySeconds(temporalFlux.value / this.game.rate) + ")";
 		}
 
-		var tr = dojo.create('tr', {
-			innerHTML: '<td><span class="nameNode">Temporal Flux</span></td><td></td><td>' + str + '</td>'
+		var tr = dojo.create("tr", {
+			innerHTML: '<td><span class="nameNode">Temporal Flux</span></td><td></td><td>' + str + "</td>"
 		}, this.timeBlock);
 
 		// dojo.place(temporalFlux.valueNode, tr.children[1]);
 
 		var input = game._createInput({
-			id: 'energyNode',
-			'class': 'integerInput'
+			id: "energyNode",
+			class: "integerInput"
 		}, tr.children[1], this);
 		this.temporalFluxNode = input;
 
@@ -242,41 +242,41 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 			return Math.min(value, temporalFlux.maxValue);
 		};
 		input.handler = function () {
-			temporalFlux.set('value', this.parsedValue, true);
+			temporalFlux.set("value", this.parsedValue, true);
 		};
 
 		this.energyMaxBlock = tr.children[2];
 
 		// Flux Node
-		tr = dojo.create('tr', {
+		tr = dojo.create("tr", {
 			innerHTML: '<td><span class="nameNode">Years skipped</span></td><td></td><td></td>',
-			title: 'Amount of years skipped by shattering time crystals'
+			title: "Amount of years skipped by shattering time crystals"
 		}, this.timeBlock);
 
 		input = game._createInput({
-			id: 'fluxNode'
-		}, tr.children[1], this, 'flux');
+			id: "fluxNode"
+		}, tr.children[1], this, "flux");
 		input.minValue = -Number.MAX_VALUE;
 
 		// Heat Node
-		tr = dojo.create('tr', {
+		tr = dojo.create("tr", {
 			innerHTML: '<td><span class="nameNode">Heat</span></td><td></td><td></td>'
 		}, this.timeBlock);
 
 		this.heatNameNode = tr.children[0].children[0];
 
 		input = game._createInput({
-			id: 'heatNode',
-		}, tr.children[1], this, 'flux');
+			id: "heatNode",
+		}, tr.children[1], this, "flux");
 		this.heatBlock = tr.children[2];
 
 
-		this.chronoforgeBlock = dojo.create('table', {
-			id: 'cfuBlock',
-			'class': 'bottom-margin'
+		this.chronoforgeBlock = dojo.create("table", {
+			id: "cfuBlock",
+			class: "bottom-margin"
 		}, this.tabBlockNode);
 
-		this.chronoforgeHeader = dojo.create('tr', {
+		this.chronoforgeHeader = dojo.create("tr", {
 			innerHTML: '<th colspan="3">Chronoforge</th>'
 		}, this.chronoforgeBlock);
 
@@ -293,12 +293,12 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 		};
 
 
-		this.voidspaceBlock = dojo.create('table', {
-			id: 'cfuBlock',
-			'class': 'bottom-margin'
+		this.voidspaceBlock = dojo.create("table", {
+			id: "cfuBlock",
+			class: "bottom-margin"
 		}, this.tabBlockNode);
 
-		this.voidspaceHeader = dojo.create('tr', {
+		this.voidspaceHeader = dojo.create("tr", {
 			innerHTML: '<th colspan="3">Void Space</th>'
 		}, this.voidspaceBlock);
 
@@ -311,7 +311,7 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 
 	update: function () {
 		var hasChronoforge = this.game.workshop.get("chronoforge").owned();
-		var temporalFlux = this.game.resPool.get('temporalFlux');
+		var temporalFlux = this.game.resPool.get("temporalFlux");
 		var str = "/" + temporalFlux.maxValue;
 
 		var seconds = temporalFlux.value / this.game.rate;
@@ -322,13 +322,13 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 
 		this.heatBlock.innerHTML = "/" + this.game.getEffect("heatMax");
 
-		this.game.callMethods(this.cfu, 'update');
-		this.game.callMethods(this.vsu, 'update');
+		this.game.callMethods(this.cfu, "update");
+		this.game.callMethods(this.vsu, "update");
 
-		dojo.toggleClass(this.heatNameNode, 'spoiler', !hasChronoforge);
-		dojo.toggleClass(this.chronoforgeHeader, 'spoiler', !hasChronoforge);
-		dojo.toggleClass(this.voidspaceHeader, 'spoiler',
-			!this.game.science.get('voidSpace').owned() && !this.getVSU('usedCryochambers').owned());
+		dojo.toggleClass(this.heatNameNode, "spoiler", !hasChronoforge);
+		dojo.toggleClass(this.chronoforgeHeader, "spoiler", !hasChronoforge);
+		dojo.toggleClass(this.voidspaceHeader, "spoiler",
+			!this.game.science.get("voidSpace").owned() && !this.getVSU("usedCryochambers").owned());
 	},
 
 	save: function (saveData) {
@@ -349,17 +349,17 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 		var data = saveData.time;
 		this.game.loadMetaFields(this, data, ["flux", "heat", "timestamp"]);
 
-		this.loadMetaData(data.cfu, 'getCFU');
-		this.loadMetaData(data.vsu, 'getVSU');
+		this.loadMetaData(data.cfu, "getCFU");
+		this.loadMetaData(data.vsu, "getVSU");
 
 		if (data.usedCryochambers) {
-			this.loadMetaData(data.usedCryochambers, 'getVSU');
+			this.loadMetaData(data.usedCryochambers, "getVSU");
 		}
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.CFUMeta', classes.KGSaveEdit.MetaItem, {
+dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 	domNode: null, // Here is the HTML Node
 	val: 0,
 	on: 0,
@@ -377,12 +377,12 @@ dojo.declare('classes.KGSaveEdit.CFUMeta', classes.KGSaveEdit.MetaItem, {
 
 	getName: function () {
 		var name = this.label || this.name;
-		var paren = '';
+		var paren = "";
 		if (this.owned()) {
-			paren = ' (' + this.val + ')';
+			paren = " (" + this.val + ")";
 			var on = this.getOn();
 			if (on !== this.val) {
-				paren = ' (' + on + '/' + this.val + ')';
+				paren = " (" + on + "/" + this.val + ")";
 			}
 		}
 		return name + paren;
@@ -411,22 +411,22 @@ dojo.declare('classes.KGSaveEdit.CFUMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	render: function () {
-		var tr = dojo.create('tr', {
-			// 'class': 'building',
-			innerHTML: '<td></td><td></td><td></td>'
+		var tr = dojo.create("tr", {
+			// class: "building",
+			innerHTML: "<td></td><td></td><td></td>"
 		});
 		this.domNode = tr;
 
-		this.nameNode = dojo.create('span', {
-			'class': 'nameNode',
+		this.nameNode = dojo.create("span", {
+			class: "nameNode",
 			innerHTML: this.getName()
 		}, tr.children[0]);
 
 		this.game._createValInput({
-			title: 'Number of Upgrades'
+			title: "Number of Upgrades"
 		}, tr.children[1], this);
 
-		// this.game._createCheckbox('Unlocked', tr.children[2], this, 'unlocked');
+		// this.game._createCheckbox("Unlocked", tr.children[2], this, "unlocked");
 
 		this.registerHighlight(this.domNode); // MetaItem
 		this.registerTooltip(this.domNode); // ToolTip
@@ -434,15 +434,15 @@ dojo.declare('classes.KGSaveEdit.CFUMeta', classes.KGSaveEdit.MetaItem, {
 
 	update: function () { // if researched
 		var req = this.game.checkRequirements(this, this.defaultUnlocked);
-		// this.set('unlocked', this.unlockedNode.prevChecked || req, true);
+		// this.set("unlocked", this.unlockedNode.prevChecked || req, true);
 		this.unlocked = req;
-		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
+		dojo.toggleClass(this.nameNode, "spoiler", !this.unlocked);
 		// this.game.toggleDisabled(this.unlockedNode, this.defaultUnlocked || req);
 
 		this.updateEnabled();
 
-		if (this.name === 'usedCryochambers') {
-			dojo.addClass(this.nameNode, 'btnDisabled');
+		if (this.name === "usedCryochambers") {
+			dojo.addClass(this.nameNode, "btnDisabled");
 		}
 	},
 
@@ -453,16 +453,16 @@ dojo.declare('classes.KGSaveEdit.CFUMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	load: function (saveData) {
-		this.set('val', num(saveData.val));
-		this.set('unlocked', Boolean(saveData.unlocked) || this.defaultUnlocked);
+		this.set("val", num(saveData.val));
+		this.set("unlocked", Boolean(saveData.unlocked) || this.defaultUnlocked);
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.VSUMeta', classes.KGSaveEdit.CFUMeta, {
+dojo.declare("classes.KGSaveEdit.VSUMeta", classes.KGSaveEdit.CFUMeta, {
 	getOn: function () {
 		var on = this.val;
-		if (this.name === 'cryochambers') {
+		if (this.name === "cryochambers") {
 			on = Math.min(this.val, this.game.bld.get("chronosphere").val) || 0;
 		}
 		return on;

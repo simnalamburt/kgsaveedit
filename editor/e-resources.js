@@ -7,7 +7,7 @@ function capitalize(str) {
 require(["dojo/on"], function (on) {
 "use strict";
 
-dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
+dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 	game: null,
 
 	resources: null,
@@ -25,7 +25,7 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		}, {
 			name: "wood",
 			craftable: true,
-			tableID: 'resourceBlock',
+			tableID: "resourceBlock",
 			calculatePerTick: true
 		}, {
 			name: "minerals",
@@ -83,7 +83,7 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 				this.game.village.synchKittens();
 			},
 			getMaxValue: function () {
-				return this.game.getEffect('maxKittens');
+				return this.game.getEffect("maxKittens");
 			}
 		}, {
 			name: "zebras",
@@ -93,8 +93,8 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			getMaxValue: function () {
 				var zMax = 0;
 				if (this.game.ironWill) {
-					zMax = num(Math.max(this.game.karmaZebrasNode.parsedValue, this.game.science.get('archery').owned()));
-				} else if (this.game.prestige.getPerk('zebraDiplomacy').owned()) {
+					zMax = num(Math.max(this.game.karmaZebrasNode.parsedValue, this.game.science.get("archery").owned()));
+				} else if (this.game.prestige.getPerk("zebraDiplomacy").owned()) {
 					zMax = Math.floor(0.10 * this.game.karmaZebrasNode.parsedValue);
 				}
 				return zMax;
@@ -307,48 +307,48 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 	}],
 
 	constructor: function () {
-		this.registerMetaItems(this.resourceData, classes.KGSaveEdit.ResourceMeta, 'resources');
+		this.registerMetaItems(this.resourceData, classes.KGSaveEdit.ResourceMeta, "resources");
 	},
 
 	render: function () {
-		dojo.empty('resourceHeader');
-		dojo.empty('resourceBlock');
-		dojo.empty('craftableBlock');
+		dojo.empty("resourceHeader");
+		dojo.empty("resourceBlock");
+		dojo.empty("craftableBlock");
 
-		var input = this.game._createCheckbox('Resources locked', 'resourceHeader', this, 'isLocked');
-		input.label.title = 'Show hidden resources on mouseover (ingame only)';
+		var input = this.game._createCheckbox("Resources locked", "resourceHeader", this, "isLocked");
+		input.label.title = "Show hidden resources on mouseover (ingame only)";
 
-		var div = dojo.create('div', {
-			id: 'ResourceToggleShowNode',
-			innerHTML: 'Show '
-		}, 'resourceHeader');
+		var div = dojo.create("div", {
+			id: "ResourceToggleShowNode",
+			innerHTML: "Show "
+		}, "resourceHeader");
 
-		on(div, 'click', function () {
-			dojo.toggleClass('resourceColumn', 'showResourceProps', dojo.byId('resourceToggleShowProps').checked);
+		on(div, "click", function () {
+			dojo.toggleClass("resourceColumn", "showResourceProps", dojo.byId("resourceToggleShowProps").checked);
 		});
 
-		var label = dojo.create('label', {
-			innerHTML: ' <span>Per tick</span>'
+		var label = dojo.create("label", {
+			innerHTML: " <span>Per tick</span>"
 		}, div);
-		input = dojo.create('input', {
-			id: 'resourceToggleShowPertick',
-			name: 'resourceToggleShow',
-			type: 'radio'
-		}, label, 'first');
+		input = dojo.create("input", {
+			id: "resourceToggleShowPertick",
+			name: "resourceToggleShow",
+			type: "radio"
+		}, label, "first");
 		input.checked = true;
 
-		label = dojo.create('label', {
-			innerHTML: ' <span>Properties</span>'
+		label = dojo.create("label", {
+			innerHTML: " <span>Properties</span>"
 		}, div);
-		dojo.create('input', {
-			id: 'resourceToggleShowProps',
-			name: 'resourceToggleShow',
-			type: 'radio'
-		}, label, 'first');
+		dojo.create("input", {
+			id: "resourceToggleShowProps",
+			name: "resourceToggleShow",
+			type: "radio"
+		}, label, "first");
 
 		for (var i = 0, len = this.resources.length; i < len; i++) {
 			var res = this.resources[i];
-			var block = res.craftable ? 'craftableBlock' : 'resourceBlock';
+			var block = res.craftable ? "craftableBlock" : "resourceBlock";
 			res.render();
 			dojo.place(res.domNode, res.tableID || block);
 		}
@@ -363,7 +363,7 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 	},
 
 	update: function () {
-		this.game.callMethods(this.resources, 'update');
+		this.game.callMethods(this.resources, "update");
 
 		// this.energyProd = this.game.getEffect("energyProduction");
 		// this.energyCons = this.game.getEffect("energyConsumption");
@@ -591,28 +591,28 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		saveData.res = {
 			isLocked: Boolean(this.isLocked)
 		};
-		saveData.resources = this.game.mapMethods(this.resources, 'save');
+		saveData.resources = this.game.mapMethods(this.resources, "save");
 	},
 
 	load: function (saveData) {
 		if (saveData.res) {
-			this.set('isLocked', Boolean(saveData.res.isLocked));
+			this.set("isLocked", Boolean(saveData.res.isLocked));
 		}
-		this.loadMetaData.call(this, saveData.resources, 'get', function (res, saveRes) {
-			res.set('value', num(saveRes.value));
-			res.set('unlocked', Boolean(saveRes.unlocked));
-			res.set('isHidden', Boolean(saveRes.isHidden));
+		this.loadMetaData.call(this, saveData.resources, "get", function (res, saveRes) {
+			res.set("value", num(saveRes.value));
+			res.set("unlocked", Boolean(saveRes.unlocked));
+			res.set("isHidden", Boolean(saveRes.isHidden));
 		});
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem, classes.KGSaveEdit.TooltipItem], {
+dojo.declare("classes.KGSaveEdit.ResourceMeta", [classes.KGSaveEdit.GenericItem, classes.KGSaveEdit.TooltipItem], {
 	game: null,
 	domNode: null,
 	valueIn: null,
 
-	name: 'Undefined',
+	name: "Undefined",
 
 	value: 0,
 	maxValue: 0,
@@ -621,29 +621,29 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 	unlocked: false,
 	isHidden: false,
 	relockIfZero: false,
-	type: 'common',
+	type: "common",
 
 	perTickCached: 0,
 
 	render: function () {
-		var tr = dojo.create('tr', {'class': 'resource'});
+		var tr = dojo.create("tr", {class: "resource"});
 		this.domNode = tr;
 
 		if (this.invisible) {
-			dojo.addClass(tr, 'hidden');
+			dojo.addClass(tr, "hidden");
 		}
 		if (this.type) {
 			dojo.addClass(tr, this.type);
 		}
 
-		this.nameNode = dojo.create('td', {
-			'class': 'nameNode',
+		this.nameNode = dojo.create("td", {
+			class: "nameNode",
 			innerHTML: capitalize(this.title || this.name)
 		}, tr);
 		this.registerTooltip(this.nameNode);
 
 		if (this.color) {
-			dojo.setStyle(this.nameNode, 'color', this.color);
+			dojo.setStyle(this.nameNode, "color", this.color);
 		}
 		if (this.style) {
 			for (var styleKey in this.style) {
@@ -651,9 +651,9 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 			}
 		}
 
-		td = dojo.create('td', null, tr);
-		this.game._createInput({'class': this.inputClass || 'abbrInput'},
-			td, this, 'value');
+		td = dojo.create("td", null, tr);
+		this.game._createInput({class: this.inputClass || "abbrInput"},
+			td, this, "value");
 		if (this.inputParseFn) {
 			this.valueNode.parseFn = this.inputParseFn;
 		}
@@ -661,16 +661,16 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 			this.valueNode.handler = this.inputHandler;
 		}
 
-		var td = dojo.create('td', {'class': 'resourceProps'}, tr);
-		this.game._createCheckbox('Unlocked', td, this, 'unlocked');
-		this.game._createCheckbox('Hidden', td, this, 'isHidden');
+		var td = dojo.create("td", {class: "resourceProps"}, tr);
+		this.game._createCheckbox("Unlocked", td, this, "unlocked");
+		this.game._createCheckbox("Hidden", td, this, "isHidden");
 
-		this.maxValueNode = dojo.create('td', null, tr);
-		this.perTickNode = dojo.create('td', {'class': 'perTickNode'}, tr);
+		this.maxValueNode = dojo.create("td", null, tr);
+		this.perTickNode = dojo.create("td", {class: "perTickNode"}, tr);
 		this.registerTooltip(this.perTickNode);
 
 		if (this.name === "catnip") {
-			this.weatherModNode = dojo.create('td', null, tr);
+			this.weatherModNode = dojo.create("td", null, tr);
 		}
 	},
 
@@ -687,20 +687,20 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 	},
 
 	getTooltip: function (node) {
-		var tooltipBlock = dojo.byId('tooltipBlock');
+		var tooltipBlock = dojo.byId("tooltipBlock");
 
 		if (node === this.nameNode) {
-			tooltipBlock.innerHTML = this.description || '';
-			tooltipBlock.className = this.description ? 'res_desc_tooltip' : 'hidden';
+			tooltipBlock.innerHTML = this.description || "";
+			tooltipBlock.className = this.description ? "res_desc_tooltip" : "hidden";
 			return;
 		}
 
 		if (!this.perTickCached) {
-			tooltipBlock.className = 'hidden';
+			tooltipBlock.className = "hidden";
 			return;
 		}
 
-		tooltipBlock.className = 'pertick_tooltip';
+		tooltipBlock.className = "pertick_tooltip";
 		tooltipBlock.innerHTML = this.game.getDetailedResMap(this);
 	},
 
@@ -723,8 +723,8 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 		this.unlockedNode.checked = this.unlocked;
 		this.game.toggleDisabled(this.unlockedNode, this.name === "sorrow" || value > 0 || this.relockIfZero); //sigh
 
-		dojo.toggleClass(this.valueNode, 'resLimitNotice', maxValue > 0 && value > maxValue * 0.95);
-		dojo.toggleClass(this.valueNode, 'resLimitWarn', maxValue > 0 && value > maxValue * 0.75 && value <= maxValue * 0.95);
+		dojo.toggleClass(this.valueNode, "resLimitNotice", maxValue > 0 && value > maxValue * 0.95);
+		dojo.toggleClass(this.valueNode, "resLimitWarn", maxValue > 0 && value > maxValue * 0.75 && value <= maxValue * 0.95);
 
 		this.perTickCached = 0;
 		if (this.calculatePerTick) {
@@ -742,7 +742,7 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 
 		var perTickValue = perTick ? "(" + this.game.getDisplayValueExt(perTick, true, false) + postfix + ")" : "";
 		this.perTickNode.textContent = perTickValue;
-		dojo.toggleClass(this.perTickNode, 'tooltipped', Boolean(perTick));
+		dojo.toggleClass(this.perTickNode, "tooltipped", Boolean(perTick));
 
 		//weather mod
 		if (this.name === "catnip") {
@@ -758,8 +758,8 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 			}
 
 			this.weatherModNode.textContent = modText;
-			dojo.toggleClass(this.weatherModNode, 'green', modifier > 0);
-			dojo.toggleClass(this.weatherModNode, 'red', modifier < 0);
+			dojo.toggleClass(this.weatherModNode, "green", modifier > 0);
+			dojo.toggleClass(this.weatherModNode, "red", modifier < 0);
 		}
 	},
 

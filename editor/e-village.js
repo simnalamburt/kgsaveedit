@@ -4,10 +4,10 @@ require(["dojo/on"], function (on) {
 "use strict";
 
 function kittensCountToText(count) {
-	return count + ' kitten' + (count === 1 ? '' : 's');
+	return count + " kitten" + (count === 1 ? "" : "s");
 }
 
-dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
+dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	jobsData: [{
 			name: "woodcutter",
 			title: "Woodcutter",
@@ -65,7 +65,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			title: "Priest",
 			description: "+0.0015 faith per tick",
 			requires: function () {
-				return this.game.challenges.currentChallenge !== 'atheism' && this.game.science.get('theology').owned();
+				return this.game.challenges.currentChallenge !== "atheism" && this.game.science.get("theology").owned();
 			},
 			modifiers: {
 				"faith": 0.0015
@@ -132,10 +132,10 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	traitsByName: null,
 	_traitSelect: null,
 
-	tabName: 'Outpost',
+	tabName: "Outpost",
 	getVisible: function () {
-		return this.game.resPool.get('kittens').owned() || this.game.resPool.get('zebras').owned() ||
-			this.game.bld.get('hut').owned() || this.game.time.getVSU('usedCryochambers').owned();
+		return this.game.resPool.get("kittens").owned() || this.game.resPool.get("zebras").owned() ||
+			this.game.bld.get("hut").owned() || this.game.time.getVSU("usedCryochambers").owned();
 	},
 
 	leader: null,
@@ -180,13 +180,13 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			this.jobsByName[job.name] = job;
 		}
 
-		this._traitSelect = dojo.create('select');
+		this._traitSelect = dojo.create("select");
 
 		for (i = 0, len = this.traits.length; i < len; i++) {
 			var trait = this.traits[i];
 			this.traitsByName[trait.name] = trait;
 
-			dojo.create('option', {
+			dojo.create("option", {
 				value: trait.name,
 				innerHTML: trait.title || trait.name
 			}, this._traitSelect);
@@ -213,14 +213,14 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		var self = this;
 		var game = self.game;
 
-		var div = dojo.create('div', {
+		var div = dojo.create("div", {
 			innerHTML: 'Free kittens <span id="freeKittensSpan">0 / 0</span>'
 		}, self.tabBlockNode);
 		self.freeKittensSpan = div.children[0];
 
-		self.jobsBlock = dojo.create('table', {
-			id: 'jobsBlock',
-			'class': 'bottom-margin'
+		self.jobsBlock = dojo.create("table", {
+			id: "jobsBlock",
+			class: "bottom-margin"
 		}, self.tabBlockNode);
 
 		var job;
@@ -230,160 +230,160 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			dojo.place(job.domNode, self.jobsBlock);
 		}
 
-		self.censusBlock = dojo.create('div', {
-			id: 'censusBlock'
+		self.censusBlock = dojo.create("div", {
+			id: "censusBlock"
 		}, self.tabBlockNode);
 
-		self.governmentBlock = dojo.create('div', {
-			'class': 'noAnarchy',
-			id: 'governmentBlock'
+		self.governmentBlock = dojo.create("div", {
+			class: "noAnarchy",
+			id: "governmentBlock"
 		}, self.censusBlock);
 
-		self.unassignLeaderBlock = dojo.create('div');
+		self.unassignLeaderBlock = dojo.create("div");
 
-		self.unassignLeaderBtn = dojo.create('span', {
-			'class': 'separated',
+		self.unassignLeaderBtn = dojo.create("span", {
+			class: "separated",
 			innerHTML: '<a href="#">Unassign leader</a>'
 		}, self.unassignLeaderBlock);
 
-		on(self.unassignLeaderBtn.children[0], 'click', function () {
+		on(self.unassignLeaderBtn.children[0], "click", function () {
 			if (self.leader) {
 				self.leader.fireLeader();
 			}
 		});
 
-		self.unassignLeaderJobBtn = dojo.create('span', {
-			'class': 'separated',
+		self.unassignLeaderJobBtn = dojo.create("span", {
+			class: "separated",
 			innerHTML: '<a href="#">Unassign leader job</a>'
 		}, self.unassignLeaderBlock);
 
-		on(self.unassignLeaderJobBtn.children[0], 'click', function () {
+		on(self.unassignLeaderJobBtn.children[0], "click", function () {
 			if (self.leader) {
 				self.leader.quitJob();
 			}
 		});
 
-		div = dojo.create('div', {
-			'class': 'censusLine'
+		div = dojo.create("div", {
+			class: "censusLine"
 		}, self.censusBlock);
 
-		self.censusFilterNode = dojo.create('select', {
+		self.censusFilterNode = dojo.create("select", {
 			innerHTML: '<option value="all">All jobs</option>'
 		}, div);
 
 		for (i = 0, len = self.jobs.length; i < len; i++) {
 			job = self.jobs[i];
-			job.filterNode = dojo.create('option', {
+			job.filterNode = dojo.create("option", {
 				value: job.name,
 				innerHTML: job.title
 			}, self.censusFilterNode);
 		}
 
-		self.governmentFilter = dojo.create('option', {
-			value: 'leader',
-			innerHTML: 'Leader'
+		self.governmentFilter = dojo.create("option", {
+			value: "leader",
+			innerHTML: "Leader"
 		}, self.censusFilterNode);
 
-		self.governmentFilter = dojo.create('option', {
-			value: 'selected',
-			innerHTML: 'Selected'
+		self.governmentFilter = dojo.create("option", {
+			value: "selected",
+			innerHTML: "Selected"
 		}, self.censusFilterNode);
 
-		on(self.censusFilterNode, 'change', function () {
+		on(self.censusFilterNode, "change", function () {
 			self.takeCensus();
 		});
 
-		self.censusPageBlock = dojo.create('span', {
-			id: 'censusPageBlock',
-			'class': 'floatRight hidden'
+		self.censusPageBlock = dojo.create("span", {
+			id: "censusPageBlock",
+			class: "floatRight hidden"
 		}, div);
 
-		self.censusPageFirst = dojo.create('a', {
-			href: '#',
-			innerHTML: '&lt;&lt;'
+		self.censusPageFirst = dojo.create("a", {
+			href: "#",
+			innerHTML: "&lt;&lt;"
 		}, self.censusPageBlock);
-		on(self.censusPageFirst, 'click', function () {
+		on(self.censusPageFirst, "click", function () {
 			game.setInput(self.censusPageNode, 1);
 		});
 
-		self.censusPagePrev = dojo.create('a', {
-			href: '#',
-			innerHTML: '&lt;'
+		self.censusPagePrev = dojo.create("a", {
+			href: "#",
+			innerHTML: "&lt;"
 		}, self.censusPageBlock);
-		on(self.censusPagePrev, 'click', function () {
+		on(self.censusPagePrev, "click", function () {
 			game.setInput(self.censusPageNode, self.censusPage - 1);
 		});
 
-		var span = dojo.create('span', {innerHTML: 'Page '}, self.censusPageBlock);
+		var span = dojo.create("span", {innerHTML: "Page "}, self.censusPageBlock);
 
-		var input = game._createInput({'class': 'integerInput'}, span, self, 'censusPage');
+		var input = game._createInput({class: "integerInput"}, span, self, "censusPage");
 		input.minValue = 1;
 		input.handler = function () { self.renderCensus(); };
 
-		self.censusPageCount = dojo.create('span', null, span);
+		self.censusPageCount = dojo.create("span", null, span);
 
-		self.censusPageNext = dojo.create('a', {
-			href: '#',
-			innerHTML: '&gt;'
+		self.censusPageNext = dojo.create("a", {
+			href: "#",
+			innerHTML: "&gt;"
 		}, self.censusPageBlock);
-		on(self.censusPageNext, 'click', function () {
+		on(self.censusPageNext, "click", function () {
 			game.setInput(self.censusPageNode, Math.min(self.censusPage + 1, self.censusPageMax));
 		});
 
-		self.censusPageLast = dojo.create('a', {
-			href: '#',
-			innerHTML: '&gt;&gt;'
+		self.censusPageLast = dojo.create("a", {
+			href: "#",
+			innerHTML: "&gt;&gt;"
 		}, self.censusPageBlock);
-		on(self.censusPageLast, 'click', function () {
+		on(self.censusPageLast, "click", function () {
 			game.setInput(self.censusPageNode, self.censusPageMax);
 		});
 
-		self.selectedKittensBlock = dojo.create('div', {
-			'class': 'censusLine',
+		self.selectedKittensBlock = dojo.create("div", {
+			class: "censusLine",
 			innerHTML: '<span>0 kittens selected</span> <input type="button" value="Edit" disabled>'
 		}, self.censusBlock);
 
 		self.selectedKittensCountSpan = self.selectedKittensBlock.children[0];
 
 		self.massEditStartButton = self.selectedKittensBlock.children[1];
-		on(self.massEditStartButton, 'click', function () {
+		on(self.massEditStartButton, "click", function () {
 			self.showMassEdit();
 		});
 
-		self.massEditSelectKittensSpan = dojo.create('span', {
-			'class': 'floatRight',
-			innerHTML: 'Select kittens: '
+		self.massEditSelectKittensSpan = dojo.create("span", {
+			class: "floatRight",
+			innerHTML: "Select kittens: "
 		}, self.selectedKittensBlock);
 
-		self.massEditSelectAllNode = game._createCheckbox('All', self.massEditSelectKittensSpan).cbox;
-		on(self.massEditSelectAllNode, 'click', function () {
+		self.massEditSelectAllNode = game._createCheckbox("All", self.massEditSelectKittensSpan).cbox;
+		on(self.massEditSelectAllNode, "click", function () {
 			for (var i = self.kittens.length - 1; i >= 0; i--) {
-				self.kittens[i].set('selected', this.checked, false, true);
+				self.kittens[i].set("selected", this.checked, false, true);
 			}
 			self.updateSelectedKittens();
 		});
 
-		self.massEditSelectFilterNode = game._createCheckbox('Filtered', self.massEditSelectKittensSpan).cbox;
-		on(self.massEditSelectFilterNode, 'click', function () {
+		self.massEditSelectFilterNode = game._createCheckbox("Filtered", self.massEditSelectKittensSpan).cbox;
+		on(self.massEditSelectFilterNode, "click", function () {
 			for (var i = self.censusKittens.length - 1; i >= 0; i--) {
-				self.censusKittens[i].set('selected', this.checked, false, true);
+				self.censusKittens[i].set("selected", this.checked, false, true);
 			}
 			self.updateSelectedKittens();
 		});
 
-		self.massEditSelectPageNode = game._createCheckbox('Page', self.massEditSelectKittensSpan).cbox;
-		on(self.massEditSelectPageNode, 'click', function () {
+		self.massEditSelectPageNode = game._createCheckbox("Page", self.massEditSelectKittensSpan).cbox;
+		on(self.massEditSelectPageNode, "click", function () {
 			for (var i = self.censusPageKittens.length - 1; i >= 0; i--) {
-				self.censusPageKittens[i].set('selected', this.checked, false, true);
+				self.censusPageKittens[i].set("selected", this.checked, false, true);
 			}
 			self.updateSelectedKittens();
 		});
 
-		self.censusKittensBlock = dojo.create('div', null, self.censusBlock);
+		self.censusKittensBlock = dojo.create("div", null, self.censusBlock);
 
-		self.noCensusKittensBlock = dojo.create('div', {
-			'class': 'ital',
-			innerHTML: 'No Kittens found'
+		self.noCensusKittensBlock = dojo.create("div", {
+			class: "ital",
+			innerHTML: "No Kittens found"
 		}, self.censusKittensBlock);
 	},
 
@@ -391,123 +391,123 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		var self = this;
 		var game = self.game;
 
-		self.massEditNode = dojo.create('div', {
-			id: 'massEditKittensBlock',
-			'class': 'hideSiblings hidden'
-		}, self.censusKittensBlock, 'before');
+		self.massEditNode = dojo.create("div", {
+			id: "massEditKittensBlock",
+			class: "hideSiblings hidden"
+		}, self.censusKittensBlock, "before");
 
 		var methodKitten = new classes.KGSaveEdit.Kitten(game);
 
 		dojo.empty(self.massEditNode);
 
-		var div = dojo.create('div', {
-			'class': 'censusLine',
-			innerHTML: '<span>Editing 0 kittens</span> &nbsp; <span> &nbsp; </span>'
+		var div = dojo.create("div", {
+			class: "censusLine",
+			innerHTML: "<span>Editing 0 kittens</span> &nbsp; <span> &nbsp; </span>"
 		}, self.massEditNode);
 		this.massEditHeaderSpan = div.children[0];
 
-		var btn = dojo.create('input', {
-			type: 'button',
-			value: 'Save'
-		}, div.children[1], 'first');
-		on(btn, 'click', function () {
+		var btn = dojo.create("input", {
+			type: "button",
+			value: "Save"
+		}, div.children[1], "first");
+		on(btn, "click", function () {
 			if (self.massEditKittens()) {
-				dojo.addClass(self.massEditNode, 'hidden');
+				dojo.addClass(self.massEditNode, "hidden");
 			}
 		});
 
-		btn = dojo.create('input', {
-			type: 'button',
-			value: 'Cancel'
+		btn = dojo.create("input", {
+			type: "button",
+			value: "Cancel"
 		}, div.children[1]);
-		on(btn, 'click', function () {
-			dojo.addClass(self.massEditNode, 'hidden');
+		on(btn, "click", function () {
+			dojo.addClass(self.massEditNode, "hidden");
 		});
 
-		var table = dojo.create('table', null, self.massEditNode);
+		var table = dojo.create("table", null, self.massEditNode);
 
-		var tr = dojo.create('tr', {
+		var tr = dojo.create("tr", {
 			innerHTML: '<td></td><td>Name</td><td></td><td><a href="#">Random</a> </td>'
 		}, table);
 
-		var cbox = dojo.create('input', {
-			type: 'checkbox',
-			'class': 'massEditKittensPropControl',
-			title: 'Edit property'
+		var cbox = dojo.create("input", {
+			type: "checkbox",
+			class: "massEditKittensPropControl",
+			title: "Edit property"
 		}, tr.children[0]);
 		self.massEditNameControl = cbox;
 
-		self.massEditNameNode = game._createInput({'class': 'textInput'}, tr.children[2]);
-		self.massEditNameAllRandom = game._createCheckbox('Randomize all', tr.children[3]).cbox;
-		on(tr.children[3].children[0], 'click', function () {
+		self.massEditNameNode = game._createInput({class: "textInput"}, tr.children[2]);
+		self.massEditNameAllRandom = game._createCheckbox("Randomize all", tr.children[3]).cbox;
+		on(tr.children[3].children[0], "click", function () {
 			self.massEditNameNode.value = methodKitten.getRandomName();
 		});
 
-		tr = dojo.create('tr', {
+		tr = dojo.create("tr", {
 			innerHTML: '<td></td><td>Surname</td><td></td><td><a href="#">Random</a> </td>'
 		}, table);
 
 		self.massEditSurnameControl = dojo.place(dojo.clone(cbox), tr.children[0]);
-		self.massEditSurnameNode = game._createInput({'class': 'textInput'}, tr.children[2]);
-		self.massEditSurnameAllRandom = game._createCheckbox('Randomize all', tr.children[3]).cbox;
-		on(tr.children[3].children[0], 'click', function () {
+		self.massEditSurnameNode = game._createInput({class: "textInput"}, tr.children[2]);
+		self.massEditSurnameAllRandom = game._createCheckbox("Randomize all", tr.children[3]).cbox;
+		on(tr.children[3].children[0], "click", function () {
 			self.massEditSurnameNode.value = methodKitten.getRandomSurname();
 		});
 
-		tr = dojo.create('tr', {
+		tr = dojo.create("tr", {
 			innerHTML: '<td></td><td>Age</td><td></td><td><a href="#">Random</a> </td>'
 		}, table);
 
 		self.massEditAgeControl = dojo.place(dojo.clone(cbox), tr.children[0]);
-		self.massEditAgeNode = game._createInput({'class': 'integerInput'}, tr.children[2], null, null, null, true);
-		self.massEditAgeAllRandom = game._createCheckbox('Randomize all', tr.children[3]).cbox;
-		on(tr.children[3].children[0], 'click', function () {
+		self.massEditAgeNode = game._createInput({class: "integerInput"}, tr.children[2], null, null, null, true);
+		self.massEditAgeAllRandom = game._createCheckbox("Randomize all", tr.children[3]).cbox;
+		on(tr.children[3].children[0], "click", function () {
 			self.massEditAgeNode.value = methodKitten.getRandomAge();
 		});
 
-		tr = dojo.create('tr', {
+		tr = dojo.create("tr", {
 			innerHTML: '<td></td><td>Trait</td><td></td><td><a href="#">Random</a> </td>'
 		}, table);
 
 		self.massEditTraitControl = dojo.place(dojo.clone(cbox), tr.children[0]);
 		self.massEditTraitNode = dojo.place(dojo.clone(self._traitSelect), tr.children[2]);
-		self.massEditTraitNode.defaultVal = 'none';
-		self.massEditTraitAllRandom = game._createCheckbox('Randomize all', tr.children[3]).cbox;
-		on(tr.children[3].children[0], 'click', function () {
+		self.massEditTraitNode.defaultVal = "none";
+		self.massEditTraitAllRandom = game._createCheckbox("Randomize all", tr.children[3]).cbox;
+		on(tr.children[3].children[0], "click", function () {
 			game.setSelectByValue(self.massEditTraitNode, methodKitten.getRandomTrait().name);
 		});
 
-		tr = dojo.create('tr', {
-			'class': 'noAnarchy',
-			innerHTML: '<td></td><td>Rank</td><td></td><td></td>'
+		tr = dojo.create("tr", {
+			class: "noAnarchy",
+			innerHTML: "<td></td><td>Rank</td><td></td><td></td>"
 		}, table);
 
 		self.massEditRankControl = dojo.place(dojo.clone(cbox), tr.children[0]);
-		self.massEditRankNode = game._createInput({'class': 'integerInput expEdit'}, tr.children[2], null, null, null, true);
+		self.massEditRankNode = game._createInput({class: "integerInput expEdit"}, tr.children[2], null, null, null, true);
 
-		tr = dojo.create('tr', {
-			'class': 'noAnarchy',
-			innerHTML: '<td></td><td>Exp</td><td></td><td></td>'
+		tr = dojo.create("tr", {
+			class: "noAnarchy",
+			innerHTML: "<td></td><td>Exp</td><td></td><td></td>"
 		}, table);
 
 		self.massEditExpControl = dojo.place(dojo.clone(cbox), tr.children[0]);
-		self.massEditExpNode = game._createInput({'class': 'expEdit'}, tr.children[2], null, null, null, true);
-		self.massEditExpSetExpected = game._createCheckbox('Set all expected exp', tr.children[3]).cbox;
+		self.massEditExpNode = game._createInput({class: "expEdit"}, tr.children[2], null, null, null, true);
+		self.massEditExpSetExpected = game._createCheckbox("Set all expected exp", tr.children[3]).cbox;
 
-		// dojo.create('div', {
-		// 	'class': 'noAnarchy',
-		// 	innerHTML: 'Job skills'
+		// dojo.create("div", {
+		// 	class: "noAnarchy",
+		// 	innerHTML: "Job skills"
 		// }, this.massEditNode);
 
-		table = dojo.create('table', {
-			'class': 'noAnarchy'
+		table = dojo.create("table", {
+			class: "noAnarchy"
 		}, this.massEditNode);
 
 		var handle = function () {
-			var skill = '';
+			var skill = "";
 			var exp = this.expNode.parsedValue;
 			if (exp > 0) {
-				var bonus = '';
+				var bonus = "";
 				if (this.getBonus) {
 					bonus = methodKitten.getSkillBonus(this.name, exp, 0, true);
 				}
@@ -517,14 +517,14 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		};
 
 		var obj = {getBonus: true};
-		tr = dojo.create('tr', {
+		tr = dojo.create("tr", {
 			innerHTML: '<td></td><td title="Sets exp in each kitten&#39;s current job, if applicable.\nOverrides set per-job exp.">' +
 				'Kitten&#39;s job</td><td> <span class="expectedRank"></span></td>'
 		}, table);
 
 		obj.controlNode = dojo.place(dojo.clone(cbox), tr.children[0]);
-		obj.expNode = this.game._createInput({'class': 'expEdit'},
-			tr.children[2], null, null, 'first', true);
+		obj.expNode = this.game._createInput({class: "expEdit"},
+			tr.children[2], null, null, "first", true);
 		obj.expNode.handler = dojo.hitch(obj, handle);
 
 		obj.skillNode = tr.children[2].children[1];
@@ -538,13 +538,13 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 				name: job.name,
 				title: job.title
 			};
-			tr = dojo.create('tr', {
-				innerHTML: '<td></td><td>' + job.title + '</td><td> <span class="expectedRank"></span></td>'
+			tr = dojo.create("tr", {
+				innerHTML: "<td></td><td>" + job.title + '</td><td> <span class="expectedRank"></span></td>'
 			}, table);
 
 			massEditJob.controlNode = dojo.place(dojo.clone(cbox), tr.children[0]);
-			massEditJob.expNode = this.game._createInput({'class': 'expEdit'},
-				tr.children[2], null, null, 'first', true);
+			massEditJob.expNode = this.game._createInput({class: "expEdit"},
+				tr.children[2], null, null, "first", true);
 			massEditJob.expNode.handler = dojo.hitch(massEditJob, handle);
 
 			massEditJob.skillNode = tr.children[2].children[1];
@@ -564,25 +564,25 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			this.renderMassEditNode();
 		}
 
-		dojo.removeClass(this.massEditNode, 'hidden');
-		this.massEditHeaderSpan.innerHTML = 'Editing ' + kittensCountToText(count);
+		dojo.removeClass(this.massEditNode, "hidden");
+		this.massEditHeaderSpan.innerHTML = "Editing " + kittensCountToText(count);
 
-		dojo.query('#massEditKittensBlock table input').forEach(function (input) {
-			if (input.type === 'checkbox') {
+		dojo.query("#massEditKittensBlock table input").forEach(function (input) {
+			if (input.type === "checkbox") {
 				input.checked = false;
 			} else {
-				game.setInput(input, input.placeholder || '');
+				game.setInput(input, input.placeholder || "");
 			}
 		});
 
-		game.setSelectByValue(this.massEditTraitNode, 'none');
+		game.setSelectByValue(this.massEditTraitNode, "none");
 	},
 
 	massEditKittens: function () {
 		if (
-			!this.massEditNode || dojo.hasClass(this.massEditNode, 'hidden') ||
-			!this.selectedKittens.length || !dojo.query('.massEditKittensPropControl:checked').length ||
-			!confirm('Are you sure you want to edit ' + kittensCountToText(this.selectedKittens.length) + '?')
+			!this.massEditNode || dojo.hasClass(this.massEditNode, "hidden") ||
+			!this.selectedKittens.length || !dojo.query(".massEditKittensPropControl:checked").length ||
+			!confirm("Are you sure you want to edit " + kittensCountToText(this.selectedKittens.length) + '?')
 		) {
 			return false;
 		}
@@ -646,11 +646,11 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	},
 
 	toggleHideSenate: function (toggle) {
-		dojo.toggleClass(this.censusBlock, 'hideSenators', toggle);
-		this.hideSenate = dojo.hasClass('hideSenators');
+		dojo.toggleClass(this.censusBlock, "hideSenators", toggle);
+		this.hideSenate = dojo.hasClass("hideSenators");
 
-		this.governmentFilter.textContent = this.hideSenate ? 'Leader' : 'Government';
-		this.game.callMethods(this.generatedKittens, 'update');
+		this.governmentFilter.textContent = this.hideSenate ? "Leader" : "Government";
+		this.game.callMethods(this.generatedKittens, "update");
 		this.renderGovernment();
 		if (this.governmentFilter.selected) {
 			this.takeCensus();
@@ -665,7 +665,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	},
 
 	getKittens: function () {
-		return this.game.resPool.get('kittens').value;
+		return this.game.resPool.get("kittens").value;
 	},
 
 	getFreeKittens: function () {
@@ -685,7 +685,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		var title = this.getVillageTitle();
 		var kittens = this.getFreeKittens();
 		if (kittens > 0) {
-			title += ' (' + kittens + ')';
+			title += " (" + kittens + ")";
 		}
 		return title;
 	},
@@ -865,7 +865,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 
 	updateSelectedKittens: function (skipUpdate) {
 		if (this.massEditNode) {
-			dojo.addClass(this.massEditNode, 'hidden');
+			dojo.addClass(this.massEditNode, "hidden");
 		}
 
 		this.selectedKittens = dojo.filter(this.kittens, function (kitten) {
@@ -873,11 +873,11 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		});
 
 		var count = this.selectedKittens.length;
-		this.selectedKittensCountSpan.innerHTML = kittensCountToText(count) + ' selected';
+		this.selectedKittensCountSpan.innerHTML = kittensCountToText(count) + " selected";
 		this.massEditStartButton.disabled = count === 0;
 
 		//census includes a call to updateSelectedKittenControls
-		if (this.censusFilterNode.value === 'selected') {
+		if (this.censusFilterNode.value === "selected") {
 			this.takeCensus();
 		} else if (!skipUpdate) {
 			this.updateSelectedKittenControls();
@@ -918,7 +918,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		cbox.checked = kittensCount > 0 && selected === kittensCount;
 		cbox.indeterminate = kittensCount > 0 && selected > 0 && selected < kittensCount;
 
-		this.game.toggleDisabled(cbox, !kittensCount, 'invisible');
+		this.game.toggleDisabled(cbox, !kittensCount, "invisible");
 	},
 
 	getRankExp: function (rank) {
@@ -989,7 +989,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 
 		var expPercent = exp === nextExp ? 100 : (expDiff / expRequired) * 100;
 
-		return '(' + this.skillToText(exp) + ' ' + expPercent.toFixed() + '%' + ')';
+		return "(" + this.skillToText(exp) + " " + expPercent.toFixed() + "%" + ")";
 	},
 
 	assignJobs: function (job, count) {
@@ -1086,7 +1086,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 				var craft = this.game.workshop.crafts[i];
 				if (craft.value > 0) {
 					var setVal = Math.min(craft.value, amt);
-					craft.set('value', craft.value - setVal, true);
+					craft.set("value", craft.value - setVal, true);
 					amt -= setVal;
 					this.game.workshop.freeEngineers += setVal;
 				}
@@ -1125,7 +1125,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 
 			for (var i = kittens; i < this.generatedKittens.length; i++) {
 				var genKitten = this.generatedKittens[i];
-				genKitten.set('selected', false);
+				genKitten.set("selected", false);
 				if (genKitten.job) {
 					genKitten.job = null;
 					genKitten.renderInfo();
@@ -1140,38 +1140,38 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	},
 
 	renderGovernment: function () {
-		this.governmentBlock.innerHTML = '';
+		this.governmentBlock.innerHTML = "";
 
 		var leader = this.leader;
 
 		if (leader && this.kittens.indexOf(leader) > -1) {
 			var nextRank = Math.floor(this.getRankExp(leader.rank));
 
-			var name = leader.getGovernName(' :&lt;');
+			var name = leader.getGovernName(" :&lt;");
 
-			var leaderInfo = '<strong>Leader:</strong> ' + name + '<br>exp: ' +
+			var leaderInfo = "<strong>Leader:</strong> " + name + "<br>exp: " +
 				this.game.getDisplayValueExt(leader.exp);
 
 			if (nextRank > leader.exp) {
-				leaderInfo += ' (' + Math.floor(leader.exp / nextRank * 100) + '%)';
+				leaderInfo += " (" + Math.floor(leader.exp / nextRank * 100) + "%)";
 			}
 
 			if (leader.rank > 0) {
-				leaderInfo += '<br><br>Job bonus: x' +
+				leaderInfo += "<br><br>Job bonus: x" +
 					this.getLeaderBonus(leader.rank).toFixed(1) +
-					' (' + (leader.job || 'null') + ')';
+					" (" + (leader.job || "null") + ")";
 			}
 
-			var leaderBlock = dojo.create('div', {
-				innerHTML: leaderInfo + '<br>'
+			var leaderBlock = dojo.create("div", {
+				innerHTML: leaderInfo + "<br>"
 			}, this.governmentBlock);
 
 			dojo.place(this.unassignLeaderBlock, leaderBlock);
-			dojo.toggleClass(this.unassignLeaderJobBtn, 'hidden', !this.getJob(leader.job));
+			dojo.toggleClass(this.unassignLeaderJobBtn, "hidden", !this.getJob(leader.job));
 		}
 
 		if (!this.hideSenate && this.senators.length) {
-			var div = dojo.create('div', {innerHTML: '<strong>Council:</strong> '});
+			var div = dojo.create("div", {innerHTML: "<strong>Council:</strong> "});
 			var showSenate = false;
 			var onclick = function () {
 				this.fireSenator();
@@ -1183,18 +1183,18 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 				if (this.kittens.indexOf(senator) > -1) {
 					showSenate = true;
 
-					var span = dojo.create('span', {
-						'class': 'senator',
-						innerHTML: senator.getGovernName() + ' '
+					var span = dojo.create("span", {
+						class: "senator",
+						innerHTML: senator.getGovernName() + " "
 					}, div);
 
-					var a = dojo.create('a', {
-						'class': 'fireSenator',
-						href: '#',
-						title: 'Fire Councilor',
-						innerHTML: '[-]'
+					var a = dojo.create("a", {
+						class: "fireSenator",
+						href: "#",
+						title: "Fire Councilor",
+						innerHTML: "[-]"
 					}, span);
-					on(a, 'click', dojo.hitch(senator, onclick));
+					on(a, "click", dojo.hitch(senator, onclick));
 				}
 			}
 
@@ -1209,11 +1209,11 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		var censusKittens = [];
 		var i;
 
-		if (job === 'all') {
+		if (job === "all") {
 			censusKittens = this.kittens.slice(0);
-		} else if (job === 'selected') {
+		} else if (job === "selected") {
 			censusKittens = this.selectedKittens.slice(0);
-		} else if (job === 'leader') {
+		} else if (job === "leader") {
 			var kittens = [this.leader];
 			if (this.showSenate) {
 				kittens = kittens.concat(this.senators);
@@ -1265,13 +1265,13 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			dojo.place(this.noCensusKittensBlock, this.censusKittensBlock);
 		}
 
-		dojo.toggleClass(this.censusPageBlock, 'hidden', !this.getKittens() || kittensPerPage < 1);
-		dojo.toggleClass(this.censusPageFirst, 'invisible', page <= 1);
-		dojo.toggleClass(this.censusPagePrev, 'invisible', page <= 1);
-		dojo.toggleClass(this.censusPageNext, 'invisible', page >= pageMax);
-		dojo.toggleClass(this.censusPageLast, 'invisible', page >= pageMax);
+		dojo.toggleClass(this.censusPageBlock, "hidden", !this.getKittens() || kittensPerPage < 1);
+		dojo.toggleClass(this.censusPageFirst, "invisible", page <= 1);
+		dojo.toggleClass(this.censusPagePrev, "invisible", page <= 1);
+		dojo.toggleClass(this.censusPageNext, "invisible", page >= pageMax);
+		dojo.toggleClass(this.censusPageLast, "invisible", page >= pageMax);
 
-		this.censusPageCount.textContent = ' of ' + pageMax;
+		this.censusPageCount.textContent = " of " + pageMax;
 
 		this.updateSelectedKittenControls();
 	},
@@ -1279,12 +1279,12 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	update: function () {
 		dojo.toggleClass(this.tabBlockNode, "anarchy", this.game.challenges.currentChallenge === "anarchy");
 
-		this.maxKittens = this.game.resPool.get('kittens').maxValue;
+		this.maxKittens = this.game.resPool.get("kittens").maxValue;
 
-		dojo.toggleClass(this.massEditSelectKittensSpan, 'hidden', !this.kittens.length);
+		dojo.toggleClass(this.massEditSelectKittensSpan, "hidden", !this.kittens.length);
 
-		this.freeKittensSpan.textContent = this.getFreeKittens() + ' / ' + this.getKittens();
-		this.game.callMethods(this.jobs, 'update');
+		this.freeKittensSpan.textContent = this.getFreeKittens() + " / " + this.getKittens();
+		this.game.callMethods(this.jobs, "update");
 
 		this.updateHappines();
 		this.updateResourceProduction();
@@ -1292,7 +1292,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 
 	save: function (saveData) {
 		saveData.village = {
-			kittens: this.game.mapMethods(this.kittens, 'save'),
+			kittens: this.game.mapMethods(this.kittens, "save"),
 			maxKittens: this.maxKittens,
 			jobs: this.game.filterMetadata(this.jobs, ["name", "unlocked", "value"], function (saveJob) {
 				if (this.name === "priest" && this.game.challenges.currentChallenge === "atheism") {
@@ -1307,8 +1307,8 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			return;
 		}
 
-		this.loadMetaData(saveData.jobs, 'getJob', function (job, saveJob) {
-			job.set('unlocked', saveJob.unlocked);
+		this.loadMetaData(saveData.jobs, "getJob", function (job, saveJob) {
+			job.set("unlocked", saveJob.unlocked);
 		});
 
 		var kittens = saveData.village.kittens;
@@ -1321,11 +1321,11 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	}
 });
 
-dojo.declare('classes.KGSaveEdit.JobMeta', classes.KGSaveEdit.MetaItem, {
+dojo.declare("classes.KGSaveEdit.JobMeta", classes.KGSaveEdit.MetaItem, {
 	game: null,
 
-	name: 'Undefined',
-	title: 'Undefined',
+	name: "Undefined",
+	title: "Undefined",
 	unlocked: false,
 	modifiers: {},
 	value: 0,
@@ -1333,14 +1333,14 @@ dojo.declare('classes.KGSaveEdit.JobMeta', classes.KGSaveEdit.MetaItem, {
 	render: function () {
 		var job = this;
 
-		job.domNode = dojo.create('tr', {
-			'class': 'job',
+		job.domNode = dojo.create("tr", {
+			class: "job",
 			innerHTML: '<td class="nameNode">' + (this.title || this.name) + '</td><td></td><td></td>'
 		});
 		job.nameNode = job.domNode.children[0];
 
 		job.assignedNode = job.game._createInput({
-			'class': 'integerInput'
+			class: "integerInput"
 		}, job.domNode.children[1], job);
 
 		job.assignedNode.parseFn = function (value) {
@@ -1357,19 +1357,19 @@ dojo.declare('classes.KGSaveEdit.JobMeta', classes.KGSaveEdit.MetaItem, {
 		};
 
 		this.game._createLinkList(job, job.domNode.children[2], [
-			{html: '[+]', value: 1},
-			{html: '[+5]', value: 5},
-			{html: '[+25]', value: 25},
-			{html: '[+all]', value: 100000} //default job limit
+			{html: "[+]", value: 1},
+			{html: "[+5]", value: 5},
+			{html: "[+25]", value: 25},
+			{html: "[+all]", value: 100000} //default job limit
 		], function (value) {
 			this.assignJobs(value);
 		});
 
 		this.game._createLinkList(job, job.domNode.children[2], [
-			{html: '[-]', value: 1},
-			{html: '[-5]', value: 5},
-			{html: '[-25]', value: 25},
-			{html: '[-all]', value: 100000}
+			{html: "[-]", value: 1},
+			{html: "[-5]", value: 5},
+			{html: "[-25]", value: 25},
+			{html: "[-all]", value: 100000}
 		], function (value) {
 			this.unassignJobs(value);
 		});
@@ -1403,8 +1403,8 @@ dojo.declare('classes.KGSaveEdit.JobMeta', classes.KGSaveEdit.MetaItem, {
 		}
 
 		this.unlocked = this.game.checkRequirements(this);
-		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
-		dojo.toggleClass(this.nameNode, 'btnDisabled', !this.unlocked || !this.game.village.getFreeKittens() ||
+		dojo.toggleClass(this.nameNode, "spoiler", !this.unlocked);
+		dojo.toggleClass(this.nameNode, "btnDisabled", !this.unlocked || !this.game.village.getFreeKittens() ||
 			this.value >= this.game.village.getJobLimit(this.name));
 	},
 
@@ -1413,7 +1413,7 @@ dojo.declare('classes.KGSaveEdit.JobMeta', classes.KGSaveEdit.MetaItem, {
 	}
 });
 
-dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
+dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 	names: ["Angel", "Charlie", "Mittens", "Oreo", "Lily", "Ellie", "Amber", "Molly", "Jasper",
 			"Oscar", "Theo", "Maddie", "Cassie", "Timber", "Meeko", "Micha", "Tami", "Plato" ],
 	surnames: ["Smoke", "Dust", "Chalk", "Fur", "Clay", "Paws", "Tails", "Sand", "Scratch", "Berry", "Shadow"],
@@ -1473,67 +1473,67 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 	},
 
 	render: function () {
-		this.domNode = dojo.create('div', {'class': 'kittenBlock'});
+		this.domNode = dojo.create("div", {class: "kittenBlock"});
 
-		var block = dojo.create('div', {'class': 'blockContainer'}, this.domNode);
-		var div = dojo.create('div', {
-			'class': 'kittenSubBlock'
+		var block = dojo.create("div", {class: "blockContainer"}, this.domNode);
+		var div = dojo.create("div", {
+			class: "kittenSubBlock"
 		}, block);
 
-		var input = this.game._createCheckbox('[:3] ', div, this, 'selected');
-		dojo.addClass(this.selectedNode, 'kittenSelectCheckbox');
-		this.selectedNode.title = 'Select kitten';
+		var input = this.game._createCheckbox("[:3] ", div, this, "selected");
+		dojo.addClass(this.selectedNode, "kittenSelectCheckbox");
+		this.selectedNode.title = "Select kitten";
 
 		this.selectedNode.handler = function () {
 			this.game.village.updateSelectedKittens();
 		};
 
-		this.nameBlock = dojo.create('span', null, input.label);
-		this.jobBlock = dojo.create('span', null, div);
-		dojo.create('br', null, div);
+		this.nameBlock = dojo.create("span", null, input.label);
+		this.jobBlock = dojo.create("span", null, div);
+		dojo.create("br", null, div);
 
-		dojo.place(document.createTextNode('age: '), div);
-		this.ageBlock = dojo.create('span', null, div);
+		dojo.place(document.createTextNode("age: "), div);
+		this.ageBlock = dojo.create("span", null, div);
 
-		this.kittenSkillsBlock = dojo.create('div', {'class': 'kittenSkillsBlock noAnarchy'}, div);
+		this.kittenSkillsBlock = dojo.create("div", {class: "kittenSkillsBlock noAnarchy"}, div);
 
-		div = dojo.create('div', {
-			'class': 'kittenSubBlock rightAlign',
+		div = dojo.create("div", {
+			class: "kittenSubBlock rightAlign",
 			innerHTML: '<div><a href="#">Edit Kitten</a></div>'
 		}, block);
 
-		on(div.children[0].children[0], 'click', dojo.hitch(this, this.setEditMode));
+		on(div.children[0].children[0], "click", dojo.hitch(this, this.setEditMode));
 
-		this.quitJobNode = dojo.create('div', {innerHTML: '<a href="#">Unassign job</a>'}, div);
-		on(this.quitJobNode.children[0], 'click', dojo.hitch(this,  function () {
+		this.quitJobNode = dojo.create("div", {innerHTML: '<a href="#">Unassign job</a>'}, div);
+		on(this.quitJobNode.children[0], "click", dojo.hitch(this,  function () {
 			this.quitJob();
 		}));
 		if (!this.village.getJob(this.job)) {
-			dojo.addClass(this.quitJobNode, 'hidden');
+			dojo.addClass(this.quitJobNode, "hidden");
 		}
 
-		this.setLeaderNode = dojo.create('div', {
-			'class': 'noAnarchy',
+		this.setLeaderNode = dojo.create("div", {
+			class: "noAnarchy",
 			innerHTML: '<a href="#" title="Make Leader">&#9734;</a>'
 		}, div).children[0];
-		on(this.setLeaderNode, 'click', dojo.hitch(this, function () {
+		on(this.setLeaderNode, "click", dojo.hitch(this, function () {
 			this.makeLeader();
 		}));
 		if (this.isLeader) {
 			this.setLeaderNode.innerHTML = "&#9733;";
 		}
 
-		this.setSenatorNode = dojo.create('div', {
-			'class': 'noAnarchy',
+		this.setSenatorNode = dojo.create("div", {
+			class: "noAnarchy",
 			innerHTML: '<a href="#">Make Councilor</a>'
 		}, div);
-		on(this.setSenatorNode.children[0], 'click', dojo.hitch(this, function () {
+		on(this.setSenatorNode.children[0], "click", dojo.hitch(this, function () {
 			this.makeSenator();
 		}));
 
 		if (this.village.hideSenate || this.isSenator ||
 		this.village.senators.length >= this.village.maxSenators) {
-			dojo.addClass(this.setSenatorNode, 'hidden');
+			dojo.addClass(this.setSenatorNode, "hidden");
 		}
 
 		this.renderInfo();
@@ -1562,11 +1562,11 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		}
 		var kittenJob = this.village.getJob(this.job);
 
-		this.nameBlock.textContent = this.name + ' ' + this.surname;
-		this.jobBlock.textContent = ' - ' + this.job;
-		dojo.toggleClass(this.jobBlock, 'hidden', !kittenJob);
+		this.nameBlock.textContent = this.name + " " + this.surname;
+		this.jobBlock.textContent = " - " + this.job;
+		dojo.toggleClass(this.jobBlock, "hidden", !kittenJob);
 
-		dojo.toggleClass(this.quitJobNode, 'hidden', !kittenJob);
+		dojo.toggleClass(this.quitJobNode, "hidden", !kittenJob);
 
 		this.ageBlock.textContent = this.age;
 
@@ -1588,12 +1588,12 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 
 			var bonus = this.getSkillBonus(skill.name, exp, this.rank);
 			var job = this.village.getJob(skill.name);
-			var className = this.job === skill.name ? '" class="bold' : '';
-			skillsText.push('<span title="' + exp.toFixed(2) + className + '">' + job.title + ' ' + bonus +
-				this.village.getSkillLevel(exp) + '</span>');
+			var className = this.job === skill.name ? '" class="bold' : "";
+			skillsText.push('<span title="' + exp.toFixed(2) + className + '">' + job.title + " " + bonus +
+				this.village.getSkillLevel(exp) + "</span>");
 		}
 
-		this.kittenSkillsBlock.innerHTML = skillsText.join('<br>');
+		this.kittenSkillsBlock.innerHTML = skillsText.join("<br>");
 		this.updateEditJobSkills();
 	},
 
@@ -1602,79 +1602,79 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		var game = self.game;
 		var village = self.village;
 
-		self.editBlock = dojo.create('div', {'class': 'kittenEditBlock hideSiblings hidden'}, self.domNode, 'first');
+		self.editBlock = dojo.create("div", {class: "kittenEditBlock hideSiblings hidden"}, self.domNode, "first");
 
-		var div = dojo.create('div', {
-			'class': 'censusLine',
-			innerHTML: ' &nbsp; '
+		var div = dojo.create("div", {
+			class: "censusLine",
+			innerHTML: " &nbsp; "
 		}, self.editBlock);
 
-		var span = dojo.create('span', {
-			innerHTML: ' &nbsp; '
+		var span = dojo.create("span", {
+			innerHTML: " &nbsp; "
 		}, div);
-		var btn = dojo.create('input', {
-			type: 'button',
-			value: 'Save'
-		}, span, 'first');
-		on(btn, 'click', dojo.hitch(self, self.saveEdits));
+		var btn = dojo.create("input", {
+			type: "button",
+			value: "Save"
+		}, span, "first");
+		on(btn, "click", dojo.hitch(self, self.saveEdits));
 
-		btn = dojo.create('input', {
-			type: 'button',
-			value: 'Cancel'
+		btn = dojo.create("input", {
+			type: "button",
+			value: "Cancel"
 		}, span);
-		on(btn, 'click', function () {
-			dojo.addClass(self.editBlock, 'hidden');
+		on(btn, "click", function () {
+			dojo.addClass(self.editBlock, "hidden");
 		});
 
-		self.editCurrentNameNode = dojo.create('span', null, div, 'first');
+		self.editCurrentNameNode = dojo.create("span", null, div, "first");
 
-		var table = dojo.create('table', null, self.editBlock);
+		var table = dojo.create("table", null, self.editBlock);
 
-		var tr = dojo.create('tr', {
+		var tr = dojo.create("tr", {
 			innerHTML: '<td>Name</td><td></td><td><a href="#">Random</a></td>'
 		}, table);
-		self.editNameNode = game._createInput({'class': 'textInput'},
+		self.editNameNode = game._createInput({class: "textInput"},
 			tr.children[1]);
 
-		on(tr.children[2].children[0], 'click', function () {
+		on(tr.children[2].children[0], "click", function () {
 			self.editNameNode.value = self.getRandomName();
 		});
 
-		tr = dojo.create('tr', {
+		tr = dojo.create("tr", {
 			innerHTML: '<td>Surname</td><td></td><td><a href="#">Random</a></td>'
 		}, table);
-		self.editSurnameNode = game._createInput({'class': 'textInput'},
+		self.editSurnameNode = game._createInput({class: "textInput"},
 			tr.children[1]);
 
-		on(tr.children[2].children[0], 'click', function () {
+		on(tr.children[2].children[0], "click", function () {
 			self.editSurnameNode.value = self.getRandomSurname();
 		});
 
-		tr = dojo.create('tr', {
+		tr = dojo.create("tr", {
 			innerHTML: '<td>Age</td><td></td><td><a href="#">Random</a></td>'
 		}, table);
-		self.editAgeNode = game._createInput({'class': 'integerInput'},
+		self.editAgeNode = game._createInput({class: "integerInput"},
 			tr.children[1], null, null, null, true);
 
-		on(tr.children[2].children[0], 'click', function () {
+		on(tr.children[2].children[0], "click", function () {
 			game.setInput(self.editAgeNode, self.getRandomAge(), true);
 		});
 
-		tr = dojo.create('tr', {
+		tr = dojo.create("tr", {
 			innerHTML: '<td>Trait</td><td></td><td><a href="#">Random</a></td>'
 		}, table);
-		self.editTraitNode = dojo.place(dojo.clone(village._traitSelect), tr.children[1], 'first');
-		self.editTraitNode.defaultVal = 'none';
+		self.editTraitNode = dojo.place(dojo.clone(village._traitSelect), tr.children[1], "first");
+		self.editTraitNode.defaultVal = "none";
 
-		on(tr.children[2].children[0], 'click', function () {
+		on(tr.children[2].children[0], "click", function () {
 			game.setSelectByValue(self.editTraitNode, self.getRandomTrait().name);
 		});
 
-		tr = dojo.create('tr', {
-			'class': 'noAnarchy',
-			innerHTML: '<td>Rank</td><td></td><td></td>'
+		tr = dojo.create("tr", {
+			class: "noAnarchy",
+			innerHTML: "<td>Rank</td><td></td><td></td>"
 		}, table);
-		self.editRankNode = game._createInput({'class': 'integerInput expEdit'},
+		self.editRankNode = game._createInput({class: "integerInput expEdit"},
 			tr.children[1], null, null, null, true);
 		self.editRankNode.handler = function () {
 			if (self.isLeader && self.job) {
@@ -1682,31 +1682,31 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 			}
 		};
 
-		tr = dojo.create('tr', {
-			'class': 'noAnarchy',
+		tr = dojo.create("tr", {
+			class: "noAnarchy",
 			innerHTML: '<td>Exp</td><td></td><td><a href="#" class="hidden">(Expected: 0)</a></td>'
 		}, table);
-		self.editExpNode = game._createInput({'class': 'expEdit'},
+		self.editExpNode = game._createInput({class: "expEdit"},
 			tr.children[1], null, null, null, true);
 
 		self.editExpectedExpNode = tr.children[2].children[0];
-		on(self.editExpectedExpNode, 'click', function () {
+		on(self.editExpectedExpNode, "click", function () {
 			game.setInput(self.editExpNode, self.expectedExp);
 			self.setExpectedExp();
 		});
 
-		dojo.create('div', {
-			'class': 'noAnarchy',
-			innerHTML: 'Job skills'
+		dojo.create("div", {
+			class: "noAnarchy",
+			innerHTML: "Job skills"
 		}, self.editBlock);
 
-		table = dojo.create('table', {
-			'class': 'noAnarchy'
+		table = dojo.create("table", {
+			class: "noAnarchy"
 		}, self.editBlock);
 		self.editJobs = [];
 
 		var handle = function () {
-			var skill = '';
+			var skill = "";
 			var exp = this.expNode.parsedValue;
 			if (exp > 0) {
 				var bonus = self.getSkillBonus(this.name, exp, self.editRankNode.parsedValue);
@@ -1721,11 +1721,11 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 				name: job.name,
 				title: job.title
 			};
-			tr = dojo.create('tr', {
-				innerHTML: '<td>' + job.title + '</td><td></td><td><span class="expectedRank"></span></td>'
+			tr = dojo.create("tr", {
+				innerHTML: "<td>" + job.title + '</td><td></td><td><span class="expectedRank"></span></td>'
 			}, table);
 
-			editJob.expNode = game._createInput({'class': 'expEdit'},
+			editJob.expNode = game._createInput({class: "expEdit"},
 				tr.children[1], null, null, null, true);
 			editJob.expNode.handler = dojo.hitch(editJob, handle);
 
@@ -1734,7 +1734,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 			self.editJobs.push(editJob);
 		}
 
-		on(self.editBlock, 'input.expEdit:input',
+		on(self.editBlock, "input.expEdit:input",
 			dojo.hitch(self, self.setExpectedExp));
 	},
 
@@ -1755,9 +1755,9 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 
 	getGovernName: function (noTraitStr) {
 		var trait = this.trait || this.traitsByName.none;
-		return this.name + ' ' + this.surname + ' (' +
-			(trait.title === 'None' ? 'No trait' + (noTraitStr || '') :
-			trait.title + ' rank ' + this.rank) + ')';
+		return this.name + " " + this.surname + " (" +
+			(trait.title === "None" ? "No trait" + (noTraitStr || "") :
+			trait.title + " rank " + this.rank) + ")";
 	},
 
 	quitJob: function () {
@@ -1877,8 +1877,8 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		exp = Math.max(exp, 0) || 0;
 
 		this.expectedExp = exp;
-		this.editExpectedExpNode.textContent = '(Expected: ' + exp + ')';
-		dojo.toggleClass(this.editExpectedExpNode, 'hidden', exp <= Math.ceil(currExp));
+		this.editExpectedExpNode.textContent = "(Expected: " + exp + ")";
+		dojo.toggleClass(this.editExpectedExpNode, "hidden", exp <= Math.ceil(currExp));
 	},
 
 	setEditMode: function () {
@@ -1886,7 +1886,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 			this.renderEditBlock();
 		}
 
-		this.editCurrentNameNode.innerHTML = 'Editing ' + this.name + ' ' + this.surname + ' &nbsp;';
+		this.editCurrentNameNode.innerHTML = "Editing " + this.name + " " + this.surname + " &nbsp;";
 
 		this.editNameNode.value = this.name;
 		this.editSurnameNode.value = this.surname;
@@ -1901,7 +1901,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		}
 
 		this.setExpectedExp();
-		dojo.removeClass(this.editBlock, 'hidden');
+		dojo.removeClass(this.editBlock, "hidden");
 	},
 
 	saveEdits: function () {
@@ -1935,13 +1935,13 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 	update: function () {
 		if (this.domNode) {
 			this.setLeaderNode.innerHTML = this.isLeader ? "&#9733;" : "&#9734;";
-			dojo.toggleClass(this.setSenatorNode, 'hidden', this.village.hideSenate ||
+			dojo.toggleClass(this.setSenatorNode, "hidden", this.village.hideSenate ||
 				Boolean(this.isSenator) || this.village.senators.length >= this.village.maxSenators);
 		}
 	},
 
 	updateEditJobSkills: function () {
-		if (this.editBlock && !dojo.hasClass(this.editBlock, 'hidden')) {
+		if (this.editBlock && !dojo.hasClass(this.editBlock, "hidden")) {
 			for (var i = this.editJobs.length - 1; i >= 0; i--) {
 				this.editJobs[i].expNode.handler();
 			}
@@ -1950,8 +1950,8 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 
 	save: function (forEdit) {
 		var isAnarchy = !forEdit && this.game.challenges.currentChallenge === "anarchy";
-		var saveKitten = this.game.filterMetaObj(this, ['name', 'surname', 'trait',
-			'age', 'skills', 'exp', 'job', 'rank', 'isLeader', 'isSenator']);
+		var saveKitten = this.game.filterMetaObj(this, ["name", "surname", "trait",
+			"age", "skills", "exp", "job", "rank", "isLeader", "isSenator"]);
 
 		if (!saveKitten.name && !saveKitten.surname) {
 			saveKitten.name = this.getRandomName();
@@ -1992,14 +1992,14 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 
 	load: function (data) {
 		if (this.editBlock) {
-			dojo.addClass(this.editBlock, 'hidden');
+			dojo.addClass(this.editBlock, "hidden");
 		}
 
 		var wasLeader = this.isLeader;
 		var wasSenator = this.isSenator;
 
-		this.name      = typeof data.name === 'string' ? data.name : this.village.getRandomName();
-		this.surname   = typeof data.surname === 'string' ? data.surname : this.village.getRandomSurname();
+		this.name      = typeof data.name === "string" ? data.name : this.village.getRandomName();
+		this.surname   = typeof data.surname === "string" ? data.surname : this.village.getRandomSurname();
 		this.age       = Math.max(Math.floor(num(data.age)), 0);
 		this.exp       = Math.max(num(data.exp), 0);
 		this.trait     = data.trait;

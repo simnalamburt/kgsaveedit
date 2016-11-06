@@ -383,7 +383,7 @@ input.integerInput.timeInput {
 }
 
 .separated:not(.hidden) ~ .separated::before {
-	content: ' | ';
+	content: " | ";
 }
 
 .btnDisabled {
@@ -515,7 +515,7 @@ input.integerInput.timeInput {
 }
 
 .newMarker:after {
-	content: ' New!';
+	content: " New!";
 	color: red;
 	font-style: italic;
 	font-size: 10px;

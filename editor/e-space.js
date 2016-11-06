@@ -3,7 +3,7 @@
 require([], function () {
 "use strict";
 
-dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
+dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	programData: [{
 			name: "orbitalLaunch",
 			label: "Orbital Launch",
@@ -630,10 +630,10 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 			requires: {spaceMission: ["furthestRingMission"]}
 	}],
 
-	tabName: 'Space',
-	tabBlockClass: 'shortInt',
+	tabName: "Space",
+	tabBlockClass: "shortInt",
 	getVisible: function () {
-		return this.game.science.get('rocketry').owned();
+		return this.game.science.get("rocketry").owned();
 	},
 
 	programs: null,
@@ -647,18 +647,18 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 	constructor: function () {
 		this.programs = [];
 
-		this.registerMetaItems(this.programData, classes.KGSaveEdit.ProgramMeta, 'allPrograms', function (program) {
+		this.registerMetaItems(this.programData, classes.KGSaveEdit.ProgramMeta, "allPrograms", function (program) {
 			this.programs.push(program);
 		});
 
-		this.registerMetaItems(this.planetData, classes.KGSaveEdit.GenericItem, 'planets', function (planet) {
+		this.registerMetaItems(this.planetData, classes.KGSaveEdit.GenericItem, "planets", function (planet) {
 			planet.unlocked = false;
 			planet.reached = false;
 			planet.routeDaysMax = num(planet.routeDays);
 
 			var bld = planet.buildings || [];
 			planet.buildings = [];
-			this.registerMetaItems(bld, classes.KGSaveEdit.ProgramMeta, 'allPrograms', function (program) {
+			this.registerMetaItems(bld, classes.KGSaveEdit.ProgramMeta, "allPrograms", function (program) {
 				program.planet = planet;
 				planet.buildings.push(program);
 			});
@@ -713,10 +713,10 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 	},
 
 	renderTabBlock: function () {
-		var div = dojo.create('div', {'class': 'bottom-margin'}, this.tabBlockNode);
-		this.game._createCheckbox('Hide complete missions', div, this, 'hideResearched');
+		var div = dojo.create("div", {class: "bottom-margin"}, this.tabBlockNode);
+		this.game._createCheckbox("Hide complete missions", div, this, "hideResearched");
 
-		this.programsBlock = dojo.create('table', {id: 'programsBlock'}, this.tabBlockNode);
+		this.programsBlock = dojo.create("table", {id: "programsBlock"}, this.tabBlockNode);
 	},
 
 	render: function () {
@@ -730,32 +730,32 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 		for (i = 0, len = this.planets.length; i < len; i++) {
 			var planet = this.planets[i];
 
-			dojo.create('tr', {'colspan': 3, innerHTML: '&nbsp;'}, this.programsBlock);
+			dojo.create("tr", {"colspan": 3, innerHTML: "&nbsp;"}, this.programsBlock);
 
-			var tr = dojo.create('tr', {
-				'class': 'planet',
+			var tr = dojo.create("tr", {
+				class: "planet",
 				innerHTML: '<td colspan="3"></td>'
 			}, this.programsBlock);
 
 			planet.nameRow = tr;
-			planet.nameNode = dojo.create('span', {
-				'class': 'nameNode',
+			planet.nameNode = dojo.create("span", {
+				class: "nameNode",
 				innerHTML: planet.label || planet.name
 			}, tr.children[0]);
 
-			var span = dojo.create('span', {
-				'class': 'planetRouteDaysSpan',
-				innerHTML: 'Flight time &nbsp;'
+			var span = dojo.create("span", {
+				class: "planetRouteDaysSpan",
+				innerHTML: "Flight time &nbsp;"
 			}, tr.children[0]);
 
-			var input = this.game._createInput({}, span, planet, 'routeDays');
+			var input = this.game._createInput({}, span, planet, "routeDays");
 			input.parseFn = function (value) {
 				return Math.min(value, this.metaObj.routeDaysMax);
 			};
 
-			dojo.place(document.createTextNode(' '), span);
+			dojo.place(document.createTextNode(" "), span);
 
-			planet.routeDaysETANode = dojo.create('span', null, span);
+			planet.routeDaysETANode = dojo.create("span", null, span);
 
 			for (var j = 0, bldlen = planet.buildings.length; j < bldlen; j++) {
 				program = planet.buildings[j];
@@ -787,7 +787,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 			planet.unlocked = this.game.checkRequirements(planet, false);
 			planet.reached = !planet.routeDays && planet.unlocked;
 			if (planet.nameNode) {
-				dojo.toggleClass(planet.nameNode, 'spoiler', !planet.unlocked);
+				dojo.toggleClass(planet.nameNode, "spoiler", !planet.unlocked);
 
 				var eta = "";
 				if (planet.unlocked && planet.routeDays > 0) {
@@ -796,7 +796,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				planet.routeDaysETANode.innerHTML = eta;
 			}
 		}
-		this.game.callMethods(this.allPrograms, 'update');
+		this.game.callMethods(this.allPrograms, "update");
 	},
 
 	save: function (saveData) {
@@ -805,12 +805,12 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 		for (var i = 0; i < planets.length; i++) {
 			var planet = planets[i];
 			if (planet.buildings) {
-				planet.buildings = this.game.mapMethods(planet.buildings, 'save');
+				planet.buildings = this.game.mapMethods(planet.buildings, "save");
 			}
 		}
 
 		saveData.space = {
-			programs: this.game.mapMethods(this.programs, 'save'),
+			programs: this.game.mapMethods(this.programs, "save"),
 			planets: planets,
 			hideResearched: this.hideResearched
 		};
@@ -821,26 +821,26 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 			return;
 		}
 
-		this.loadMetaData(saveData.space.programs, 'getProgram');
+		this.loadMetaData(saveData.space.programs, "getProgram");
 
-		this.loadMetaData(saveData.space.planets, 'getPlanet', function (planet, savePlanet) {
+		this.loadMetaData(saveData.space.planets, "getPlanet", function (planet, savePlanet) {
 			planet.reached = savePlanet.reached;
 			// planet.unlocked = savePlanet.unlocked;
 			var routeDays = savePlanet.routeDays;
-			if (typeof routeDays === 'undefined') {
+			if (typeof routeDays === "undefined") {
 				routeDays = planet.routeDaysMax;
 			}
-			planet.set('routeDays', num(routeDays));
+			planet.set("routeDays", num(routeDays));
 
-			this.loadMetaData(savePlanet.buildings, 'getProgram');
+			this.loadMetaData(savePlanet.buildings, "getProgram");
 		});
 
-		this.set('hideResearched', saveData.space.hideResearched);
+		this.set("hideResearched", saveData.space.hideResearched);
 	}
 });
 
 
-dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
+dojo.declare("classes.KGSaveEdit.ProgramMeta", classes.KGSaveEdit.MetaItem, {
 	val: 0,
 	on: 0,
 	unlocked: false,
@@ -858,10 +858,10 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 		if (!this.owned()) {
 			return name;
 		}
-		var paren = ' (' + this.val + ')';
+		var paren = " (" + this.val + ")";
 		if (this.upgradable) {
 			if (this.togglable) {
-				paren = ' (' + this.getOn() + '/' + this.val + ')';
+				paren = " (" + this.getOn() + "/" + this.val + ")";
 			}
 		} else {
 			if (this.getOn() > 0) {
@@ -924,33 +924,33 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	render: function () {
-		this.domNode = dojo.create('tr', {
-			'class': 'program',
-			innerHTML: '<td class="nameNode">' + (this.label || this.name) + '</td>' +
+		this.domNode = dojo.create("tr", {
+			class: "program",
+			innerHTML: '<td class="nameNode">' + (this.label || this.name) + "</td>" +
 				'<td class="rightAlign"></td><td></td>'
 		});
 		this.nameNode = this.domNode.children[0];
 
-		this.onNodeSpan = dojo.create('span', {innerHTML: ' / '}, this.domNode.children[1]);
+		this.onNodeSpan = dojo.create("span", {innerHTML: " / "}, this.domNode.children[1]);
 
 		this.game._createInput({
-			'class': 'integerInput ownedInput',
-			title: 'Number of active programs'
-		}, this.onNodeSpan, this, 'on', 'first');
+			class: "integerInput ownedInput",
+			title: "Number of active programs"
+		}, this.onNodeSpan, this, "on", "first");
 
 		this.game._createValInput({
-			title: 'Number of programs'
+			title: "Number of programs"
 		}, this.domNode.children[1], this);
 
 		if (!this.planet) {
-			var input = this.game._createCheckbox('Unlocked', this.domNode.children[2], this, 'unlocked');
+			var input = this.game._createCheckbox("Unlocked", this.domNode.children[2], this, "unlocked");
 			this.unlockedLabel = input.label;
 
-			input = this.game._createCheckbox('Launched', this.domNode.children[2], this);
+			input = this.game._createCheckbox("Launched", this.domNode.children[2], this);
 			this.launchedNode = input.cbox;
 			input.cbox.handler = function () {
 				var val = num(this.checked);
-				this.metaObj.set('val', val);
+				this.metaObj.set("val", val);
 			};
 			this.launchedLabel = input.label;
 		}
@@ -976,17 +976,17 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 			unlocked = this.planet.reached && req;
 			spoiler = !unlocked;
 		} else {
-			dojo.toggleClass(this.valNode, 'hidden', !this.upgradable);
-			dojo.toggleClass(this.launchedLabel, 'hidden', this.upgradable);
+			dojo.toggleClass(this.valNode, "hidden", !this.upgradable);
+			dojo.toggleClass(this.launchedLabel, "hidden", this.upgradable);
 
-			dojo.toggleClass(this.domNode, 'hidden',
+			dojo.toggleClass(this.domNode, "hidden",
 				this.game.space.hideResearched && !this.upgradable && this.owned());
 		}
 		this.unlocked = unlocked;
-		dojo.toggleClass(this.nameNode, 'spoiler', spoiler);
+		dojo.toggleClass(this.nameNode, "spoiler", spoiler);
 
-		dojo.toggleClass(this.nameNode, 'btnEnabled', this.togglable && this.getOn() > 0);
-		dojo.toggleClass(this.onNodeSpan, 'hidden', !this.upgradable || !this.togglable);
+		dojo.toggleClass(this.nameNode, "btnEnabled", this.togglable && this.getOn() > 0);
+		dojo.toggleClass(this.onNodeSpan, "hidden", !this.upgradable || !this.togglable);
 
 		this.updateEnabled();
 
@@ -1010,9 +1010,9 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	load: function (saveData) {
-		this.set('val', num(saveData.val));
-		this.set('on', num(saveData.on));
-		this.set('unlocked', Boolean(saveData.unlocked));
+		this.set("val", num(saveData.val));
+		this.set("on", num(saveData.on));
+		this.set("unlocked", Boolean(saveData.unlocked));
 
 		if (this.launchedNode) {
 			this.game.setCheckbox(this.launchedNode, this.val > 0, null, true);
