@@ -1540,7 +1540,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 			if (this.challenges.currentChallenge === "anarchy") {
 				resConsumption += resConsumption * this.village.happiness * (1 + this.getEffect(resName + "DemandWorkerRatioGlobal"));
 			} else {
-				resConsumption += resConsumption * this.village.happiness * (1 + this.getEffect(res.name + "DemandWorkerRatioGlobal")) * (1 - this.village.getFreeKittens() / this.village.kittens.length);
+				resConsumption += resConsumption * (this.village.happiness - 1) * (1 + this.getEffect(res.name + "DemandWorkerRatioGlobal")) * (1 - this.village.getFreeKittens() / this.village.kittens.length);
 			}
 		}
 
@@ -1801,7 +1801,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 			if (this.challenges.currentChallenge === "anarchy") {
 				resConsumption *= resConsumption * this.village.happiness * (1 + this.getEffect(res.name + "DemandWorkerRatioGlobal"));
 			} else {
-				resConsumption *= resConsumption * this.village.happiness * (1 + this.getEffect(res.name + "DemandWorkerRatioGlobal")) * (1 - this.village.getFreeKittens() / this.village.kittens.length);
+				resConsumption *= resConsumption * (this.village.happiness - 1) * (1 + this.getEffect(res.name + "DemandWorkerRatioGlobal")) * (1 - this.village.getFreeKittens() / this.village.kittens.length);
 			}
 		}
 
