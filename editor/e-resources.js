@@ -157,7 +157,12 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		}, {
 			name: "paragon",
 			color: "#6141CD",
-			// relockIfZero: true,
+			relockIfZero: true,
+			inputClass: "integerInput abbrInput"
+		}, {
+			name: "burnedParagon",
+			title: "burned paragon",
+			color: "#493099",
 			inputClass: "integerInput abbrInput"
 		}, {
 			name: "timeCrystal",
@@ -212,7 +217,6 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 		}, {
 			name: "temporalFlux",
 			title: "temporal flux",
-			type: "exotic",
 			getMaxValue: function () {
 				return Math.round(
 					this.game.rate * 60 * 10 *
@@ -348,6 +352,10 @@ dojo.declare('classes.KGSaveEdit.Resources', classes.KGSaveEdit.Manager, {
 			res.render();
 			dojo.place(res.domNode, res.tableID || block);
 		}
+
+		var sorrow = this.get("sorrow"); //ugh hacks
+		dojo.addClass(sorrow.unlockedNode.parentNode, "hidden");
+		dojo.addClass(sorrow.isHiddenNode.parentNode, "hidden");
 	},
 
 	get: function (name) {
@@ -709,11 +717,11 @@ dojo.declare('classes.KGSaveEdit.ResourceMeta', [classes.KGSaveEdit.GenericItem,
 		var maxValue = this.maxValue;
 
 		this.unlocked = value > 0 || this.unlockedNode.prevChecked;
-		if (this.relockIfZero && !value) {
+		if (this.name === "sorrow" || (this.relockIfZero && !value)) { //sigh
 			this.unlocked = false;
 		}
 		this.unlockedNode.checked = this.unlocked;
-		this.game.toggleDisabled(this.unlockedNode, value > 0 || this.relockIfZero);
+		this.game.toggleDisabled(this.unlockedNode, this.name === "sorrow" || value > 0 || this.relockIfZero); //sigh
 
 		dojo.toggleClass(this.valueNode, 'resLimitNotice', maxValue > 0 && value > maxValue * 0.95);
 		dojo.toggleClass(this.valueNode, 'resLimitWarn', maxValue > 0 && value > maxValue * 0.75 && value <= maxValue * 0.95);

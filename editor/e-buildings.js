@@ -247,7 +247,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 		}, {
 			name: "biolab",
 			label: "Bio Lab",
-			description: "Improves effectiveness of catnip refinement by 10%",
+			description: "Improves effectiveness of catnip refinement by 10%. More effective if powered.",
 			prices: [
 				{name: "slab",    val: 100},
 				{name: "alloy",   val: 25},
@@ -279,6 +279,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				self.effects["energyConsumption"] = energyCons;
 			},
 			action: function (self, game) {
+				var on = self.getOn();
 				if (game.workshop.get("biofuel").owned()) {
 
 					self.effects["catnipPerTickCon"] = -1;
@@ -286,12 +287,16 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 
 					var amt = game.resPool.getAmtDependsOnStock(
 						[{res: "catnip", amt: -self.effects["catnipPerTickCon"]}],
-						self.on
+						on
 					);
 					self.effects["catnipPerTickCon"] *= amt;
 					self.effects["oilPerTickProd"] *= amt;
 
 					return amt;
+				}
+
+				if (self.val) {
+					self.effects["scienceRatio"] = 0.35 * (1 + on / self.val);
 				}
 			},
 			flavor: "New postdoc positions available."
@@ -545,7 +550,6 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			priceRatio: 1.15,
 			requires: {tech: ["chemistry"]},
 			togglable: true,
-			isAutomationEnabled: true,
 			effects: {
 				"mineralsPerTickCon":     -1.5,
 				"oilPerTickCon":          -0.024,
@@ -556,6 +560,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				"coalPerTickCon":          0,
 				"steelPerTickProd":        0
 			},
+			isAutomationEnabled: true,
 			calculateEffects: function (self, game) {
 				self.effects["energyConsumption"] = 1;
 				if (game.challenges.currentChallenge === "energy") {
@@ -586,38 +591,48 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 
 				var amtFinal = amt;
 
+				self.effects["ironPerTickCon"] = 0;
+				self.effects["coalPerTickCon"] = 0;
+				self.effects["steelPerTickProd"] = 0;
+
 				var steelRatio = game.getEffect("calcinerSteelRatio");
 
-				if (steelRatio && self.isAutomationEnabled) {
-					// Second conversion of some of the iron that was just created, to steel
-					var difference = self.effects["ironPerTickAutoprod"] * steelRatio * game.bld.getAutoProductionRatio(); //HACK
-					// Cycle Effect
-					var effectsTemp = {};
-					effectsTemp["iron"] = difference;
-					game.calendar.cycleEffectsFestival(effectsTemp);
-					difference = effectsTemp["iron"];
+				self.showAutomation = false;
+				if (steelRatio) {
+					// if (typeof self.isAutomationEnabled === "undefined") {
+					// 	self.isAutomationEnabled = true;
+					// }
+					self.showAutomation = true;
 
-					self.effects["ironPerTickCon"] = -difference;
-					self.effects["coalPerTickCon"] = -difference;
-					self.effects["steelPerTickProd"] = difference / 100;
+					if (self.isAutomationEnabled) {
+						// Second conversion of some of the iron that was just created, to steel
+						var difference = self.effects["ironPerTickAutoprod"] * steelRatio * game.bld.getAutoProductionRatio(); //HACK
+						// Cycle Effect
+						var effectsTemp = {};
+						effectsTemp["iron"] = difference;
+						game.calendar.cycleEffectsFestival(effectsTemp);
+						difference = effectsTemp["iron"];
 
-					amt = game.resPool.getAmtDependsOnStock(
-						[{res: "iron", amt: -self.effects["ironPerTickCon"]},
-						{res: "coal",  amt: -self.effects["coalPerTickCon"]}],
-						on
-					);
-					self.effects["ironPerTickCon"] *= amt;
-					self.effects["coalPerTickCon"] *= amt;
-					self.effects["steelPerTickProd"] *= (amt *
-						(1 + game.getCraftRatio() * game.getEffect("calcinerSteelCraftRatio") +
-							game.bld.get("reactor").getOn() * game.getEffect("calcinerSteelReactorBonus")));
+						self.effects["ironPerTickCon"] = -difference;
+						self.effects["coalPerTickCon"] = -difference;
+						self.effects["steelPerTickProd"] = difference / 100;
 
-					amtFinal = (amtFinal + amt) / 2;
-				} else {
-					self.effects["ironPerTickCon"] = 0;
-					self.effects["coalPerTickCon"] = 0;
-					self.effects["steelPerTickProd"] = 0;
+						amt = game.resPool.getAmtDependsOnStock(
+							[{res: "iron", amt: -self.effects["ironPerTickCon"]},
+							{res: "coal",  amt: -self.effects["coalPerTickCon"]}],
+							on
+						);
+						self.effects["ironPerTickCon"] *= amt;
+						self.effects["coalPerTickCon"] *= amt;
+						self.effects["steelPerTickProd"] *= (amt *
+							(1 + game.getCraftRatio() * game.getEffect("calcinerSteelCraftRatio") +
+								game.bld.get("reactor").getOn() * game.getEffect("calcinerSteelReactorBonus")));
+
+						amtFinal = (amtFinal + amt) / 2;
+					}
 				}
+
+				this.showAutomation = steelRatio > 0;
 
 				return amtFinal;
 			}
@@ -642,12 +657,11 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			},
 			jammed: false,
 			isAutomationEnabled: true,
+			showAutomation: true,
 			calculateEffects: function (self, game) {
 				self.effects["coalRatioGlobal"] = -0.8 + game.getEffect("coalRatioGlobalReduction");
-			},
-			action: function (self, game) {
-				var amt = 0;
 
+				var amt = 0;
 				if (game.workshop.get("printingPress").owned()) {
 					amt = 0.0005; // 2 per year per SW
 
@@ -658,10 +672,8 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 						amt *= 4;
 					}
 				}
-				self.effects["manuscriptPerTickProd"] = amt * self.getOn();
-
-				//no factory automation stuff
-			},
+				self.effects["manuscriptPerTickProd"] = amt;
+			}, //no factory automation stuff
 			flavor: "I just nap here and it looks like I'm working"
 		}, {
 			name: "magneto",
@@ -806,6 +818,7 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				"energyProduction": 0
 			},
 			upgrades: {buildings: ["harbor"]},
+			isAutomationEnabled: true,
 			calculateEffects: function (self, game) {
 				self.effects["uraniumPerTick"] = -0.001 * (1 - game.getEffect("uraniumRatio"));
 			},
@@ -813,19 +826,20 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 				self.effects["thoriumPerTick"] = game.getEffect("reactorThoriumPerTick");
 				self.effects["energyProduction"] = 10 * (1 + game.getEffect("reactorEnergyRatio"));
 
+				self.showAutomation = false;
 				if (game.workshop.get("thoriumReactors").owned()) {
-					if (typeof(self.isAutomationEnabled) === "undefined") {
-						self.isAutomationEnabled = true;
-					}
-					if (game.resPool.get("thorium").value === 0 || self.isAutomationEnabled === false) {
+					// if (typeof self.isAutomationEnabled === "undefined") {
+					// 	self.isAutomationEnabled = true;
+					// }
+					self.showAutomation = true;
+					if (game.resPool.get("thorium").value === 0 || !self.isAutomationEnabled) {
 						self.effects["thoriumPerTick"] = 0;
 						self.effects["energyProduction"] -= 2.5;
 					}
 				} else {
-					self.isAutomationEnabled = undefined;
+					// self.isAutomationEnabled = undefined;
 				}
-			},
-			isAutomationEnabled: undefined //yep
+			}
 		}, {
 			name: "accelerator",
 			label: "Accelerator",
@@ -1190,19 +1204,19 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 			priceRatio: 1.25,
 			requires: {tech: ["chronophysics"]},
 			effects: {
-				"resStasisRatio":     0,
-				"energyConsumption": 0
+				"resStasisRatio":         0.015, //1.5% of resources will be preserved
+				"energyConsumption":      20,
+				"temporalFluxProduction": 0
 			},
 			upgrades: {voidSpace: ["cryochambers"]},
+			isAutomationEnabled: true,
+			showAutomation: true,
 			calculateEffects: function (self, game) {
-				var effects = {
-					"resStasisRatio":    0.015, //1.5% of resources will be preserved
-					"energyConsumption": 20
-				};
+				self.effects["energyConsumption"] = 20;
 				if (game.challenges.currentChallenge === "energy") {
-					effects["energyConsumption"] *= 2;
+					self.effects["energyConsumption"] *= 2;
 				}
-				self.effects = effects;
+				self.effects["temporalFluxProduction"] = game.getEffect("temporalFluxProductionChronosphere");
 			}
 	}],
 
@@ -1495,27 +1509,22 @@ dojo.declare('classes.KGSaveEdit.BuildingsManager', [classes.KGSaveEdit.UI.Tab, 
 		return this.buildingsByName[name];
 	},
 
-	getAutoProductionRatio: function (disableReactors, paragonRatio) {
+	getAutoProductionRatio: function () {
 		var autoProdRatio = 1;
-		paragonRatio = paragonRatio || 0.25;
 
 		// faith
-		if (this.game.religion.getRU("solarRevolution").owned()) {
-			autoProdRatio *= 1 + (this.game.religion.getProductionBonus() / 100);
-		}
+		autoProdRatio *= 1 + (this.game.religion.getProductionBonus() / 100);
 		// SW
 		var steamworks = this.get("steamworks");
 		var steamworksOn = steamworks.getOn();
-		var swRatio = steamworksOn > 0 ? (1 + steamworks.effects["magnetoBoostRatio"] * steamworksOn) : 1;
+		var swRatio = steamworksOn > 0 ? 1 + steamworks.effects["magnetoBoostRatio"] * steamworksOn : 1;
 		autoProdRatio *= 1 + this.getEffect("magnetoRatio") * swRatio;
 
 		// paragon (25%)
-		autoProdRatio *= (1 + this.game.prestige.getParagonProductionRatio() * paragonRatio);
+		autoProdRatio *= 1 + this.game.prestige.getParagonProductionRatio() * 0.25;
 
 		// reactors
-		if (!disableReactors) {
-			autoProdRatio *= (1 + this.getEffect("productionRatio"));
-		}
+		autoProdRatio *= 1 + this.getEffect("productionRatio");
 
 		return autoProdRatio;
 	},
@@ -1565,6 +1574,8 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 	unlockable: false,
 	togglable: false,
 	togglableOnOff: false,
+
+	showAutomation: false,
 
 	constructor: function () { },
 
@@ -1633,10 +1644,11 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 			self.game.update();
 		});
 
-		this.game._createCheckbox('Unlocked', this.domNode.children[3], this, 'unlocked');
+		var input = this.game._createCheckbox('Unlocked', this.domNode.children[3], this, 'unlocked');
+		dojo.toggleClass(input.label, 'hidden', !this.get('unlockRatio'));
 
-		if ('isAutomationEnabled' in this) {
-			var input = this.game._createCheckbox('Automation on', this.domNode.children[3], this, 'isAutomationEnabled');
+		if (this.hasOwnProperty("isAutomationEnabled")) {
+			input = this.game._createCheckbox('Automation on', this.domNode.children[3], this, 'isAutomationEnabled');
 			this.isAutomationEnabledLabel = input.label;
 		}
 
@@ -1712,11 +1724,11 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 		var effects = this.get('effects') || {};
 		var effect;
 
-		if (name === "coalRatioGlobal") {
+		if (effectName === "coalRatioGlobal") {
 			effect = effects[effectName];
 		// Max effects and Ratio effects depends on constructed buildings
 		} else if (
-			effectName.indexOf("Max", effectName.length - 3) != -1 ||
+			effectName.indexOf("Max", effectName.length - 3) > -1 ||
 			(this.name === "biolab" && effectName.indexOf("Ratio", effectName.length - 5) !== -1)
 		) {
 			effect = effects[effectName] * this.val;
@@ -1766,10 +1778,6 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 		this.nameNode.textContent = this.get('label') || this.get('name');
 		this.updateEnabled();
 
-		if (this.isAutomationEnabledLabel) {
-			dojo.toggleClass(this.isAutomationEnabledLabel, 'hidden', this.isAutomationEnabled === undefined);
-		}
-
 		var activeGroup = this.game.bld.activeGroup;
 		dojo.toggleClass(this.domNode, 'hidden', activeGroup.buildings.indexOf(this.name) < 0);
 
@@ -1778,6 +1786,10 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 			if (amt !== undefined) {
 				this.lackResConvert = amt !== 1;
 			}
+		}
+
+		if (this.isAutomationEnabledLabel) {
+			dojo.toggleClass(this.isAutomationEnabledLabel, 'hidden', !this.showAutomation);
 		}
 		dojo.toggleClass(this.nameNode, 'btnLackResConvert', Boolean(this.lackResConvert));
 	},
@@ -1792,12 +1804,9 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 		if (this.unlockable && prices.length && unlockRatio) {
 			unlocked = this.game.resPool.hasRes(prices, unlockRatio);
 		}
-		var disable = unlocked;
+		var disable = !this.unlockable || unlocked;
 
 		this.set('unlocked', unlocked || this.unlockedNode.prevChecked, true);
-		if (this.unlockable && !this.unlocked) {
-			this.unlockedNode.indeterminate = true;
-		}
 
 		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
 		this.game.toggleDisabled(this.unlockedNode, disable);
@@ -1806,6 +1815,10 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 	save: function () {
 		var saveData = this.game.filterMetaObj(this, ["name", "unlocked", "val", "on", "stage", "jammed", "isAutomationEnabled"]);
 		saveData.on = this.getOn();
+
+		if (this.hasOwnProperty("isAutomationEnabled") && !this.showAutomation) {
+			saveData.isAutomationEnabled = null;
+		}
 
 		return saveData;
 	},
@@ -1816,7 +1829,7 @@ dojo.declare('classes.KGSaveEdit.BuildingMeta', classes.KGSaveEdit.MetaItem, {
 		this.set('on', num(saveBld.on));
 
 		if (this.isAutomationEnabledNode) {
-			this.set("isAutomationEnabled", saveBld.isAutomationEnabled);
+			this.set('isAutomationEnabled', Boolean(saveBld.isAutomationEnabled));
 		}
 		if (this.jammedNode) {
 			this.set('jammed', saveBld.jammed);

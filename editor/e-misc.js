@@ -1,4 +1,4 @@
-/* global require dojo classes*/
+/* global require dojo classes num*/
 
 require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 "use strict";
@@ -6,6 +6,9 @@ require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 
 dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 	options: [{
+			name: 'useWorkers',
+			desc: 'Use web worker (game works correctly in background tab, may cause performance issues)'
+		}, {
 			name: 'forceHighPrecision',
 			desc: 'Use high precision for resource values'
 		}, {
@@ -53,6 +56,8 @@ dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 
 	renderTabBlock: function () {
 		var game = this.game;
+
+		dojo.place(game.server.domNode, this.tabBlockNode);
 		dojo.place(game.calendar.domNode, this.tabBlockNode);
 
 		dojo.place(document.createTextNode('Color scheme: '), this.tabBlockNode);
@@ -71,17 +76,15 @@ dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 
 		dojo.place('<br><br>', scheme, 'after');
 
-		var input = game._createCheckbox(
-			'Use web worker (game works correctly in background tab, may cause performance issues)',
-			this.tabBlockNode, game, 'useWorkers');
-		dojo.place('<br>', input.label, 'after');
-
 		for (var i = 0; i < this.options.length; i++) {
 			var option = this.options[i];
 			var ref = option.src === 'game.opts' ? game.opts : game;
-			input = game._createCheckbox(option.desc, this.tabBlockNode, ref, option.name);
-			var br = option.seperator ? '<br><br>' : '<br>';
-			dojo.place(br, input.label, 'after');
+			var div = dojo.create('div', null, this.tabBlockNode);
+			game._createCheckbox(option.desc, div, ref, option.name);
+
+			if (option.seperator) {
+				dojo.addClass(div, "bottom-margin");
+			}
 		}
 
 		// Dead Kittens & Karma
@@ -90,8 +93,7 @@ dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 		var tr = dojo.create('tr', {
 			innerHTML: '<td>DeadKittens</td><td></td>'
 		}, table);
-			// [{innerHTML: 'Dead kittens'}, null]);
-		input = game._createInput({'class': 'integerInput'}, tr.children[1], game, 'deadKittens');
+		game._createInput({'class': 'integerInput'}, tr.children[1], game, 'deadKittens');
 
 		tr = dojo.create('tr', {
 			innerHTML: '<td>karmaKittens</td><td>&nbsp; &harr; &nbsp;</td>'
@@ -130,12 +132,27 @@ dojo.declare('classes.KGSaveEdit.OptionsTab', classes.KGSaveEdit.UI.Tab, {
 dojo.declare('classes.KGSaveEdit.Calendar', classes.KGSaveEdit.core, {
 	game: null,
 
-	seasons: [
-		{name: "spring", title: "Spring", modifiers: {"catnip": 1.5}},
-		{name: "summer", title: "Summer", modifiers: {"catnip": 1.0}},
-		{name: "autumn", title: "Autumn", modifiers: {"catnip": 1.0}},
-		{name: "winter", title: "Winter", modifiers: {"catnip": 0.25}}
-	],
+	seasons: [{
+			name: "spring",
+			title: "Spring",
+			winterHasComeTitle: "Winter I",
+			modifiers: {"catnip": 1.5}
+		}, {
+			name: "summer",
+			title: "Summer",
+			winterHasComeTitle: "Winter II",
+			modifiers: {"catnip": 1.0}
+		}, {
+			name: "autumn",
+			title: "Autumn",
+			winterHasComeTitle: "Winter III",
+			modifiers: {"catnip": 1.0}
+		}, {
+			name: "winter",
+			title: "Winter",
+			winterHasComeTitle: "Winter IV",
+			modifiers: {"catnip": 0.25}
+	}],
 
 	cycles: [{
 			name: "charon",
@@ -274,6 +291,9 @@ dojo.declare('classes.KGSaveEdit.Calendar', classes.KGSaveEdit.core, {
 	domNode: null,
 
 	getCurSeason: function () {
+		if (this.game.challenges.currentChallenge === "winterIsComing") {
+			return this.seasons[3];	//eternal winter
+		}
 		return this.seasons[this.season];
 	},
 
@@ -356,9 +376,10 @@ dojo.declare('classes.KGSaveEdit.Calendar', classes.KGSaveEdit.core, {
 		this.seasonNode.defaultVal = 0;
 
 		for (i = 0, len = this.seasons.length; i < len; i++) {
-			dojo.create('option', {
+			var season = this.seasons[i];
+			season.optionNode = dojo.create('option', {
 				value: i,
-				innerHTML: this.seasons[i].title
+				innerHTML: season.title
 			}, this.seasonNode);
 		}
 
@@ -439,6 +460,12 @@ dojo.declare('classes.KGSaveEdit.Calendar', classes.KGSaveEdit.core, {
 
 		this.dayNode.minValue = -10 - this.game.getEffect('temporalParadoxDay');
 		this.set('day', this.day); //refresh value
+
+		var hasCome = this.game.challenges.currentChallenge === "winterIsComing";
+		for (var i = this.seasons.length - 1; i >= 0; i--) {
+			var season = this.seasons[i];
+			season.optionNode.innerHTML = season[hasCome ? "winterHasComeTitle" : "title"];
+		}
 	},
 
 	save: function (saveData) {
@@ -619,8 +646,8 @@ dojo.declare('classes.KGSaveEdit.DiplomacyManager', [classes.KGSaveEdit.UI.Tab, 
 	save: function (saveData) {
 		saveData.diplomacy = {
 			races: this.game.filterMetadata(this.races, ["name", "unlocked", "energy", "duration", "collapsed"], function (saveRace) {
-				saveRace.energy = saveRace.energy || null;
-				saveRace.duration = saveRace.duration || null;
+				saveRace.energy = saveRace.energy || 0;
+				saveRace.duration = saveRace.duration || 0;
 			})
 		};
 	},
@@ -630,8 +657,8 @@ dojo.declare('classes.KGSaveEdit.DiplomacyManager', [classes.KGSaveEdit.UI.Tab, 
 			this.loadMetaData(saveData.diplomacy.races, 'get', function (race, saveRace) {
 				race.set('unlocked', Boolean(saveRace.unlocked));
 				race.set('collapsed', Boolean(saveRace.collapsed));
-				race.set('duration', saveRace.duration || null);
-				race.set('energy', saveRace.energy || null);
+				race.set('duration', saveRace.duration || 0);
+				race.set('energy', saveRace.energy || 0);
 			});
 		}
 	}
@@ -650,6 +677,21 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 		effectDesc: "Nothing",
 		unlocked: true,
 		invisible: true
+	}, {
+		name: "winterIsComing",
+		label: "Winter Has Come",
+		description: "Restart the game with only winter seasons.<br><br>Goal: Get to Helios.",
+		effectDesc: "Weather is better overall.",
+		condition: function () {
+			return this.game.space.getPlanet("helios").reached;
+		},
+		unlocked: true
+	}, {
+		name: "anarchy",
+		label: "Anarchy",
+		description: "Restart the game with kittens acting their own way : kittens are lazy, always eat extra catnip and can't be assigned as leaders.<br><br>Goal: TBD.",
+		effectDesc: "TBD",
+		unlocked: true
 	}, {
 		name: "energy",
 		label: "Energy",
@@ -674,6 +716,14 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 		description: "Restart the game without faith bonus.<br><br>Goal: Reset with at least one cryochamber.",
 		effectDesc: "Every level of transcendence will increase aprocrypha effectiveness by 10%.",
 		requires: {tech: ['voidSpace']}
+	}, {
+		name: "1000Years",
+		label: "1000 years",
+		description: "Goal: Reach year 1000.",
+		effectDesc: "TBD",
+		condition: function () {
+			return this.game.calendar.year >= 1000;
+		}
 	}],
 
 	constructor: function (game) {
@@ -687,7 +737,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 		return this.getMeta(name, this.challenges);
 	},
 
-	setCurrentChallenge: function (name) {
+	setCurrentChallenge: function (name, soft) {
 		var setChallenge = this.getChallenge(name);
 		if (setChallenge && setChallenge.researched) {
 			setChallenge = null;
@@ -696,6 +746,9 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 		for (var i = this.challenges.length - 1; i >= 0; i--) {
 			var challenge = this.challenges[i];
 			challenge.activeChallengeNode.checked = challenge === setChallenge;
+			if (!soft) {
+				challenge.activeChallengeNode.prevChecked = challenge === setChallenge;
+			}
 		}
 		this.currentChallenge = setChallenge ? setChallenge.name : null;
 	},
@@ -717,7 +770,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 	update: function () {
 		var currentChallenge = this.getChallenge(this.currentChallenge);
 		if (currentChallenge && currentChallenge.researched) {
-			this.setCurrentChallenge(null);
+			this.setCurrentChallenge(null, true);
 		}
 
 		this.game.callMethods(this.challenges, 'update');
@@ -762,6 +815,10 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 	researched: false,
 
 	isNew: false,
+
+	constructor: function () {
+		this.defaultUnlocked = this.unlocked;
+	},
 
 	getName: function () {
 		var name = this.label || this.name;
@@ -825,16 +882,30 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 	},
 
 	update: function () {
-		var req = this.game.checkRequirements(this);
+		var req = this.game.checkRequirements(this, this.defaultUnlocked);
 		this.unlocked = req || this.unlockedNode.prevChecked;
 		this.unlockedNode.checked = this.unlocked;
 		this.game.toggleDisabled(this.unlockedNode, req);
 		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
 
-		if (!this.researched && this.activeChallengeNode.checked && this.condition && this.condition()) {
-			this.set('researched', true);
-			this.game.challenges.setCurrentChallenge(null);
-			this.isNew = true;
+		var challenges = this.game.challenges;
+
+		if (dojo.isFunction(this.condition)) {
+			var won = this.condition();
+
+			if (won && this.activeChallengeNode.checked && !this.researched) {
+				this.researched = true;
+				this.researchedNode.checked = true;
+
+				challenges.setCurrentChallenge(null, true);
+				this.isNew = true;
+			} else if (!won && this.researched && !this.researchedNode.prevChecked && this.activeChallengeNode.prevChecked) { //fluh
+				this.researched = false;
+				this.researchedNode.checked = false;
+
+				challenges.setCurrentChallenge(this.name);
+				this.isNew = false;
+			}
 		}
 
 		this.game.toggleDisabled(this.activeChallengeNode, this.researched);
@@ -853,6 +924,7 @@ dojo.declare("classes.KGSaveEdit.ui.Toolbar", null, {
 
 		this.addIcon(new classes.KGSaveEdit.ui.toolbar.ToolbarHappiness(game));
 		this.addIcon(new classes.KGSaveEdit.ui.toolbar.ToolbarEnergy(game));
+		this.addIcon(new classes.KGSaveEdit.ui.toolbar.ToolbarMOTD(game));
 		this.addIcon(new classes.KGSaveEdit.ui.toolbar.ToolbarDonations(game));
 	},
 
@@ -989,6 +1061,38 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarEnergy", classes.KGSaveEdit.u
 });
 
 
+dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarMOTD", classes.KGSaveEdit.ui.ToolbarIcon, {
+	update: function () {
+		var server = this.game.server;
+
+		if (server.showMotd && server.motdTitle) {
+			this.container.innerHTML = "&nbsp;" + server.motdTitle + "&nbsp;";
+		}
+
+		if (server.motdFreshMessage) {
+			dojo.addClass(this.container, "freshMessage");
+		} else {
+			dojo.removeClass(this.container, "freshMessage");
+		}
+	},
+
+	getTooltip: function () {
+		var tooltip = dojo.byId('tooltipBlock');
+		tooltip.className = '';
+		var html = "Message of the day:<br />N/A";
+
+		var server = this.game.server;
+		var content = server.motdContentPrevious || server.motdContent;
+
+		if (server.showMotd && content) {
+			html = "Message of the day:<br />" + content;
+		}
+
+		tooltip.innerHTML = html;
+	}
+});
+
+
 //Cosmic Microwave Background Radiation
 
 dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarDonations", classes.KGSaveEdit.ui.ToolbarIcon, {
@@ -996,7 +1100,7 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarDonations", classes.KGSaveEdi
 		var server = this.game.server;
 		var nextTier = Math.floor((server.donateAmt || 0) / 100) + 1;
 
-		this.container.innerHTML = "$&nbsp;" + (server.donateAmt || 0) + "/" + (nextTier * 100) + "&nbsp;" +
+		this.container.innerHTML = "$&nbsp;" + num(server.donateAmt).toFixed(2) + "/" + (nextTier * 100) + "&nbsp;" +
 			'<a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3H8PQGAN8V8YU">+</a>';
 	},
 
@@ -1077,7 +1181,7 @@ dojo.declare("classes.KGSaveEdit.Telemetry", null, {
 });
 
 
-dojo.declare("classes.KGSaveEdit.Server", null, {
+dojo.declare("classes.KGSaveEdit.Server", classes.KGSaveEdit.core, {
 	game: null,
 
 	donateAmt: 0,
@@ -1085,10 +1189,29 @@ dojo.declare("classes.KGSaveEdit.Server", null, {
 
 	showMotd: true,
 	motdTitle: null,
+	motdContentPrevious: null,
 	motdContent: null,
 
 	constructor: function (game) {
 		this.game = game;
+	},
+
+	render: function () {
+		this.domNode = dojo.create('div', {
+			'class': 'bottom-margin',
+			innerHTML: 'Donations $'
+		});
+
+		var input = this.game._createInput({
+			'class': 'dollarInput'
+		}, this.domNode, this, 'donateAmt');
+
+		input.parseFn = function (value) {
+			return num(value.toFixed(2));
+		};
+		input.displayFn = function () {
+			return this.parsedValue.toFixed(2);
+		};
 	},
 
 	refresh: function () {
@@ -1100,7 +1223,7 @@ dojo.declare("classes.KGSaveEdit.Server", null, {
 			url: "server.json",
 			dataType: "json",
 			success: function (json) {
-				self.donateAmt = json.donateAmt || 0;
+				self.donateAmtDefault = self.set('donateAmt', json.donateAmt || 0);
 				self.telemetryUrl = json.telemetryUrl;
 
 				self.showMotd = json.showMotd;
@@ -1111,6 +1234,12 @@ dojo.declare("classes.KGSaveEdit.Server", null, {
 		}).fail(function (err) {
 			console.log("Unable to parse server.json configuration:", err);
 		});
+	},
+
+	save: function (saveData) {
+		saveData.server = {
+			motdContent: this.motdContentPrevious
+		};
 	}
 });
 

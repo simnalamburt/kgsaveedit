@@ -470,7 +470,11 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 135000},
 				{name: "blueprint", val: 70}
 			],
-			// unlocks: {tech: ["nuclearFission", "rocketry", "robotics"], upgrades: ["cadSystems", "refrigeration", "seti", "factoryLogistics"], stages: [{bld: "amphitheatre", stage: 1}]},
+			// unlocks: {
+			// 	tech: ["nuclearFission", "rocketry", "robotics"],
+			// 	upgrades: ["cadSystems", "refrigeration", "seti", "factoryLogistics", "factoryOptimization", "internet"],]
+			// 	stages: [{bld: "amphitheatre", stage: 1}]
+			// },
 			requires: {tech: ["mechanization"]}
 		}, {
 			name: "robotics",
@@ -481,7 +485,7 @@ dojo.declare('classes.KGSaveEdit.ScienceManager', [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 140000},
 				{name: "blueprint", val: 80}
 			],
-			// unlocks: {upgrades: ["steelPlants", "rotaryKiln", "assistance"], crafts: ["tanker"], stages: [{bld: "aqueduct", stage: 1}]},
+			// unlocks: {upgrades: ["steelPlants", "rotaryKiln", "assistance", "factoryRobotics"], crafts: ["tanker"], stages: [{bld: "aqueduct", stage: 1}]},
 			requires: {tech: ["electronics"]}
 		}, {
 			name: "nuclearFission",
@@ -777,16 +781,7 @@ dojo.declare('classes.KGSaveEdit.ScienceMeta', classes.KGSaveEdit.UpgradeMeta, {
 
 	getPrices: function () {
 		var prices = this.prices ? dojo.clone(this.prices) : [];
-
-		if (this.game.village.leader && this.game.village.leader.trait.name === "scientist") {
-			for (var i = prices.length - 1; i >= 0; i--) {
-				if (prices[i].name === "science") {
-					prices[i].val *= 0.99;
-				}
-				break;
-			}
-		}
-		return prices;
+		return this.game.village.getEffectLeader("scientist", prices);
 	}
 });
 
@@ -1052,13 +1047,32 @@ dojo.declare('classes.KGSaveEdit.PrestigeManager', classes.KGSaveEdit.Manager, {
 		return 1.0 + this.getEffect("paragonRatio");
 	},
 
+	getBurnedParagonRatio: function () {
+		return this.game.getTriValue(this.game.resPool.get("burnedParagon").value, 500);
+	},
+
 	getParagonProductionRatio: function () {
-		var paragonRatio = this.game.resPool.get("paragon").value * 0.01 * this.getParagonRatio();
-		return this.game.getHyperbolicEffect(paragonRatio, 2 * this.getParagonRatio());
+		var paragonRatio = this.getParagonRatio();
+
+		var productionRatioParagon = (this.game.resPool.get("paragon").value * 0.010) * paragonRatio;
+		productionRatioParagon = this.game.getHyperbolicEffect(productionRatioParagon, 2 * paragonRatio);
+
+		var ratio = this.game.calendar.year >= 40000 + this.game.time.flux ? 4 : 1;
+		var productionRatioBurnedParagon = this.game.resPool.get("burnedParagon").value * 0.010 * paragonRatio;
+		productionRatioBurnedParagon = this.game.getHyperbolicEffect(productionRatioBurnedParagon, ratio * paragonRatio);
+
+		return productionRatioParagon + productionRatioBurnedParagon;
 	},
 
 	getParagonStorageRatio: function () {
-		return (this.game.resPool.get("paragon").value / 1000) * this.getParagonRatio(); //every 100 paragon will give a 10% bonus to the storage capacity
+		var paragonRatio = this.getParagonRatio();
+		var storageRatio = this.game.resPool.get("paragon").value / 1000 * paragonRatio; //every 100 paragon will give a 10% bonus to the storage capacity
+		if (this.game.calendar.year >= 40000 + this.game.time.flux) {
+			storageRatio += (this.game.resPool.get("burnedParagon").value / 500) * paragonRatio;
+		} else {
+			storageRatio += (this.game.resPool.get("burnedParagon").value / 2000) * paragonRatio;
+		}
+		return storageRatio;
 	},
 
 	render: function () {
@@ -2089,6 +2103,33 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["electronics"]},
 			upgrades: {buildings: ["factory"]}
 		}, {
+			name: "factoryOptimization",
+			label: "Factory Optimization",
+			description: "Improves Engineer's effectiveness",
+			prices: [
+				{name: "gear",     val: 125},
+				{name: "titanium", val: 1250},
+				{name: "science",  val: 75000}
+			],
+			effects: {
+				"t1CraftRatio": 10,
+				"t2CraftRatio": 2
+			}
+		}, {
+			name: "factoryRobotics",
+			label: "Factory Robotics",
+			description: "Improves Engineer's effectiveness",
+			prices: [
+				{name: "gear", 	   val: 250},
+				{name: "titanium", val: 2500},
+				{name: "science",  val: 100000}
+			],
+			effects: {
+				"t1CraftRatio": 10,
+				"t2CraftRatio": 5,
+				"t3CraftRatio": 2
+			}
+		}, {
 			name: "spaceManufacturing",
 			label: "Space Manufacturing",
 			description: "Factories are providing bonus to Space Elevators and Orbital Arrays",
@@ -2218,19 +2259,35 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["antimatter"]},
 			effects: {
 				"spaceScienceRatio": 0.95
-			}
+			},
+			upgrades: {spaceBuilding: ["researchVessel", "spaceBeacon"]}
 		}, {
 			name: "amReactorsMK2",
 			label: "Advanced AM Reactors",
-			description: "Your Research Vessels and Space Beacons are 75% more effective",
+			description: "Your Research Vessels and Space Beacons are 1.5x more effective",
 			prices: [
 				{name: "eludium",    val: 70},
 				{name: "antimatter", val: 2500}
 			],
+			// unlocks: {upgrades: ["voidReactors"]},
 			requires: {upgrades: ["amReactors"]},
 			effects: {
-				"spaceScienceRatio": 0.75
-			}
+				"spaceScienceRatio": 1.5
+			},
+			upgrades: {spaceBuilding: ["researchVessel", "spaceBeacon"]}
+		}, {
+			name: "voidReactors",
+			label: "Void Reactors",
+			description: "Your Research Vessels are 4 times as effective",
+			prices: [
+				{name: "void",       val: 250},
+				{name: "antimatter", val: 2500}
+			],
+			requires: {upgrades: ["amReactorsMK2"]},
+			effects: {
+				"spaceScienceRatio": 4
+			},
+			upgrades: {spaceBuilding: ["researchVessel", "spaceBeacon"]}
 		}, {
 			name: "relicStation",
 			label: "Relic Station",
@@ -2341,6 +2398,16 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				"skillMultiplier": 1
 			}
 		}, {
+			name: "internet",
+			label: "Internet",
+			description: "Kittens learn skills with each other",
+			prices: [
+				{name: "titanium", val: 5000},
+				{name: "uranium",  val: 50},
+				{name: "science",  val: 150000}
+			],
+			effects: {}
+		}, {
 			name: "assistance",
 			label: "Robotic Assistance",
 			description: "Building robots, workers do less effort and need less catnip",
@@ -2388,10 +2455,24 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "thorium",  val: 10000},
 				{name: "science",  val: 400000}
 			],
+			// unlocks: {upgrades: ["enrichedThorium"]},
 			requires: {tech: ["thorium"]},
 			effects: {
 				"reactorEnergyRatio":     0.25,
 				"reactorThoriumPerTick": -0.05
+			},
+			upgrades: {buildings: ["reactor"]}
+		}, {
+			name: "enrichedThorium",
+			label: "Enriched Thorium",
+			description: "Reactors will now consume 25% less thorium",
+			prices: [
+				{name: "thorium", val: 12500},
+				{name: "science", val: 500000}
+			],
+			requires: {upgrades: ["thoriumReactors"]},
+			effects: {
+				"reactorThoriumPerTick": 0.0125
 			},
 			upgrades: {buildings: ["reactor"]}
 		}, {
@@ -2469,7 +2550,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {program: ["planetCracker"]}
 		}, {
 			name: "thoriumEngine",
-			label: "Thorium Engine",
+			label: "Thorium Drive",
 			description: "A new rocket engine to go faster in space.",
 			prices: [
 				{name: "ship",     val: 10000},
@@ -2576,7 +2657,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: true,
 			ignoreBonuses: true,
-			progressHandicap: 1
+			progressHandicap: 1,
+			tier: 1
 		}, {
 			name: "beam",
 			label: "Wooden Beam",
@@ -2585,7 +2667,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "wood", val: 175}
 			],
 			unlocked: true,
-			progressHandicap: 1
+			progressHandicap: 1,
+			tier: 1
 		}, {
 			name: "slab",
 			label: "Stone Slab",
@@ -2594,7 +2677,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "minerals", val: 250}
 			],
 			unlocked: true,
-			progressHandicap: 1
+			progressHandicap: 1,
+			tier: 1
 		}, {
 			name: "concrate",
 			label: "Concrete",
@@ -2605,7 +2689,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["mechanization"]},
-			progressHandicap: 9
+			progressHandicap: 9,
+			tier: 4
 		}, {
 			name: "plate",
 			label: "Metal Plate",
@@ -2614,7 +2699,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "iron", val: 125}
 			],
 			unlocked: true,
-			progressHandicap: 4
+			progressHandicap: 4,
+			tier: 1
 		}, {
 			name: "steel",
 			label: "Steel",
@@ -2625,7 +2711,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["steel"]},
-			progressHandicap: 4
+			progressHandicap: 4,
+			tier: 2
 		}, {
 			name: "gear",
 			label: "Gear",
@@ -2634,7 +2721,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "steel", val: 15}
 			],
 			unlocked: true,
-			progressHandicap: 5
+			progressHandicap: 5,
+			tier: 3
 		}, {
 			name: "alloy",
 			label: "Alloy",
@@ -2645,7 +2733,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["chemistry"]},
-			progressHandicap: 7
+			progressHandicap: 7,
+			tier: 4
 		}, {
 			name: "eludium",
 			label: "Eludium",
@@ -2656,7 +2745,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["advExogeology"]},
-			progressHandicap: 100
+			progressHandicap: 100,
+			tier: 5
 		}, {
 			name: "scaffold",
 			label: "Scaffold",
@@ -2665,7 +2755,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "beam", val: 50}
 			],
 			unlocked: true,
-			progressHandicap: 2
+			progressHandicap: 2,
+			tier: 2
 		}, {
 			name: "ship",
 			label: "Trade Ship",
@@ -2678,7 +2769,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			unlocked: false,
 			requires: {tech: ["navigation"]},
 			upgrades: {buildings: ["harbor"]},
-			progressHandicap: 20
+			progressHandicap: 20,
+			tier: 3
 		}, {
 			name: "tanker",
 			label: "Tanker",
@@ -2691,7 +2783,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			unlocked: false,
 			requires: {tech: ["robotics"]},
 			upgrades: {buildings: ["harbor"]},
-			progressHandicap: 20
+			progressHandicap: 20,
+			tier: 5
 		}, {
 			name: "kerosene",
 			label: "Kerosene",
@@ -2701,7 +2794,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["oilProcessing"]},
-			progressHandicap: 5
+			progressHandicap: 5,
+			tier: 2
 		}, {
 			name: "parchment",
 			label: "Parchment",
@@ -2711,7 +2805,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["writing"]},
-			progressHandicap: 1
+			progressHandicap: 1,
+			tier: 1
 		}, {
 			name: "manuscript",
 			label: "Manuscript",
@@ -2721,7 +2816,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "culture",   val: 400}
 			],
 			unlocked: true,
-			progressHandicap: 2
+			progressHandicap: 2,
+			tier: 2
 		}, {
 			name: "compedium",
 			label: "Compendium",
@@ -2732,7 +2828,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["philosophy"]},
-			progressHandicap: 5
+			progressHandicap: 5,
+			tier: 3
 		}, {
 			name: "blueprint",
 			label: "Blueprint",
@@ -2743,7 +2840,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["physics"]},
-			progressHandicap: 10
+			progressHandicap: 10,
+			tier: 3
 		}, {
 			name: "thorium",
 			label: "Thorium",
@@ -2753,7 +2851,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 			],
 			unlocked: false,
 			requires: {tech: ["thorium"]},
-			progressHandicap: 5
+			progressHandicap: 5,
+			tier: 3
 		}, {
 			name: "megalith",
 			label: "Megalith",
@@ -2764,7 +2863,8 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "plate", val: 5}
 			],
 			unlocked: true,
-			progressHandicap: 5
+			progressHandicap: 5,
+			tier: 3
 	}],
 
 	effectsBase: {
@@ -2900,7 +3000,7 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 
 	save: function (saveData) {
 		var upgrades = this.game.filterMetadata(this.upgrades, ["name", "unlocked", "researched"]);
-		var crafts = this.game.filterMetadata(this.crafts, ["name", "unlocked", "value"]);
+		var crafts = this.game.filterMetadata(this.crafts, ["name", "unlocked", "value", "progress"]);
 
 		saveData.workshop = {
 			upgrades:       upgrades,
@@ -2926,13 +3026,37 @@ dojo.declare('classes.KGSaveEdit.WorkshopManager', [classes.KGSaveEdit.UI.Tab, c
 dojo.declare('classes.KGSaveEdit.CraftMeta', classes.KGSaveEdit.MetaItem, {
 	unlocked: false,
 	value: 0,
+	progress: 0,
 
 	hideEffects: true,
+
+	getName: function () {
+		var name = this.label;
+		if (this.game.science.get("mechanization").owned() && this.value > 0) {
+			var progressDisplayed = this.game.toDisplayPercentage(Math.min(this.progress, 1), 0, true);
+			name += " (" + this.value + ") [" + progressDisplayed + "%]";
+		}
+		return name;
+	},
+
+	getDescription: function () {
+		var desc = this.description;
+
+		if (this.game.science.get("mechanization").owned()) {
+			desc += "<br><br>" + "Class: " + this.tier;
+			var tierBonus = this.game.getEffect("t" + this.tier + "CraftRatio") || 0;
+			if (tierBonus !== 0) {
+				desc += " (engineer's know-how: " + tierBonus + ")";
+			}
+			desc += "<br>Craft difficulty: " + this.progressHandicap;
+		}
+		return desc;
+	},
 
 	render: function () {
 		this.domNode = dojo.create('tr', {
 			'class': 'craft',
-			innerHTML: '<td>' + (this.label || this.name) + '</td><td></td><td></td><td></td>'
+			innerHTML: '<td>' + (this.label || this.name) + '</td><td></td><td></td><td> &nbsp;Progress </td>'
 		});
 		this.nameNode = this.domNode.children[0];
 
@@ -2961,7 +3085,9 @@ dojo.declare('classes.KGSaveEdit.CraftMeta', classes.KGSaveEdit.MetaItem, {
 			this.set('value', this.value - value);
 		});
 
-		this.game._createCheckbox('Unlocked', this.domNode.children[3], this, 'unlocked');
+		this.game._createCheckbox('Unlocked', this.domNode.children[3], this, 'unlocked', 'first');
+
+		this.game._createInput(null, this.domNode.children[3], this, 'progress');
 
 		this.registerHighlight(this.domNode);
 		this.registerTooltip(this.domNode);

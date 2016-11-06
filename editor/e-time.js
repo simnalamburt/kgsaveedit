@@ -7,6 +7,7 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 	game: null,
 
 	flux: 0, /* Amount of years skipped by CF time jumps */
+	heat: 0,
 	timestamp: null,
 
 	cfu: null,
@@ -23,6 +24,20 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 		],
 		priceRatio: 1.25,
 		unlocked: true
+    }, {
+        name: "blastFurnace",
+        label: "Chrono Furnace",
+        description: "Operates on chronoheat. Increases the maximum heat limit by 100. Can automatically shatter time crystals.",
+        prices: [
+            {name: "timeCrystal", val: 25},
+            {name: "relic",       val: 5}
+        ],
+        priceRatio: 1.25,
+        effects: {
+            "heatMax":      100,
+            "heatPerTick": -0.02
+        },
+        unlocked: true
 	}, {
 		name: "temporalAccelerator",
 		label: "Temporal Accelerator",
@@ -36,6 +51,19 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 			"timeRatio": 0.05
 		},
 		unlocked: true
+    }, {
+        name: "temporalImpedance",
+        label: "Time Impedance",
+        description: "Suppress effect of Dark Future temporal penalty by 1000 years.",
+        prices: [
+            {name: "timeCrystal", val: 100},
+            {name: "relic",       val: 250}
+        ],
+        priceRatio: 1.05,
+        effects: {
+            "timeImpedance": 1000
+        },
+        unlocked: true  //TODO: only unlock past 40K?
 	}, {
 		name: "ressourceRetrieval",
 		label: "Resource Retrieval",
@@ -119,6 +147,16 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 	tabName: 'Time',
 	getVisible: function () {
 		return this.game.science.get('calendar').owned() || this.getVSU('usedCryochambers').owned();
+	},
+
+	effectsBase: {
+		"temporalFluxMax": 60 * 10 * 5,  //10 minutes (5 == this.game.rate)
+        "heatMax":         100,
+        "heatPerTick":    -0.01
+	},
+
+	getEffectBase: function (name) {
+		return num(this.effectsBase[name]);
 	},
 
 	constructor: function (game) {
@@ -211,14 +249,27 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 
 		// Flux Node
 		tr = dojo.create('tr', {
-			innerHTML: '<td><span class="nameNode">Years skipped</span></td><td></td><td></td>'
+			innerHTML: '<td><span class="nameNode">Years skipped</span></td><td></td><td></td>',
+			title: 'Amount of years skipped by shattering time crystals'
 		}, this.timeBlock);
 
 		input = game._createInput({
-			id: 'fluxNode',
-			title: 'Amount of years skipped by CF time jumps'
+			id: 'fluxNode'
 		}, tr.children[1], this, 'flux');
 		input.minValue = -Number.MAX_VALUE;
+
+		// Heat Node
+		tr = dojo.create('tr', {
+			innerHTML: '<td><span class="nameNode">Heat</span></td><td></td><td></td>'
+		}, this.timeBlock);
+
+		this.heatNameNode = tr.children[0].children[0];
+
+		input = game._createInput({
+			id: 'heatNode',
+		}, tr.children[1], this, 'flux');
+		this.heatBlock = tr.children[2];
+
 
 		this.chronoforgeBlock = dojo.create('table', {
 			id: 'cfuBlock',
@@ -234,6 +285,13 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 			item.render();
 			dojo.place(item.domNode, this.chronoforgeBlock);
 		}
+
+		//hack
+		item = this.getCFU("ressourceRetrieval");
+		item.valNode.parseFn = function (value) {
+			return Math.min(value, 100) || 0;
+		};
+
 
 		this.voidspaceBlock = dojo.create('table', {
 			id: 'cfuBlock',
@@ -252,17 +310,23 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 	},
 
 	update: function () {
+		var hasChronoforge = this.game.workshop.get("chronoforge").owned();
 		var temporalFlux = this.game.resPool.get('temporalFlux');
 		var str = "/" + temporalFlux.maxValue;
-		if (temporalFlux.value > 0) {
-			str +=  " (" + this.game.toDisplaySeconds(temporalFlux.value / this.game.rate) + ")";
+
+		var seconds = temporalFlux.value / this.game.rate;
+		if (seconds > 0) {
+			str +=  " (" + this.game.toDisplaySeconds(seconds) + ")";
 		}
 		this.energyMaxBlock.innerHTML = str;
+
+		this.heatBlock.innerHTML = "/" + this.game.getEffect("heatMax");
 
 		this.game.callMethods(this.cfu, 'update');
 		this.game.callMethods(this.vsu, 'update');
 
-		dojo.toggleClass(this.chronoforgeHeader, 'spoiler', !this.game.workshop.get('chronoforge').owned());
+		dojo.toggleClass(this.heatNameNode, 'spoiler', !hasChronoforge);
+		dojo.toggleClass(this.chronoforgeHeader, 'spoiler', !hasChronoforge);
 		dojo.toggleClass(this.voidspaceHeader, 'spoiler',
 			!this.game.science.get('voidSpace').owned() && !this.getVSU('usedCryochambers').owned());
 	},
@@ -271,8 +335,9 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 		saveData.time = {
 			timestamp: this.timestamp,
 			flux: this.flux,
-			cfu: this.game.mapMethods(this.cfu, 'save'),
-			vsu: this.game.mapMethods(this.vsu, 'save')
+			heat: this.heat,
+			cfu: this.game.mapMethods(this.cfu, "save"),
+			vsu: this.game.mapMethods(this.vsu, "save")
 		};
 	},
 
@@ -282,14 +347,14 @@ dojo.declare('classes.KGSaveEdit.TimeManager', [classes.KGSaveEdit.UI.Tab, class
 		}
 
 		var data = saveData.time;
-		this.game.loadMetaFields(this, data, ["flux", "timestamp"]);
+		this.game.loadMetaFields(this, data, ["flux", "heat", "timestamp"]);
+
+		this.loadMetaData(data.cfu, 'getCFU');
+		this.loadMetaData(data.vsu, 'getVSU');
 
 		if (data.usedCryochambers) {
 			this.loadMetaData(data.usedCryochambers, 'getVSU');
 		}
-
-		this.loadMetaData(data.cfu, 'getCFU');
-		this.loadMetaData(data.vsu, 'getVSU');
 	}
 });
 
@@ -299,6 +364,8 @@ dojo.declare('classes.KGSaveEdit.CFUMeta', classes.KGSaveEdit.MetaItem, {
 	val: 0,
 	on: 0,
 	unlocked: false,
+
+	priceRatio: 1.25,
 
 	constructor: function () {
 		this.defaultUnlocked = this.unlocked;
@@ -325,10 +392,22 @@ dojo.declare('classes.KGSaveEdit.CFUMeta', classes.KGSaveEdit.MetaItem, {
 		return this.val;
 	},
 
+	getPrices: function () {
+		var prices = this.prices ? dojo.clone(this.prices) : [];
+		var priceRatio = this.priceRatio || 1.25;
+		for (var i = prices.length - 1; i >= 0; i--) {
+			prices[i].val *= Math.pow(priceRatio, this.val);
+			if (prices[i].name === "karma" && this.name === "cryochambers") {
+				prices[i].val -= prices[i].val * this.game.getHyperbolicEffect(0.01 * this.game.prestige.getBurnedParagonRatio(), 1.0);
+			}
+		}
+		return prices;
+	},
+
 	getEffect: function (name) {
 		var effects = this.effects || {};
 		var effect = num(effects[name]);
-		return effect * this.val;
+		return effect * this.getOn();
 	},
 
 	render: function () {

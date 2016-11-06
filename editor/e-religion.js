@@ -80,7 +80,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 				{name: "ivory", val: 1000000},
 				{name: "tears", val: 5000}
 			],
-			priceRatio: 1.18,
+			priceRatio: 1.15,
 			// unlocks: {"zigguratUpgrades": ["sunspire"]},
 			requires: {'zigguratUpgrades': ['skyPalace']},
 			effects: {
@@ -330,6 +330,35 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 			},
 			flavor: "A gateway... To what?"
 		}, {
+			name: "blazar",
+			label: "Blazar",
+			description: "Improve certain time scaling effects (TBD)",
+			prices: [
+				{name: "relic", val: 50000}
+			],
+			tier: 15,
+			priceRatio: 1.15,
+			effects: {
+				//Should at least improve impedance scaling by some value (5%? 10%). Probably something else
+			},
+			unlocked: false,
+			flavor: "Tiger tiger burning bright."
+		}, {
+			name: "darkNova",
+			label: "Dark Nova",
+			description: "TBD",
+			prices: [
+				{name: "relic", val: 75000},
+				{name: "void",  val: 7500}
+			],
+			tier: 20,
+			priceRatio: 1.15,
+			effects: {
+				//TBD
+			},
+			unlocked: false,
+			flavor: "The stars are dead. Just like our hopes and dreams."
+		}, {
 			name: "holyGenocide",
 			label: "Holy Genocide",
 			description: "And tear will not fall down",
@@ -501,7 +530,7 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 	},
 
 	update: function () {
-		this.hasTranscendeceUpgrade = this.getRU('transcendence').owned();
+		this.hasTranscendeceUpgrade = this.getRU('transcendence').owned(true);
 		this.game.callMethods(this.zigguratUpgrades, 'update');
 		this.game.callMethods(this.religionUpgrades, 'update');
 		this.game.callMethods(this.transcendenceUpgrades, 'update');
@@ -532,13 +561,20 @@ dojo.declare('classes.KGSaveEdit.ReligionManager', [classes.KGSaveEdit.UI.Tab, c
 	},
 
 	save: function (saveData) {
+		var isAtheism = this.game.challenges.currentChallenge === "atheism";
+
 		saveData.religion = {
-			faith: this.faith,
+			faith: isAtheism ? 0 : this.faith,
 			corruption: this.corruption,
 			faithRatio: this.faithRatio,
 			tcratio: this.tcratio,
 			zu: this.game.filterMetadata(this.zigguratUpgrades, ["name", "val", "on", "unlocked"]),
-			ru: this.game.filterMetadata(this.religionUpgrades, ["name", "val", "on"]),
+			ru: this.game.filterMetadata(this.religionUpgrades, ["name", "val", "on"], function (saveRU) {
+				if (isAtheism) {
+					saveRU.val = 0;
+					saveRU.on = 0;
+				}
+			}),
 			tu: this.game.filterMetadata(this.transcendenceUpgrades, ["name", "val", "on", "unlocked"])
 		};
 	},
@@ -611,7 +647,10 @@ dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
 	on: 0,
 	upgradable: false,
 
-	owned: function () {
+	owned: function (override) {
+		if (!override && this.game.challenges.currentChallenge === "atheism") {
+			return false;
+		}
 		return this.val > 0;
 	},
 
@@ -633,19 +672,11 @@ dojo.declare('classes.KGSaveEdit.ReligionMeta', classes.KGSaveEdit.MetaItem, {
 		if (!this.upgradable || !this.game.religion.hasTranscendeceUpgrade) {
 			priceRatio = 1;
 		}
-		var hasWiseLeader = this.game.village.leader && this.game.village.leader.trait.name === "wise";
 
 		for (var i = prices.length - 1; i >= 0; i--) {
 			prices[i].val *= Math.pow(priceRatio, this.val);
-			if (hasWiseLeader) {
-				if (prices[i].name === "faith") {
-					prices[i].val = prices[i].val * 0.9;
-				} else if (prices[i].name === "gold") {
-					prices[i].val = prices[i].val * 0.9;
-				}
-			}
 		}
-		return prices;
+		return this.game.village.getEffectLeader("wise", prices);
 	},
 
 	getEffect: function (name) {

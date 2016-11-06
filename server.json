@@ -1,9 +1,10 @@
 {
-  "donateAmt": 427.61,
+  "donateAmt": 975.49,
 
-  "telemetryUrl": "http://127.0.0.1:9091/events/",
+  "telemetryUrl": "http://coldseat.me:9091/events/",
+  "telemetryAppId": "KG",
 
   "showMotd": true,
-  "motdTitle": "MOTD",
-  "motdContent": "Praise the sun!"
+  "motdTitle": "v 1.4.0.0",
+  "motdContent": "Mainline has been updated to ver 1.4.0.0. Please back up your saves before you refresh the page."
 }

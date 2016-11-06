@@ -28,7 +28,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "oil",       val: 45000}
 			],
 			// unlocks: {planet: ["moon"], spaceMission: ["duneMission", "piscineMission"]}
-			requires: {program: ["orbitalLaunch"]},
+			requires: {spaceMission: ["orbitalLaunch"]},
 			upgradable: false
 		}, {
 			name: "duneMission",
@@ -41,7 +41,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "kerosene",  val: 75}
 			],
 			// unlocks: {planet: ["dune"], spaceMission: ["heliosMission"]},
-			requires: {program: ["moonMission"]},
+			requires: {spaceMission: ["moonMission"]},
 			upgradable: false
 		}, {
 			name: "piscineMission",
@@ -54,7 +54,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "kerosene",  val: 250}
 			],
 			// unlocks: {planet: ["piscine"], spaceMission: ["terminusMission"]},
-			requires: {program: ["moonMission"]},
+			requires: {spaceMission: ["moonMission"]},
 			upgradable: false
 		}, {
 			name: "heliosMission",
@@ -67,7 +67,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "kerosene",  val: 1250}
 			],
 			// unlocks: {planet: ["helios"], spaceMission: ["yarnMission"]},
-			requires: {program: ["duneMission"]},
+			requires: {spaceMission: ["duneMission"]},
 			upgradable: false
 		}, {
 			name: "terminusMission",
@@ -80,7 +80,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "kerosene",  val: 750}
 			],
 			// unlocks: {planet: ["terminus"], spaceMission: ["kairoMission"]},
-			requires: {program: ["piscineMission"]},
+			requires: {spaceMission: ["piscineMission"]},
 			upgradable: false
 		}, {
 			name: "kairoMission",
@@ -93,12 +93,12 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "kerosene",  val: 7500}
 			],
 			// unlocks: {planet: ["kairo"], spaceMission: ["rorschachMission"]},
-			requires: {program: ["terminusMission"]},
+			requires: {spaceMission: ["terminusMission"]},
 			upgradable: false
 		}, {
 			name: "rorschachMission",
-			label: "???",
-			description: "???",
+			label: "Rorschach",
+			description: "Rorschach is the biggest comet near Helios.",
 			prices: [
 				{name: "starchart", val: 15000},
 				{name: "titanium",  val: 80000},
@@ -106,7 +106,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "kerosene",  val: 25000}
 			],
 			// unlocks: {spaceMission: ["centaurusSystemMission"]},
-			requires: {program: ["kairoMission"]},
+			requires: {spaceMission: ["kairoMission"]},
 			upgradable: false
 		}, {
 			name: "yarnMission",
@@ -119,7 +119,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "kerosene",  val: 12000}
 			],
 			// unlocks: {planet: ["yarn"]},
-			requires: {program: ["heliosMission"]},
+			requires: {spaceMission: ["heliosMission"]},
 			upgradable: false
 		}, {
 			name: "centaurusSystemMission",
@@ -132,8 +132,21 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				{name: "kerosene", 	val: 30000},
 				{name: "thorium",   val: 50000}
 			],
-			// unlocks: {planet: ["centaurusSystem"]},
-			requires: {program: ["rorschachMission"]},
+			// unlocks: {planet: ["centaurusSystem"], spaceMission: ["furthestRingMission"]},
+			requires: {spaceMission: ["rorschachMission"]},
+			upgradable: false
+		}, {
+			name: "furthestRingMission",
+			label: "Furthest Ring",
+			description: "The end of the universe.",
+			prices: [
+				{name: "starchart", val: 500000},
+				{name: "science", 	val: 1250000},
+				{name: "kerosene", 	val: 75000},
+				{name: "thorium",   val: 75000}
+			],
+			// unlocks: {planet: ["furthestRing"]}
+			requires: {spaceMission: ["centaurusSystemMission"]},
 			upgradable: false
 	}],
 
@@ -234,7 +247,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 						}
 					}
 			}],
-			requires: {program: ["orbitalLaunch"]}
+			requires: {spaceMission: ["orbitalLaunch"]}
 		}, {
 			name: "moon",
 			label: "Moon",
@@ -323,7 +336,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 						}
 					}
 			}],
-			requires: {program: ["moonMission"]}
+			requires: {spaceMission: ["moonMission"]}
 		}, {
 			name: "dune",
 			label: "Dune",
@@ -369,7 +382,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 						};
 					}
 				}],
-				requires: {program: ["duneMission"]}
+				requires: {spaceMission: ["duneMission"]}
 			}, {
 				name: "piscine",
 				label: "Piscine",
@@ -420,7 +433,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 						}
 					}
 			}],
-			requires: {program: ["piscineMission"]}
+			requires: {spaceMission: ["piscineMission"]}
 		}, {
 			name: "helios",
 			label: "Helios",
@@ -469,7 +482,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 						}
 					}
 			}],
-			requires: {program: ["heliosMission"]}
+			requires: {spaceMission: ["heliosMission"]}
 		}, {
 			name: "terminus",
 			label: "T-Minus",
@@ -508,7 +521,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 					};
 				}
 			}],
-			requires: {program: ["terminusMission"]}
+			requires: {spaceMission: ["terminusMission"]}
 		}, {
 			name: "kairo",
 			label: "Kairo",
@@ -537,7 +550,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 					};
 				}
 			}],
-			requires: {program: ["kairoMission"]}
+			requires: {spaceMission: ["kairoMission"]}
 		}, {
 			name: "yarn",
 			label: "Yarn",
@@ -582,7 +595,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 					},
 					val: 0
 			}],
-			requires: {program: ["yarnMission"]}
+			requires: {spaceMission: ["yarnMission"]}
 		}, {
 			name: "centaurusSystem",
 			label: "Centaurus System",
@@ -606,7 +619,15 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 					};
 				}
 			}],
-			requires: {program: ["centaurusSystemMission"]}
+			requires: {spaceMission: ["centaurusSystemMission"]}
+		}, {
+			name: "furthestRing",
+			label: "Furthest Ring",
+			routeDays: 725000000,
+			buildings: [
+				//TBD
+			],
+			requires: {spaceMission: ["furthestRingMission"]}
 	}],
 
 	tabName: 'Space',
@@ -641,6 +662,14 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 				program.planet = planet;
 				planet.buildings.push(program);
 			});
+
+			if (planet.requires && planet.requires.spaceMission) {
+				var mission = this.getProgram(planet.requires.spaceMission[0]);
+				if (mission) {
+					planet.missionMeta = mission;
+					mission.planetMeta = planet;
+				}
+			}
 		});
 	},
 
@@ -700,9 +729,7 @@ dojo.declare('classes.KGSaveEdit.SpaceManager', [classes.KGSaveEdit.UI.Tab, clas
 
 		for (i = 0, len = this.planets.length; i < len; i++) {
 			var planet = this.planets[i];
-			if (!planet.buildings.length) {
-				continue;
-			}
+
 			dojo.create('tr', {'colspan': 3, innerHTML: '&nbsp;'}, this.programsBlock);
 
 			var tr = dojo.create('tr', {
@@ -837,7 +864,11 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 				paren = ' (' + this.getOn() + '/' + this.val + ')';
 			}
 		} else {
-			paren = ' (Complete)';
+			if (this.getOn() > 0) {
+				paren = " (complete)";
+			} else {
+				paren = " (current)";
+			}
 		}
 		return name + paren;
 	},
@@ -884,7 +915,9 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	getOn: function () {
-		if (!this.upgradable || !this.togglable) {
+		if (!this.upgradable) {
+			return this.val && (!this.planetMeta || this.planetMeta.reached) ? 1 : 0;
+		} else if (!this.togglable) {
 			return this.val;
 		}
 		return Math.min(this.on, this.val) || 0;
@@ -914,10 +947,10 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 			this.unlockedLabel = input.label;
 
 			input = this.game._createCheckbox('Launched', this.domNode.children[2], this);
+			this.launchedNode = input.cbox;
 			input.cbox.handler = function () {
 				var val = num(this.checked);
 				this.metaObj.set('val', val);
-				this.metaObj.set('on', val);
 			};
 			this.launchedLabel = input.label;
 		}
@@ -952,8 +985,7 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 		this.unlocked = unlocked;
 		dojo.toggleClass(this.nameNode, 'spoiler', spoiler);
 
-		dojo.toggleClass(this.nameNode, 'btnEnabled',
-			Boolean(this.togglable && this.getOn() > 0));
+		dojo.toggleClass(this.nameNode, 'btnEnabled', this.togglable && this.getOn() > 0);
 		dojo.toggleClass(this.onNodeSpan, 'hidden', !this.upgradable || !this.togglable);
 
 		this.updateEnabled();
@@ -981,6 +1013,10 @@ dojo.declare('classes.KGSaveEdit.ProgramMeta', classes.KGSaveEdit.MetaItem, {
 		this.set('val', num(saveData.val));
 		this.set('on', num(saveData.on));
 		this.set('unlocked', Boolean(saveData.unlocked));
+
+		if (this.launchedNode) {
+			this.game.setCheckbox(this.launchedNode, this.val > 0, null, true);
+		}
 	}
 });
 

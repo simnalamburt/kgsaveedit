@@ -342,6 +342,7 @@ dojo.declare('classes.KGSaveEdit.AchievementsManager', [classes.KGSaveEdit.UI.Ta
 		//ugh
 		this.game.bld.loadMetaData.call(this, saveData.achievements, 'get', function (ach, saveAch) {
 			ach.set('unlocked', saveAch.unlocked);
+			ach.newAch = false;
 			if (ach.hasStar) {
 				ach.set('starUnlocked', saveAch.starUnlocked);
 			}

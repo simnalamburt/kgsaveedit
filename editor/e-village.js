@@ -118,7 +118,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		{name: "scientist", title: "Scientist"},
 		// Note by evil scientist: Good job to whoever decided that.
 		{name: "manager", title: "Manager"},
-		{name: "engineer", title: "Engineer"},
+		{name: "engineer", title: "Artisan"},
 		{name: "merchant", title: "Merchant"},
 		{name: "wise", title: "Philosopher"},
 		{name: "metallurgist", title: "Metallurgist"},
@@ -235,6 +235,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		}, self.tabBlockNode);
 
 		self.governmentBlock = dojo.create('div', {
+			'class': 'noAnarchy',
 			id: 'governmentBlock'
 		}, self.censusBlock);
 
@@ -458,7 +459,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		}, table);
 
 		self.massEditAgeControl = dojo.place(dojo.clone(cbox), tr.children[0]);
-		self.massEditAgeNode = game._createInput({'class': 'integerInput'}, tr.children[2]);
+		self.massEditAgeNode = game._createInput({'class': 'integerInput'}, tr.children[2], null, null, null, true);
 		self.massEditAgeAllRandom = game._createCheckbox('Randomize all', tr.children[3]).cbox;
 		on(tr.children[3].children[0], 'click', function () {
 			self.massEditAgeNode.value = methodKitten.getRandomAge();
@@ -477,23 +478,30 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		});
 
 		tr = dojo.create('tr', {
+			'class': 'noAnarchy',
 			innerHTML: '<td></td><td>Rank</td><td></td><td></td>'
 		}, table);
 
 		self.massEditRankControl = dojo.place(dojo.clone(cbox), tr.children[0]);
-		self.massEditRankNode = game._createInput({'class': 'integerInput expEdit'}, tr.children[2]);
+		self.massEditRankNode = game._createInput({'class': 'integerInput expEdit'}, tr.children[2], null, null, null, true);
 
 		tr = dojo.create('tr', {
+			'class': 'noAnarchy',
 			innerHTML: '<td></td><td>Exp</td><td></td><td></td>'
 		}, table);
 
 		self.massEditExpControl = dojo.place(dojo.clone(cbox), tr.children[0]);
-		self.massEditExpNode = game._createInput({'class': 'expEdit'}, tr.children[2]);
+		self.massEditExpNode = game._createInput({'class': 'expEdit'}, tr.children[2], null, null, null, true);
 		self.massEditExpSetExpected = game._createCheckbox('Set all expected exp', tr.children[3]).cbox;
 
-		// dojo.create('div', {innerHTML: 'Job skills'}, this.massEditNode);
+		// dojo.create('div', {
+		// 	'class': 'noAnarchy',
+		// 	innerHTML: 'Job skills'
+		// }, this.massEditNode);
 
-		table = dojo.create('table', null, this.massEditNode);
+		table = dojo.create('table', {
+			'class': 'noAnarchy'
+		}, this.massEditNode);
 
 		var handle = function () {
 			var skill = '';
@@ -583,7 +591,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 
 		for (var i = this.selectedKittens.length - 1; i >= 0; i--) {
 			var kitten = this.selectedKittens[i];
-			var data = kitten.save();
+			var data = kitten.save(true);
 
 			if (this.massEditNameControl.checked) {
 				data.name = this.massEditNameAllRandom.checked ? kitten.getRandomName() : this.massEditNameNode.value;
@@ -707,6 +715,43 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		return "Outpost";
 	},
 
+	getEffectLeader: function (trait, defaultObject) {
+		if (this.game.challenges.currentChallenge !== "anarchy" && this.leader) {
+			var leaderTrait = this.leader.trait["name"];
+			if (leaderTrait === trait) {
+				var burnedParagonRatio = 1 + this.game.prestige.getBurnedParagonRatio();
+				// Modify the defautlObject depends on trait
+				switch (trait) {
+					case "engineer": // Crafting bonus
+						defaultObject = 0.05 * burnedParagonRatio;
+						break;
+					/*case "merchant": // Trading bonus
+						defaultObject = 0.030 * burnedParagonRatio;
+						break;
+					case "manager": // Hunting bonus
+						defaultObject = 0.5 * burnedParagonRatio;
+						break;*/
+					case "scientist": // Science prices bonus
+						for (var i = 0; i < defaultObject.length; i++) {
+							if (defaultObject[i].name === "science") {
+								defaultObject[i].val -= defaultObject[i].val * this.game.getHyperbolicEffect(0.01 * burnedParagonRatio, 1.0); //1% before BP
+							}
+						}
+						break;
+					case "wise": // Religion bonus
+						for (i = 0; i < defaultObject.length; i++) {
+							if (defaultObject[i].name === "faith" || defaultObject[i].name === "gold") {
+								defaultObject[i].val -= defaultObject[i].val * this.game.getHyperbolicEffect(0.09 + 0.01 * burnedParagonRatio, 1.0); //10% before BP
+							}
+						}
+						break;
+				}
+
+			}
+		}
+		return defaultObject;
+	},
+
 	getResConsumption: function () {
 		var kittens = this.kittens.length;
 
@@ -747,6 +792,9 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 			if (kitten.job) {
 				var job = this.getJob(kitten.job);
 				if (job) {
+					if (this.game.challenges.currentChallenge === "atheism" && job.name === "priest") {
+						continue;
+					}
 
 					var mod = this.getValueModifierPerSkill(num(kitten.skills[kitten.job]));
 					for (var jobResMod in job.modifiers) {
@@ -870,8 +918,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		cbox.checked = kittensCount > 0 && selected === kittensCount;
 		cbox.indeterminate = kittensCount > 0 && selected > 0 && selected < kittensCount;
 
-		this.game.toggleDisabled(cbox, !kittensCount);
-		dojo.toggleClass(cbox.parentNode, 'invisible', !kittensCount);
+		this.game.toggleDisabled(cbox, !kittensCount, 'invisible');
 	},
 
 	getRankExp: function (rank) {
@@ -921,12 +968,14 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	},
 
 	getValueModifierPerSkill: function (value) {
-		if (value >= 9000) { return 1.75; }
-		if (value >= 5000) { return 1.50; }
-		if (value >= 2500) { return 1.30; }
-		if (value >= 1200) { return 1.18; }
-		if (value >= 500)  { return 1.10; }
-		if (value >= 100)  { return 1.05; }
+		if (this.game.challenges.currentChallenge !== "anarchy") {
+			if (value >= 9000) { return 1.75; }
+			if (value >= 5000) { return 1.50; }
+			if (value >= 2500) { return 1.30; }
+			if (value >= 1200) { return 1.18; }
+			if (value >= 500)  { return 1.10; }
+			if (value >= 100)  { return 1.05; }
+		}
 		return 1.0;
 	},
 
@@ -1074,9 +1123,12 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		if (force || this.kittens.length !== kittens) {
 			this.kittens = this.generatedKittens.slice(0, kittens);
 
-			if (this.selectedKittens.length > 0) {
-				for (var i = kittens; i < this.generatedKittens.length; i++) {
-					this.generatedKittens[i].set('selected', false);
+			for (var i = kittens; i < this.generatedKittens.length; i++) {
+				var genKitten = this.generatedKittens[i];
+				genKitten.set('selected', false);
+				if (genKitten.job) {
+					genKitten.job = null;
+					genKitten.renderInfo();
 				}
 			}
 
@@ -1089,6 +1141,7 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 
 	renderGovernment: function () {
 		this.governmentBlock.innerHTML = '';
+
 		var leader = this.leader;
 
 		if (leader && this.kittens.indexOf(leader) > -1) {
@@ -1224,6 +1277,8 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 	},
 
 	update: function () {
+		dojo.toggleClass(this.tabBlockNode, "anarchy", this.game.challenges.currentChallenge === "anarchy");
+
 		this.maxKittens = this.game.resPool.get('kittens').maxValue;
 
 		dojo.toggleClass(this.massEditSelectKittensSpan, 'hidden', !this.kittens.length);
@@ -1239,7 +1294,11 @@ dojo.declare('classes.KGSaveEdit.VillageManager', [classes.KGSaveEdit.UI.Tab, cl
 		saveData.village = {
 			kittens: this.game.mapMethods(this.kittens, 'save'),
 			maxKittens: this.maxKittens,
-			jobs: this.game.filterMetadata(this.jobs, ["name", "unlocked", "value"])
+			jobs: this.game.filterMetadata(this.jobs, ["name", "unlocked", "value"], function (saveJob) {
+				if (this.name === "priest" && this.game.challenges.currentChallenge === "atheism") {
+					saveJob.value = 0;
+				}
+			})
 		};
 	},
 
@@ -1339,9 +1398,14 @@ dojo.declare('classes.KGSaveEdit.JobMeta', classes.KGSaveEdit.MetaItem, {
 	},
 
 	update: function () {
+		if (this.value > this.game.village.getJobLimit(this.name)) {
+			this.game.setInput(this.assignedNode, this.value); //refresh
+		}
+
 		this.unlocked = this.game.checkRequirements(this);
 		dojo.toggleClass(this.nameNode, 'spoiler', !this.unlocked);
-		dojo.toggleClass(this.nameNode, 'btnDisabled', !this.unlocked || !this.game.village.getFreeKittens());
+		dojo.toggleClass(this.nameNode, 'btnDisabled', !this.unlocked || !this.game.village.getFreeKittens() ||
+			this.value >= this.game.village.getJobLimit(this.name));
 	},
 
 	updateCount: function () {
@@ -1431,7 +1495,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		dojo.place(document.createTextNode('age: '), div);
 		this.ageBlock = dojo.create('span', null, div);
 
-		this.kittenSkillsBlock = dojo.create('div', {'class': 'kittenSkillsBlock'}, div);
+		this.kittenSkillsBlock = dojo.create('div', {'class': 'kittenSkillsBlock noAnarchy'}, div);
 
 		div = dojo.create('div', {
 			'class': 'kittenSubBlock rightAlign',
@@ -1448,7 +1512,10 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 			dojo.addClass(this.quitJobNode, 'hidden');
 		}
 
-		this.setLeaderNode = dojo.create('div', {innerHTML: '<a href="#" title="Make Leader">&#9734;</a>'}, div).children[0];
+		this.setLeaderNode = dojo.create('div', {
+			'class': 'noAnarchy',
+			innerHTML: '<a href="#" title="Make Leader">&#9734;</a>'
+		}, div).children[0];
 		on(this.setLeaderNode, 'click', dojo.hitch(this, function () {
 			this.makeLeader();
 		}));
@@ -1457,13 +1524,14 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		}
 
 		this.setSenatorNode = dojo.create('div', {
+			'class': 'noAnarchy',
 			innerHTML: '<a href="#">Make Councilor</a>'
 		}, div);
 		on(this.setSenatorNode.children[0], 'click', dojo.hitch(this, function () {
 			this.makeSenator();
 		}));
 
-		if (this.village.hideSenate || this.isSenate ||
+		if (this.village.hideSenate || this.isSenator ||
 		this.village.senators.length >= this.village.maxSenators) {
 			dojo.addClass(this.setSenatorNode, 'hidden');
 		}
@@ -1603,6 +1671,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		});
 
 		tr = dojo.create('tr', {
+			'class': 'noAnarchy',
 			innerHTML: '<td>Rank</td><td></td><td></td>'
 		}, table);
 		self.editRankNode = game._createInput({'class': 'integerInput expEdit'},
@@ -1614,6 +1683,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		};
 
 		tr = dojo.create('tr', {
+			'class': 'noAnarchy',
 			innerHTML: '<td>Exp</td><td></td><td><a href="#" class="hidden">(Expected: 0)</a></td>'
 		}, table);
 		self.editExpNode = game._createInput({'class': 'expEdit'},
@@ -1625,9 +1695,14 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 			self.setExpectedExp();
 		});
 
-		dojo.create('div', {innerHTML: 'Job skills'}, self.editBlock);
+		dojo.create('div', {
+			'class': 'noAnarchy',
+			innerHTML: 'Job skills'
+		}, self.editBlock);
 
-		table = dojo.create('table', null, self.editBlock);
+		table = dojo.create('table', {
+			'class': 'noAnarchy'
+		}, self.editBlock);
 		self.editJobs = [];
 
 		var handle = function () {
@@ -1852,7 +1927,7 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 			isSenator: this.isSenator
 		});
 
-		if (this.isLeader || (!this.village.hideSenate && this.isSenate)) {
+		if (this.isLeader || (!this.village.hideSenate && this.isSenator)) {
 			this.village.renderGovernment();
 		}
 	},
@@ -1873,7 +1948,8 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		}
 	},
 
-	save: function () {
+	save: function (forEdit) {
+		var isAnarchy = !forEdit && this.game.challenges.currentChallenge === "anarchy";
 		var saveKitten = this.game.filterMetaObj(this, ['name', 'surname', 'trait',
 			'age', 'skills', 'exp', 'job', 'rank', 'isLeader', 'isSenator']);
 
@@ -1887,12 +1963,28 @@ dojo.declare('classes.KGSaveEdit.Kitten', classes.KGSaveEdit.core, {
 		}
 
 		var newSkills = {};
-		for (var job in saveKitten.skills) {
-			var skill = saveKitten.skills[job];
-			if (this.village.getJob(job) && (saveKitten.job === job || skill > 0)) {
-				newSkills[job] = Math.max(num(skill), 0);
+
+		if (isAnarchy) {
+			saveKitten.exp = 0;
+			saveKitten.rank = 0;
+			saveKitten.isLeader = false;
+			saveKitten.isSenator = false;
+		} else {
+			for (var job in saveKitten.skills) {
+				var skill = saveKitten.skills[job];
+				if (this.village.getJob(job) && (saveKitten.job === job || skill > 0)) {
+					newSkills[job] = Math.max(num(skill), 0);
+				}
 			}
 		}
+
+		if (!forEdit && this.game.challenges.currentChallenge === "atheism") {
+			if (saveKitten.job === "priest") {
+				saveKitten.job = null;
+			}
+			delete newSkills["priest"];
+		}
+
 		saveKitten.skills = newSkills;
 
 		return saveKitten;

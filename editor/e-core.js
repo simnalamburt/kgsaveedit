@@ -148,7 +148,7 @@ dojo.declare('classes.KGSaveEdit.Manager', classes.KGSaveEdit.core, {
 	calculateEffectsBase: function () { },
 
 	getEffect: function (name) {
-		return num(this.getEffectBase(name) + this.getEffectCached(name));
+		return num(this.getEffectBase(name)) + num(this.getEffectCached(name));
 	},
 
 	getEffectBase: function () {
