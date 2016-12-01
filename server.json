@@ -1,10 +1,10 @@
 {
-  "donateAmt": 975.49,
+  "donateAmt": 1083.59,
 
   "telemetryUrl": "http://coldseat.me:9091/events/",
   "telemetryAppId": "KG",
 
   "showMotd": true,
-  "motdTitle": "v 1.4.0.0 hotfix 1",
-  "motdContent": "Catnip bug was fixed in the latest update."
+  "motdTitle": "\\o/",
+  "motdContent": "Praise the sun!"
 }
