@@ -152,7 +152,7 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 
 			"magnetoBoostRatio": {
 				title: "Magneto boost",
-				resName: "oil",				//this is sort of hack to prevent early spoiler on magnetos
+				resName: "oil", //this is sort of hack to prevent early spoiler on magnetos
 				type: "ratio"
 			},
 
@@ -1093,7 +1093,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 			var amt = this.bld.get("factory").on;
 			ratio = this.getCraftRatio();
 
-			return ratio * (1 + amt * fRatio * 0.75);	//25% penalty
+			return ratio * (1 + amt * fRatio * 0.75); //25% penalty
 		}
 
 		//get resource specific craft ratio (like factory bonus)
@@ -1212,7 +1212,9 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 				//display resMax values with global ratios like Refrigeration and Paragon
 				if (effectName.substr(-3) === "Max") {
 					res = res || this.game.resPool.get(effectName.slice(0, -3));
-					effectValue = this.game.resPool.addResMaxRatios(res, effectValue);
+					if (res) {
+						effectValue = this.game.resPool.addResMaxRatios(res, effectValue);
+					}
 				}
 
 				var displayEffectValue;
@@ -1742,7 +1744,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 				type: "ratio",
 				value: spaceRatio - 1
 			}, {
-				name: "Paragon",
+				name: "Space Paragon",
 				type: "ratio",
 				value: paragonSpaceProductionRatio - 1
 			}, {
@@ -1790,7 +1792,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 		stack.push({
 			name: "(:3) Engineer",
 			type: "fixed",
-			value: this.workshop.getEffectEngineer(resName)
+			value: this.workshop.getEffectEngineer(resName, true)
 		});
 
 		// -EARTH CONSUMPTION && -SPACE CONSUMPTION
@@ -1840,7 +1842,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 		}
 
 		if (dojo.isFunction(metaReqs)) {
-			return meta.requires();
+			return meta.requires(this);
 		}
 
 		for (var type in metaReqs) {

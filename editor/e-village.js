@@ -64,8 +64,8 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 			name: "priest",
 			title: "Priest",
 			description: "+0.0015 faith per tick",
-			requires: function () {
-				return this.game.challenges.currentChallenge !== "atheism" && this.game.science.get("theology").owned();
+			requires: function (game) {
+				return game.challenges.currentChallenge !== "atheism" && game.science.get("theology").owned();
 			},
 			modifiers: {
 				"faith": 0.0015
@@ -108,7 +108,7 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 		}, {
 			name: "engineer",
 			title: "Engineer",
-			description: "Engineer can operate one factory to automate resource production.",
+			description: "Engineer can operate one factory to automate resource production.<br/>Assign your engineers in workshop tab, they will craft automatically one time every 10 minutes.",
 			requires: {tech: ["mechanization"]},
 			modifiers: {}
 	}],
@@ -814,6 +814,33 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 							res[jobResMod] = diff;
 						}
 					}
+
+					if (job.name === "engineer" && typeof kitten.engineerSpeciality !== "undefined" && kitten.engineerSpeciality != null) {
+						jobResMod = "ES" + kitten.engineerSpeciality;
+
+						var automationBonus = this.game.getEffect(kitten.engineerSpeciality + "AutomationBonus") || 0;
+						diff = 1 + automationBonus;
+
+						var rankDiff = this.game.workshop.getCraft(kitten.engineerSpeciality).tier - kitten.rank;
+						if (rankDiff > 0) {
+							diff -= diff * rankDiff * 0.15;
+						}
+
+						diff += diff * (mod - 1) * productionRatio;
+
+						if (diff > 0) {
+							if (kitten.isLeader) {
+								diff *= this.getLeaderBonus(kitten.rank);
+							}
+							diff *= this.happiness; //alter positive resource production from jobs
+						}
+
+						if (res[jobResMod]) {
+							res[jobResMod] += diff;
+						} else {
+							res[jobResMod] = diff;
+						}
+					}
 				}
 			}
 		}
@@ -1018,6 +1045,7 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 		for (var i = 0; i < count; i++) {
 			var worker = workers[i];
 			worker.job = job;
+			worker.engineerSpeciality = null;
 
 			jobObj.value++;
 			worker.renderInfo();
@@ -1036,15 +1064,33 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 		}
 	},
 
-	unassignJobs: function (job, count) {
+	assignCraftJobs: function (craft, amt) {
+		var freeKittens = dojo.filter(this.kittens, function (kitten) {
+			return kitten.job === "engineer" && !kitten.engineerSpeciality;
+		});
+
+		if (this.game.village.leader && this.game.workshop.get("register").owned()) {
+			freeKittens.sort(function (a, b) {return b.val - a.val; });
+			freeKittens.sort(function (a, b) {return b.rank - a.rank; });
+		}
+
+		var end = Math.min(freeKittens.length, amt);
+		for (var i = 0; i < end; i++) {
+			freeKittens[i].engineerSpeciality = craft.name;
+		}
+
+		return end;
+	},
+
+	unassignJobs: function (job, amt) {
 		var jobObj = this.getJob(job);
 		if (!jobObj || !jobObj.value) {
 			return;
 		}
-		if (count < 0) {
-			count = jobObj.value;
+		if (amt < 0) {
+			amt = jobObj.value;
 		}
-		count = Math.min(Number(count) || 1, jobObj.value);
+		amt = Math.min(Number(amt) || 1, jobObj.value);
 
 		var workers = dojo.filter(this.kittens, function (k) {
 			return k.job === job;
@@ -1053,18 +1099,19 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 		});
 
 		var govern = false;
-		for (var i = 0; i < count; i++) {
+		for (var i = 0; i < amt; i++) {
 			var worker = workers[i];
 			worker.job = null;
 			jobObj.value--;
 			worker.renderInfo();
+
+			this.unassignCraftJobIfEngineer(jobObj, worker);
 
 			if (worker.isLeader || (worker.isSenator && this.showSenate)) {
 				govern = true;
 			}
 		}
 
-		this.unassignCraftJobs(jobObj, count);
 		jobObj.updateCount();
 
 		if (govern) {
@@ -1075,32 +1122,31 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 		}
 	},
 
-	unassignCraftJobs: function (job, amt) {
-		if (!job || job.name !== "engineer") {
-			return;
-		}
-		amt = (Number(amt) || 1) - this.game.workshop.freeEngineers;
-
-		if (amt > 0) {
-			for (var i = 0, len = this.game.workshop.crafts.length; i < len; i++) {
-				var craft = this.game.workshop.crafts[i];
-				if (craft.value > 0) {
-					var setVal = Math.min(craft.value, amt);
-					craft.set("value", craft.value - setVal, true);
-					amt -= setVal;
-					this.game.workshop.freeEngineers += setVal;
-				}
-
-				if (amt <= 0) {
-					break;
-				}
+	unassignCraftJobIfEngineer: function (job, kitten) {
+		if (job.name === "engineer" && kitten.engineerSpeciality) {
+			var craft = this.game.workshop.getCraft(kitten.engineerSpeciality);
+			if (craft && craft.value > 0) {
+				craft.set("value", craft.value--);
 			}
 		}
+		kitten.engineerSpeciality = null; //ah sanity checks
+	},
+
+	unassignCraftJobs: function (craft, amt) {
+		var count = 0;
+		for (var i = this.kittens.length - 1; i >= 0 && count < amt; i--) {
+			var kitten = this.kittens[i];
+			if (kitten.engineerSpeciality === craft.name) {
+				kitten.engineerSpeciality = null;
+				count++;
+			}
+		}
+
+		craft.set("value", Math.max(craft.value - count, 0));
 	},
 
 	countJobs: function () {
-		var i;
-		for (i = this.jobs.length - 1; i >= 0; i--) {
+		for (var i = this.jobs.length - 1; i >= 0; i--) {
 			this.jobs[i].value = 0;
 		}
 
@@ -1114,6 +1160,32 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 		for (i = this.jobs.length - 1; i >= 0; i--) {
 			this.jobs[i].updateCount();
 		}
+
+		this.countCraftJobs();
+	},
+
+	countCraftJobs: function () {
+		var crafts = this.game.workshop.craftsByName;
+		var specialties = {};
+		var count = 0;
+
+		for (var craft in crafts) {
+			specialties[craft] = 0;
+		}
+
+		for (var i = this.kittens.length - 1; i >= 0; i--) {
+			var kitten = this.kittens[i];
+			if (kitten.job === "engineer" && kitten.engineerSpeciality in specialties) {
+				specialties[kitten.engineerSpeciality]++;
+				count++;
+			}
+		}
+
+		for (craft in crafts) {
+			crafts[craft].set("value", specialties[craft]);
+		}
+
+		return count;
 	},
 
 	synchKittens: function (force) {
@@ -1763,10 +1835,12 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 	quitJob: function () {
 		var job = this.village.getJob(this.job);
 		if (job) {
+			this.game.village.unassignCraftJobIfEngineer(job, this);
 			job.value--;
 			job.updateCount();
 		}
 		this.job = null;
+		this.engineerSpeciality = null;
 
 		this.renderInfo();
 		if (this.isLeader || (this.isSenator && this.showSenate)) {
@@ -1922,6 +1996,7 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 			exp: this.editExpNode.parsedValue,
 			trait: this.editTraitNode.value,
 			job: this.job,
+			engineerSpeciality: this.engineerSpeciality,
 			skills: skills,
 			isLeader: this.isLeader,
 			isSenator: this.isSenator
@@ -1951,7 +2026,7 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 	save: function (forEdit) {
 		var isAnarchy = !forEdit && this.game.challenges.currentChallenge === "anarchy";
 		var saveKitten = this.game.filterMetaObj(this, ["name", "surname", "trait",
-			"age", "skills", "exp", "job", "rank", "isLeader", "isSenator"]);
+			"age", "skills", "exp", "job", "engineerSpeciality", "rank", "isLeader", "isSenator"]);
 
 		if (!saveKitten.name && !saveKitten.surname) {
 			saveKitten.name = this.getRandomName();
@@ -1998,15 +2073,20 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 		var wasLeader = this.isLeader;
 		var wasSenator = this.isSenator;
 
-		this.name      = typeof data.name === "string" ? data.name : this.village.getRandomName();
-		this.surname   = typeof data.surname === "string" ? data.surname : this.village.getRandomSurname();
-		this.age       = Math.max(Math.floor(num(data.age)), 0);
-		this.exp       = Math.max(num(data.exp), 0);
-		this.trait     = data.trait;
-		this.job       = this.village.getJob(data.job) ? data.job : undefined;
-		this.rank      = Math.max(Math.floor(num(data.rank)), 0);
-		this.isLeader  = Boolean(data.isLeader);
-		this.isSenator = Boolean(data.isSenator);
+		this.name               = typeof data.name === "string" ? data.name : this.village.getRandomName();
+		this.surname            = typeof data.surname === "string" ? data.surname : this.village.getRandomSurname();
+		this.age                = Math.max(Math.floor(num(data.age)), 0);
+		this.exp                = Math.max(num(data.exp), 0);
+		this.trait              = data.trait;
+		this.job                = this.village.getJob(data.job) ? data.job : undefined;
+		this.engineerSpeciality = null;
+		this.rank               = Math.max(Math.floor(num(data.rank)), 0);
+		this.isLeader           = Boolean(data.isLeader);
+		this.isSenator          = Boolean(data.isSenator);
+
+		if (data.engineerSpeciality && this.job === "engineer" && this.game.workshop.getCraft(data.engineerSpeciality)) {
+			this.engineerSpeciality = data.engineerSpeciality;
+		}
 
 		if (this.trait) {
 			var trait = this.trait.name ? this.trait.name : this.trait;

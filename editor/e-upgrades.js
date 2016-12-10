@@ -888,8 +888,16 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 25}
 			],
-			// unlocks: {"perks": ["anachronomancy", "unicornmancy"]},
+			// unlocks: {"perks": ["astromancy", "anachronomancy", "unicornmancy"]},
 			unlocked: true
+		}, {
+			name: "astromancy",
+			label: "Astromancy",
+			description: "Star events chance and observatory effectiveness are doubled",
+			prices: [
+				{name: "paragon", val: 50}
+			],
+			requires: {perks: ["chronomancy"]}
 		}, {
 			name: "unicornmancy",
 			label: "Unicornmancy",
@@ -2120,7 +2128,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			label: "Factory Robotics",
 			description: "Improves Engineer's effectiveness",
 			prices: [
-				{name: "gear", 	   val: 250},
+				{name: "gear",     val: 250},
 				{name: "titanium", val: 2500},
 				{name: "science",  val: 100000}
 			],
@@ -2952,23 +2960,26 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 		return prices;
 	},
 
-	update: function () {
-		this.craftEffectivenessNode.innerHTML = "Craft effectiveness: +" +
-			(this.game.getCraftRatio() * 100).toFixed() + "%";
-
+	countWorkers: function () {
 		var count = 0;
 		for (var i = this.crafts.length - 1; i >= 0; i--) {
 			count += this.crafts[i].value;
 		}
+		return count;
+	},
+
+	update: function () {
+		this.craftEffectivenessNode.innerHTML = "Craft effectiveness: +" +
+			(this.game.getCraftRatio() * 100).toFixed() + "%";
+
+		var count = this.countWorkers();
 
 		var engineers = this.game.village.getJob("engineer").value;
 		this.freeEngineers = engineers - count;
 
-		if (isNaN(this.freeEngineers) || this.freeEngineers < 0) { //safe switch
-			for (i = this.crafts.length - 1; i >= 0; i--) {
-				this.crafts[i].set("value", 0);
-			}
-			this.freeEngineers = 0;
+		if (count !== engineers || isNaN(this.freeEngineers) || this.freeEngineers < 0) { //safe switch
+			count = this.game.village.countCraftJobs();
+			this.freeEngineers = engineers - count;
 		}
 
 		this.freeEngineersNode.innerHTML = this.freeEngineers + " / " + engineers;
@@ -2988,14 +2999,24 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 		return num(this.effectsBase[name]);
 	},
 
-	getEffectEngineer: function (resName) {
+	getEffectEngineer: function (resName, afterCraft) {
 		var craft = this.getCraft(resName);
-		var val = 0;
-		if (craft) {
-			var craftBonus = this.game.getEffect(resName + "AutomationBonus") || 0;
-			return ((1 / (60 * this.game.rate)) * (1 + craftBonus) * craft.value / craft.progressHandicap) * this.game.getResCraftRatio({name: resName});
+		if (!craft) {
+			return 0;
 		}
-		return val;
+
+		var resMapProduction = this.game.village.getResProduction();
+		var kittenResProduction = resMapProduction["ES" + resName] ? resMapProduction["ES" + resName] : 0;
+
+		var tierCraftRatio = this.game.getEffect("t" + craft.tier + "CraftRatio") || 0;
+		if (tierCraftRatio == 0) {
+			tierCraftRatio = 1;
+		}
+
+		// (One * bonus / handicap) crafts per engineer per 10 minutes
+		var effectPerTick = (1 / (600 * this.game.rate)) * (kittenResProduction * tierCraftRatio) / craft.progressHandicap;
+
+		return afterCraft ? effectPerTick * this.game.getResCraftRatio({name: resName}) : effectPerTick;
 	},
 
 	save: function (saveData) {
@@ -3033,7 +3054,11 @@ dojo.declare("classes.KGSaveEdit.CraftMeta", classes.KGSaveEdit.MetaItem, {
 	getName: function () {
 		var name = this.label;
 		if (this.game.science.get("mechanization").owned() && this.value > 0) {
-			var progressDisplayed = this.game.toDisplayPercentage(Math.min(this.progress, 1), 0, true);
+			var progressDisplayed = this.game.toDisplayPercentage(this.progress, 0, true);
+			if (progressDisplayed > 99) {
+				progressDisplayed = 99;
+			}
+			// var progressDisplayed = this.game.toDisplayPercentage(Math.min(this.progress, 1), 0, true);
 			name += " (" + this.value + ") [" + progressDisplayed + "%]";
 		}
 		return name;
@@ -3043,12 +3068,23 @@ dojo.declare("classes.KGSaveEdit.CraftMeta", classes.KGSaveEdit.MetaItem, {
 		var desc = this.description;
 
 		if (this.game.science.get("mechanization").owned()) {
-			desc += "<br><br>" + "Class: " + this.tier;
-			var tierBonus = this.game.getEffect("t" + this.tier + "CraftRatio") || 0;
-			if (tierBonus !== 0) {
-				desc += " (engineer's know-how: " + tierBonus + ")";
+			desc += "<br><br>Engineer's optimal rank: " + this.tier;
+
+			var tierBonus = this.game.getEffect("t" + this.tier + "CraftRatio") || 1;
+			if (tierBonus != 1) {
+				desc += "<br>Engineers expertise: " + this.game.getDisplayValueExt(((tierBonus - 1) * 100).toFixed(), true) + "%";
 			}
-			desc += "<br>Craft difficulty: " + this.progressHandicap;
+
+			if (this.progressHandicap != 1) {
+				var difficulty = this.game.getDisplayValueExt(((-(1 - (1 / this.progressHandicap))) * 100).toFixed(2), true);
+				desc += "<br>Craft difficulty: " + difficulty + "%";
+			}
+
+			if (this.value != 0) {
+				var countdown = (1 / (this.game.workshop.getEffectEngineer(this.name, false) * 5)).toFixed(0);
+				desc += "<br>=> One craft every: " + countdown + "sec";
+			}
+			desc += "<br><br>" + "Class: " + this.tier;
 		}
 		return desc;
 	},
@@ -3074,7 +3110,7 @@ dojo.declare("classes.KGSaveEdit.CraftMeta", classes.KGSaveEdit.MetaItem, {
 			{html: "[+5]", value: 5},
 			{html: "[+25]", value: 25}
 		], function (value) {
-			this.set("value", this.value + value);
+			this.game.village.assignCraftJobs(this, value);
 		});
 
 		this.game._createLinkList(this, this.domNode.children[2], [
@@ -3082,7 +3118,7 @@ dojo.declare("classes.KGSaveEdit.CraftMeta", classes.KGSaveEdit.MetaItem, {
 			{html: "[-5]", value: 5},
 			{html: "[-25]", value: 25}
 		], function (value) {
-			this.set("value", this.value - value);
+			this.game.village.unassignCraftJobs(this, value);
 		});
 
 		this.game._createCheckbox("Unlocked", this.domNode.children[3], this, "unlocked", "first");
@@ -3111,6 +3147,7 @@ dojo.declare("classes.KGSaveEdit.CraftMeta", classes.KGSaveEdit.MetaItem, {
 	load: function (saveCraft) {
 		this.set("unlocked", Boolean(saveCraft.unlocked));
 		this.set("value", num(saveCraft.value));
+		this.set("progress", num(saveCraft.progress));
 	}
 });
 

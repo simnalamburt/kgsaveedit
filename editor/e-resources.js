@@ -532,7 +532,7 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 		}
 
 		if (isNaN(res.valueVirtual) || res.valueVirtual < 0) {
-			res.valueVirtual = 0;	//safe switch
+			res.valueVirtual = 0; //safe switch
 		}
 
 		if (res.name === "karma") {

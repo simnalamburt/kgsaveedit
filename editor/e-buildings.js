@@ -979,8 +979,8 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				var manpower = game.resPool.get("manpower");
 				var mpratio = (manpower.maxValue * 0.007) / 100;
 
-				self.effects["fursPerTickProd"]  = mpratio * 1.25;	//2
-				self.effects["ivoryPerTickProd"] = mpratio * 0.3;	//1.5
+				self.effects["fursPerTickProd"]  = mpratio * 1.25; //2
+				self.effects["ivoryPerTickProd"] = mpratio * 0.3;  //1.5
 
 				var amt = game.resPool.getAmtDependsOnStock(
 					[{res: "manpower", amt: -self.effects["manpowerPerTickCon"]},

@@ -292,7 +292,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.core, {
 
 	getCurSeason: function () {
 		if (this.game.challenges.currentChallenge === "winterIsComing") {
-			return this.seasons[3];	//eternal winter
+			return this.seasons[3]; //eternal winter
 		}
 		return this.seasons[this.season];
 	},
@@ -697,8 +697,8 @@ dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, 
 		label: "Energy",
 		description: "Restart the game with consumption of energy multiply by 2.<br><br>Goal: Unlock all energy production buildings and build at least one of them.",
 		effectDesc: "Production bonuses cuts caused by negative energy are divided by 2.",
-		requires: function () {
-			return this.game.resPool.energyCons !== 0 || this.game.resPool.energyProd !== 0;
+		requires: function (game) {
+			return game.resPool.energyCons !== 0 || game.resPool.energyProd !== 0;
 		},
 		condition: function () {
 			return ((this.game.bld.get("pasture").val > 0 && this.game.bld.get("pasture").stage === 1) &&
@@ -1113,7 +1113,7 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarDonations", classes.KGSaveEdi
 			html = "Production bonus disabled";
 		} else {
 			var bonus = this.game.getCMBRBonus() * 100;
-			html = "Donations pool.<br><br> Every donation goes to the global pool that affects everyone playing the game.<br> This effect has a diminishing return.<br><br>Production bonus: " +  this.game.getDisplayValueExt(bonus, true, false) + "%" +
+			html = "Production bonus: " +  this.game.getDisplayValueExt(bonus, true, false) + "%" +
 				"<br>Storage bonus: " + this.game.getDisplayValueExt(bonus, true, false) + "%";
 		}
 

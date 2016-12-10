@@ -127,9 +127,9 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 			description: "Centaurus System is a warm faraway star system.",
 			prices: [
 				{name: "starchart", val: 100000},
-				{name: "titanium", 	val: 40000},
-				{name: "science", 	val: 400000},
-				{name: "kerosene", 	val: 30000},
+				{name: "titanium",  val: 40000},
+				{name: "science",   val: 400000},
+				{name: "kerosene",  val: 30000},
 				{name: "thorium",   val: 50000}
 			],
 			// unlocks: {planet: ["centaurusSystem"], spaceMission: ["furthestRingMission"]},
@@ -141,8 +141,8 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 			description: "The end of the universe.",
 			prices: [
 				{name: "starchart", val: 500000},
-				{name: "science", 	val: 1250000},
-				{name: "kerosene", 	val: 75000},
+				{name: "science",   val: 1250000},
+				{name: "kerosene",  val: 75000},
 				{name: "thorium",   val: 75000}
 			],
 			// unlocks: {planet: ["furthestRing"]}
@@ -543,10 +543,12 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					"relicPerDay":               0
 				},
 				calculateEffects: function (self, game) {
+					var rPerDay = game.getEffect("beaconRelicsPerDay");
+					var rrBoost = 1 + game.getEffect("relicRefineRatio") * game.religion.getZU("blackPyramid").val * 0.1; //10% per BP * BN combo
 					self.effects = {
 						"starchartPerTickBaseSpace": 0.025,
 						"scienceMax":                25000 * (1 + game.getEffect("spaceScienceRatio")),
-						"relicPerDay":               game.getEffect("beaconRelicsPerDay")
+						"relicPerDay":               rPerDay * rrBoost
 					};
 				}
 			}],

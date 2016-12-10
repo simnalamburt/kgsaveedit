@@ -293,7 +293,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 		}, {
 			name: "blackNexus",
 			label: "Black Nexus",
-			description: "Improves the rate you refine time crystals into relics.<br>Every Black Pyramid will improve your Relic Refine ratio by 100%. Every level of Black Nexus will increase this bonus by additional 100%",
+			description: "Improves the rate you refine time crystals into relics.<br>Every Black Pyramid will improve your Relic Refine ratio by 100%. Every level of Black Nexus will increase this bonus by additional 100%<br>This effect also boosts the effectiveness of Relic Stations",
 			prices: [
 				{name: "relic", val: 5000}
 			],

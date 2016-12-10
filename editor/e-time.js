@@ -24,20 +24,22 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		],
 		priceRatio: 1.25,
 		unlocked: true
-    }, {
-        name: "blastFurnace",
-        label: "Chrono Furnace",
-        description: "Operates on chronoheat. Increases the maximum heat limit by 100. Can automatically shatter time crystals.",
-        prices: [
-            {name: "timeCrystal", val: 25},
-            {name: "relic",       val: 5}
-        ],
-        priceRatio: 1.25,
-        effects: {
-            "heatMax":      100,
-            "heatPerTick": -0.02
-        },
-        unlocked: true
+	}, {
+		name: "blastFurnace",
+		label: "Chrono Furnace",
+		description: "Operates on chronoheat. Increases the maximum heat limit by 100. Can automatically shatter time crystals.",
+		prices: [
+			{name: "timeCrystal", val: 25},
+			{name: "relic",       val: 5}
+		],
+		priceRatio: 1.25,
+		heat: 0,
+		isAutomationEnabled: true,
+		effects: {
+			"heatMax":      100,
+			"heatPerTick": -0.02
+		},
+		unlocked: true
 	}, {
 		name: "temporalAccelerator",
 		label: "Temporal Accelerator",
@@ -51,19 +53,21 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 			"timeRatio": 0.05
 		},
 		unlocked: true
-    }, {
-        name: "temporalImpedance",
-        label: "Time Impedance",
-        description: "Suppress effect of Dark Future temporal penalty by 1000 years.",
-        prices: [
-            {name: "timeCrystal", val: 100},
-            {name: "relic",       val: 250}
-        ],
-        priceRatio: 1.05,
-        effects: {
-            "timeImpedance": 1000
-        },
-        unlocked: true  //TODO: only unlock past 40K?
+	}, {
+		name: "temporalImpedance",
+		label: "Time Impedance",
+		description: "Suppress effect of Dark Future temporal penalty by 1000 years.",
+		prices: [
+			{name: "timeCrystal", val: 100},
+			{name: "relic",       val: 250}
+		],
+		priceRatio: 1.05,
+		requires: function (game) {
+			return game.calendar.year >= 40000;
+		},
+		effects: {
+			"timeImpedance": 1000
+		}
 	}, {
 		name: "ressourceRetrieval",
 		label: "Resource Retrieval",
@@ -151,8 +155,8 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 
 	effectsBase: {
 		"temporalFluxMax": 60 * 10 * 5,  //10 minutes (5 == this.game.rate)
-        "heatMax":         100,
-        "heatPerTick":    -0.01
+		"heatMax":         100,
+		"heatPerTick":    -0.01
 	},
 
 	getEffectBase: function (name) {
@@ -426,6 +430,16 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 			title: "Number of Upgrades"
 		}, tr.children[1], this);
 
+		if (this.hasOwnProperty("heat")) {
+			dojo.place(document.createTextNode(" Heat "), tr.children[1]);
+			var input = this.game._createInput(null, tr.children[1], this, "heat");
+			input.minValue = -Number.MAX_VALUE;
+		}
+
+		if (this.hasOwnProperty("isAutomationEnabled")) {
+			this.game._createCheckbox("Automation on", tr.children[2], this, "isAutomationEnabled");
+		}
+
 		// this.game._createCheckbox("Unlocked", tr.children[2], this, "unlocked");
 
 		this.registerHighlight(this.domNode); // MetaItem
@@ -447,7 +461,7 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 	},
 
 	save: function () {
-		var saveData = this.game.filterMetaObj(this, ["name", "val", "on"]);
+		var saveData = this.game.filterMetaObj(this, ["name", "val", "on", "heat", "isAutomationEnabled"]);
 		saveData.on = this.getOn();
 		return saveData;
 	},
@@ -455,6 +469,13 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 	load: function (saveData) {
 		this.set("val", num(saveData.val));
 		this.set("unlocked", Boolean(saveData.unlocked) || this.defaultUnlocked);
+
+		if (this.heatNode) {
+			this.set("heat", num(saveData.heat));
+		}
+		if (this.isAutomationEnabledNode) {
+			this.set("isAutomationEnabled", Boolean(saveData.isAutomationEnabled));
+		}
 	}
 });
 
@@ -466,7 +487,13 @@ dojo.declare("classes.KGSaveEdit.VSUMeta", classes.KGSaveEdit.CFUMeta, {
 			on = Math.min(this.val, this.game.bld.get("chronosphere").val) || 0;
 		}
 		return on;
-	}
+	},
+
+	save: function () {
+		var saveData = this.game.filterMetaObj(this, ["name", "val", "on"]);
+		saveData.on = this.getOn();
+		return saveData;
+	},
 });
 
 
