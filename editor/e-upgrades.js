@@ -2640,7 +2640,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 		}, {
 			name: "turnSmoothly",
 			label: "Turn smoothly",
-			description: "Improve Chronocontrol effectiveness.",
+			description: "Chronosphere gather temporal flux.",
 			effects: {
 				"temporalFluxProductionChronosphere": 1
 			},
