@@ -2466,7 +2466,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 		if (saveData.game) {
 			var data = saveData.game;
 
-			this.loadMetaFields(this, data, ["forceShowLimits", "colorScheme", "karmaKittens",
+			this.loadMetaFields(this, data, ["forceShowLimits", "colorScheme", "karmaKittens", "karmaZebras",
 				"deadKittens", "useWorkers", "cheatMode", "forceHighPrecision"]);
 
 			this.OptionsTab.scheme.value = this.colorScheme;
