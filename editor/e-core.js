@@ -229,7 +229,7 @@ dojo.declare("classes.KGSaveEdit.TooltipItem", classes.KGSaveEdit.core, {
 	getTooltipOffset: function (node) {
 		var pos = dojo.position(node);
 		return {
-			left: pos.x,
+			left: pos.x + pos.w + 20,
 			top: pos.y
 		};
 	},
@@ -380,14 +380,6 @@ dojo.declare("classes.KGSaveEdit.MetaItem", [classes.KGSaveEdit.GenericItem, cla
 				innerHTML: this.flavor
 			}, tooltip);
 		}
-	},
-
-	getTooltipOffset: function (node) {
-		var pos = dojo.position(node);
-		return {
-			top: pos.y,
-			left: pos.x + pos.w + 20
-		};
 	}
 });
 

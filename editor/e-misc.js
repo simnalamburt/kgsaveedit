@@ -135,7 +135,7 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 });
 
 
-dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.core, {
+dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 	game: null,
 
 	seasons: [{
@@ -295,6 +295,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.core, {
 	futureSeasonTemporalParadox: -1,
 
 	domNode: null,
+	cycleEffectsNode: null,
 
 	getCurSeason: function () {
 		if (this.game.challenges.currentChallenge === "winterIsComing") {
@@ -351,9 +352,12 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.core, {
 		}));
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>Cycle</td><td></td>"
+			innerHTML: "<td>Cycle</td><td> &nbsp;Year </td>"
 		}, table);
-		this.cycleNode = dojo.create("select", {id: "cycleNode"}, tr.children[1]);
+
+		this.cycleNode = dojo.create("select", {
+			id: "cycleNode",
+		}, tr.children[1], "first");
 		this.cycleNode.defaultVal = 0;
 
 		for (i = 0, len = this.cycles.length; i < len; i++) {
@@ -369,11 +373,11 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.core, {
 			this.game.update();
 		}));
 
-		tr = dojo.create("tr", {
-			innerHTML: "<td>Cycle year</td><td></td>"
-		}, table);
 		game._createInput({id: "cycleYearNode", class: "integerInput shortInt"},
 			tr.children[1], this, "cycleYear");
+
+		this.cycleEffectsNode = tr;
+		this.registerTooltip(this.cycleEffectsNode);
 
 		tr = dojo.create("tr", {
 			innerHTML: "<td>Season</td><td></td>"
@@ -459,6 +463,74 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.core, {
 		return effects;
 	},
 
+	listCycleEffects: function (tooltip, effects) {
+		var game = this.game;
+
+		for (var effect in effects) {
+			var effectItemNode = dojo.create("div", null, tooltip);
+
+			var effectMeta = game.getEffectMeta(effect);
+			var effectTitle = effectMeta.title + ":";
+
+			dojo.create("span", {
+				innerHTML: effectTitle,
+				class: "tooltipCycleEffectTitle"
+			}, effectItemNode);
+
+			var effectMod = effects[effect] > 1 ? "+" : "";
+			effectMod += ((effects[effect] - 1) * 100).toFixed(0) + "%";
+
+			dojo.create("span", {
+				innerHTML: effectMod,
+				class: "tooltipCycleEffectMod"
+			}, effectItemNode);
+
+			dojo.create("span", {
+				innerHTML: "&nbsp;",
+				class: "clear"
+			}, effectItemNode);
+		}
+	},
+
+	getTooltip: function (node) {
+		var haveNumerology = this.game.prestige.getPerk("numerology").owned();
+		if (node !== this.cycleEffectsNode || !haveNumerology) {
+			return;
+		}
+
+		var cycle = this.cycles[this.cycle];
+
+		var tooltip = dojo.byId("tooltipBlock");
+		tooltip.className = "";
+
+		var cycleSpan = dojo.create("div", {
+			innerHTML: cycle.title + " (Year " + this.cycleYear + ")",
+			class: "center clear"
+		}, tooltip);
+
+		// Cycle Effects
+		if (haveNumerology) {
+			dojo.addClass(cycleSpan, "tooltipCycleTitle");
+
+			cycleSpan = dojo.create("div", {
+				innerHTML: "Cycle Effects:",
+				class: "center tooltipCycleSpacer"
+			}, tooltip);
+
+			this.listCycleEffects(tooltip, cycle.effects);
+		}
+
+		if (this.game.prestige.getPerk("numeromancy").owned() && this.festivalDays > 0) {
+			// Cycle Festival Effects
+			cycleSpan = dojo.create("div", {
+				innerHTML: "Cycle Festival Effects:",
+				class: "center"
+			}, tooltip);
+
+			this.listCycleEffects(tooltip, cycle.festivalEffects);
+		}
+	},
+
 	update: function () {
 		var paragon = Math.floor(Math.max(this.year - this.refYear, 0) / 1000);
 		this.milleniumParagonSpan.innerHTML = "(+" + paragon + " paragon)";
@@ -496,7 +568,6 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.core, {
 		this.refYear = this.year;
 	}
 });
-
 
 dojo.declare("classes.KGSaveEdit.Console", classes.KGSaveEdit.core, {
 	game: null,
@@ -967,15 +1038,11 @@ dojo.declare("classes.KGSaveEdit.ui.ToolbarIcon", classes.KGSaveEdit.TooltipItem
 
 	update: function () { },
 
-	getTooltip: function () {
-		return "Unimplemented";
-	},
-
 	getTooltipOffset: function (node) {
 		var pos = dojo.position(node);
 		return {
-			top: 5,
-			left: pos.x
+			left: pos.x,
+			top: 5
 		};
 	}
 });
