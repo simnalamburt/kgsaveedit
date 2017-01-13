@@ -612,6 +612,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					{name: "thorium",    val: 75000}
 				],
 				priceRatio: 1.25,
+				requires: {tech: ["terraformation"]},
 				effects: {
 					"energyProduction": 0
 				},

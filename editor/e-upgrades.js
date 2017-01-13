@@ -326,7 +326,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 60000},
 				{name: "compedium", val: 50}
 			],
-			// unlocks: {upgrades: ["alloyAxe", "alloyArmor", "alloyWarehouses", "alloyBarns"], crafts: ["alloy"]},
+			// unlocks: {buildings: ["calciner", "oilWell"], upgrades: ["alloyAxe", "alloyArmor", "alloyWarehouses", "alloyBarns"], crafts: ["alloy"]},
 			requires: {tech: ["physics"]}
 		}, {
 			name: "acoustics",
@@ -337,7 +337,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 60000},
 				{name: "compedium", val: 60}
 			],
-			// unlocks: {tech: ["drama"]},
+			// unlocks: {buildings: ["chapel"], tech: ["drama"]},
 			requires: {tech: ["architecture"]}
 		}, {
 			name: "drama",
@@ -485,8 +485,24 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 140000},
 				{name: "blueprint", val: 80}
 			],
-			// unlocks: {upgrades: ["steelPlants", "rotaryKiln", "assistance", "factoryRobotics"], crafts: ["tanker"], stages: [{bld: "aqueduct", stage: 1}]},
+			// unlocks: {
+			// 	tech: ["ai"],
+			// 	upgrades: ["steelPlants", "rotaryKiln", "assistance", "factoryRobotics"],
+			// 	crafts: ["tanker"],
+			// 	stages: [{bld: "aqueduct", stage: 1}]
+			// },
 			requires: {tech: ["electronics"]}
+		}, {
+			name: "ai",
+			label: "Artificial Intelligence",
+			description: "TBD",
+			effectDesc: "Unlocks Neural Networks",
+			prices: [
+				{name: "science",   val: 250000},
+				{name: "blueprint", val: 150}
+			],
+			// unlocks: {upgrades: ["neuralNetworks"]},
+			requires: {tech: ["robotics"]}
 		}, {
 			name: "nuclearFission",
 			label: "Nuclear Fission",
@@ -557,7 +573,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 		}, {
 			name: "exogeology",
 			label: "Exogeology",
-			description: "Exogeology or Planetary Geology studies extraterestial metals and minerals.",
+			description: "Exogeology or Planetary Geology studies extraterrestrial metals and minerals.",
 			effectDesc: "Unlocks various Unobtainium upgrades",
 			prices: [
 				{name: "science",   val: 275000},
@@ -678,7 +694,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 		}, {
 			name: "cryptotheology",
 			label: "Cryptotheology",
-			description: "Cryptotheology applies the most arcane and unorthodox methods of the theology in order to answer the fundamental questions of universe and reality.",
+			description: "Cryptotheology applies the most arcane and unorthodox methods of theology in order to answer the fundamental questions of the universe and reality.",
 			effectDesc: "Unlocks Relic Station and Cryptotheology tree",
 			prices: [
 				{name: "science", val: 650000},
@@ -2311,7 +2327,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 		}, {
 			name: "pumpjack",
 			label: "Pumpjack",
-			description: "Improves effectiveness of oil wells by 45%",
+			description: "Improves effectiveness of Oil Wells by 45%. Every Oil Well will consume 1Wt/t.",
 			prices: [
 				{name: "titanium", val: 250},
 				{name: "gear",     val: 125},
@@ -2413,8 +2429,16 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 				{name: "titanium", val: 5000},
 				{name: "uranium",  val: 50},
 				{name: "science",  val: 150000}
+			]
+		}, {
+			name: "neuralNetworks",
+			label: "Neural Networks",
+			description: "Engineers effectiveness doubles at cost of the double energy consumption",
+			prices: [
+				{name: "titanium", val: 7500},
+				{name: "science",  val: 200000}
 			],
-			effects: {}
+			requires: {tech: ["ai"]}
 		}, {
 			name: "assistance",
 			label: "Robotic Assistance",
@@ -2615,16 +2639,16 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 		}, {
 			name: "voidAspiration",
 			label: "Void Aspiration",
-			description: "Unlocks Void Hoover.",
+			description: "Unlocks Void Hoover and Void Rifts.",
 			prices: [
 				{name: "timeCrystal", val: 15},
 				{name: "antimatter",  val: 2000}
 			],
-			// unlocks: {voidSpace: ["voidHoover"]},
+			// unlocks: {voidSpace: ["voidHoover", "voidRift"]},
 			requires: {tech: ["voidSpace"]}
 		}, {
 			name: "distorsion",
-			label: "Distorsion",
+			label: "Distortion",
 			description: "Improve Chronocontrol effectiveness.",
 			prices: [
 				{name: "timeCrystal", val: 25},

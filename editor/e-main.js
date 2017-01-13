@@ -506,7 +506,7 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 				type: "integerRatio"
 			},
 
-			"tcResourceRatio": {
+			"globalResourceRatio": {
 				title: "Max resources bonus",
 				type: "ratio"
 			},
@@ -558,12 +558,12 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 			},
 
 			"sattelite-starchartPerTickBaseSpace": {
-				title: "Sattelite - Startchar production",
+				title: "Satellite - Starchart production",
 				type: "ratio"
 			},
 
 			"sattelite-observatoryRatio": {
-				title: "Sattelite - Observatory's science ratio",
+				title: "Satellite - Observatory's science ratio",
 				type: "ratio"
 			},
 
@@ -619,6 +619,8 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 	saveVersion: 15,
 
 	opts: null,
+
+	isCMBREnabled: false,
 
 	colorScheme: "",
 	forceShowLimits: false,
@@ -1059,8 +1061,10 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 	//CMBR is capped by 20%
 
 	getCMBRBonus: function () {
-		var ratio = this.server.donateAmt / 1000;
-		return this.getHyperbolicEffect(ratio, 0.2);
+		if (this.isCMBREnabled) {
+			return this.getHyperbolicEffect(1.0, 0.2);
+		}
+		return 0;
 	},
 
 	getCraftRatio: function () {
@@ -1748,7 +1752,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 				type: "ratio",
 				value: paragonSpaceProductionRatio - 1
 			}, {
-				name: "Bonus Transfert",
+				name: "Bonus Transferred",
 				type: "ratio",
 				value: this.getEffect("prodTransferBonus")
 		}];
@@ -2097,6 +2101,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 		saveData.game = {
 			forceShowLimits: this.forceShowLimits,
 			forceHighPrecision: this.forceHighPrecision,
+			isCMBREnabled: this.isCMBREnabled,
 			useWorkers: this.useWorkers,
 			colorScheme: this.colorScheme,
 			karmaKittens: this.karmaKittens,
@@ -2440,7 +2445,6 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 
 		this.time.set("timestamp", Date.now());
 		this.telemetry.setGuid();
-		this.server.motdContentPrevious = this.server.motdContent;
 	},
 
 	_loadJSON: function (saveData) {
@@ -2467,7 +2471,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 			var data = saveData.game;
 
 			this.loadMetaFields(this, data, ["forceShowLimits", "colorScheme", "karmaKittens", "karmaZebras",
-				"deadKittens", "useWorkers", "cheatMode", "forceHighPrecision"]);
+				"deadKittens", "useWorkers", "cheatMode", "forceHighPrecision", "isCMBREnabled"]);
 
 			this.OptionsTab.scheme.value = this.colorScheme;
 			this.ironWill = ("ironWill" in data) ? Boolean(data.ironWill) : true;
@@ -2511,27 +2515,41 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 		this.console = new classes.KGSaveEdit.Console(this);
 		this.telemetry = new classes.KGSaveEdit.Telemetry(this);
 		this.server = new classes.KGSaveEdit.Server(this);
-		this.server.refresh();
 
 		this.resPool = new classes.KGSaveEdit.Resources(this);
 		this.village = new classes.KGSaveEdit.VillageManager(this);
 		this.time = new classes.KGSaveEdit.TimeManager(this);
 
-		this.workshop = new classes.KGSaveEdit.WorkshopManager(this);
-		this.diplomacy = new classes.KGSaveEdit.DiplomacyManager(this);
-		this.bld = new classes.KGSaveEdit.BuildingsManager(this);
-		this.science = new classes.KGSaveEdit.ScienceManager(this);
-		this.achievements = new classes.KGSaveEdit.AchievementsManager(this);
-		this.religion = new classes.KGSaveEdit.ReligionManager(this);
-		this.space = new classes.KGSaveEdit.SpaceManager(this);
-		this.prestige = new classes.KGSaveEdit.PrestigeManager(this);
-		this.challenges = new classes.KGSaveEdit.ChallengeManager(this);
-		this.stats = new classes.KGSaveEdit.StatsManager(this);
+		this.managers = [];
+
+        var managers = [
+            {id: "workshop",     class: "WorkshopManager"},
+			{id: "diplomacy",    class: "DiplomacyManager"},
+            {id: "bld",          class: "BuildingsManager"},
+            {id: "science",      class: "ScienceManager"},
+            {id: "achievements", class: "AchievementsManager"},
+            {id: "religion",     class: "ReligionManager"},
+            {id: "space",        class: "SpaceManager"},
+			{id: "time",         class: "TimeManager"},
+            {id: "prestige",     class: "PrestigeManager"},
+            {id: "challenges",   class: "ChallengesManager"},
+            {id: "stats",        class: "StatsManager"},
+			{id: "void",         class: "VoidManager"}
+        ];
+
+        for (var i = 0; i < managers.length; i++) {
+            var manager = managers[i];
+			if (!classes.KGSaveEdit[manager.class]) {
+				throw "Unable to load tab manager '" + manager.class + "'";
+			}
+
+            this[manager.id] = new classes.KGSaveEdit[manager.class](this);
+
+            this.managers.push(this[manager.id]);
+        }
 
 		this.tabs = [this.OptionsTab, this.bld, this.village, this.science, this.workshop,
 			this.diplomacy, this.religion, this.space, this.time, this.achievements, this.stats];
-		this.managers = [this.workshop, this.diplomacy, this.bld, this.science, this.achievements,
-			this.religion, this.space, this.time, this.prestige, this.challenges, this.stats];
 
 		this.render();
 
@@ -2553,7 +2571,6 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 		this.calendar.render();
 		this.console.render();
 		this.telemetry.render();
-		this.server.render();
 
 		this.resPool.render();
 

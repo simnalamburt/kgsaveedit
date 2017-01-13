@@ -122,6 +122,18 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 			"temporalParadoxVoid": 1
 		}
 	}, {
+		name: "voidRift",
+		label: "Void Rift",
+		description: "Increase the maximum storage space by 1%",
+		prices: [
+			{name: "void", val: 100}
+		],
+		priceRatio: 1.25,
+		requires: {upgrades: ["voidAspiration"]},
+		effects: {
+			"globalResourceRatio": 0.01
+		}
+	}, {
 		name: "chronocontrol",
 		label: "Chronocontrol",
 		description: "Increase the number of days in Temporal Paradox",
@@ -271,7 +283,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 
 		input = game._createInput({
 			id: "heatNode",
-		}, tr.children[1], this, "flux");
+		}, tr.children[1], this, "heat");
 		this.heatBlock = tr.children[2];
 
 

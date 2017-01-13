@@ -436,7 +436,7 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			maxValue *= 1 + this.game.getEffect(res.name + "MaxRatio");
 
 			if (!this.isNormalCraftableResource(res) && !res.transient) {
-				maxValue *= 1 + this.game.getEffect("tcResourceRatio");
+				maxValue *= 1 + this.game.getEffect("globalResourceRatio");
 			}
 		}
 

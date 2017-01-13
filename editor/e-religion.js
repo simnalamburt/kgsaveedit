@@ -326,7 +326,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			tier: 7,
 			priceRatio: 1.15,
 			effects: {
-				"tcResourceRatio": 0.10
+				"globalResourceRatio": 0.10
 			},
 			flavor: "A gateway... To what?"
 		}, {

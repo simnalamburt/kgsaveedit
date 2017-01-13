@@ -387,7 +387,8 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 			compareVal: function (game) {
 				var paragon = game.resPool.get("paragon").value;
 				if (game.editorOptions.includeSpentParagon) {
-					paragon += game.prestige.getSpentParagon();
+					var burnedParagon = game.resPool.get("burnedParagon").value;
+					paragon += burnedParagon + game.prestige.getSpentParagon();
 				}
 				return paragon;
 			}

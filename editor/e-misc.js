@@ -1,4 +1,4 @@
-/* global require dojo classes num*/
+/* global require dojo classes */
 
 require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 "use strict";
@@ -39,14 +39,18 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 			name: "IWSmelter",
 			desc: "Smelters turn off at 95% max Iron in Iron Will mode",
 			src: "game.opts",
-			seperator: true
+			class: "bottom-margin"
+		}, {
+			name: "isCMBREnabled",
+			desc: "Global donate bonus enabled",
+			class: "hidden"
 		}, {
 			name: "ironWill",
 			desc: "Iron Will"
 		}, {
 			name: "cheatMode",
 			desc: "Cheat mode",
-			seperator: true
+			class: "bottom-margin"
 	}],
 	scheme: null,
 
@@ -57,7 +61,6 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 	renderTabBlock: function () {
 		var game = this.game;
 
-		dojo.place(game.server.domNode, this.tabBlockNode);
 		dojo.place(game.calendar.domNode, this.tabBlockNode);
 
 		dojo.place(document.createTextNode("Color scheme: "), this.tabBlockNode);
@@ -79,11 +82,14 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 		for (var i = 0; i < this.options.length; i++) {
 			var option = this.options[i];
 			var ref = option.src === "game.opts" ? game.opts : game;
-			var div = dojo.create("div", null, this.tabBlockNode);
+
+			var div = dojo.create("div", {
+				"data-option-name": option.name
+			}, this.tabBlockNode);
 			game._createCheckbox(option.desc, div, ref, option.name);
 
-			if (option.seperator) {
-				dojo.addClass(div, "bottom-margin");
+			if (option.class) {
+				div.className = option.class;
 			}
 		}
 
@@ -504,7 +510,8 @@ dojo.declare("classes.KGSaveEdit.Console", classes.KGSaveEdit.core, {
 		"meteor":             {title: "Meteors",             enabled: true, unlocked: false},
 		"ivoryMeteor":        {title: "Ivory Meteors",       enabled: true, unlocked: false},
 		"unicornRift":        {title: "Unicorn Rifts",       enabled: true, unlocked: false},
-		"alicornRift":        {title: "Alicorn Rifts",       enabled: true, unlocked: false}
+		"alicornRift":        {title: "Alicorn Rifts",       enabled: true, unlocked: false},
+		"tc":                 {title: "Time Crystals",       enabled: true, unlocked: false}
 	},
 
 	filters: null,
@@ -665,7 +672,7 @@ dojo.declare("classes.KGSaveEdit.DiplomacyManager", [classes.KGSaveEdit.UI.Tab, 
 });
 
 
-dojo.declare("classes.KGSaveEdit.ChallengeManager", classes.KGSaveEdit.Manager, {
+dojo.declare("classes.KGSaveEdit.ChallengesManager", classes.KGSaveEdit.Manager, {
 	game: null,
 
 	currentChallenge: null,
@@ -924,8 +931,6 @@ dojo.declare("classes.KGSaveEdit.ui.Toolbar", null, {
 
 		this.addIcon(new classes.KGSaveEdit.ui.toolbar.ToolbarHappiness(game));
 		this.addIcon(new classes.KGSaveEdit.ui.toolbar.ToolbarEnergy(game));
-		this.addIcon(new classes.KGSaveEdit.ui.toolbar.ToolbarMOTD(game));
-		this.addIcon(new classes.KGSaveEdit.ui.toolbar.ToolbarDonations(game));
 	},
 
 	addIcon: function (icon) {
@@ -1061,67 +1066,6 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarEnergy", classes.KGSaveEdit.u
 });
 
 
-dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarMOTD", classes.KGSaveEdit.ui.ToolbarIcon, {
-	update: function () {
-		var server = this.game.server;
-
-		if (server.showMotd && server.motdTitle) {
-			this.container.innerHTML = "&nbsp;" + server.motdTitle + "&nbsp;";
-		}
-
-		if (server.motdFreshMessage) {
-			dojo.addClass(this.container, "freshMessage");
-		} else {
-			dojo.removeClass(this.container, "freshMessage");
-		}
-	},
-
-	getTooltip: function () {
-		var tooltip = dojo.byId("tooltipBlock");
-		tooltip.className = "";
-		var html = "Message of the day:<br />N/A";
-
-		var server = this.game.server;
-		var content = server.motdContentPrevious || server.motdContent;
-
-		if (server.showMotd && content) {
-			html = "Message of the day:<br />" + content;
-		}
-
-		tooltip.innerHTML = html;
-	}
-});
-
-
-//Cosmic Microwave Background Radiation
-
-dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarDonations", classes.KGSaveEdit.ui.ToolbarIcon, {
-	update: function () {
-		var server = this.game.server;
-		var nextTier = Math.floor((server.donateAmt || 0) / 100) + 1;
-
-		this.container.innerHTML = "$&nbsp;" + num(server.donateAmt).toFixed(2) + "/" + (nextTier * 100) + "&nbsp;" +
-			'<a target="_blank" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3H8PQGAN8V8YU">+</a>';
-	},
-
-	getTooltip: function () {
-		var tooltip = dojo.byId("tooltipBlock");
-		tooltip.className = "";
-
-		var html = "";
-		if (this.game.opts.disableCMBR) {
-			html = "Production bonus disabled";
-		} else {
-			var bonus = this.game.getCMBRBonus() * 100;
-			html = "Production bonus: " +  this.game.getDisplayValueExt(bonus, true, false) + "%" +
-				"<br>Storage bonus: " + this.game.getDisplayValueExt(bonus, true, false) + "%";
-		}
-
-		tooltip.innerHTML = html;
-	}
-});
-
-
 dojo.declare("classes.KGSaveEdit.Telemetry", null, {
 	game: null,
 	guid: null,
@@ -1184,56 +1128,10 @@ dojo.declare("classes.KGSaveEdit.Telemetry", null, {
 dojo.declare("classes.KGSaveEdit.Server", classes.KGSaveEdit.core, {
 	game: null,
 
-	donateAmt: 0,
-	telemetryUrl: null,
-
-	showMotd: true,
-	motdTitle: null,
 	motdContentPrevious: null,
-	motdContent: null,
 
 	constructor: function (game) {
 		this.game = game;
-	},
-
-	render: function () {
-		this.domNode = dojo.create("div", {
-			class: "bottom-margin",
-			innerHTML: "Donations $"
-		});
-
-		var input = this.game._createInput({
-			class: "dollarInput"
-		}, this.domNode, this, "donateAmt");
-
-		input.parseFn = function (value) {
-			return num(value.toFixed(2));
-		};
-		input.displayFn = function () {
-			return this.parsedValue.toFixed(2);
-		};
-	},
-
-	refresh: function () {
-		var self = this;
-
-		console.log("Loading server settings...");
-		$.ajax({
-			cache: false,
-			url: "server.json",
-			dataType: "json",
-			success: function (json) {
-				self.donateAmtDefault = self.set("donateAmt", json.donateAmt || 0);
-				self.telemetryUrl = json.telemetryUrl;
-
-				self.showMotd = json.showMotd;
-				self.motdTitle = json.motdTitle;
-				self.motdContent = json.motdContent;
-				self.game.update();
-			}
-		}).fail(function (err) {
-			console.log("Unable to parse server.json configuration:", err);
-		});
 	},
 
 	save: function (saveData) {
@@ -1241,6 +1139,51 @@ dojo.declare("classes.KGSaveEdit.Server", classes.KGSaveEdit.core, {
 			motdContent: this.motdContentPrevious
 		};
 	}
+});
+
+
+dojo.declare("classes.KGSaveEdit.VoidManager", classes.KGSaveEdit.Manager, {
+	game: null,
+
+    voidUpgradesData: [{
+        name: "spaceCathedral",
+        label: "Space Cathedral",
+        description: "TBD.",
+        prices: [{
+			name: "relic", val: 1
+		}],
+        researched: false
+    }],
+
+	voidUpgrades: null,
+	voidUpgradesByName: null,
+
+    faction: null,
+
+	constructor: function (game) {
+		this.game = game;
+
+		this.registerMetaItems(this.voidUpgradesData, classes.KGSaveEdit.GenericItem, "voidUpgrades");
+	},
+
+    getVU: function (name) {
+		return this.voidUpgradesByName[name];
+    },
+
+    save: function (saveData) {
+        saveData.void = {
+            vu: this.game.filterMetadata(this.voidUpgrades, ["name", "val", "on", "unlocked"]),
+            faction: this.faction
+        };
+    },
+
+    load: function (saveData) {
+        if (!saveData.void) {
+            return;
+        }
+
+        this.faction = saveData.void.faction || null;
+    }
 });
 
 
