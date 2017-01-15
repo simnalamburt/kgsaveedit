@@ -4,13 +4,18 @@
 	<meta charset="UTF-8">
 	<title>Kittens Game Save Editor</title>
 	<link rel="stylesheet" type="text/css" href="editor/editor.css">
+
+	<!--for dev testing, if you see this live poke me (patsy)-->
+	<link rel="stylesheet" type="text/css" href="dev/html.css">
+	<script src="dev/jsondiffpatch.min.js"></script>
+	<script src="dev/jsondiffpatch-formatters.min.js"></script>
 </head>
 <body>
 	<form>
 		<div id="topBar" class="header">
 			<span class="smallText">
 				Kittens Game Save Editor by <a href="https://coderpatsy.bitbucket.io/">patsy</a>, updated by Guest93,
-				for <a href="http://bloodrizer.ru/games/kittens/">Kittens Game</a> version 1.4.0.2
+				for <a href="http://bloodrizer.ru/games/kittens/">Kittens Game</a> version <span id="gameVersionSpan">1.4.0.2</span>
 				by <a href="http://bloodrizer.ru/">bloodrizer</a>
 			</span>
 
@@ -61,95 +66,99 @@
 	<script src="lib/dojo.js"></script>
 	<script>
 		require(["dojo/on"], function (on) {
+			"use strict";
+
 			window.catchError = on(window, "error", function () {
 				dojo.byId("load").textContent = "Something went wrong while loading!";
 			});
+
+			var scripts = ["editor/e-core.js", "editor/e-misc.js", "editor/e-resources.js", "editor/e-upgrades.js", "editor/e-buildings.js", "editor/e-religion.js", "editor/e-space.js",
+				"editor/e-time.js", "editor/e-village.js", "editor/e-stats.js", "editor/e-main.js", "dev/e-dev.js"];
+			var index = 0;
+			var version = dojo.byId("gameVersionSpan").textContent;
+
+			function fetchScript() {
+				$.getScript(scripts[index] + "?" + version, function () {
+					index++;
+					if (scripts[index]) {
+						fetchScript();
+					} else {
+						init();
+					}
+				});
+			}
+			fetchScript();
+
+			function init() {
+				/*global game, gamePage, dojo, require, classes*/
+				window.gamePage = new classes.KGSaveEdit.SaveEdit(dojo.byId("editContainer"));
+				window.game = gamePage;
+				window.saveEdit = gamePage;
+
+				game.version = version;
+
+				setTimeout(function () {
+					//stop the submit event from doing anything (the <form> element is only there for "valid" html)
+					on(document.forms[0], "submit", function (event) { event.preventDefault(); });
+
+					// don't follow empty fragment links
+					// on(document.documentElement, 'a[href="#"]:click',
+					// 	function (event) { event.preventDefault(); });
+					// apparently the above consistently fails on certain elements and I have no clue why the [expletive], considering the elements are identical to others that do get prevented
+					document.documentElement.addEventListener("click", function (event) {
+						if (event && event.target && event.target.href && event.target.href.slice(-1) === "#") {
+							event.preventDefault();
+						}
+					}, true); // use capture
+
+					on(dojo.byId("showImport"), "click", function () {
+						game._toggleLightbox("importBlock");
+						dojo.addClass("importError", "hidden");
+
+						var area = dojo.byId("importSaveArea");
+						area.value = "";
+						area.focus();
+					});
+
+					on(dojo.byId("importLoadButton"), "click", function () {
+						var data = dojo.byId("importSaveArea").value;
+
+						if (!(/\S/.test(data)) || !window.confirm("Are your sure? This will overwrite your save!")) {
+							return;
+						}
+						var success = gamePage.importSave(data);
+
+						if (success === "ERROR") {
+							dojo.removeClass("importError", "hidden");
+						} else if (success) {
+							dojo.byId("importSaveArea").value = "";
+							dojo.addClass("importBlock", "hidden");
+							dojo.addClass("importError", "hidden");
+						}
+					});
+
+					on(dojo.byId("importCancel"), "click", function () {
+						dojo.addClass("importBlock", "hidden");
+						dojo.addClass("importError", "hidden");
+					});
+
+					on(dojo.byId("showExport"), "click", function () {
+						game._toggleLightbox("exportBlock");
+
+						var area = dojo.byId("exportSaveArea");
+						area.value = gamePage.exportSave(true);
+						area.select();
+					});
+
+					on(dojo.byId("exportCancel"), "click", function () {
+						dojo.addClass("exportBlock", "hidden");
+					});
+
+					dojo.addClass("load", "hidden");
+					window.catchError.remove();
+				}, 0);
+			}
 		});
-	</script>
-
-	<script src="editor/e-core.js?v=1.4.0.2"></script>
-	<script src="editor/e-misc.js?v=1.4.0.2"></script>
-	<script src="editor/e-resources.js?v=1.4.0.2"></script>
-	<script src="editor/e-upgrades.js?v=1.4.0.2"></script>
-	<script src="editor/e-buildings.js?v=1.4.0.2"></script>
-	<script src="editor/e-religion.js?v=1.4.0.2"></script>
-	<script src="editor/e-space.js?v=1.4.0.2"></script>
-	<script src="editor/e-time.js?v=1.4.0.2"></script>
-	<script src="editor/e-village.js?v=1.4.0.2"></script>
-	<script src="editor/e-stats.js?v=1.4.0.2"></script>
-	<script src="editor/e-main.js?v=1.4.0.2"></script>
-
-	<script>
-	/*global dojo, require, classes*/
-	var gamePage = new classes.KGSaveEdit.saveEdit(dojo.byId("editContainer"));
-	var game = gamePage;
-	var saveEdit = gamePage; //eslint-disable-line no-unused-vars
-
-	require(["dojo/on"], function (on) {
-		"use strict";
-
-		setTimeout(function () {
-			//stop the submit event from doing anything (the <form> element is only there for "valid" html)
-			on(document.forms[0], "submit",
-				function (event) { event.preventDefault(); });
-
-			// don't follow empty fragment links
-			// on(document.documentElement, 'a[href="#"]:click',
-			// 	function (event) { event.preventDefault(); });
-			// apparently the above consistently fails on certain elements and I have no clue why the [expletive], considering the elements are identical to others that do get prevented
-			document.documentElement.addEventListener("click", function (event) {
-				if (event && event.target && event.target.href && event.target.href.slice(-1) === "#") {
-					event.preventDefault();
-				}
-			}, true); // use capture
-
-			on(dojo.byId("showImport"), "click", function () {
-				game._toggleLightbox("importBlock");
-				dojo.addClass("importError", "hidden");
-
-				var area = dojo.byId("importSaveArea");
-				area.value = "";
-				area.focus();
-			});
-
-			on(dojo.byId("importLoadButton"), "click", function () {
-				var data = dojo.byId("importSaveArea").value;
-
-				if (!(/\S/.test(data)) || !window.confirm("Are your sure? This will overwrite your save!")) {
-					return;
-				}
-				var success = gamePage.importSave(data);
-
-				if (success === "ERROR") {
-					dojo.removeClass("importError", "hidden");
-				} else if (success) {
-					dojo.byId("importSaveArea").value = "";
-					dojo.addClass("importBlock", "hidden");
-					dojo.addClass("importError", "hidden");
-				}
-			});
-
-			on(dojo.byId("importCancel"), "click", function () {
-				dojo.addClass("importBlock", "hidden");
-				dojo.addClass("importError", "hidden");
-			});
-
-			on(dojo.byId("showExport"), "click", function () {
-				game._toggleLightbox("exportBlock");
-
-				var area = dojo.byId("exportSaveArea");
-				area.value = gamePage.exportSave(true);
-				area.select();
-			});
-
-			on(dojo.byId("exportCancel"), "click", function () {
-				dojo.addClass("exportBlock", "hidden");
-			});
-
-			dojo.addClass("load", "hidden");
-			window.catchError.remove();
-		}, 0);
-	});
 	</script>
 </body>
 </html>

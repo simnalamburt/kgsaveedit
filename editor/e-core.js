@@ -44,45 +44,41 @@ dojo.declare("classes.KGSaveEdit.UI.Tab", classes.KGSaveEdit.core, {
 		return true;
 	},
 
-	getTabName: function () {
-		return this.tabName;
-	},
-
 	renderTab: function () {
+		var self = this;
 		//wrap tab link for css
-		this.tabWrapper = dojo.create("span", {
-			class: "wrapper separated" + (this.isVisible ? "" : " spoiler")
+		self.tabWrapper = dojo.create("span", {
+			class: "wrapper separated" + (self.isVisible ? "" : " spoiler")
 		});
 
-		this.tabNode = dojo.create("a", {
+		self.tabNode = dojo.create("a", {
 			class: "tab",
 			href: "#",
-			innerHTML: this.getTabName(),
-		}, this.tabWrapper);
+			innerHTML: self.tabName,
+		}, self.tabWrapper);
 
-		this.tabBlockNode = dojo.create("div", {
-			class: "tabBlock hidden" + (this.tabBlockClass ? " " + this.tabBlockClass : "")
+		self.tabBlockNode = dojo.create("div", {
+			class: "tabBlock hidden" + (self.tabBlockClass ? " " + self.tabBlockClass : "")
 		});
 
-		on(this.tabNode, "click", dojo.hitch(this, function (event) {
+		on(self.tabNode, "click", function (event) {
 			event.preventDefault();
-			dojo.query(".activeTab", "tabContainer").removeClass("activeTab");
-			dojo.query(".tabBlock", "tabBlocksContainer").addClass("hidden");
-			dojo.addClass(this.tabNode, "activeTab");
-			dojo.removeClass(this.tabBlockNode, "hidden");
-			this.game.activeTab = this;
-		}));
+			self.game.openTab(self);
+		});
 
-		if (this.game.activeTab === this) {
-			dojo.addClass(this.tabNode, "activeTab");
-			dojo.removeClass(this.tabBlockNode, "hidden");
+		if (self.game.activeTab === self) {
+			dojo.addClass(self.tabNode, "activeTab");
+			dojo.removeClass(self.tabBlockNode, "hidden");
 		}
 	},
 
 	renderTabBlock: function () { },
 
 	updateTab: function () {
-		this.tabNode.innerHTML = this.getTabName();
+		if (this.getTabName) {
+			this.tabNode.innerHTML = this.getTabName();
+		}
+
 		this.isVisible = this.getVisible();
 		dojo.toggleClass(this.tabWrapper, "spoiler", !this.isVisible);
 	}
@@ -239,20 +235,21 @@ dojo.declare("classes.KGSaveEdit.TooltipItem", classes.KGSaveEdit.core, {
 			return;
 		}
 
+		var self = this;
 		var tooltip = dojo.byId("tooltipBlock");
 
-		var updateTooltip = dojo.hitch(this, function () {
+		var updateTooltip = function () {
 			tooltip.removeAttribute("style");
 			tooltip.innerHTML = "";
 
 			var viewPos = dojo.position(tooltip.parentNode);
-			this.getTooltip(node);
+			self.getTooltip(node);
 
 			if (dojo.hasClass(tooltip, "hidden")) {
 				return;
 			}
 
-			var pos = this.getTooltipOffset(node);
+			var pos = self.getTooltipOffset(node);
 			pos.top = Math.abs(pos.top - viewPos.y);
 
 			//keep tooltip from moving outside viewing area
@@ -263,19 +260,19 @@ dojo.declare("classes.KGSaveEdit.TooltipItem", classes.KGSaveEdit.core, {
 
 			tooltip.style.top = pos.top + "px";
 			tooltip.style.left = pos.left + "px";
+		};
+
+		on(node, mouse.enter, function () {
+			self.game.tooltipUpdateFunc = updateTooltip;
+			updateTooltip();
 		});
 
-		on(node, mouse.enter, dojo.hitch(this, function () {
-			this.game.tooltipUpdateFunc = updateTooltip;
-			updateTooltip();
-		}));
-
-		on(node, mouse.leave, dojo.hitch(this, function () {
+		on(node, mouse.leave, function () {
 			tooltip.removeAttribute("style");
 			tooltip.innerHTML = "";
 			dojo.addClass(tooltip, "hidden");
-			this.game.tooltipUpdateFunc = null;
-		}));
+			self.game.tooltipUpdateFunc = null;
+		});
 	}
 });
 
@@ -323,11 +320,12 @@ dojo.declare("classes.KGSaveEdit.MetaItem", [classes.KGSaveEdit.GenericItem, cla
 	},
 
 	registerHighlight: function (node) {
-		on(node, mouse.enter, dojo.hitch(this, function () {
+		var self = this;
+		on(node, mouse.enter, function () {
 			dojo.query(".highlited").removeClass("highlited");
 
-			var prices = this.getPrices(true);
-			var resPool = this.game.resPool;
+			var prices = self.getPrices(true);
+			var resPool = self.game.resPool;
 			if (prices) {
 				for (var i = prices.length - 1; i >= 0; i--) {
 					var res = resPool.get(prices[i].name);
@@ -336,7 +334,7 @@ dojo.declare("classes.KGSaveEdit.MetaItem", [classes.KGSaveEdit.GenericItem, cla
 					}
 				}
 			}
-		}));
+		});
 
 		on(node, mouse.leave, function () {
 			dojo.query(".highlited").removeClass("highlited");

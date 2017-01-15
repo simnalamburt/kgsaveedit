@@ -198,14 +198,15 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 	},
 
 	renderTabBlock: function () {
-		var game = this.game;
+		var self = this;
+		var game = self.game;
 
 		// Timestamp Node
 		var div = dojo.create("div", {
 			id: "timestampBlock",
 			class: "bottom-margin",
 			innerHTML: '<span class="nameNode">Last save time</span> '
-		}, this.tabBlockNode);
+		}, self.tabBlockNode);
 
 		dojo.create("small", {
 			title: "Times are in milliseconds since January 1, 1970, 00:00:00 UTC.\nFor more information, click here.",
@@ -218,110 +219,110 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 			id: "timestampNode",
 			class: "integerInput timeInput",
 			title: "Timestamp of last save"
-		}, div, this, "timestamp");
+		}, div, self, "timestamp");
 
 		dojo.place(document.createTextNode(" "), div);
 		var btn = dojo.create("a", {
 			href: "#",
 			innerHTML: "Set to current time"
 		}, div);
-		on(btn, "click", dojo.hitch(this, function () {
-			this.set("timestamp", Date.now());
-		}));
+		on(btn, "click", function () {
+			self.set("timestamp", Date.now());
+		});
 
-		this.timeBlock = dojo.create("table", {
+		self.timeBlock = dojo.create("table", {
 			id: "timeBlock",
 			class: "bottom-margin",
 			innerHTML: '<tr><th colspan="3">Time</th></tr>'
-		}, this.tabBlockNode);
+		}, self.tabBlockNode);
 
 		// Energy Node
-		var temporalFlux = this.game.resPool.get("temporalFlux");
+		var temporalFlux = self.game.resPool.get("temporalFlux");
 		var str = "/" + temporalFlux.maxValue;
 		if (temporalFlux.value > 0) {
-			str +=  " (" + this.game.toDisplaySeconds(temporalFlux.value / this.game.rate) + ")";
+			str +=  " (" + self.game.toDisplaySeconds(temporalFlux.value / self.game.rate) + ")";
 		}
 
 		var tr = dojo.create("tr", {
 			innerHTML: '<td><span class="nameNode">Temporal Flux</span></td><td></td><td>' + str + "</td>"
-		}, this.timeBlock);
+		}, self.timeBlock);
 
 		// dojo.place(temporalFlux.valueNode, tr.children[1]);
 
 		var input = game._createInput({
 			id: "energyNode",
 			class: "integerInput"
-		}, tr.children[1], this);
-		this.temporalFluxNode = input;
+		}, tr.children[1], self);
+		self.temporalFluxNode = input;
 
 		input.parseFn = function (value) {
 			return Math.min(value, temporalFlux.maxValue);
 		};
 		input.handler = function () {
-			temporalFlux.set("value", this.parsedValue, true);
+			temporalFlux.set("value", self.parsedValue, true);
 		};
 
-		this.energyMaxBlock = tr.children[2];
+		self.energyMaxBlock = tr.children[2];
 
 		// Flux Node
 		tr = dojo.create("tr", {
 			innerHTML: '<td><span class="nameNode">Years skipped</span></td><td></td><td></td>',
 			title: "Amount of years skipped by shattering time crystals"
-		}, this.timeBlock);
+		}, self.timeBlock);
 
 		input = game._createInput({
 			id: "fluxNode"
-		}, tr.children[1], this, "flux");
+		}, tr.children[1], self, "flux");
 		input.minValue = -Number.MAX_VALUE;
 
 		// Heat Node
 		tr = dojo.create("tr", {
 			innerHTML: '<td><span class="nameNode">Heat</span></td><td></td><td></td>'
-		}, this.timeBlock);
+		}, self.timeBlock);
 
-		this.heatNameNode = tr.children[0].children[0];
+		self.heatNameNode = tr.children[0].children[0];
 
 		input = game._createInput({
 			id: "heatNode",
-		}, tr.children[1], this, "heat");
-		this.heatBlock = tr.children[2];
+		}, tr.children[1], self, "heat");
+		self.heatBlock = tr.children[2];
 
 
-		this.chronoforgeBlock = dojo.create("table", {
+		self.chronoforgeBlock = dojo.create("table", {
 			id: "cfuBlock",
 			class: "bottom-margin"
-		}, this.tabBlockNode);
+		}, self.tabBlockNode);
 
-		this.chronoforgeHeader = dojo.create("tr", {
+		self.chronoforgeHeader = dojo.create("tr", {
 			innerHTML: '<th colspan="3">Chronoforge</th>'
-		}, this.chronoforgeBlock);
+		}, self.chronoforgeBlock);
 
-		for (var i = 0; i < this.cfu.length; i++) {
-			var item = this.cfu[i];
+		for (var i = 0; i < self.cfu.length; i++) {
+			var item = self.cfu[i];
 			item.render();
-			dojo.place(item.domNode, this.chronoforgeBlock);
+			dojo.place(item.domNode, self.chronoforgeBlock);
 		}
 
 		//hack
-		item = this.getCFU("ressourceRetrieval");
+		item = self.getCFU("ressourceRetrieval");
 		item.valNode.parseFn = function (value) {
 			return Math.min(value, 100) || 0;
 		};
 
 
-		this.voidspaceBlock = dojo.create("table", {
+		self.voidspaceBlock = dojo.create("table", {
 			id: "cfuBlock",
 			class: "bottom-margin"
-		}, this.tabBlockNode);
+		}, self.tabBlockNode);
 
-		this.voidspaceHeader = dojo.create("tr", {
+		self.voidspaceHeader = dojo.create("tr", {
 			innerHTML: '<th colspan="3">Void Space</th>'
-		}, this.voidspaceBlock);
+		}, self.voidspaceBlock);
 
-		for (i = 0; i < this.vsu.length; i++) {
-			item = this.vsu[i];
+		for (i = 0; i < self.vsu.length; i++) {
+			item = self.vsu[i];
 			item.render();
-			dojo.place(item.domNode, this.voidspaceBlock);
+			dojo.place(item.domNode, self.voidspaceBlock);
 		}
 	},
 

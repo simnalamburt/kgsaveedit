@@ -606,7 +606,8 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 	}
 });
 
-dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
+
+dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	rate: 5,
 
 	karmaKittens: 0,
@@ -1989,8 +1990,8 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 	 * Creates a checkbox and a label wrapper, and attaches a click event handler
 	 * Automatically updates metaObj[dataProp] if both are set
 	**/
-	_createCheckbox: function (text, parentNode, metaObj, prop, pos) {
-		var label = dojo.create("label", {innerHTML: " "}, parentNode, pos || "last");
+	_createCheckbox: function (text, refNode, metaObj, prop, pos) {
+		var label = dojo.create("label", {innerHTML: " "}, refNode, pos || "last");
 		var cbox = dojo.create("input", {type: "checkbox"}, label, "first");
 		var span = dojo.create("span", {innerHTML: text || ""}, label);
 
@@ -2389,7 +2390,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 		return save;
 	},
 
-	importSave: function (data) {
+	decompressSave: function (data) {
 		if (typeof data !== "string") {
 			return;
 		}
@@ -2398,16 +2399,15 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 			return;
 		}
 
+		var decompress = LZString.decompressFromBase64(data);
+		return decompress || atob(data);
+	},
+
+	importSave: function (data) {
 		var success = false;
 		var rollback = false;
 		try {
-			var decompress = LZString.decompressFromBase64(data);
-			var json;
-			if (decompress) {
-				json = decompress;
-			} else {
-				json = atob(data);
-			}
+			var json = this.decompressSave(data);
 
 			if (!json) {
 				return false;
@@ -2422,6 +2422,9 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 			this._loadJSON(saveData);
 
 			success = true;
+			if (this.devMode && this.devMode.overwriteCompareOnImport) {
+				this.devMode.setCompareData(json);
+			}
 
 		} catch (ex) {
 			console.error("Unable to load game data: ", ex);
@@ -2441,7 +2444,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 	},
 
 	_loadBlankJSON: function () {
-		this._loadJSON(this.blankSaveData);
+		this._loadJSON(this.blankSaveJSON);
 
 		this.time.set("timestamp", Date.now());
 		this.telemetry.setGuid();
@@ -2487,6 +2490,40 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 		}
 	},
 
+	addTab: function (tab) {
+		if (tab && tab.renderTab && this.tabs.indexOf(tab) === -1) {
+			this.tabs.push(tab);
+			if (this._isRendered) {
+				this._renderTab(tab);
+			}
+		}
+	},
+
+	_renderTab: function (tab) {
+		tab.renderTab();
+		dojo.place(tab.tabWrapper, dojo.byId("tabContainer"));
+		dojo.place(tab.tabBlockNode, dojo.byId("tabBlocksContainer"));
+		tab.renderTabBlock();
+	},
+
+	openTab: function (tab) {
+		dojo.query(".activeTab", "tabContainer").removeClass("activeTab");
+		dojo.query(".tabBlock", "tabBlocksContainer").addClass("hidden");
+
+		if (this.tabs.indexOf(tab) === -1) {
+			console.warn("Tab " + tab + " not found, defaulting to Options tab");
+			tab = this.tabs[0];
+		}
+		if (tab) {
+			if (tab.tabNode) {
+				dojo.addClass(tab.tabNode, "activeTab");
+				dojo.removeClass(tab.tabBlockNode, "hidden");
+			}
+
+			this.activeTab = tab;
+		}
+	},
+
 
 	constructor: function (container) {
 		this.container = container;
@@ -2518,7 +2555,6 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 
 		this.resPool = new classes.KGSaveEdit.Resources(this);
 		this.village = new classes.KGSaveEdit.VillageManager(this);
-		this.time = new classes.KGSaveEdit.TimeManager(this);
 
 		this.managers = [];
 
@@ -2550,11 +2586,20 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 
 		this.tabs = [this.OptionsTab, this.bld, this.village, this.science, this.workshop,
 			this.diplomacy, this.religion, this.space, this.time, this.achievements, this.stats];
+		this.activeTab = this.OptionsTab;
+
+		if (classes.KGSaveEdit.DevMode) {
+			this.devMode = new classes.KGSaveEdit.DevMode(this);
+			this.tabs.push(this.devMode);
+		}
 
 		this.render();
 
 		//Store a fresh state, used for resetting state when importing
-		this.blankSaveData = this.exportSave();
+		this.blankSaveJSON = this.exportSave();
+		if (this.devMode) {
+			this.devMode.setCompareData(this.blankSaveJSON);
+		}
 	},
 
 	render: function () {
@@ -2562,11 +2607,8 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 		dojo.empty(span);
 		this.toolbar.render(span);
 
-		var tabContainer = dojo.byId("tabContainer");
-		var tabBlocksContainer = dojo.byId("tabBlocksContainer");
-
-		dojo.empty(tabContainer);
-		dojo.empty(tabBlocksContainer);
+		dojo.empty(dojo.byId("tabContainer"));
+		dojo.empty(dojo.byId("tabBlocksContainer"));
 
 		this.calendar.render();
 		this.console.render();
@@ -2575,15 +2617,12 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 		this.resPool.render();
 
 		for (var i = 0, len = this.tabs.length; i < len; i++) {
-			var tab = this.tabs[i];
-			tab.renderTab();
-
-			dojo.place(tab.tabWrapper, tabContainer);
-			dojo.place(tab.tabBlockNode, tabBlocksContainer);
-			tab.renderTabBlock();
+			this._renderTab(this.tabs[i]);
 		}
 
 		this.callMethods(this.managers, "render");
+
+		this._isRendered = true;
 
 		this.calculateAllEffects();
 		this.update();
@@ -2615,17 +2654,7 @@ dojo.declare("classes.KGSaveEdit.saveEdit", classes.KGSaveEdit.core, {
 		this.calendar.update();
 		this.resPool.updateMax();
 
-		var tab = this.activeTab;
-		if (!tab || !tab.tabNode || dojo.hasClass(tab.tabWrapper, "hidden")) {
-			tab = this.tabs[0];
-		}
-
-		if (tab && tab.tabNode) {
-			tab.tabNode.click();
-		} else {
-			dojo.query(".activeTab", "tabContainer").removeClass("activeTab");
-			dojo.query(".tabBlock", "tabBlocksContainer").addClass("hidden");
-		}
+		this.openTab(this.activeTab);
 
 		this.callMethods(this.managers, "update");
 

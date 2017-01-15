@@ -1545,70 +1545,73 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 	},
 
 	render: function () {
-		this.domNode = dojo.create("div", {class: "kittenBlock"});
+		var self = this;
+		self.domNode = dojo.create("div", {class: "kittenBlock"});
 
-		var block = dojo.create("div", {class: "blockContainer"}, this.domNode);
+		var block = dojo.create("div", {class: "blockContainer"}, self.domNode);
 		var div = dojo.create("div", {
 			class: "kittenSubBlock"
 		}, block);
 
-		var input = this.game._createCheckbox("[:3] ", div, this, "selected");
-		dojo.addClass(this.selectedNode, "kittenSelectCheckbox");
-		this.selectedNode.title = "Select kitten";
+		var input = self.game._createCheckbox("[:3] ", div, self, "selected");
+		dojo.addClass(self.selectedNode, "kittenSelectCheckbox");
+		self.selectedNode.title = "Select kitten";
 
-		this.selectedNode.handler = function () {
-			this.game.village.updateSelectedKittens();
+		self.selectedNode.handler = function () {
+			self.game.village.updateSelectedKittens();
 		};
 
-		this.nameBlock = dojo.create("span", null, input.label);
-		this.jobBlock = dojo.create("span", null, div);
+		self.nameBlock = dojo.create("span", null, input.label);
+		self.jobBlock = dojo.create("span", null, div);
 		dojo.create("br", null, div);
 
 		dojo.place(document.createTextNode("age: "), div);
-		this.ageBlock = dojo.create("span", null, div);
+		self.ageBlock = dojo.create("span", null, div);
 
-		this.kittenSkillsBlock = dojo.create("div", {class: "kittenSkillsBlock noAnarchy"}, div);
+		self.kittenSkillsBlock = dojo.create("div", {class: "kittenSkillsBlock noAnarchy"}, div);
 
 		div = dojo.create("div", {
 			class: "kittenSubBlock rightAlign",
 			innerHTML: '<div><a href="#">Edit Kitten</a></div>'
 		}, block);
 
-		on(div.children[0].children[0], "click", dojo.hitch(this, this.setEditMode));
+		on(div.children[0].children[0], "click", function () {
+			self.setEditMode();
+		});
 
-		this.quitJobNode = dojo.create("div", {innerHTML: '<a href="#">Unassign job</a>'}, div);
-		on(this.quitJobNode.children[0], "click", dojo.hitch(this,  function () {
-			this.quitJob();
-		}));
-		if (!this.village.getJob(this.job)) {
-			dojo.addClass(this.quitJobNode, "hidden");
+		self.quitJobNode = dojo.create("div", {innerHTML: '<a href="#">Unassign job</a>'}, div);
+		on(self.quitJobNode.children[0], "click", function () {
+			self.quitJob();
+		});
+		if (!self.village.getJob(self.job)) {
+			dojo.addClass(self.quitJobNode, "hidden");
 		}
 
-		this.setLeaderNode = dojo.create("div", {
+		self.setLeaderNode = dojo.create("div", {
 			class: "noAnarchy",
 			innerHTML: '<a href="#" title="Make Leader">&#9734;</a>'
 		}, div).children[0];
-		on(this.setLeaderNode, "click", dojo.hitch(this, function () {
-			this.makeLeader();
-		}));
-		if (this.isLeader) {
-			this.setLeaderNode.innerHTML = "&#9733;";
+		on(self.setLeaderNode, "click", function () {
+			self.makeLeader();
+		});
+		if (self.isLeader) {
+			self.setLeaderNode.innerHTML = "&#9733;";
 		}
 
-		this.setSenatorNode = dojo.create("div", {
+		self.setSenatorNode = dojo.create("div", {
 			class: "noAnarchy",
 			innerHTML: '<a href="#">Make Councilor</a>'
 		}, div);
-		on(this.setSenatorNode.children[0], "click", dojo.hitch(this, function () {
-			this.makeSenator();
-		}));
+		on(self.setSenatorNode.children[0], "click", function () {
+			self.makeSenator();
+		});
 
-		if (this.village.hideSenate || this.isSenator ||
-		this.village.senators.length >= this.village.maxSenators) {
-			dojo.addClass(this.setSenatorNode, "hidden");
+		if (self.village.hideSenate || self.isSenator ||
+		self.village.senators.length >= self.village.maxSenators) {
+			dojo.addClass(self.setSenatorNode, "hidden");
 		}
 
-		this.renderInfo();
+		self.renderInfo();
 	},
 
 	getSkillsSorted: function (withJob) {
@@ -1688,7 +1691,9 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 			type: "button",
 			value: "Save"
 		}, span, "first");
-		on(btn, "click", dojo.hitch(self, self.saveEdits));
+		on(btn, "click", function () {
+			self.saveEdits();
+		});
 
 		btn = dojo.create("input", {
 			type: "button",
@@ -1806,8 +1811,9 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 			self.editJobs.push(editJob);
 		}
 
-		on(self.editBlock, "input.expEdit:input",
-			dojo.hitch(self, self.setExpectedExp));
+		on(self.editBlock, "input.expEdit:input", function () {
+			self.setExpectedExp();
+		});
 	},
 
 	getSkillBonus: function (skillName, exp, rank, override) {

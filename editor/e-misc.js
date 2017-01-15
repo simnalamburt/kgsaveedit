@@ -54,9 +54,7 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 	}],
 	scheme: null,
 
-	constructor: function () {
-		this.tabName = "Options &amp; Settings";
-	},
+	tabName: "Options &amp; Settings",
 
 	renderTabBlock: function () {
 		var game = this.game;
@@ -319,7 +317,8 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 	},
 
 	render: function () {
-		var game = this.game;
+		var self = this;
+		var game = self.game;
 
 		var i, len;
 		var table = dojo.create("table", {
@@ -327,101 +326,101 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 			class: "bottom-margin",
 			innerHTML: '<tr><th colspan="2">Calendar</th></tr>'
 		});
-		this.domNode = table;
+		self.domNode = table;
 
 		var tr = dojo.create("tr", {
 			innerHTML: "<td>Year</td><td></td>"
 		}, table);
 		var td = tr.children[1];
 		game._createInput({id: "yearNode", class: "integerInput"},
-			td, this, "year");
+			td, self, "year");
 
 		dojo.place(document.createTextNode(" \u00A0"), td); //insert &nbsp; equivalent
 
-		this.milleniumParagonSpan = dojo.create("a", {
+		self.milleniumParagonSpan = dojo.create("a", {
 			id: "milleniumParagonSpan",
 			href: "#", class: "hidden",
 			innerHTML: "(+0 paragon)"
 		}, td);
 
-		on(this.milleniumParagonSpan, "click", dojo.hitch(this, function () {
-			this.refYear = this.year;
-			var paragon = this.game.resPool.get("paragon");
-			paragon.set("value", paragon.value + Math.floor(Math.max(this.year - this.refYear, 0) / 1000));
-			this.game.update();
-		}));
+		on(self.milleniumParagonSpan, "click", function () {
+			self.refYear = self.year;
+			var paragon = self.game.resPool.get("paragon");
+			paragon.set("value", paragon.value + Math.floor(Math.max(self.year - self.refYear, 0) / 1000));
+			self.game.update();
+		});
 
 		tr = dojo.create("tr", {
 			innerHTML: "<td>Cycle</td><td> &nbsp;Year </td>"
 		}, table);
 
-		this.cycleNode = dojo.create("select", {
+		self.cycleNode = dojo.create("select", {
 			id: "cycleNode",
 		}, tr.children[1], "first");
-		this.cycleNode.defaultVal = 0;
+		self.cycleNode.defaultVal = 0;
 
-		for (i = 0, len = this.cycles.length; i < len; i++) {
-			var cycle = this.cycles[i];
+		for (i = 0, len = self.cycles.length; i < len; i++) {
+			var cycle = self.cycles[i];
 			dojo.create("option", {
 				value: i,
 				innerHTML: cycle.glyph + " " + cycle.title
-			}, this.cycleNode);
+			}, self.cycleNode);
 		}
 
-		on(this.cycleNode, "change", dojo.hitch(this, function () {
-			this.cycle = this.cycleNode.selectedIndex;
-			this.game.update();
-		}));
+		on(self.cycleNode, "change", function () {
+			self.cycle = self.cycleNode.selectedIndex;
+			self.game.update();
+		});
 
 		game._createInput({id: "cycleYearNode", class: "integerInput shortInt"},
-			tr.children[1], this, "cycleYear");
+			tr.children[1], self, "cycleYear");
 
-		this.cycleEffectsNode = tr;
-		this.registerTooltip(this.cycleEffectsNode);
+		self.cycleEffectsNode = tr;
+		self.registerTooltip(self.cycleEffectsNode);
 
 		tr = dojo.create("tr", {
 			innerHTML: "<td>Season</td><td></td>"
 		}, table);
-		this.seasonNode = dojo.create("select", {id: "seasonNode"}, tr.children[1]);
-		this.seasonNode.defaultVal = 0;
+		self.seasonNode = dojo.create("select", {id: "seasonNode"}, tr.children[1]);
+		self.seasonNode.defaultVal = 0;
 
-		for (i = 0, len = this.seasons.length; i < len; i++) {
-			var season = this.seasons[i];
+		for (i = 0, len = self.seasons.length; i < len; i++) {
+			var season = self.seasons[i];
 			season.optionNode = dojo.create("option", {
 				value: i,
 				innerHTML: season.title
-			}, this.seasonNode);
+			}, self.seasonNode);
 		}
 
-		on(this.seasonNode, "change", dojo.hitch(this, function () {
-			this.season = this.seasonNode.selectedIndex;
-			this.game.update();
-		}));
+		on(self.seasonNode, "change", function () {
+			self.season = self.seasonNode.selectedIndex;
+			self.game.update();
+		});
 
 		tr = dojo.create("tr", {
 			innerHTML: "<td>Weather</td><td></td>"
 		}, table);
-		this.weatherSel = dojo.create("select", {
+		self.weatherSel = dojo.create("select", {
 			id: "weatherSel",
 			innerHTML: '<option value="">---</option><option value="warm">Warm</option><option value="cold">Cold</option>'
 		}, tr.children[1]);
-		this.weatherSel.defaultVal = "";
+		self.weatherSel.defaultVal = "";
 
-		on(this.weatherSel, "change", dojo.hitch(this, function () {
-			this.weather = this.weatherSel.value || null;
-			this.game.update();
-		}));
+		on(self.weatherSel, "change", function () {
+			self.weather = self.weatherSel.value || null;
+			self.game.update();
+		});
 
 		tr = dojo.create("tr", {
 			innerHTML: "<td>Day</td><td></td>"
 		}, table);
-		var input = game._createInput({id: "dayNode"}, tr.children[1], this, "day");
+		var input = game._createInput({id: "dayNode"}, tr.children[1], self, "day");
 
 		tr = dojo.create("tr", {
 			innerHTML: "<td>Festival days</td><td></td>"
 		}, table);
 		game._createInput({id: "festivalDaysNode", class: "integerInput abbrInput"},
-			tr.children[1], this, "festivalDays");
+			tr.children[1], self, "festivalDays");
 
 		tr = dojo.create("tr", {
 			innerHTML: "<td>Paradox timer</td><td></td>",
@@ -429,7 +428,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		}, table);
 
 		input = game._createInput({id: "futureSeasonTemporalParadoxNode", class: "integerInput"},
-			tr.children[1], this, "futureSeasonTemporalParadox");
+			tr.children[1], self, "futureSeasonTemporalParadox");
 		input.minValue = -1;
 	},
 
@@ -927,36 +926,37 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 	},
 
 	render: function () {
+		var self = this;
 		var tr = dojo.create("tr", {
 			class: "challengeNode",
-			innerHTML: '<td class="nameNode">' + (this.label || this.name) + "</td><td></td>"
+			innerHTML: '<td class="nameNode">' + (self.label || self.name) + "</td><td></td>"
 		});
-		this.domNode = tr;
+		self.domNode = tr;
 
-		if (this.invisible) {
+		if (self.invisible) {
 			dojo.addClass(tr, "hidden");
 		}
 
-		this.nameNode = tr.children[0];
+		self.nameNode = tr.children[0];
 
-		on(this.nameNode, mouse.enter, dojo.hitch(this, function () {
-			if (this.isNew) {
-				this.isNew = false;
-				dojo.removeClass(this.nameNode, "newMarker");
-				this.metaObj.updateTabMarker();
+		on(self.nameNode, mouse.enter, function () {
+			if (self.isNew) {
+				self.isNew = false;
+				dojo.removeClass(self.nameNode, "newMarker");
+				self.metaObj.updateTabMarker();
 			}
-		}));
+		});
 
-		this.game._createCheckbox("Unlocked", tr.children[1], this, "unlocked");
-		this.game._createCheckbox("Complete", tr.children[1], this, "researched");
+		self.game._createCheckbox("Unlocked", tr.children[1], self, "unlocked");
+		self.game._createCheckbox("Complete", tr.children[1], self, "researched");
 
-		var input = this.game._createCheckbox("Active", tr.children[1], this);
-		this.activeChallengeNode = input.cbox;
+		var input = self.game._createCheckbox("Active", tr.children[1], self);
+		self.activeChallengeNode = input.cbox;
 		input.cbox.handler = function () {
-			this.game.challenges.setCurrentChallenge(this.checked ? this.metaObj.name : null);
+			self.game.challenges.setCurrentChallenge(self.checked ? self.metaObj.name : null);
 		};
 
-		this.registerTooltip(this.domNode);
+		self.registerTooltip(self.domNode);
 	},
 
 	update: function () {
@@ -1146,19 +1146,21 @@ dojo.declare("classes.KGSaveEdit.Telemetry", null, {
 	},
 
 	render: function () {
-		this.domNode = dojo.create("div", {
+		var self = this;
+
+		self.domNode = dojo.create("div", {
 			"id": "telemetryNode",
 			class: "bottom-margin",
-			innerHTML: 'Save ID: <span class="monospace">' + this.guid + '</span> &nbsp;<input type="button" value="New ID">'
+			innerHTML: 'Save ID: <span class="monospace">' + self.guid + '</span> &nbsp;<input type="button" value="New ID">'
 		});
 
-		this.guidNode = this.domNode.children[0];
+		self.guidNode = self.domNode.children[0];
 
-		on(this.domNode.children[1], "click", dojo.hitch(this, function () {
-			if (!this.warnOnNewGuid || confirm("Are you sure you want to create a new save ID?")) {
-				this.setGuid();
+		on(self.domNode.children[1], "click", function () {
+			if (!self.warnOnNewGuid || confirm("Are you sure you want to create a new save ID?")) {
+				self.setGuid();
 			}
-		}));
+		});
 	},
 
 	setGuid: function (guid) {
