@@ -557,7 +557,10 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 250000},
 				{name: "blueprint", val: 250}
 			],
-			// unlocks: {tech: ["exogeology", "thorium"], upgrades: ["hubbleTelescope", "satelliteRadio", "astrophysicists", "solarSatellites"]},
+			// unlocks: {
+			// 	tech: ["exogeology", "thorium"],
+			// 	upgrades: ["hubbleTelescope", "satelliteRadio", "astrophysicists", "solarSatellites", "spaceEngineers"]
+			// },
 			requires: {tech: ["sattelites"]}
 		}, {
 			name: "thorium",
@@ -689,7 +692,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "timeCrystal", val: 25},
 				{name: "relic",       val: 1}
 			],
-			// unlocks: {tech: ["voidSpace"], upgrades: ["tachyonAccelerators", "chronoforge"]},
+			// unlocks: {tech: ["voidSpace"], upgrades: ["tachyonAccelerators", "chronoforge", "chronoEngineers"]},
 			requires: {tech: ["chronophysics"]}
 		}, {
 			name: "cryptotheology",
@@ -811,9 +814,44 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 				{name: "paragon", val: 5}
 			],
 			unlocked: true,
-			// unlocks: {"perks": ["megalomania", "goldenRatio"]},
+			// unlocks: {"perks": ["megalomania", "goldenRatio", "codexVox"]},
 			effects: {
 				"priceRatio": -0.01
+			}
+		}, {
+			name: "codexVox",
+			label: "Codex Vox",
+			description: "Improves manuscript craft ratio by 25%.",
+			prices: [
+				{name: "paragon", val: 25}
+			],
+			// unlocks: {"perks": ["codexLogos"]},
+			requires: {perks: ["engeneering"]},
+			effects: {
+				"manuscriptCraftRatio": 0.25
+			}
+		}, {
+			name: "codexLogos",
+			label: "Codex Logos",
+			description: "Improves compendium craft ratio by 25%.",
+			prices: [
+				{name: "paragon", val: 50}
+			],
+			// unlocks: {"perks": ["codexAgrum"]},
+			requires: {perks: ["codexVox"]},
+			effects: {
+				"compediumCraftRatio": 0.25
+			}
+		}, {
+			name: "codexAgrum",
+			label: "Codex Agrum",
+			description: "Improves blueprint craft ratio by 25%.",
+			prices: [
+				{name: "paragon", val: 75}
+			],
+			requires: {perks: ["codexLogos"]},
+			effects: {
+				"blueprintCraftRatio": 0.25
 			}
 		}, {
 			name: "megalomania",
@@ -894,9 +932,18 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			label: "Zebra Diplomacy",
 			description: "Some zebras hunters will stay in the village.",
 			prices: [
-				{name: "paragon", val: 50}
+				{name: "paragon", val: 35}
 			],
+			// unlocks: {"perks": ["zebraCovenant"]},
 			requires: {perks: ["diplomacy"]}
+		}, {
+			name: "zebraCovenant",
+			label: "Zebra Covenant",
+			description: "More zebras will stay with you.",
+			prices: [
+				{name: "paragon", val: 75}
+			],
+			requires: {perks: ["zebraDiplomacy"]}
 		}, {
 			name: "chronomancy",
 			label: "Chronomancy",
@@ -2148,10 +2195,43 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 				{name: "titanium", val: 2500},
 				{name: "science",  val: 100000}
 			],
+			requires: {tech: ["robotics"]},
 			effects: {
 				"t1CraftRatio": 10,
 				"t2CraftRatio": 5,
 				"t3CraftRatio": 2
+			}
+		}, {
+			name: "spaceEngineers",
+			label: "Space Engineers",
+			description: "Improves Engineer's effectiveness",
+			prices: [
+				{name: "alloy",   val: 500},
+				{name: "science", val: 225000}
+			],
+			requires: {tech: ["orbitalEngineering"]},
+			effects: {
+				"t1CraftRatio": 2,
+				"t2CraftRatio": 2,
+				"t3CraftRatio": 2,
+				"t4CraftRatio": 2
+			}
+		}, {
+			name: "chronoEngineers",
+			label: "Chronoengineers",
+			description: "Improves Engineer's effectiveness",
+			prices: [
+				{name: "science",     val: 500000},
+				{name: "eludium",     val: 100},
+				{name: "timeCrystal", val: 5}
+			],
+			requires: {tech: ["tachyonTheory"]},
+			effects: {
+				"t1CraftRatio": 2,
+				"t2CraftRatio": 2,
+				"t3CraftRatio": 2,
+				"t4CraftRatio": 2,
+				"t5CraftRatio": 2
 			}
 		}, {
 			name: "spaceManufacturing",
@@ -2384,7 +2464,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["electronics"]},
 			effects: {
-				"blueprintCraftRatio": 0.01
+				"cadBlueprintCraftRatio": 0.01
 			}
 		}, {
 			name: "seti",
@@ -2433,12 +2513,22 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 		}, {
 			name: "neuralNetworks",
 			label: "Neural Networks",
-			description: "Engineers effectiveness doubles at cost of the double energy consumption",
+			description: "Engineers effectiveness doubles at the cost of double energy consumption of factories",
 			prices: [
 				{name: "titanium", val: 7500},
 				{name: "science",  val: 200000}
 			],
+			// unlocks: {upgrades: ["ai"]},
 			requires: {tech: ["ai"]}
+		}, {
+			name: "ai",
+			label: "AI",
+			description: "A state of the art artificial intelligence",
+			prices: [
+				{name: "titanium", val: 10000},
+				{name: "science",  val: 250000}
+			],
+			requires: {upgrades: ["neuralNetworks"]}
 		}, {
 			name: "assistance",
 			label: "Robotic Assistance",
@@ -3031,6 +3121,10 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 
 		var resMapProduction = this.game.village.getResProduction();
 		var kittenResProduction = resMapProduction["ES" + resName] ? resMapProduction["ES" + resName] : 0;
+
+		if (this.game.workshop.get("neuralNetworks").owned()) {
+			kittenResProduction *= 2;
+		}
 
 		var tierCraftRatio = this.game.getEffect("t" + craft.tier + "CraftRatio") || 0;
 		if (tierCraftRatio == 0) {
