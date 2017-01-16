@@ -491,6 +491,10 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		}
 	},
 
+	isDarkFuture: function () {
+		return (this.year - 40000 - this.game.time.flux - this.game.getEffect("timeImpedance") >= 0);
+	},
+
 	getTooltip: function (node) {
 		var haveNumerology = this.game.prestige.getPerk("numerology").owned();
 		if (node !== this.cycleEffectsNode || !haveNumerology) {
