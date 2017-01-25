@@ -560,7 +560,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 			buildings: [{
 					name: "terraformingStation",
 					label: "Terraforming Station",
-					description: "Explode a charge of antimatter to melt yarn ice and throw an oxygen into the atmosphere",
+					description: "Explode a charge of antimatter to melt yarn ice and throw oxygen into the atmosphere",
 					prices: [
 						{name: "antimatter", val: 25},
 						{name: "uranium",    val: 5000},

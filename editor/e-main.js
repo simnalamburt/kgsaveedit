@@ -227,6 +227,11 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 				type: "energy"
 			},
 
+			"energyProductionRatio": {
+				title: "Energy production bonus",
+				type: "ratio"
+			},
+
 			//production
 
 			"productionRatio": {
@@ -517,10 +522,15 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 				type: "ratio"
 			},
 
-			"shatterTCGain": {
-				title: "Shatter TC ressources retrieved",
-				type: "ratio"
-			},
+            "shatterTCGain": {
+                title: "Shatter TC resources retrieved",
+                type: "ratio"
+            },
+
+            "rrRatio": {
+                title: "Shatter TC resources retrieval bonus",
+                type: "ratio"
+            },
 
 			"priceRatio": {
 				title: "Building's prices",

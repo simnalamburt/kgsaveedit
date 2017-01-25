@@ -2525,7 +2525,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			label: "AI",
 			description: "A state of the art artificial intelligence",
 			prices: [
-				{name: "titanium", val: 10000},
+				{name: "titanium", val: 7500},
 				{name: "science",  val: 250000}
 			],
 			requires: {upgrades: ["neuralNetworks"]}
@@ -2753,8 +2753,8 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "turnSmoothly",
-			label: "Turn smoothly",
-			description: "Chronosphere gather temporal flux.",
+			label: "Chronosurge",
+			description: "Chronospheres will now generate temporal flux.",
 			effects: {
 				"temporalFluxProductionChronosphere": 1
 			},
@@ -2980,8 +2980,8 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			label: "Megalith",
 			description: "A massive block that can be used to construct enormous structures",
 			prices: [
-				{name: "slab",  val: 75},
-				{name: "beam",  val: 35},
+				{name: "slab",  val: 50},
+				{name: "beam",  val: 25},
 				{name: "plate", val: 5}
 			],
 			unlocked: true,
