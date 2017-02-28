@@ -1058,7 +1058,79 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 1750}
 			],
+			// unlocks: {"perks": ["tiferet"]},
 			requires: {perks: ["hod"]},
+			effects: {
+				"paragonRatio": 0.05
+			}
+		}, {
+			name: "tiferet",
+			label: "Tiferet",
+			description: "Improves paragon effect and scaling by 5%",
+			prices: [
+				{name: "paragon", val: 2500}
+			],
+			// unlocks: {"perks": ["gevurah"]},
+			requires: {perks: ["netzach"]},
+			effects: {
+				"paragonRatio": 0.05
+			}
+		}, {
+			name: "gevurah",
+			label: "Gevurah",
+			description: "Improves paragon effect and scaling by 5%",
+			prices: [
+				{name: "paragon", val: 5000}
+			],
+			// unlocks: {"perks": ["chesed"]},
+			requires: {perks: ["tiferet"]},
+			effects: {
+				"paragonRatio": 0.05
+			}
+		}, {
+			name: "chesed",
+			label: "Chesed",
+			description: "Improves paragon effect and scaling by 5%",
+			prices: [
+				{name: "paragon", val: 7500}
+			],
+			// unlocks: {"perks": ["binah"]},
+			requires: {perks: ["gevurah"]},
+			effects: {
+				"paragonRatio": 0.05
+			}
+		}, {
+			name: "binah",
+			label: "Binah",
+			description: "Improves paragon effect and scaling by 5%",
+			prices: [
+				{name: "paragon", val: 15000}
+			],
+			// unlocks: {"perks": ["chokhmah"]},
+			requires: {perks: ["chesed"]},
+			effects: {
+				"paragonRatio": 0.05
+			}
+		}, {
+			name: "chokhmah",
+			label: "Chokhmah",
+			description: "Improves paragon effect and scaling by 5%",
+			prices: [
+				{name: "paragon", val: 30000}
+			],
+			// unlocks: {"perks": ["keter"]},
+			requires: {perks: ["binah"]},
+			effects: {
+				"paragonRatio": 0.05
+			}
+		}, {
+			name: "keter",
+			label: "Keter",
+			description: "Improves paragon effect and scaling by 5%",
+			prices: [
+				{name: "paragon", val: 60000}
+			],
+			requires: {perks: ["chokhmah"]},
 			effects: {
 				"paragonRatio": 0.05
 			}
@@ -2708,10 +2780,10 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 				{name: "science",  val: 175000}
 			],
 			requires: {tech: ["rocketry"]},
-			upgrades: {buildings: ["oilWell"]},
 			effects: {
 				"oilWellRatio": 0.75
-			}
+			},
+			upgrades: {buildings: ["oilWell"]}
 		}, {
 			name: "factoryProcessing",
 			label: "Factory Processing",
@@ -2722,10 +2794,10 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 				{name: "science",  val: 195000}
 			],
 			requires: {tech: ["oilProcessing"]},
-			upgrades: {buildings: ["workshop"]},
 			effects: {
 				"factoryRefineRatio": 0.05
-			}
+			},
+			upgrades: {buildings: ["workshop"]}
 		}, {
 			name: "voidAspiration",
 			label: "Void Aspiration",
@@ -2747,17 +2819,14 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 				{name: "science",     val: 300000}
 			],
 			requires: {tech: ["paradoxalKnowledge"]},
-			upgrades: {voidSpace: ["chronocontrol"]},
 			effects: {
 				"temporalParadoxDayBonus": 2
-			}
+			},
+			upgrades: {voidSpace: ["chronocontrol"]}
 		}, {
 			name: "turnSmoothly",
 			label: "Chronosurge",
 			description: "Chronospheres will now generate temporal flux.",
-			effects: {
-				"temporalFluxProductionChronosphere": 1
-			},
 			prices: [
 				{name: "unobtainium",  val: 100000},
 				{name: "timeCrystal",  val: 25},
@@ -2765,6 +2834,9 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 				{name: "temporalFlux", val: 6500}
 			],
 			requires: {voidSpace: ["chronocontrol"]},
+			effects: {
+				"temporalFluxProductionChronosphere": 1
+			},
 			upgrades: {
 				buildings: ["chronosphere"]
 			}

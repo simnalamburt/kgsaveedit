@@ -1720,6 +1720,10 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 		return prices;
 	},
 
+	getEffects: function () {
+		return this.get("effect");
+	},
+
 	getEffect: function (effectName) {
 		var effects = this.get("effects") || {};
 		var effect;

@@ -1550,10 +1550,11 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 
 		var block = dojo.create("div", {class: "blockContainer"}, self.domNode);
 		var div = dojo.create("div", {
-			class: "kittenSubBlock"
+			class: "kittenSubBlock",
+			innerHTML: ", "
 		}, block);
 
-		var input = self.game._createCheckbox("[:3] ", div, self, "selected");
+		var input = self.game._createCheckbox("[:3] ", div, self, "selected", "first");
 		dojo.addClass(self.selectedNode, "kittenSelectCheckbox");
 		self.selectedNode.title = "Select kitten";
 
@@ -1561,12 +1562,15 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 			self.game.village.updateSelectedKittens();
 		};
 
-		self.nameBlock = dojo.create("span", null, input.label);
-		self.jobBlock = dojo.create("span", null, div);
-		dojo.create("br", null, div);
+		self.nameBlock = dojo.create("span", null, input.text);
+		// self.jobBlock = dojo.create("span", null, div);
+		// dojo.create("br", null, div);
 
-		dojo.place(document.createTextNode("age: "), div);
 		self.ageBlock = dojo.create("span", null, div);
+		dojo.place(document.createTextNode(" years old, "), div);
+
+		self.traitBlock = dojo.create("span", null, div);
+		self.rankBlock = dojo.create("span", null, div);
 
 		self.kittenSkillsBlock = dojo.create("div", {class: "kittenSkillsBlock noAnarchy"}, div);
 
@@ -1638,12 +1642,19 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 		var kittenJob = this.village.getJob(this.job);
 
 		this.nameBlock.textContent = this.name + " " + this.surname;
-		this.jobBlock.textContent = " - " + this.job;
-		dojo.toggleClass(this.jobBlock, "hidden", !kittenJob);
+		// this.jobBlock.textContent = " - " + this.job;
+		// dojo.toggleClass(this.jobBlock, "hidden", !kittenJob);
 
 		dojo.toggleClass(this.quitJobNode, "hidden", !kittenJob);
 
 		this.ageBlock.textContent = this.age;
+		this.traitBlock.innerHTML = this.trait.title;
+
+		var rankText = "";
+		if (this.rank > 0) {
+			rankText = " (rank: " + this.rank + ")";
+		}
+		this.rankBlock.innerHTML = rankText;
 
 		var skillsText = [];
 		var skillsArr = this.getSkillsSorted(true);
@@ -1802,6 +1813,7 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 				innerHTML: "<td>" + job.title + '</td><td></td><td><span class="expectedRank"></span></td>'
 			}, table);
 
+			editJob.titleBlock = tr.children[0];
 			editJob.expNode = game._createInput({class: "expEdit"},
 				tr.children[1], null, null, null, true);
 			editJob.expNode.handler = dojo.hitch(editJob, handle);
@@ -1977,6 +1989,7 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 
 		for (var i = this.editJobs.length - 1; i >= 0; i--) {
 			var job = this.editJobs[i];
+			dojo.toggleClass(job.titleBlock, "bold", job.name === this.job);
 			this.game.setInput(job.expNode, num(this.skills[job.name]));
 		}
 
@@ -2024,7 +2037,9 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 	updateEditJobSkills: function () {
 		if (this.editBlock && !dojo.hasClass(this.editBlock, "hidden")) {
 			for (var i = this.editJobs.length - 1; i >= 0; i--) {
-				this.editJobs[i].expNode.handler();
+				var editJob = this.editJobs[i];
+				dojo.toggleClass(editJob.titleBlock, "bold", editJob.name === this.job);
+				editJob.expNode.handler();
 			}
 		}
 	},

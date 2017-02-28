@@ -94,8 +94,13 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 				var zMax = 0;
 				if (this.game.ironWill) {
 					zMax = num(Math.max(this.game.karmaZebrasNode.parsedValue, this.game.science.get("archery").owned()));
-				} else if (this.game.prestige.getPerk("zebraDiplomacy").owned()) {
-					zMax = Math.floor(0.10 * this.game.karmaZebrasNode.parsedValue);
+				} else {
+					if (this.game.prestige.getPerk("zebraDiplomacy").owned()) {
+						zMax = Math.floor(0.10 * (this.game.karmaZebrasNode.parsedValue + 1));
+					}
+					if (this.game.prestige.getPerk("zebraCovenant").owned()) {
+						zMax = Math.floor(0.50 * (this.game.karmaZebrasNode.parsedValue + 1));
+					}
 				}
 				return zMax;
 			}

@@ -27,7 +27,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 	}, {
 		name: "blastFurnace",
 		label: "Chrono Furnace",
-		description: "Operates on chronoheat. Increases the maximum heat limit by 100. Can automatically shatter time crystals.",
+		description: "Operates on chronoheat. Increases the maximum heat limit by 100.",
 		prices: [
 			{name: "timeCrystal", val: 25},
 			{name: "relic",       val: 5}
