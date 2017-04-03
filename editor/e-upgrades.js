@@ -720,7 +720,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 		}, {
 			name: "paradoxalKnowledge",
 			label: "Paradoxal Knowledge",
-			description: "",
+			description: "TBD",
 			effectDesc: "Unlocks Chronocontrol and Resource Retrieval",
 			prices: [
 				{name: "science",     val: 1000000},

@@ -303,7 +303,7 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 			},
 
 			"hunterRatio": {
-				title: "Hunts know-how",
+				title: "Hunting effectiveness",
 				type: "ratio"
 			},
 
@@ -641,7 +641,6 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 
 	colorScheme: "",
 	forceShowLimits: false,
-	forceHighPrecision: false,
 	useWorkers: false,
 
 	tabs: null,
@@ -2116,7 +2115,6 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 
 		saveData.game = {
 			forceShowLimits: this.forceShowLimits,
-			forceHighPrecision: this.forceHighPrecision,
 			isCMBREnabled: this.isCMBREnabled,
 			useWorkers: this.useWorkers,
 			colorScheme: this.colorScheme,
@@ -2126,8 +2124,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			deadKittens: this.deadKittens,
 			cheatMode: this.cheatMode,
 
-			opts: this.filterMetaObj(this.opts, ["usePerSecondValues", "usePercentageResourceValues",
-				"highlightUnavailable", "hideSell", "disableCMBR", "disableTelemetry", "noConfirm", "IWSmelter"])
+			opts: this.filterMetaObj(this.opts, ["usePerSecondValues", "forceHighPrecision", "usePercentageResourceValues",
+				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter", "disableCMBR", "disableTelemetry", "enableRedshift"])
 		};
 
 		this.telemetry.save(saveData);
@@ -2489,7 +2487,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			var data = saveData.game;
 
 			this.loadMetaFields(this, data, ["forceShowLimits", "colorScheme", "karmaKittens", "karmaZebras",
-				"deadKittens", "useWorkers", "cheatMode", "forceHighPrecision", "isCMBREnabled"]);
+				"deadKittens", "useWorkers", "cheatMode", "isCMBREnabled"]);
 
 			this.OptionsTab.scheme.value = this.colorScheme;
 			this.ironWill = ("ironWill" in data) ? Boolean(data.ironWill) : true;
@@ -2500,8 +2498,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 				this.resPool.get("paragon").set("value", paragonPoints);
 			}
 
-			this.loadMetaFields(this.opts, data.opts, ["usePerSecondValues", "usePercentageResourceValues",
-				"highlightUnavailable", "hideSell", "disableCMBR", "disableTelemetry", "noConfirm", "IWSmelter"]);
+			this.loadMetaFields(this.opts, data.opts, ["usePerSecondValues", "forceHighPrecision", "usePercentageResourceValues",
+				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter", "disableCMBR", "disableTelemetry", "enableRedshift"]);
 		}
 	},
 
@@ -2548,13 +2546,15 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 
 		this.opts = new classes.KGSaveEdit.GenericItem(this, {
 			usePerSecondValues: true,
+			forceHighPrecision: false,
 			usePercentageResourceValues: false,
 			highlightUnavailable: false,
 			hideSell: false,
-			disableCMBR: false,
-			disableTelemetry: false,
 			noConfirm: false,
-			IWSmelter: true
+			IWSmelter: true,
+			disableCMBR: false,
+			disableTelemetry: true,
+			enableRedshift: false
 		});
 
 		this.toolbar = new classes.KGSaveEdit.ui.Toolbar(this);

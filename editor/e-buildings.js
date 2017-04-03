@@ -458,7 +458,7 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			description: "Quarries each improve your mining efficiency by 35% and produce a bit of coal",
 			prices: [
 				{name: "scaffold", val: 50},
-				{name: "steel",    val: 150},
+				{name: "steel",    val: 125},
 				{name: "slab",     val: 1000}
 			],
 			priceRatio: 1.15,
@@ -542,7 +542,7 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			label: "Calciner",
 			description: "A highly effective source of metal.\nConsumes 1.5 minerals and 0.02 oil per tick. Produces iron and a small amount of titanium",
 			prices: [
-				{name: "steel",     val: 120},
+				{name: "steel",     val: 100},
 				{name: "titanium",  val: 15},
 				{name: "blueprint", val: 5},
 				{name: "oil",       val: 500}

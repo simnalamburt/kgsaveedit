@@ -10,7 +10,8 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 			desc: "Use web worker (game works correctly in background tab, may cause performance issues)"
 		}, {
 			name: "forceHighPrecision",
-			desc: "Use high precision for resource values"
+			desc: "Use high precision for resource values",
+			src: "game.opts"
 		}, {
 			name: "usePerSecondValues",
 			desc: "Use per second values <i>(per tick otherwise)</i>",
@@ -28,8 +29,8 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 			desc: 'Hide "sell" buttons',
 			src: "game.opts"
 		}, {
-			name: "disableCMBR",
-			desc: "Disable global donate bonus",
+			name: "enableRedshift",
+			desc: "Enable offline progression (Experimental)",
 			src: "game.opts"
 		}, {
 			name: "noConfirm",
@@ -39,6 +40,9 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 			name: "IWSmelter",
 			desc: "Smelters turn off at 95% max Iron in Iron Will mode",
 			src: "game.opts",
+		}, {
+			name: "disableTelemetry",
+			desc: "Disable game statistics.",
 			class: "bottom-margin"
 		}, {
 			name: "isCMBREnabled",
@@ -585,7 +589,8 @@ dojo.declare("classes.KGSaveEdit.Console", classes.KGSaveEdit.core, {
 		"ivoryMeteor":        {title: "Ivory Meteors",       enabled: true, unlocked: false},
 		"unicornRift":        {title: "Unicorn Rifts",       enabled: true, unlocked: false},
 		"alicornRift":        {title: "Alicorn Rifts",       enabled: true, unlocked: false},
-		"tc":                 {title: "Time Crystals",       enabled: true, unlocked: false}
+		"tc":                 {title: "Time Crystals",       enabled: true, unlocked: false},
+		"faith":              {title: "Faith",               enabled: true, unlocked: false}
 	},
 
 	filters: null,

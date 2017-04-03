@@ -5,6 +5,15 @@ require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 
 dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	achievementsData: [{
+			name: "theElderLegacy",
+			title: "The Elder Legacy",
+			description: "Be a first player to test Kittens Game Mobile",
+			condition: function () {
+                var date = new Date();
+                return (date.getMonth() == 0 && date.getFullYear() == 2017);
+			},
+			hidden: true
+		}, {
 			name: "unicornConspiracy",
 			title: "Unicorn Conspiracy",
 			description: "Lift the shroud of the Unicorn conspiracy!",
@@ -316,6 +325,7 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 			}
 			dojo.toggleClass(ach.unlockedLabel, "newMarker", ach.newAch);
 
+			dojo.toggleClass(ach.domNode, "hidden", ach.hidden && !ach.unlocked);
 			newAch = newAch || ach.newStarAch || ach.newAch;
 		}
 

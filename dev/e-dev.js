@@ -110,7 +110,7 @@ dojo.declare("classes.KGSaveEdit.DevMode", classes.KGSaveEdit.UI.Tab, {
 				var keptSkills = {};
 				for (var key in kitten.skills) {
 					var skill = kitten.skills[key];
-					if (skill.length === 3 && skill[0] < 0 && skill[1] === 0 && skill[2] === 0) {
+					if (skill.length === 3 && skill[0] <= 0 && skill[1] === 0 && skill[2] === 0) {
 						if (!kittenNegated) {
 							negatedKittens.push(index);
 							kittenNegated = true;
@@ -152,7 +152,7 @@ dojo.declare("classes.KGSaveEdit.DevMode", classes.KGSaveEdit.UI.Tab, {
 		var summaryHTML = "";
 
 		if (negatedKittens.length > 0) {
-			summaryHTML = negatedKittens.length + " kittens had negative job experience values wiped.<br><br>";
+			summaryHTML = negatedKittens.length + " kittens had non-positive job experience values wiped.<br><br>";
 			console.log("negatedKittens indeces: " + negatedKittens.join(", "));
 		}
 

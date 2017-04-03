@@ -124,14 +124,14 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 	}, {
 		name: "voidRift",
 		label: "Void Rift",
-		description: "Increase the maximum storage space by 1%",
+		description: "Increase the maximum storage space by 2%",
 		prices: [
-			{name: "void", val: 100}
+			{name: "void", val: 75}
 		],
 		priceRatio: 1.25,
 		requires: {upgrades: ["voidAspiration"]},
 		effects: {
-			"globalResourceRatio": 0.01
+			"globalResourceRatio": 0.02
 		}
 	}, {
 		name: "chronocontrol",
