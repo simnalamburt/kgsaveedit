@@ -381,6 +381,25 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 							"oilPerTickAutoprodSpace": 0.5
 						};
 					}
+				}, {
+					name: "spiceRefinery",
+					label: "Spice Refinery",
+					description: "Refines the sand of the Dune into a highly psychoactive substance known as 'Spice'.",
+					prices: [
+						{name: "starchart", val: 500},
+						{name: "alloy",     val: 250},
+						{name: "science",   val: 75000},
+						{name: "kerosene",  val: 75}
+					],
+					priceRatio: 1.15,
+					effects: {
+						"spicePerTickAutoprodSpace": 0.25
+					},
+					calculateEffects: function (self) {
+						self.effects = {
+							"spicePerTickAutoprodSpace": 0.25
+						};
+					}
 				}],
 				requires: {spaceMission: ["duneMission"]}
 			}, {

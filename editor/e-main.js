@@ -616,8 +616,12 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 			"spaceBeacon-starchartPerTickBaseSpace": {
 				title: "Space Beacon - Starchart production",
 				type: "ratio"
-			}
+			},
 
+			"spiceRefinery-spicePerTickAutoprodSpace": {
+				title: "Spice Refinery - Spice production",
+				type: "ratio"
+			}
 		}
 	}
 });
