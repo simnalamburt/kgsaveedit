@@ -28,7 +28,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			],
 			priceRatio: 1.15,
 			// unlocks: {"zigguratUpgrades": ["ivoryCitadel"]},
-			requires: {"zigguratUpgrades": ["unicornTomb"]},
+			requires: {zigguratUpgrades: ["unicornTomb"]},
 			effects: {
 				"unicornsRatioReligion": 0.1,
 				"riftChance":            5
@@ -43,7 +43,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			],
 			priceRatio: 1.15,
 			// unlocks: {"zigguratUpgrades": ["skyPalace"]},
-			requires: {"zigguratUpgrades": ["ivoryTower"]},
+			requires: {zigguratUpgrades: ["ivoryTower"]},
 			effects: {
 				"unicornsRatioReligion": 0.25,
 				"ivoryMeteorChance":     5
@@ -58,7 +58,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			],
 			priceRatio: 1.15,
 			// unlocks: {"zigguratUpgrades": ["unicornUtopia"]},
-			requires: {"zigguratUpgrades": ["ivoryCitadel"]},
+			requires: {zigguratUpgrades: ["ivoryCitadel"]},
 			effects: {
 				"unicornsRatioReligion": 0.5,
 				"ivoryMeteorRatio":      0.05,
@@ -82,7 +82,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			],
 			priceRatio: 1.15,
 			// unlocks: {"zigguratUpgrades": ["sunspire"]},
-			requires: {"zigguratUpgrades": ["skyPalace"]},
+			requires: {zigguratUpgrades: ["skyPalace"]},
 			effects: {
 				"unicornsRatioReligion": 2.5,
 				"ivoryMeteorRatio":      0.15,
@@ -106,7 +106,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 				{name: "tears", val: 25000}
 			],
 			priceRatio: 1.15,
-			requires: {"zigguratUpgrades": ["unicornUtopia"]},
+			requires: {zigguratUpgrades: ["unicornUtopia"]},
 			effects: {
 				"unicornsRatioReligion": 5,
 				"ivoryMeteorRatio":      0.5,
@@ -150,6 +150,20 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 				"cultureMaxRatioBonus": 0.01
 			},
 			upgrades: {buildings: ["ziggurat"]}
+		}, {
+			name: "unicornNecropolis",
+			label: "Unicorn Necropolis",
+			description: "The ocean of blood at the end of the lane",
+			prices: [
+				{name: "void",      val: 5},
+				{name: "necrocorn", val: 25},
+				{name: "megalith",  val: 2500}
+			],
+			priceRatio: 1.15,
+			requires: {zigguratUpgrades: ["unicornGraveyard"]},
+			effects: {
+				"corruptionBoostRatio": 0.10
+			}
 		}, {
 			name: "blackPyramid",
 			label: "Black Pyramid",
