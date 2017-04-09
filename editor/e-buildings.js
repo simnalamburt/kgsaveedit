@@ -1721,7 +1721,7 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 	},
 
 	getEffects: function () {
-		return this.get("effect");
+		return this.get("effects");
 	},
 
 	getEffect: function (effectName) {

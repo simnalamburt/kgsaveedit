@@ -267,7 +267,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		// Flux Node
 		tr = dojo.create("tr", {
 			innerHTML: '<td><span class="nameNode">Years skipped</span></td><td></td><td></td>',
-			title: "Amount of years skipped by shattering time crystals"
+			title: "Years skipped by shattering time crystals"
 		}, self.timeBlock);
 
 		input = game._createInput({
