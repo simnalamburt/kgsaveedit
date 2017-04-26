@@ -962,7 +962,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		}
 
 		if (isNaN(precision)) {
-			precision = this.forceHighPrecision ? 3 : 2;
+			precision = this.opts.forceHighPrecision ? 3 : 2;
 		}
 
 		var mantisa = "";
