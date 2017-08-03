@@ -691,10 +691,13 @@ dojo.declare("classes.KGSaveEdit.DiplomacyManager", [classes.KGSaveEdit.UI.Tab, 
 		}
 
 		race = this.get("leviathans");
-		race.domNode.children[2].textContent = "Days left ";
-		this.game._createInput({class: "integerInput"}, race.domNode.children[2], race, "duration");
-		dojo.place(document.createTextNode(" Energy "), race.domNode.children[2]);
-		this.game._createInput({class: "integerInput"}, race.domNode.children[2], race, "energy");
+		var node = race.domNode.children[2];
+		node.textContent = "Days left ";
+		this.game._createInput({class: "integerInput"}, node, race, "duration");
+		dojo.place(document.createTextNode(" Energy "), node);
+		this.game._createInput({class: "integerInput"}, node, race, "energy");
+		dojo.place(document.createTextNode(" / "), node);
+		race.energyMaxSpan = dojo.create("span", {innerHTML: "5"}, node);
 	},
 
 	get: function (name) {
@@ -726,6 +729,14 @@ dojo.declare("classes.KGSaveEdit.DiplomacyManager", [classes.KGSaveEdit.UI.Tab, 
 		for (var i = this.races.length - 1; i >= 0; i--) {
 			var race = this.races[i];
 			dojo.toggleClass(race.nameNode, "spoiler", !race.unlocked);
+		}
+
+		race = this.get("leviathans");
+		var markerCap = this.game.religion.getZU("marker").val * 5 + 5;
+		race.energyMaxSpan.textContent = markerCap;
+
+		if (race.energy > markerCap) {
+			race.set("energy", markerCap);
 		}
 	},
 
@@ -805,8 +816,8 @@ dojo.declare("classes.KGSaveEdit.ChallengesManager", classes.KGSaveEdit.Manager,
 	}, {
 		name: "1000Years",
 		label: "1000 years",
-		description: "Goal: Reach year 1000.",
-		effectDesc: "TBD",
+		description: "Restart the game with a half-life time.<br><br>Goal: Reach year 1000.",
+		effectDesc: "Colder combustion of Time Crystal.",
 		condition: function () {
 			return this.game.calendar.year >= 1000;
 		}
@@ -1223,20 +1234,20 @@ dojo.declare("classes.KGSaveEdit.Server", classes.KGSaveEdit.core, {
 dojo.declare("classes.KGSaveEdit.VoidManager", classes.KGSaveEdit.Manager, {
 	game: null,
 
-    voidUpgradesData: [{
-        name: "spaceCathedral",
-        label: "Space Cathedral",
-        description: "TBD.",
-        prices: [{
+	voidUpgradesData: [{
+		name: "spaceCathedral",
+		label: "Space Cathedral",
+		description: "TBD.",
+		prices: [{
 			name: "relic", val: 1
 		}],
-        researched: false
-    }],
+		researched: false
+	}],
 
 	voidUpgrades: null,
 	voidUpgradesByName: null,
 
-    faction: null,
+	faction: null,
 
 	constructor: function (game) {
 		this.game = game;
@@ -1244,24 +1255,24 @@ dojo.declare("classes.KGSaveEdit.VoidManager", classes.KGSaveEdit.Manager, {
 		this.registerMetaItems(this.voidUpgradesData, classes.KGSaveEdit.GenericItem, "voidUpgrades");
 	},
 
-    getVU: function (name) {
+	getVU: function (name) {
 		return this.voidUpgradesByName[name];
-    },
+	},
 
-    save: function (saveData) {
-        saveData.void = {
-            vu: this.game.filterMetadata(this.voidUpgrades, ["name", "val", "on", "unlocked"]),
-            faction: this.faction
-        };
-    },
+	save: function (saveData) {
+		saveData.void = {
+			vu: this.game.filterMetadata(this.voidUpgrades, ["name", "val", "on", "unlocked"]),
+			faction: this.faction
+		};
+	},
 
-    load: function (saveData) {
-        if (!saveData.void) {
-            return;
-        }
+	load: function (saveData) {
+		if (!saveData.void) {
+			return;
+		}
 
-        this.faction = saveData.void.faction || null;
-    }
+		this.faction = saveData.void.faction || null;
+	}
 });
 
 

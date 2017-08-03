@@ -118,8 +118,21 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 				{name: "science",   val: 350000},
 				{name: "kerosene",  val: 12000}
 			],
-			// unlocks: {planet: ["yarn"]},
+			// unlocks: {planet: ["yarn"], spaceMission: ["umbraMission"]},
 			requires: {spaceMission: ["heliosMission"]},
+			upgradable: false
+		}, {
+			name: "umbraMission",
+			label: "Umbra Mission",
+			description: "Umbra is a supermassive black hole in the hearth of the Helios system",
+			prices: [
+				{name: "starchart", val: 25000},
+				{name: "science", 	val: 500000},
+				{name: "kerosene", 	val: 25000},
+				{name: "thorium",   val: 15000}
+			],
+			// unlocks: {planet: ["umbra"]},
+			requires: {spaceMission: ["yarnMission"]},
 			upgradable: false
 		}, {
 			name: "centaurusSystemMission",
@@ -128,7 +141,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 			prices: [
 				{name: "starchart", val: 100000},
 				{name: "titanium",  val: 40000},
-				{name: "science",   val: 400000},
+				{name: "science",   val: 800000},
 				{name: "kerosene",  val: 30000},
 				{name: "thorium",   val: 50000}
 			],
@@ -320,7 +333,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 						"energyConsumption": 0
 					},
 					calculateEffects: function (self, game) {
-						self.effects = {
+						var effects = {
 							"catnipMax":         45000,
 							"woodMax":           25000,
 							"mineralsMax":       30000,
@@ -334,6 +347,15 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 						if (game.challenges.currentChallenge === "energy") {
 							self.effects["energyConsumption"] *= 2;
 						}
+
+						if (game.workshop.get("aiBases").researched) {
+							for (var key in effects) {
+								if (key !== "energyConsumption") {
+									effects[key] *= 1 + game.bld.get("aiCore").on * 0.1;
+								}
+							}
+						}
+						self.effects = effects;
 					}
 			}],
 			requires: {spaceMission: ["moonMission"]}
@@ -535,7 +557,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 						"coalMax":        25000,
 						"uraniumMax":     5000,
 						"titaniumMax":    7500,
-						"oilMax":         25000,
+						"oilMax":         7500,
 						"unobtainiumMax": 750
 					};
 				}
@@ -617,6 +639,39 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					val: 0
 			}],
 			requires: {spaceMission: ["yarnMission"]}
+		}, {
+			name: "umbra",
+			label: "Umbra",
+			routeDays: 7500,
+			buildings: [{
+				name: "hrHarvester",
+				label: "HR Harvester",
+				description: "Hawking Radiation Harvester. Operates on the energy of the black hole evaporation. Every HR Harvester generates a 1W of energy which slowly increases over time.",
+				prices: [
+					{name: "relic",      val: 25},
+					{name: "antimatter", val: 1250}
+				],
+				priceRatio: 1.15,
+				effects: {
+					"energyProduction": 1
+				},
+				calculateEffects: function (self, game) {
+					var yearBonus = game.calendar.year - 40000 - game.time.flux;
+					if (yearBonus < 0) {
+						yearBonus = 0;
+					}
+					var fluxBonus = 0;
+					if (game.time.flux > 0) {
+						fluxBonus = Math.log(game.time.flux);
+					}
+
+					self.effects["energyProduction"] =
+						1 * (1 + yearBonus * 0.01) *
+							(1 + fluxBonus * 0.01) *
+							(1 + game.getEffect("umbraBoostRatio"));
+				}
+			}],
+			requires: {spaceMission: ["umbraMission"]}
 		}, {
 			name: "centaurusSystem",
 			label: "Centaurus System",

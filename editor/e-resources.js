@@ -114,6 +114,21 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			transient: true,
 			color: "#5A0EDE"
 		}, {
+			name: "temporalFlux",
+			title: "temporal flux",
+			getMaxValue: function () { //bit of a hack to prevent paragon bonus
+				return Math.round(this.game.getEffect(this.name + "Max"));
+			},
+			inputHandler: function () {
+				this.game.setInput(this.game.time.temporalFluxNode, this.parsedValue, true);
+			},
+			hardMaxLimit: true,
+			invisible: true
+		}, {
+			name: "gflops",
+			title: "gigaflops",
+			type: "transient"
+		}, {
 			name: "furs",
 			type: "uncommon",
 			transient: true,
@@ -219,20 +234,6 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 				"textShadow": "1px 0px 10px #FA2E9E",
 				"animation": "neon1 1.5s ease-in-out infinite alternate"
 			}
-		}, {
-			name: "temporalFlux",
-			title: "temporal flux",
-			getMaxValue: function () {
-				return Math.round(
-					this.game.rate * 60 * 10 *
-						(1 + this.game.time.getCFU("temporalBattery").val * 0.25)
-				);
-			},
-			inputHandler: function () {
-				this.game.setInput(this.game.time.temporalFluxNode, this.parsedValue, true);
-			},
-			hardMaxLimit: true,
-			invisible: true
 		}, {
 			name: "beam",
 			craftable: true
@@ -370,7 +371,7 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 	update: function () {
 		this.game.callMethods(this.resources, "update");
 
-		// this.energyProd = this.game.getEffect("energyProduction");
+		// this.energyProd = this.game.getEffect("energyProduction") * (1 + game.getEffect("energyProductionRatio"));
 		// this.energyCons = this.game.getEffect("energyConsumption");
 	},
 

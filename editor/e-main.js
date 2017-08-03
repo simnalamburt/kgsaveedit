@@ -522,15 +522,15 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 				type: "ratio"
 			},
 
-            "shatterTCGain": {
-                title: "Shatter TC resources retrieved",
-                type: "ratio"
-            },
+			"shatterTCGain": {
+				title: "Shatter TC resources retrieved",
+				type: "ratio"
+			},
 
-            "rrRatio": {
-                title: "Shatter TC resources retrieval bonus",
-                type: "ratio"
-            },
+			"rrRatio": {
+				title: "Shatter TC resources retrieval bonus",
+				type: "ratio"
+			},
 
 			"priceRatio": {
 				title: "Building's prices",
@@ -1122,7 +1122,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		//get resource specific craft ratio (like factory bonus)
 		var resCraftRatio = this.getEffect(res.name + "CraftRatio") || 0;
 
-		return ratio + resCraftRatio;
+		return (ratio + resCraftRatio) * (1 + (this.getEffect(res.name + "GlobalCraftRatio") || 0));
 	},
 
 	renderPrices: function (tooltip, prices) {
@@ -2577,31 +2577,31 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 
 		this.managers = [];
 
-        var managers = [
-            {id: "workshop",     class: "WorkshopManager"},
+		var managers = [
+			{id: "workshop",     class: "WorkshopManager"},
 			{id: "diplomacy",    class: "DiplomacyManager"},
-            {id: "bld",          class: "BuildingsManager"},
-            {id: "science",      class: "ScienceManager"},
-            {id: "achievements", class: "AchievementsManager"},
-            {id: "religion",     class: "ReligionManager"},
-            {id: "space",        class: "SpaceManager"},
+			{id: "bld",          class: "BuildingsManager"},
+			{id: "science",      class: "ScienceManager"},
+			{id: "achievements", class: "AchievementsManager"},
+			{id: "religion",     class: "ReligionManager"},
+			{id: "space",        class: "SpaceManager"},
 			{id: "time",         class: "TimeManager"},
-            {id: "prestige",     class: "PrestigeManager"},
-            {id: "challenges",   class: "ChallengesManager"},
-            {id: "stats",        class: "StatsManager"},
+			{id: "prestige",     class: "PrestigeManager"},
+			{id: "challenges",   class: "ChallengesManager"},
+			{id: "stats",        class: "StatsManager"},
 			{id: "void",         class: "VoidManager"}
-        ];
+		];
 
-        for (var i = 0; i < managers.length; i++) {
-            var manager = managers[i];
+		for (var i = 0; i < managers.length; i++) {
+			var manager = managers[i];
 			if (!classes.KGSaveEdit[manager.class]) {
 				throw "Unable to load tab manager '" + manager.class + "'";
 			}
 
-            this[manager.id] = new classes.KGSaveEdit[manager.class](this);
+			this[manager.id] = new classes.KGSaveEdit[manager.class](this);
 
-            this.managers.push(this[manager.id]);
-        }
+			this.managers.push(this[manager.id]);
+		}
 
 		this.tabs = [this.OptionsTab, this.bld, this.village, this.science, this.workshop,
 			this.diplomacy, this.religion, this.space, this.time, this.achievements, this.stats];
@@ -2677,7 +2677,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 
 		this.callMethods(this.managers, "update");
 
-		var energyProd = this.getEffect("energyProduction");
+		var energyProd = this.getEffect("energyProduction") * (1 + this.getEffect("energyProductionRatio"));
 		var energyCons = this.getEffect("energyConsumption");
 
 		//recalculate because some building.action()s are directly dependant on energy

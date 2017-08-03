@@ -51,10 +51,11 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 		}, {
 			name: "skyPalace",
 			label: "Sky Palace",
-			description: "Improves your unicorns generation by 50%.\nThere was a legend of ancient and mysterious beings inhabitings this place long ago.",
+			description: "Improves your unicorns generation by 50%.\nThere was a legend of ancient and mysterious beings living in this place long ago.",
 			prices: [
-				{name: "ivory", val: 250000},
-				{name: "tears", val: 500}
+				{name: "ivory",    val: 125000},
+				{name: "megalith", val: 5},
+				{name: "tears",    val: 500}
 			],
 			priceRatio: 1.15,
 			// unlocks: {"zigguratUpgrades": ["unicornUtopia"]},
@@ -62,13 +63,14 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			effects: {
 				"unicornsRatioReligion": 0.5,
 				"ivoryMeteorRatio":      0.05,
-				"alicornChance":         5,
+				"goldMaxRatio":          0.01,
+				"alicornChance":         10,
 				"alicornPerTick":        0
 			},
 			calculateEffects: function (self, game) {
 				var alicorns = 0;
 				if (game.resPool.get("alicorn").value > 0) {
-					alicorns = 0.00001;
+					alicorns = 0.00002;
 				}
 				self.effects["alicornPerTick"] = alicorns;
 			}
@@ -78,6 +80,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			description: "Improves your unicorns generation by 250%. Increase alicorn summon chance. Improves TC refine ratio by 5%",
 			prices: [
 				{name: "ivory", val: 1000000},
+				{name: "gold",  val: 500},
 				{name: "tears", val: 5000}
 			],
 			priceRatio: 1.15,
@@ -102,7 +105,8 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			label: "Sunspire",
 			description: "Improves your unicorns generation by 500%. Increase alicorn summon chance by significant amount. Improves TC refine ratio by 10%",
 			prices: [
-				{name: "ivory", val: 1500000},
+				{name: "ivory", val: 750000},
+				{name: "gold",  val: 1250},
 				{name: "tears", val: 25000}
 			],
 			priceRatio: 1.15,
@@ -190,7 +194,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			upgradable: true,
 			faith: 150,
 			effects: {
-				"faithRatio": 0.1
+				"faithRatioReligion": 0.1
 			}
 		}, {
 			name: "scholasticism",

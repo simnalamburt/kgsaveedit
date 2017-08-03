@@ -292,11 +292,11 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 					self.effects["catnipPerTickCon"] *= amt;
 					self.effects["oilPerTickProd"] *= amt;
 
-					return amt;
-				}
+					if (self.val) {
+						self.effects["scienceRatio"] = 0.35 * (1 + on / self.val);
+					}
 
-				if (self.val) {
-					self.effects["scienceRatio"] = 0.35 * (1 + on / self.val);
+					return amt;
 				}
 			},
 			flavor: "New postdoc positions available."
@@ -795,6 +795,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				if (game.challenges.currentChallenge === "energy") {
 					effects["energyConsumption"] *= 2;
 				}
+				if (game.workshop.get("neuralNetworks").owned()) {
+					effects["energyConsumption"] *= 2;
+				}
 				self.effects = effects;
 			}
 		}, {
@@ -1218,6 +1221,33 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				}
 				self.effects["temporalFluxProduction"] = game.getEffect("temporalFluxProductionChronosphere");
 			}
+		}, {
+			name: "aiCore",
+			label: "AI Core",
+			description: "FelineOS, a state of the art artificial intelligence. Absolutely harmless. Every level of upgrade will increase core energy consumption by 75%.",
+			prices: [
+				{name: "antimatter", val: 125},
+				{name: "science", 	val: 500000}
+			],
+			priceRatio: 1.15,
+			unlockRatio: 0.01,
+			requires: {tech: ["ai"]},
+			effects: {
+				"energyConsumption": 2,
+				"gflopsPerTickBase": 0.02
+			},
+			upgrades: {spaceBuilding: ["moonBase"]},
+			action: function (self, game) {
+				self.effects["energyConsumption"] = 2 * (1 + 0.75 * self.on);
+
+				var gflops = game.resPool.get("gflops");
+				gflops.value += self.effects["gflopsPerTickBase"] * self.on;
+
+				if (gflops.value > 0) {
+					self.effects["aiLevel"] = Math.round(Math.log(gflops.value));
+				}
+			},
+			flavor: "It time to put our differences aside for science."
 	}],
 
 	buildingGroupsData: {
@@ -1310,7 +1340,7 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 		megastructures: {
 			name: "megastructures",
 			title: "Mega Structures",
-			buildings: ["ziggurat", "chronosphere"]
+			buildings: ["ziggurat", "chronosphere", "aiCore"]
 		}
 	},
 

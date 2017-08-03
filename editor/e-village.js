@@ -1070,8 +1070,8 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 		});
 
 		if (this.game.village.leader && this.game.workshop.get("register").owned()) {
-			freeKittens.sort(function (a, b) {return b.val - a.val; });
-			freeKittens.sort(function (a, b) {return b.rank - a.rank; });
+			freeKittens.sort(function (a, b) { return b.val - a.val; });
+			freeKittens.sort(function (a, b) { return b.rank - a.rank; });
 		}
 
 		var end = Math.min(freeKittens.length, amt);

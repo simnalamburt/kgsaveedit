@@ -9,8 +9,8 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 			title: "The Elder Legacy",
 			description: "Be a first player to test Kittens Game Mobile",
 			condition: function () {
-                var date = new Date();
-                return (date.getMonth() == 0 && date.getFullYear() == 2017);
+				var date = new Date();
+				return (date.getMonth() == 0 && date.getFullYear() == 2017);
 			},
 			hidden: true
 		}, {

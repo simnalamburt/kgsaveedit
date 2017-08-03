@@ -22,6 +22,9 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		prices: [
 			{name: "timeCrystal", val: 5}
 		],
+		effects: {
+			"temporalFluxMax": 750
+		},
 		priceRatio: 1.25,
 		unlocked: true
 	}, {
@@ -131,7 +134,8 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		priceRatio: 1.25,
 		requires: {upgrades: ["voidAspiration"]},
 		effects: {
-			"globalResourceRatio": 0.02
+			"globalResourceRatio": 0.02,
+			"umbraBoostRatio":     0.1
 		}
 	}, {
 		name: "chronocontrol",
@@ -149,6 +153,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 			"temporalParadoxDay": 1,
 			"energyConsumption": 15
 		},
+		togglable: true,
 		calculateEffects: function (self, game) {
 			self.effects = {
 				"temporalParadoxDay": 1 + game.getEffect("temporalParadoxDayBonus"),
@@ -322,6 +327,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		for (i = 0; i < self.vsu.length; i++) {
 			item = self.vsu[i];
 			item.render();
+			item.afterRender(); //workaround for strictmode
 			dojo.place(item.domNode, self.voidspaceBlock);
 		}
 	},
@@ -439,8 +445,17 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 			innerHTML: this.getName()
 		}, tr.children[0]);
 
+		if (this.togglable) {
+			this.onNodeSpan = dojo.create("span", {innerHTML: " / "}, this.domNode.children[1]);
+
+			this.game._createInput({
+				class: "integerInput ownedInput",
+				title: "Number of active upgrades"
+			}, this.onNodeSpan, this, "on", "first");
+		}
+
 		this.game._createValInput({
-			title: "Number of Upgrades"
+			title: "Number of upgrades"
 		}, tr.children[1], this);
 
 		if (this.hasOwnProperty("heat")) {
@@ -494,8 +509,16 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 
 
 dojo.declare("classes.KGSaveEdit.VSUMeta", classes.KGSaveEdit.CFUMeta, {
+	//workaround for strictmode
+	afterRender: function () {
+		dojo.addClass(this.domNode.children[1], "rightAlign");
+	},
+
 	getOn: function () {
 		var on = this.val;
+		if (this.togglable) {
+			on = Math.min(this.on, this.val) || 0;
+		}
 		if (this.name === "cryochambers") {
 			on = Math.min(this.val, this.game.bld.get("chronosphere").val) || 0;
 		}

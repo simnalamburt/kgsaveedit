@@ -276,7 +276,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 		}, {
 			name: "navigation",
 			label: "Navigation",
-			description: "Navigation allows serious advancements in sailing and shipbuilding technology. It should benefit economical development and can lead to discovery of new civilizations.",
+			description: "Navigation allows serious advancements in sailing and shipbuilding technology. It should benefit economical development and can lead to discovery of new civilizations.<br>(Hint: You don't need to have all of this culture at once)",
 			effectDesc: "Unlocks the construction of Trade Ships and overseas trade.",
 			prices: [
 				{name: "science",    val: 35000},
@@ -495,14 +495,25 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 		}, {
 			name: "ai",
 			label: "Artificial Intelligence",
-			description: "TBD",
-			effectDesc: "Unlocks Neural Networks",
+			description: "Artificial Intelligence is an attempt to create machine capable of reasoning and performing cognitive tasks.",
+			effectDesc: "Unlocks Neural Networks and AI Core",
 			prices: [
 				{name: "science",   val: 250000},
 				{name: "blueprint", val: 150}
 			],
-			// unlocks: {upgrades: ["neuralNetworks"]},
+			// unlocks: {upgrades: ["neuralNetworks"], buildings: ["aiCore"], tech: ["quantumCryptography"]},
 			requires: {tech: ["robotics"]}
+		}, {
+			name: "quantumCryptography",
+			label: "Quantum Cryptography",
+			description: "TBD",
+			effectDesc: "TBD",
+			prices: [
+				{name: "science", val: 1250000},
+				{name: "relic",   val: 1024}
+			],
+			// unlocks: {},
+			requires: {tech: ["ai"]}
 		}, {
 			name: "nuclearFission",
 			label: "Nuclear Fission",
@@ -809,7 +820,7 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 	perksData: [{
 			name: "engeneering",
 			label: "Engineering",
-			description: "Reduce all price ratios by 1%. Unlocks more price upgrades.",
+			description: "Reduce all price ratios by 1% (The price will grow up much slower). Unlocks more price upgrades.",
 			prices: [
 				{name: "paragon", val: 5}
 			],
@@ -828,7 +839,8 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			// unlocks: {"perks": ["codexLogos"]},
 			requires: {perks: ["engeneering"]},
 			effects: {
-				"manuscriptCraftRatio": 0.25
+				"manuscriptCraftRatio":       0.25,
+				"manuscriptGlobalCraftRatio": 0.05
 			}
 		}, {
 			name: "codexLogos",
@@ -840,7 +852,9 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			// unlocks: {"perks": ["codexAgrum"]},
 			requires: {perks: ["codexVox"]},
 			effects: {
-				"compediumCraftRatio": 0.25
+				"compediumCraftRatio":        0.25,
+				"manuscriptGlobalCraftRatio": 0.05,
+				"compediumGlobalCraftRatio":  0.05
 			}
 		}, {
 			name: "codexAgrum",
@@ -851,7 +865,10 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			],
 			requires: {perks: ["codexLogos"]},
 			effects: {
-				"blueprintCraftRatio": 0.25
+				"blueprintCraftRatio":        0.25,
+				"manuscriptGlobalCraftRatio": 0.05,
+				"compediumGlobalCraftRatio":  0.05,
+				"blueprintGlobalCraftRatio":  0.05
 			}
 		}, {
 			name: "megalomania",
@@ -930,7 +947,7 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 		}, {
 			name: "zebraDiplomacy",
 			label: "Zebra Diplomacy",
-			description: "Some zebras hunters will stay in the village.",
+			description: "Some zebras hunters will stay in the village. (You need to unlock zebra hunters first to use this upgrade).",
 			prices: [
 				{name: "paragon", val: 35}
 			],
@@ -1691,7 +1708,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["orbitalEngineering"]}
 		}, {
 			name: "cargoShips",
-			label: "Cargo Ships",
+			label: "Expanded Cargo",
 			description: "Every ship will give a 1% bonus to Harbor capacity",
 			prices: [
 				{name: "science",   val: 55000},
@@ -2099,7 +2116,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 		}, {
 			name: "nuclearPlants",
 			label: "Nuclear Plants",
-			description: "Steel Plants are additionally boosted by 2% of your craft ratio per Reactor",
+			description: "Steel Plants are additionally boosted by 2% per Reactor",
 			prices: [
 				{name: "uranium", val: 10000},
 				{name: "science", val: 250000}
@@ -2397,19 +2414,17 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 				{name: "eludium", val: 15},
 				{name: "antimatter", val: 250}
 			],
-			requires: {tech: ["antimatter"]},
+			// unlcoks: {upgrades: ["aiBases"]},
+			requires: {tech: ["antimatter"]}
 		}, {
-			name: "amDrive",
-			label: "Antimatter Drive",
-			description: "Antimatter-powered rocket engine",
+			name: "aiBases",
+			label: "AI Bases",
+			description: "AI-powered logistics. Every level of AI Core will increase the effectiveness of moon bases by 25%",
 			prices: [
-				{name: "antimatter", val: 125},
-				{name: "science",    val: 450000}
+				{name: "eludium", val: 15},
+				{name: "antimatter", val: 250}
 			],
-			requires: {tech: ["antimatter"]},
-			effects: {
-				"routeSpeed": 25
-			}
+			requires: {upgrades: ["amBases"]},
 		}, {
 			name: "amFission",
 			label: "Antimatter Fission",
@@ -2475,6 +2490,18 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["cryptotheology"]},
 			effects: {
 				"beaconRelicsPerDay": 0.01
+			}
+		}, {
+			name: "amDrive",
+			label: "Antimatter Drive",
+			description: "Antimatter-powered rocket engine",
+			prices: [
+				{name: "antimatter", val: 125},
+				{name: "science",    val: 450000}
+			],
+			requires: {tech: ["antimatter"]},
+			effects: {
+				"routeSpeed": 25
 			}
 		}, {
 			name: "pumpjack",
@@ -2575,7 +2602,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "internet",
-			label: "Internet",
+			label: "Telecommunication",
 			description: "Kittens learn skills with each other",
 			prices: [
 				{name: "titanium", val: 5000},
@@ -2591,16 +2618,8 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 				{name: "science",  val: 200000}
 			],
 			// unlocks: {upgrades: ["ai"]},
-			requires: {tech: ["ai"]}
-		}, {
-			name: "ai",
-			label: "AI",
-			description: "A state of the art artificial intelligence",
-			prices: [
-				{name: "titanium", val: 7500},
-				{name: "science",  val: 250000}
-			],
-			requires: {upgrades: ["neuralNetworks"]}
+			requires: {tech: ["ai"]},
+			upgrades: {buildings: ["factory"]}
 		}, {
 			name: "assistance",
 			label: "Robotic Assistance",
