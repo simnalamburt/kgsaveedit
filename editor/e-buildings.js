@@ -795,9 +795,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				if (game.challenges.currentChallenge === "energy") {
 					effects["energyConsumption"] *= 2;
 				}
-				if (game.workshop.get("neuralNetworks").owned()) {
-					effects["energyConsumption"] *= 2;
-				}
+				// if (game.workshop.get("neuralNetworks").owned()) {
+				// 	effects["energyConsumption"] *= 2;
+				// }
 				self.effects = effects;
 			}
 		}, {
