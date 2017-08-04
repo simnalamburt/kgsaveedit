@@ -1240,6 +1240,10 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			action: function (self, game) {
 				self.effects["energyConsumption"] = 2 * (1 + 0.75 * self.on);
 
+				if (game.challenges.currentChallenge == "energy") {
+					self.effects["energyConsumption"] *= 2;
+				}
+
 				var gflops = game.resPool.get("gflops");
 				gflops.value += self.effects["gflopsPerTickBase"] * self.on;
 
