@@ -514,14 +514,28 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 						"antimatterMax": 0
 					},
 					calculateEffects: function (self, game) {
-						self.effects = {
-							"antimatterMax": 100,
-							"energyConsumption": 50
+						var effects = {
+							"antimatterMax":    100 * (1 + game.space.getBuilding("heatsink").val * 0.02),
+							"energyConsumption": 50 * (1 + game.space.getBuilding("heatsink").val * 0.02)
 						};
+
 						if (game.challenges.currentChallenge === "energy") {
-							self.effects["energyConsumption"] *= 2;
+							effects["energyConsumption"] *= 2;
 						}
+						self.effects = effects;
 					}
+				}, {
+					name: "heatsink",
+					label: "Heatsink",
+					description: "A heat dissipation system. Every Heatsink will increase the power consumption and antimatter storage capacity of Containment Chamber by 2%",
+					prices: [
+						{name: "science",  val: 125000},
+						{name: "thorium",  val: 12500},
+						{name: "relic",    val: 1},
+						{name: "kerosene", val: 5000}
+					],
+					priceRatio: 1.12,
+					upgrades: {spaceBuilding: ["containmentChamber"]}
 			}],
 			requires: {spaceMission: ["heliosMission"]}
 		}, {
@@ -583,7 +597,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					"scienceMax":                0,
 					"relicPerDay":               0
 				},
-				calculateEffects: function (self, game) {
+				action: function (self, game) {
 					var rPerDay = game.getEffect("beaconRelicsPerDay");
 					var rrBoost = 1 + game.getEffect("relicRefineRatio") * game.religion.getZU("blackPyramid").val * 0.1; //10% per BP * BN combo
 					self.effects = {

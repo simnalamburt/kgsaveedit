@@ -636,6 +636,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	deadKittens: 0,
 	ironWill: true,
 	cheatMode: false,
+	systemShockMode: false,
 
 	saveVersion: 15,
 

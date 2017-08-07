@@ -155,6 +155,14 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 				return this.game.cheatMode;
 			}
 		}, {
+			name: "systemShock",
+			title: "System Shock",
+			description: "I'm sorry Dave, I'm afraid I can't do that.",
+			unethical: true,
+			condition: function () {
+				return this.game.systemShockMode;
+			}
+		}, {
 			name: "lotusMachine",
 			title: "Lotus Eater Machine",
 			description: "Break the cycle of reincarnations",
