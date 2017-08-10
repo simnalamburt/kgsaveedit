@@ -1592,7 +1592,7 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 	},
 
 	load: function (saveData) {
-		this.loadMetaData(saveData.buildings, "get");
+		this.loadMetadata(saveData, "buildings", "get", null, true);
 
 		this.groupBuildings = saveData.bldData.groupBuildings;
 		this.twoRows = saveData.bldData.twoRows;
@@ -1628,33 +1628,33 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 		}, td);
 
 		if (this.stages) {
-			this.stageUpNode = dojo.create("input", {
-				type: "button",
-				value: "^",
-				class: "stageBtn hidden",
-				title: "Upgrade building"
-			}, td);
-			on(this.stageUpNode, "click", function () {
-				if (self.stage < self.stages.length - 1 && self.stages[self.stage + 1].stageUnlocked) {
-					self.stage++;
-					self.game.upgradeItems({buildings: [self.name]});
+			this.stageUpNode = this.game._createButton(
+				{
+					value: "^",
+					class: "stageBtn hidden",
+					title: "Upgrade building"
+				}, td, function () {
+					if (self.stage < self.stages.length - 1 && self.stages[self.stage + 1].stageUnlocked) {
+						self.stage++;
+						self.game.upgradeItems({buildings: [self.name]});
+					}
+					self.game.update();
 				}
-				self.game.update();
-			});
+			);
 
-			this.stageDownNode = dojo.create("input", {
-				type: "button",
-				value: "V",
-				class: "stageBtn hidden",
-				title: "Downgrade building"
-			}, td);
-			on(this.stageDownNode, "click", function () {
-				if (self.stage > 0) {
-					self.stage--;
-					self.game.upgradeItems({buildings: [self.name]});
+			this.stageDownNode = this.game._createButton(
+				{
+					value: "V",
+					class: "stageBtn hidden",
+					title: "Downgrade building"
+				}, td, function () {
+					if (self.stage > 0) {
+						self.stage--;
+						self.game.upgradeItems({buildings: [self.name]});
+					}
+					self.game.update();
 				}
-				self.game.update();
-			});
+			);
 		}
 
 		this.onNodeSpan = dojo.create("span", {innerHTML: " / "}, this.domNode.children[1]);
@@ -1668,15 +1668,15 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 			title: "Number of buildings"
 		}, this.domNode.children[1], this);
 
-		this.toggleNode = dojo.create("input", {
-			type: "button",
-			value: "On",
-			title: "Toggle building"
-		}, this.domNode.children[2]);
-		on(this.toggleNode, "click", function () {
-			self.set("on", self.on > 0 ? 0 : self.val);
-			self.game.update();
-		});
+		this.toggleNode = this.game._createButton(
+			{
+				value: "On",
+				title: "Toggle building"
+			}, this.domNode.children[2], function () {
+				self.set("on", self.on > 0 ? 0 : self.val);
+				self.game.update();
+			}
+		);
 
 		var input = this.game._createCheckbox("Unlocked", this.domNode.children[3], this, "unlocked");
 		dojo.toggleClass(input.label, "hidden", !this.get("unlockRatio"));

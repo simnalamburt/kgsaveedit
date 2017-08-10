@@ -49,8 +49,13 @@ td ~ td {
 	padding-left: 5px;
 }
 
-label:not(.hidden) ~ label {
+label:not(.hidden) ~ label,
+.leftSpacer {
 	margin-left: 5px;
+}
+
+.indent {
+	margin-left: 10px;
 }
 
 label:not(.locked),
@@ -100,6 +105,10 @@ input.integerInput.timeInput {
 
 .smallText {
 	font-size: small;
+}
+
+.smallCaps {
+	font-variant: small-caps;
 }
 
 .ital {
@@ -156,7 +165,8 @@ input.integerInput.timeInput {
 	color: rgba(255, 127, 80, 0.75);
 }
 
-.red {
+.red,
+.error {
 	color: red;
 }
 
@@ -371,6 +381,12 @@ input.integerInput.timeInput {
 	z-index: 100;
 }
 
+.closeLink {
+	position: absolute;
+	top: 10px;
+	right: 15px;
+}
+
 .lightbox textarea,
 .saveArea {
 	width: 550px;
@@ -548,6 +564,19 @@ input.integerInput.timeInput {
 	color: red;
 	font-style: italic;
 	font-size: 10px;
+}
+
+.extraDataBlock {
+	margin-top: 5px;
+}
+
+.jsonField {
+	width: 300px;
+	height: 100px;
+}
+
+.help_tooltip {
+	max-width: 300px;
 }
 
 /* .hideSpoilers .spoiler,

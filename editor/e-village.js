@@ -132,7 +132,7 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 	traitsByName: null,
 	_traitSelect: null,
 
-	tabName: "Outpost",
+	tabName: "Small village",
 	getVisible: function () {
 		return this.game.resPool.get("kittens").owned() || this.game.resPool.get("zebras").owned() ||
 			this.game.bld.get("hut").owned() || this.game.time.getVSU("usedCryochambers").owned();
@@ -340,15 +340,20 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 
 		self.selectedKittensBlock = dojo.create("div", {
 			class: "censusLine",
-			innerHTML: '<span>0 kittens selected</span> <input type="button" value="Edit" disabled>'
+			innerHTML: '<span>0 kittens selected</span> '
 		}, self.censusBlock);
 
 		self.selectedKittensCountSpan = self.selectedKittensBlock.children[0];
 
-		self.massEditStartButton = self.selectedKittensBlock.children[1];
-		on(self.massEditStartButton, "click", function () {
-			self.showMassEdit();
-		});
+		self.massEditStartButton = game._createButton(
+			{
+				value: "Edit",
+				disabled: true
+			},
+			self.selectedKittensBlock, function () {
+				self.showMassEdit();
+			}
+		);
 
 		self.massEditSelectKittensSpan = dojo.create("span", {
 			class: "floatRight",
@@ -406,23 +411,19 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 		}, self.massEditNode);
 		this.massEditHeaderSpan = div.children[0];
 
-		var btn = dojo.create("input", {
-			type: "button",
-			value: "Save"
-		}, div.children[1], "first");
-		on(btn, "click", function () {
-			if (self.massEditKittens()) {
+		game._createButton(
+			{value: "Save"}, div.children[1], function () {
+				if (self.massEditKittens()) {
+					dojo.addClass(self.massEditNode, "hidden");
+				}
+			}, "first"
+		);
+
+		game._createButton(
+			{value: "Cancel"}, div.children[1], function () {
 				dojo.addClass(self.massEditNode, "hidden");
 			}
-		});
-
-		btn = dojo.create("input", {
-			type: "button",
-			value: "Cancel"
-		}, div.children[1]);
-		on(btn, "click", function () {
-			dojo.addClass(self.massEditNode, "hidden");
-		});
+		);
 
 		var table = dojo.create("table", null, self.massEditNode);
 
@@ -1379,7 +1380,7 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 			return;
 		}
 
-		this.loadMetaData(saveData.jobs, "getJob", function (job, saveJob) {
+		this.loadMetadata(saveData, "jobs", "getJob", function (job, saveJob) {
 			job.set("unlocked", saveJob.unlocked);
 		});
 
@@ -1698,21 +1699,18 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 		var span = dojo.create("span", {
 			innerHTML: " &nbsp; "
 		}, div);
-		var btn = dojo.create("input", {
-			type: "button",
-			value: "Save"
-		}, span, "first");
-		on(btn, "click", function () {
-			self.saveEdits();
-		});
 
-		btn = dojo.create("input", {
-			type: "button",
-			value: "Cancel"
-		}, span);
-		on(btn, "click", function () {
-			dojo.addClass(self.editBlock, "hidden");
-		});
+		game._createButton(
+			{value: "Save"}, span, function () {
+				self.saveEdits();
+			}, "first"
+		);
+
+		game._createButton(
+			{value: "Cancel"}, span, function () {
+				dojo.addClass(self.editBlock, "hidden");
+			}
+		);
 
 		self.editCurrentNameNode = dojo.create("span", null, div, "first");
 

@@ -35,7 +35,7 @@
 				<textarea id="importSaveArea" class="saveArea" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea><br>
 				<input id="importLoadButton" type="button" value="Load">
 				<input id="importCancel" type="button" value="Cancel">
-				<span id="importError" class="hidden">Unable to import data!</span>
+				<span id="importError" class="error hidden">Unable to import data!</span>
 			</div>
 			<div id="exportBlock" class="lightbox hidden">
 				Save Export<br>
@@ -62,7 +62,7 @@
 	</form>
 
 	<script src="lib/lz-string.js"></script>
-	<script src="lib/jquery-3.1.1.min.js"></script>
+	<script src="lib/jquery-3.2.1.min.js"></script>
 	<script src="lib/dojo.js"></script>
 
 	<script>
@@ -74,7 +74,7 @@
 			});
 
 			var scripts = ["editor/e-core.js", "editor/e-misc.js", "editor/e-resources.js", "editor/e-upgrades.js", "editor/e-buildings.js", "editor/e-religion.js", "editor/e-space.js",
-				"editor/e-time.js", "editor/e-village.js", "editor/e-stats.js", "editor/e-main.js", "dev/e-dev.js"];
+				"editor/e-time.js", "editor/e-village.js", "editor/e-stats.js", "editor/e-main.js", "editor/e-extras.js", "dev/e-dev.js"];
 			var index = 0;
 			var version = dojo.byId("gameVersionSpan").textContent;
 

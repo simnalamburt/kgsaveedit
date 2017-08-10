@@ -604,11 +604,11 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 		if (saveData.res) {
 			this.set("isLocked", Boolean(saveData.res.isLocked));
 		}
-		this.loadMetaData.call(this, saveData.resources, "get", function (res, saveRes) {
+		this.loadMetadata(saveData, "resources", "get", function (res, saveRes) {
 			res.set("value", num(saveRes.value));
 			res.set("unlocked", Boolean(saveRes.unlocked));
 			res.set("isHidden", Boolean(saveRes.isHidden));
-		});
+		}, true);
 	}
 });
 

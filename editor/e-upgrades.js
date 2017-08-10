@@ -763,7 +763,8 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 
 		this.techsBlock = dojo.create("table", {
 			id: "techsBlock",
-			class: "bottom-margin"
+			class: "bottom-margin",
+			innerHTML: '<tr><th colspan="2">Techs</th></tr>'
 		}, this.tabBlockNode);
 	},
 
@@ -793,7 +794,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 	load: function (saveData) {
 		if (saveData.science) {
 			this.game.setCheckbox(this.hideResearchedNode, saveData.science.hideResearched);
-			this.loadMetaData(saveData.science.techs, "get");
+			this.loadMetadata(saveData, "science.techs", "get", null, true);
 		}
 	}
 });
@@ -1262,7 +1263,7 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 	},
 
 	load: function (saveData) {
-		this.loadMetaData(saveData.prestige.perks, "getPerk");
+		this.loadMetadata(saveData, "prestige.perks", "getPerk", null, true);
 	}
 });
 
@@ -3112,7 +3113,8 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 
 		this.upgradesBlock = dojo.create("table", {
 			id: "upgradesBlock",
-			class: "bottom-margin"
+			class: "bottom-margin",
+			innerHTML: '<tr><th colspan="2">Upgrades</th></tr>'
 		}, this.tabBlockNode);
 
 		this.freeEngineersBlock = dojo.create("div", {
@@ -3246,9 +3248,9 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 
 		this.set("hideResearched", saveData.workshop.hideResearched);
 
-		this.loadMetaData(saveData.workshop.upgrades, "get");
+		this.loadMetadata(saveData, "workshop.upgrades", "get", null, true);
 
-		this.loadMetaData(saveData.workshop.crafts, "getCraft");
+		this.loadMetadata(saveData, "workshop.crafts", "getCraft", null, true);
 	}
 });
 

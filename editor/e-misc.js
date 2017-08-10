@@ -643,6 +643,8 @@ dojo.declare("classes.KGSaveEdit.Console", classes.KGSaveEdit.core, {
 				var saveFilter = saveFilters[tag];
 				filter.set("unlocked", Boolean(saveFilter.unlocked));
 				filter.set("enabled", Boolean(saveFilter.enabled));
+			} else {
+				this.game.extrasTab.storeExtraData("console.filters", saveFilters[tag], tag, true);
 			}
 		}
 	}
@@ -751,12 +753,12 @@ dojo.declare("classes.KGSaveEdit.DiplomacyManager", [classes.KGSaveEdit.UI.Tab, 
 
 	load: function (saveData) {
 		if (saveData.diplomacy) {
-			this.loadMetaData(saveData.diplomacy.races, "get", function (race, saveRace) {
+			this.loadMetadata(saveData, "diplomacy.races", "get", function (race, saveRace) {
 				race.set("unlocked", Boolean(saveRace.unlocked));
 				race.set("collapsed", Boolean(saveRace.collapsed));
 				race.set("duration", saveRace.duration || 0);
 				race.set("energy", saveRace.energy || 0);
-			});
+			}, true);
 		}
 	}
 });
@@ -897,11 +899,11 @@ dojo.declare("classes.KGSaveEdit.ChallengesManager", classes.KGSaveEdit.Manager,
 
 	load: function (saveData) {
 		if (saveData.challenges) {
-			this.loadMetaData(saveData.challenges.challenges, "getChallenge", function (challenge, saveChallenge) {
+			this.loadMetadata(saveData, "challenges.challenges", "getChallenge", function (challenge, saveChallenge) {
 				challenge.set("researched", Boolean(saveChallenge.researched));
 				challenge.set("unlocked", Boolean(saveChallenge.unlocked));
 				challenge.isNew = false;
-			});
+			}, true);
 			this.setCurrentChallenge(saveData.challenges.currentChallenge);
 		}
 	}
@@ -1172,16 +1174,18 @@ dojo.declare("classes.KGSaveEdit.Telemetry", null, {
 		self.domNode = dojo.create("div", {
 			"id": "telemetryNode",
 			class: "bottom-margin",
-			innerHTML: 'Save ID: <span class="monospace">' + self.guid + '</span> &nbsp;<input type="button" value="New ID">'
+			innerHTML: 'Save ID: <span class="monospace">' + self.guid + '</span> &nbsp;'
 		});
 
 		self.guidNode = self.domNode.children[0];
 
-		on(self.domNode.children[1], "click", function () {
-			if (!self.warnOnNewGuid || confirm("Are you sure you want to create a new save ID?")) {
-				self.setGuid();
+		this.game._createButton(
+			{value: "New ID"}, self.domNode, function () {
+				if (!self.warnOnNewGuid || confirm("Are you sure you want to create a new save ID?")) {
+					self.setGuid();
+				}
 			}
-		});
+		);
 	},
 
 	setGuid: function (guid) {

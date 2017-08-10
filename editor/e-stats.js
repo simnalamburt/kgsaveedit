@@ -358,13 +358,13 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 
 	load: function (saveData) {
 		//ugh
-		this.game.bld.loadMetaData.call(this, saveData.achievements, "get", function (ach, saveAch) {
+		this.game.bld.loadMetadata.call(this, saveData, "achievements", "get", function (ach, saveAch) {
 			ach.set("unlocked", saveAch.unlocked);
 			ach.newAch = false;
 			if (ach.hasStar) {
 				ach.set("starUnlocked", saveAch.starUnlocked);
 			}
-		});
+		}, true);
 	}
 });
 
@@ -530,12 +530,12 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 	},
 
 	load: function (saveData) {
-		this.loadMetaData(saveData.stats, "getStat", function (stat, saveStat) {
+		this.loadMetadata(saveData, "stats", "getStat", function (stat, saveStat) {
 			stat.set("val", num(saveStat.val));
-		});
-		this.loadMetaData(saveData.statsCurrent, "getStatCurrent", function (stat, saveStat) {
+		}, true);
+		this.loadMetadata(saveData, "statsCurrent", "getStatCurrent", function (stat, saveStat) {
 			stat.set("val", num(saveStat.val));
-		});
+		}, true);
 	}
 });
 

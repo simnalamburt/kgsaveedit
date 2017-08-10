@@ -48,7 +48,7 @@ dojo.declare("classes.KGSaveEdit.UI.Tab", classes.KGSaveEdit.core, {
 		var self = this;
 		//wrap tab link for css
 		self.tabWrapper = dojo.create("span", {
-			class: "wrapper separated" + (self.isVisible ? "" : " spoiler")
+			class: "wrapper separated" + (self.isVisible ? "" : " spoiler") + (self.tabNodeClass ? " " + self.tabNodeClass : "")
 		});
 
 		self.tabNode = dojo.create("a", {
@@ -180,7 +180,8 @@ dojo.declare("classes.KGSaveEdit.Manager", classes.KGSaveEdit.core, {
 		return totalEffect || 0;
 	},
 
-	loadMetaData: function (saveArr, getFn, loadFn) {
+	loadMetadata: function (saveData, path, getFn, loadFn, storeExtra) {
+		var saveArr = this.game.resolveObjPath(saveData, path);
 		if (!saveArr || !saveArr.length) {
 			return;
 		}
@@ -189,14 +190,18 @@ dojo.declare("classes.KGSaveEdit.Manager", classes.KGSaveEdit.core, {
 			loadFn = null;
 		}
 
-		for (var i = saveArr.length - 1; i >= 0; i--) {
+		for (var i = 0; i < saveArr.length; i++) {
 			var saveMeta = saveArr[i];
-			var meta = this[getFn](saveMeta.name);
-			if (meta) {
-				if (loadFn) {
-					loadFn.call(this, meta, saveMeta);
-				} else if ("load" in meta) {
-					meta.load(saveMeta);
+			if (saveMeta && saveMeta.name) {
+				var meta = this[getFn](saveMeta.name);
+				if (meta) {
+					if (loadFn) {
+						loadFn.call(this, meta, saveMeta);
+					} else if ("load" in meta) {
+						meta.load(saveMeta);
+					}
+				} else if (storeExtra) {
+					this.game.extrasTab.storeExtraData(path, saveMeta, i);
 				}
 			}
 		}

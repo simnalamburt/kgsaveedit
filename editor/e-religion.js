@@ -609,9 +609,9 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 		this.set("faithRatio", num(saveData.religion.faithRatio));
 		this.set("tcratio", num(saveData.religion.tcratio));
 
-		this.loadMetaData(saveData.religion.zu, "getZU");
-		this.loadMetaData(saveData.religion.ru, "getRU");
-		this.loadMetaData(saveData.religion.tu, "getTU");
+		this.loadMetadata(saveData, "religion.zu", "getZU", null, true);
+		this.loadMetadata(saveData, "religion.ru", "getRU", null, true);
+		this.loadMetadata(saveData, "religion.tu", "getTU", null, true);
 	}
 });
 

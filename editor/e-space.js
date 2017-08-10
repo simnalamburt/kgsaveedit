@@ -912,9 +912,9 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 			return;
 		}
 
-		this.loadMetaData(saveData.space.programs, "getProgram");
+		this.loadMetadata(saveData, "space.programs", "getProgram", null, true);
 
-		this.loadMetaData(saveData.space.planets, "getPlanet", function (planet, savePlanet) {
+		this.loadMetadata(saveData, "space.planets", "getPlanet", function (planet, savePlanet) {
 			planet.reached = savePlanet.reached;
 			// planet.unlocked = savePlanet.unlocked;
 			var routeDays = savePlanet.routeDays;
@@ -923,8 +923,8 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 			}
 			planet.set("routeDays", num(routeDays));
 
-			this.loadMetaData(savePlanet.buildings, "getProgram");
-		});
+			this.loadMetadata(saveData, "space.planets." + planet.name + ".buildings", "getBuilding", null, true);
+		}, true);
 
 		this.set("hideResearched", saveData.space.hideResearched);
 	}

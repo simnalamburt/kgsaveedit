@@ -1922,6 +1922,19 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		});
 	},
 
+	_createButton: function (props, parentNode, handler, pos) {
+		props = props || {};
+		props.type = "button";
+		props.value = props.value || "undefined";
+
+		var button = dojo.create("input", props, parentNode, pos || "last");
+		if (dojo.isFunction(handler)) {
+			on(button, "click", handler);
+		}
+
+		return button;
+	},
+
 	/**
 	 * Create a numeric input element and attaches an "input" event handler to it
 	 * Automatically updates metaObj[dataProp] if both are set
@@ -2009,8 +2022,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	 * Creates a checkbox and a label wrapper, and attaches a click event handler
 	 * Automatically updates metaObj[dataProp] if both are set
 	**/
-	_createCheckbox: function (text, refNode, metaObj, prop, pos) {
-		var label = dojo.create("label", {innerHTML: " "}, refNode, pos || "last");
+	_createCheckbox: function (text, parentNode, metaObj, prop, pos) {
+		var label = dojo.create("label", {innerHTML: " "}, parentNode, pos || "last");
 		var cbox = dojo.create("input", {type: "checkbox"}, label, "first");
 		var span = dojo.create("span", {innerHTML: text || ""}, label);
 
@@ -2061,6 +2074,44 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 				}
 			}
 		}
+	},
+
+	/**
+	 * Recursively access a obj's properties, given a string of period-separated object keys
+	 * Kinda like lodash.get, but with support to find an array member with a .name property matching a given key,
+	 * and otherwise not very robust
+	 */
+	resolveObjPath: function (obj, path) {
+		if (path && path.split) {
+			var keys = path.split(".");
+			var index = 0;
+
+			while (obj && index < keys.length && keys[index]) {
+				var key = keys[index];
+
+				//walk array looking for .name === key
+				//use this complicated method solely for display of the path
+				if (Array.isArray(obj) && !obj[key]) {
+					var found = false;
+					for (var i = obj.length - 1; i >= 0; i--) {
+						var member = obj[i];
+						if (member && member.name === key) {
+							obj = member;
+							found = true;
+							break;
+						}
+					}
+
+					if (!found) {
+						obj = undefined;
+					}
+				} else {
+					obj = obj[keys[index]];
+				}
+				index++;
+			}
+		}
+		return obj;
 	},
 
 	/**
@@ -2134,6 +2185,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		};
 
 		this.telemetry.save(saveData);
+		this.extrasTab.save(saveData);
 
 		if (compress) {
 			saveData = LZString.compressToBase64(JSON.stringify(saveData));
@@ -2462,16 +2514,20 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	_loadBlankJSON: function () {
+		this.loadingBlockJSON = true;
 		this._loadJSON(this.blankSaveJSON);
 
 		this.time.set("timestamp", Date.now());
 		this.telemetry.setGuid();
+		this.loadingBlockJSON = false;
 	},
 
 	_loadJSON: function (saveData) {
 		if (!saveData) {
 			return;
 		}
+
+		this.extrasTab.clearExtraData();
 
 		if (saveData.server) {
 			this.server.motdContentPrevious = saveData.server.motdContent;
@@ -2506,6 +2562,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			this.loadMetaFields(this.opts, data.opts, ["usePerSecondValues", "forceHighPrecision", "usePercentageResourceValues",
 				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter", "disableCMBR", "disableTelemetry", "enableRedshift"]);
 		}
+
+		this.extrasTab.load(saveData);
 	},
 
 	addTab: function (tab) {
@@ -2607,6 +2665,9 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		this.tabs = [this.OptionsTab, this.bld, this.village, this.science, this.workshop,
 			this.diplomacy, this.religion, this.space, this.time, this.achievements, this.stats];
 		this.activeTab = this.OptionsTab;
+
+		this.extrasTab = new classes.KGSaveEdit.ExtrasTab(this);
+		this.tabs.push(this.extrasTab);
 
 		if (classes.KGSaveEdit.DevMode) {
 			this.devMode = new classes.KGSaveEdit.DevMode(this);

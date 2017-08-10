@@ -372,11 +372,11 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		var data = saveData.time;
 		this.game.loadMetaFields(this, data, ["flux", "heat", "timestamp"]);
 
-		this.loadMetaData(data.cfu, "getCFU");
-		this.loadMetaData(data.vsu, "getVSU");
+		this.loadMetadata(data, "cfu", "getCFU", null, true);
+		this.loadMetadata(data, "vsu", "getVSU", null, true);
 
 		if (data.usedCryochambers) {
-			this.loadMetaData(data.usedCryochambers, "getVSU");
+			this.loadMetadata(data, "usedCryochambers", "getVSU", null, true);
 		}
 	}
 });

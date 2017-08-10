@@ -26,7 +26,8 @@ dojo.declare("classes.KGSaveEdit.DevMode", classes.KGSaveEdit.UI.Tab, {
 	overwriteCompareOnImport: true,
 	showUnchanged: false,
 
-	tabName: "DEV",
+	tabName: "Dev",
+	tabNodeClass: "smallCaps",
 
 	renderTabBlock: function () {
 		var self = this;
