@@ -621,6 +621,11 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 			"spiceRefinery-spicePerTickAutoprodSpace": {
 				title: "Spice Refinery - Spice production",
 				type: "ratio"
+			},
+
+			"hrProgress": {
+				title: "Hash collision",
+				type: "ratio"
 			}
 		}
 	}

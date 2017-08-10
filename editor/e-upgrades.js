@@ -501,7 +501,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 250000},
 				{name: "blueprint", val: 150}
 			],
-			// unlocks: {upgrades: ["neuralNetworks"], buildings: ["aiCore"], tech: ["quantumCryptography"]},
+			// unlocks: {upgrades: ["neuralNetworks", "aiEngineers"], buildings: ["aiCore"], tech: ["quantumCryptography"]},
 			requires: {tech: ["robotics"]}
 		}, {
 			name: "quantumCryptography",
@@ -2305,6 +2305,23 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 				"t2CraftRatio": 2,
 				"t3CraftRatio": 2,
 				"t4CraftRatio": 2
+			}
+		}, {
+			name: "aiEngineers",
+			label: "AI Engineers",
+			description: "A holy union of feline mind and a machine",
+			prices: [
+				{name: "science",     val: 35000},
+				{name: "eludium",     val: 50},
+				{name: "antimatter",  val: 500}
+			],
+			requires: {tech: ["ai"]},
+			effects: {
+				"t1CraftRatio": 10,
+				"t2CraftRatio": 5,
+				"t3CraftRatio": 5,
+				"t4CraftRatio": 2,
+				"t5CraftRatio": 2
 			}
 		}, {
 			name: "chronoEngineers",

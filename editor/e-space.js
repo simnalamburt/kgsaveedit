@@ -131,8 +131,21 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 				{name: "kerosene", 	val: 25000},
 				{name: "thorium",   val: 15000}
 			],
-			// unlocks: {planet: ["umbra"]},
+			// unlocks: {planet: ["umbra"], spaceMission: ["charonMission"]},
 			requires: {spaceMission: ["yarnMission"]},
+			upgradable: false
+		}, {
+			name: "charonMission",
+			label: "Charon Mission",
+			description: "Charon is small, incredibly dense and distant dwarf planet on the far edge of the Helios system. It is so hostile and barren that it is sometimes referred as 'The Gates of Death'",
+			prices: [
+				{name: "starchart", val: 75000},
+				{name: "science", 	val: 750000},
+				{name: "kerosene", 	val: 35000},
+				{name: "thorium",   val: 35000}
+			],
+			// unlocks: {planet: ["charon"]},
+			requires: {spaceMission: ["umbraMission"]},
 			upgradable: false
 		}, {
 			name: "centaurusSystemMission",
@@ -142,7 +155,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 				{name: "starchart", val: 100000},
 				{name: "titanium",  val: 40000},
 				{name: "science",   val: 800000},
-				{name: "kerosene",  val: 30000},
+				{name: "kerosene",  val: 50000},
 				{name: "thorium",   val: 50000}
 			],
 			// unlocks: {planet: ["centaurusSystem"], spaceMission: ["furthestRingMission"]},
@@ -527,7 +540,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 				}, {
 					name: "heatsink",
 					label: "Heatsink",
-					description: "A heat dissipation system. Every Heatsink will increase the power consumption and antimatter storage capacity of Containment Chamber by 2%",
+					description: "A heat dissipation system. Every Heatsink will increase the power consumption of Containment Chamber by 1% and antimatter storage capacity by 2%",
 					prices: [
 						{name: "science",  val: 125000},
 						{name: "thorium",  val: 12500},
@@ -599,11 +612,21 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 				},
 				action: function (self, game) {
 					var rPerDay = game.getEffect("beaconRelicsPerDay");
-					var rrBoost = 1 + game.getEffect("relicRefineRatio") * game.religion.getZU("blackPyramid").val * 0.1; //10% per BP * BN combo
+					var rrBoost = (1 + game.getEffect("relicRefineRatio") * game.religion.getZU("blackPyramid").val * 0.1);	//10% per BP * BN combo
+
+					//lol
+					var amMax = game.resPool.get("antimatter").maxValue;
+					if (amMax < 5000) {
+						rrBoost = rrBoost * (amMax / 5000);
+						//todo: consider boosting relic stations is over 5000
+					}
+
+					var entBoost = 1 + game.space.getBuilding("entangler").effects["hashRateLevel"] * 0.25;	//25% per entangler hashrate
+
 					self.effects = {
 						"starchartPerTickBaseSpace": 0.025,
 						"scienceMax":                25000 * (1 + game.getEffect("spaceScienceRatio")),
-						"relicPerDay":               rPerDay * rrBoost
+						"relicPerDay":               rPerDay * rrBoost * entBoost
 					};
 				}
 			}],
@@ -686,6 +709,50 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 				}
 			}],
 			requires: {spaceMission: ["umbraMission"]}
+		}, {
+			name: "charon",
+			label: "Charon",
+			routeDays: 25000,
+			buildings: [{
+				name: "entangler",
+				label: "Entanglement St.",
+				description: "Entanglement Station generates a set of entangled particles aka qbits for your quantum computing system. This process requires an enormous amount of processing power, but let's you perform a cryptographic attack on elder encryption algorithms.",
+				prices: [
+					{name: "relic",      val: 1250},
+					{name: "antimatter", val: 5250},
+					{name: "eludium",    val: 5000}
+				],
+				priceRatio: 1.15,
+				requires: {tech: ["quantumCryptography"]},
+				effects: {
+					"energyConsumption": 25,
+					"gflopsConsumption": 0.1,
+					"hashRateLevel": 0
+				},
+				action: function (self, game) {
+					var gflopsPerTick = self.effects.gflopsConsumption * self.on;
+					if (game.resPool.get("gflops").value <= gflopsPerTick) {
+						return;
+					}
+
+					game.resPool.addResEvent("gflops", -gflopsPerTick);
+					game.resPool.addResEvent("hashrates", gflopsPerTick);
+
+					var hr = game.resPool.get("hashrates").value;
+					var difficulty = 1000;
+					var rate = 1.6;
+
+					self.effects.hashrate = hr;
+					self.effects.nextHashLevelAt = difficulty * Math.pow(rate, self.effects.hashRateLevel + 1);
+					self.effects.hrProgress = hr / (difficulty * Math.pow(rate, self.effects.hashRateLevel + 1));
+					if (hr > difficulty) {
+						self.effects.hashRateLevel = Math.floor(Math.log(hr / difficulty) / Math.log(rate));
+					} else {
+						self.effects.hashRateLevel = 0;
+					}
+				}
+			}],
+			requires: {spaceMission: ["charonMission"]}
 		}, {
 			name: "centaurusSystem",
 			label: "Centaurus System",

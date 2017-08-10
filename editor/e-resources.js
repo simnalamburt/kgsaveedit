@@ -127,7 +127,10 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 		}, {
 			name: "gflops",
 			title: "gigaflops",
-			type: "transient"
+			transient: true
+		}, {
+			name: "hashrates",
+			transient: true
 		}, {
 			name: "furs",
 			type: "uncommon",
