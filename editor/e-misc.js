@@ -976,7 +976,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 		var input = self.game._createCheckbox("Active", tr.children[1], self);
 		self.activeChallengeNode = input.cbox;
 		input.cbox.handler = function () {
-			self.game.challenges.setCurrentChallenge(self.checked ? self.metaObj.name : null);
+			self.game.challenges.setCurrentChallenge(this.checked ? self.name : null);
 		};
 
 		self.registerTooltip(self.domNode);
