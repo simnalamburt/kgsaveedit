@@ -163,6 +163,19 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 				self.effects["energyConsumption"] *= 2;
 			}
 		}
+    }, {
+		name: "voidResonator",
+		label: "Void Resonator",
+		description: "Every Void Resonator will improve Order of the Void effect by 10%. Will trigger OotV on a time skips.",
+		prices: [
+			{name: "timeCrystal", val: 1000},
+			{name: "relic",       val: 10000}
+		],
+		priceRatio: 1.25,
+		requires: {tech: ["paradoxalKnowledge"]},
+		effects: {
+			"voidResonance": 0.1
+		}
 	}],
 
 	tabName: "Time",

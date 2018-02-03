@@ -238,14 +238,15 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 				"animation": "neon1 1.5s ease-in-out infinite alternate"
 			}
 		}, {
+			name: "blackcoin",
+			title: "blackcoin",
+			type: "exotic",
+			color: "gold"
+		}, {
 			name: "beam",
 			craftable: true
 		}, {
 			name: "slab",
-			craftable: true
-		}, {
-			name: "concrate",
-			title: "concrete",
 			craftable: true
 		}, {
 			name: "plate",
@@ -255,6 +256,10 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			craftable: true,
 			color: "gray",
 			calculatePerTick: true
+		}, {
+			name: "concrate",
+			title: "concrete",
+			craftable: true
 		}, {
 			name: "gear",
 			craftable: true,

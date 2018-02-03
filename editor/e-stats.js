@@ -200,18 +200,187 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 			starCondition: function () {
 				return this.game.calendar.year >= 40000 + this.game.time.flux;
 			}
+	}],
+
+	hatsData: [{
+			id: 1,
+			name: "simpleHat",
+			title: "Simple Hat",
+			description: "The hat to rule them all",
+			difficulty: "F"
 		}, {
-			name: "limitlessClicker",
-			title: "Limitless Clicker",
-			description: "Accumulate 100,000 clicks.",
+			id: 2,
+			name: "lotusHat",
+			title: "Lotus Hat",
+			description: "Hat in the shape of louts",
+			difficulty: "A",
 			condition: function () {
-				return this.game.stats.getStat("totalClicks").val >= 100000;
-			},
-			hasStar: true,
-			starDescription: "Accumulate 1,000,000 clicks.",
-			starCondition: function () {
-				return this.game.stats.getStat("totalClicks").val >= 1000000;
+				return this.game.stats.getStat("totalResets").val >= 50;
 			}
+		}, {
+			id: 3,
+			name: "ivoryTowerHat",
+			title: "Ivory Tower Hat",
+			description: "A tall hat in a form of a tower",
+			difficulty: "S+"
+		}, {
+			id: 4,
+			name: "uselessHat",
+			title: "Useless Hat",
+			description: "This hat is totally useless",
+			difficulty: "F",
+			condition: function () {
+				var leader = this.game.village.leader;
+				return leader != null && leader.trait.name == "none";
+			}
+		}, {
+			id: 5,
+			name: "voidHat",
+			title: "Void Hat",
+			description: "Hat is made of void",
+			difficulty: ""
+		}, {
+			id: 6,
+			name: "nullHat",
+			title: "Null Hat",
+			description: "The hat is a lie",
+			difficulty: ""
+		}, {
+			id: 7,
+			name: "betaHat",
+			title: "Beta Hat",
+			description: "The hat is a bit glitchy and rough around the edges",
+			difficulty: "B",
+			// condition: function () {
+			// 	return (this.game.server.donateAmt == 0);
+			// }
+		}, {
+			id: 8,
+			name: "silentHat",
+			title: "Silent Hat",
+			description: "This hat is totally silent",
+			difficulty: "S",
+			// condition: function () {
+			// 	return (this.game.server.motdContent == "");
+			// }
+		}, {
+			id: 9,
+			name: "treetrunkHat",
+			title: "Treetrunk Hat",
+			description: "A hat made of branches and leaves",
+			difficulty: "F",
+			condition: function () {
+				return this.game.workshop.getCraft("wood").value > 0;
+			}
+		}, {
+			id: 10,
+			name: "wizardHat",
+			title: "Wizard Hat",
+			description: "Abracadabra!",
+			difficulty: ""
+		}, {
+			id: 11,
+			name: "nekomimiHat",
+			title: "Nekomimi Hat",
+			description: "*^_^*",
+			difficulty: ""
+		}, {
+			id: 12,
+			name: "eldritchHat",
+			title: "Eldritch Hat",
+			description: "",
+			difficulty: ""
+		}, {
+			id: 13,
+			name: "tesseractHat",
+			title: "Tesseract Hat",
+			description: "",
+			difficulty: ""
+		}, {
+			id: 14,
+			name: "crimsonHat",
+			title: "Crimson Hat",
+			description: "",
+			difficulty: ""
+		}, {
+			id: 15,
+			name: "skeletonHat",
+			title: "Skeleton Hat",
+			description: "",
+			difficulty: ""
+		}, {
+			id: 16,
+			name: "gladosHat",
+			title: "Glados Hat",
+			description: "",
+			difficulty: ""
+		}, {
+			id: 17,
+			name: "marioHat",
+			title: "Mario Hat",
+			description: "",
+			difficulty: ""
+		}, {
+			id: 18,
+			name: "fedoraHat",
+			title: "Fedora",
+			description: "Classy fedora",
+			difficulty: ""
+		}, {
+			id: 19,
+			name: "necrocornHat",
+			title: "Necrocorn Hat",
+			description: "",
+			difficulty: "S",
+			condition: function () {
+				var kittens = this.game.resPool.get("kittens");
+				return (kittens.value >= 1000 && kittens.maxValue == 0);
+			}
+		}, {
+			id: 20,
+			name: "alicornHat",
+			title: "Alicorn Hat",
+			description: "",
+			difficulty: "S",
+			condition: function () {
+				return (this.game.resPool.get("kittens").value > 500 && this.game.resPool.get("alicorn").value == 0);
+			}
+		}, {
+			id: 21,
+			name: "unicornHat",
+			title: "Unicorn Hat",
+			description: "",
+			difficulty: "A"
+		}, {
+			id: 22,
+			name: "dragonHat",
+			title: "Dragon Hat",
+			description: "",
+			difficulty: ""
+		}, {
+			id: 23,
+			name: "glitchyHat",
+			title: "Glitchy Hat",
+			description: "♋︎⬧︎⧫︎♏︎❒︎🕯︎⬧︎ ●︎♋︎■︎♑︎◆︎♋︎♑︎♏︎ 🖳︎✆",
+			difficulty: "S"
+		}, {
+			id: 24,
+			name: "topHat",
+			title: "Tophat",
+			description: "",
+			difficulty: ""
+		}, {
+			id: 25,
+			name: "jesterHat",
+			title: "Jester Hat",
+			description: "",
+			difficulty: ""
+		}, {
+			id: 26,
+			name: "fezHat",
+			title: "Fez Hat",
+			description: "A prism-shaped red fez hat.",
+			difficulty: "A"
 	}],
 
 	tabName: "Achievements",
@@ -219,66 +388,40 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 	achievements: null,
 	achievementsByName: null,
 
-	constructor: function () {
-		this.registerMetaItems(this.achievementsData, classes.KGSaveEdit.GenericItem, "achievements", function (ach) {
-			ach.unlocked = Boolean(ach.unlocked);
-			ach.newAch = false;
+	councilUnlocked: false,
 
+	constructor: function () {
+		this.registerMetaItems(this.achievementsData, classes.KGSaveEdit.AchievementMeta, "achievements", function (ach) {
 			ach.starUnlocked = Boolean(ach.starUnlocked);
 		});
+
+		this.registerMetaItems(this.hatsData, classes.KGSaveEdit.AchievementMeta, "hats");
 	},
 
 	get: function (name) {
 		return this.achievementsByName[name];
 	},
 
+	getHat: function (name) {
+		return this.hatsByName[name];
+	},
+
 	renderTabBlock: function () {
 		this.achievementsBlock = dojo.create("table", {
-			id: "achievementsBlock"
+			id: "achievementsBlock",
+			class: "bottom-margin"
 		}, this.tabBlockNode);
+
+		this.hatsBlock = dojo.create("table", {
+			id: "hatsBlock",
+			innerHTML: '<tr><th colspan="2">A Secret Council of Hats</th></tr>'
+		}, this.tabBlockNode);
+		this.hatsBlockHeader = this.hatsBlock.children[0];
 	},
 
 	render: function () {
-		var enterU = function () {
-			if (this.newAch) {
-				this.newAch = false;
-				dojo.removeClass(this.unlockedLabel, "newMarker");
-				this.metaObj.updateTabMark();
-			}
-		};
-		var enterS = function () {
-			if (this.newStarAch) {
-				this.newStarAch = false;
-				dojo.removeClass(this.starUnlockedLabel, "newMarker");
-				this.metaObj.updateTabMark();
-			}
-		};
-
-		for (var i = 0, len = this.achievements.length; i < len; i++) {
-			var ach = this.achievements[i];
-
-			ach.domNode = dojo.create("tr", {
-				class: "achievement",
-				innerHTML: '<td title="' + ach.description + '">' +
-					(ach.title || ach.name) + "</td><td></td><td></td>"
-			}, this.achievementsBlock);
-			ach.nameNode = ach.domNode.children[0];
-
-			var input = this.game._createCheckbox("Earned", ach.domNode.children[1], ach, "unlocked");
-			ach.unlockedLabel = input.label;
-			on(input.label, mouse.enter, dojo.hitch(ach, enterU));
-
-			if (ach.hasStar) {
-				input = this.game._createCheckbox((ach.starUnlocked ? "&#9733;" : "&#9734;"),
-					ach.domNode.children[2], ach, "starUnlocked");
-				ach.starUnlockedLabel = input.label;
-				ach.starText = input.text;
-				if (ach.starDescription) {
-					input.label.title = ach.starDescription;
-				}
-				on(input.label, mouse.enter, dojo.hitch(ach, enterS));
-			}
-		}
+		this.game.callMethods(this.achievements, "render", this.achievementsBlock, "achievement");
+		this.game.callMethods(this.hats, "render", this.hatsBlock, "hat");
 	},
 
 	hasUnlocked: function () {
@@ -295,76 +438,158 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 	},
 
 	update: function () {
-		var newAch = false;
+		var hasNewMarker = false;
 
 		for (var i = this.achievements.length - 1; i >= 0; i--) {
 			var ach = this.achievements[i];
-			var u = ach.unlocked;
-			var unlocked = ach.condition();
-
-			if (ach.hasStar) {
-				var s = ach.starUnlocked;
-
-				var starUnlocked = ach.starCondition();
-				if (starUnlocked) {
-					this.game.setCheckbox(ach.starUnlockedNode, starUnlocked, true, true);
-				} else if (ach.starUnlocked !== ach.starUnlockedNode.prevChecked) {
-					this.game.setCheckbox(ach.starUnlockedNode, ach.starUnlockedNode.prevChecked, true, true);
-				}
-				this.game.toggleDisabled(ach.starUnlockedNode, starUnlocked);
-
-				if (s !== ach.starUnlocked) {
-					ach.newStarAch = ach.starUnlocked;
-				}
-				dojo.toggleClass(ach.starUnlockedLabel, "newMarker", ach.newStarAch);
-
-				ach.starText.innerHTML = ach.starUnlocked ? "&#9733;" : "&#9734;";
-			}
-
-			if (unlocked) {
-				this.game.setCheckbox(ach.unlockedNode, unlocked, true, true);
-			} else if (ach.unlocked !== ach.unlockedNode.prevChecked) {
-				this.game.setCheckbox(ach.unlockedNode, ach.unlockedNode.prevChecked, true, true);
-			}
-			this.game.toggleDisabled(ach.unlockedNode, unlocked);
-
-			if (u !== ach.unlocked) {
-				ach.newAch = ach.unlocked;
-			}
-			dojo.toggleClass(ach.unlockedLabel, "newMarker", ach.newAch);
-
-			dojo.toggleClass(ach.domNode, "hidden", ach.hidden && !ach.unlocked);
-			newAch = newAch || ach.newStarAch || ach.newAch;
+			ach.update();
+			hasNewMarker = hasNewMarker || ach.isNewStar || ach.isNew;
 		}
 
-		dojo.toggleClass(this.tabWrapper, "newMarker", newAch);
+		var councilUnlocked = this.councilUnlocked;
+		for (i = this.hats.length - 1; i >= 0; i--) {
+			var hat = this.hats[i];
+			hat.update();
+			councilUnlocked = councilUnlocked || hat.unlocked;
+			hasNewMarker = hasNewMarker || hat.isNew;
+		}
+		this.councilUnlocked = councilUnlocked;
+
+		dojo.toggleClass(this.hatsBlockHeader, "spoiler", !this.councilUnlocked || !this.game.science.get("metaphysics").owned());
+
+		dojo.toggleClass(this.tabWrapper, "newMarker", hasNewMarker);
 	},
 
-	updateTabMark: function () {
-		var newAch = false;
+	updateTabMarker: function () {
+		var hasNewMarker = false;
 		for (var i = this.achievements.length - 1; i >= 0; i--) {
 			var ach = this.achievements[i];
-			if (ach.newStarAch || ach.newAch) {
-				newAch = true;
+			if (ach.isNewStar || ach.isNew) {
+				hasNewMarker = true;
 				break;
 			}
 		}
-		dojo.toggleClass(this.tabWrapper, "newMarker", newAch);
+
+		if (!hasNewMarker) {
+			for (i = this.hats.length - 1; i >= 0; i--) {
+				if (this.hats[i].isNew) {
+					hasNewMarker = true;
+					break;
+				}
+			}
+		}
+		dojo.toggleClass(this.tabWrapper, "newMarker", hasNewMarker);
 	},
 
 	save: function (saveData) {
 		saveData.achievements = this.game.filterMetadata(this.achievements, ["name", "unlocked", "starUnlocked"]);
+		saveData.ach = {
+			councilUnlocked: this.councilUnlocked,
+			hats: this.game.filterMetadata(this.hats, ["name", "unlocked"])
+		};
 	},
 
 	load: function (saveData) {
-		//ugh
-		this.game.bld.loadMetadata.call(this, saveData, "achievements", "get", function (ach, saveAch) {
+		this.loadMetadata(saveData, "achievements", "get", function (ach, saveAch) {
 			ach.set("unlocked", saveAch.unlocked);
-			ach.newAch = false;
+			ach.isNew = false;
 			if (ach.hasStar) {
+				ach.isNewStar = false;
 				ach.set("starUnlocked", saveAch.starUnlocked);
 			}
 		}, true);
+
+		if (saveData.ach) {
+			this.councilUnlocked = saveData.ach.councilUnlocked || false;
+			this.loadMetadata(saveData, "ach.hats", "getHat", function (hat, saveHat) {
+				hat.isNew = false;
+				hat.set("unlocked", saveHat.unlocked);
+			});
+		}
+	}
+});
+
+
+dojo.declare("classes.KGSaveEdit.AchievementMeta", [classes.KGSaveEdit.GenericItem], {
+	constructor: function () {
+		this.unlocked = Boolean(this.unlocked);
+		this.isNew = false;
+	},
+
+	render: function (parent) {
+		this.domNode = dojo.create("tr", {
+			class: "achievement",
+			innerHTML: '<td title="' + this.description + '">' +
+				(this.title || this.name) + "</td><td></td><td></td>"
+		}, parent);
+		this.nameNode = this.domNode.children[0];
+
+		var input = this.game._createCheckbox("Earned", this.domNode.children[1], this, "unlocked");
+		this.unlockedLabel = input.label;
+		on(input.label, mouse.enter, dojo.hitch(this, function () {
+			if (this.isNew) {
+				this.isNew = false;
+				dojo.removeClass(this.unlockedLabel, "newMarker");
+				this.metaObj.updateTabMarker();
+			}
+		}));
+
+		if (this.hasStar) {
+			input = this.game._createCheckbox((this.starUnlocked ? "&#9733;" : "&#9734;"),
+				this.domNode.children[2], this, "starUnlocked");
+			this.starUnlockedLabel = input.label;
+			this.starText = input.text;
+			if (this.starDescription) {
+				input.label.title = this.starDescription;
+			}
+			on(input.label, mouse.enter, dojo.hitch(this, function () {
+				if (this.isNewStar) {
+					this.isNewStar = false;
+					dojo.removeClass(this.starUnlockedLabel, "newMarker");
+					this.metaObj.updateTabMarker();
+				}
+			}));
+		}
+	},
+
+	update: function () {
+		var wasUnlocked = this.unlocked;
+		if (this.condition) {
+			var unlocked = this.condition();
+
+			if (unlocked) {
+				this.game.setCheckbox(this.unlockedNode, unlocked, true, true);
+			} else if (this.unlocked !== this.unlockedNode.prevChecked) {
+				this.game.setCheckbox(this.unlockedNode, this.unlockedNode.prevChecked, true, true);
+			}
+			this.game.toggleDisabled(this.unlockedNode, unlocked);
+
+			if (wasUnlocked !== this.unlocked) {
+				this.isNew = this.unlocked;
+			}
+			dojo.toggleClass(this.unlockedLabel, "newMarker", this.isNew);
+
+			dojo.toggleClass(this.domNode, "hidden", this.hidden && !this.unlocked);
+		}
+
+		if (this.hasStar) {
+			var starWasUnlocked = this.starUnlocked;
+
+			var starUnlocked = this.starCondition();
+			if (starUnlocked) {
+				this.game.setCheckbox(this.starUnlockedNode, starUnlocked, true, true);
+			} else if (this.starUnlocked !== this.starUnlockedNode.prevChecked) {
+				this.game.setCheckbox(this.starUnlockedNode, this.starUnlockedNode.prevChecked, true, true);
+			}
+			this.game.toggleDisabled(this.starUnlockedNode, starUnlocked);
+
+			if (starWasUnlocked !== this.starUnlocked) {
+				this.isNewStar = this.starUnlocked;
+			}
+			dojo.toggleClass(this.starUnlockedLabel, "newMarker", this.isNewStar);
+
+			this.starText.innerHTML = this.starUnlocked ? "&#9733;" : "&#9734;";
+		}
 	}
 });
 

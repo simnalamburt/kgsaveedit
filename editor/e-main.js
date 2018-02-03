@@ -2506,7 +2506,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			// console.trace();
 			success = "ERROR";
 			if (rollback) {
-				this.__loadBlankJSON();
+				this._loadBlankJSON();
 			}
 		}
 

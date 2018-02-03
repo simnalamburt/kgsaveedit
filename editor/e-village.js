@@ -249,6 +249,7 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 		on(self.unassignLeaderBtn.children[0], "click", function () {
 			if (self.leader) {
 				self.leader.fireLeader();
+				game.update();
 			}
 		});
 
@@ -260,6 +261,7 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 		on(self.unassignLeaderJobBtn.children[0], "click", function () {
 			if (self.leader) {
 				self.leader.quitJob();
+				game.update();
 			}
 		});
 
@@ -415,6 +417,7 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 			{value: "Save"}, div.children[1], function () {
 				if (self.massEditKittens()) {
 					dojo.addClass(self.massEditNode, "hidden");
+					game.update();
 				}
 			}, "first"
 		);
@@ -1196,11 +1199,18 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 		if (force || this.kittens.length !== kittens) {
 			this.kittens = this.generatedKittens.slice(0, kittens);
 
+			//clear properties from voided kittens
 			for (var i = kittens; i < this.generatedKittens.length; i++) {
 				var genKitten = this.generatedKittens[i];
 				genKitten.set("selected", false);
+				var rerender = genKitten.isLeader || genKitten.job;
+				if (genKitten.isLeader) {
+					genKitten.fireLeader(true); //skip render
+				}
 				if (genKitten.job) {
 					genKitten.job = null;
+				}
+				if (rerender) {
 					genKitten.renderInfo();
 				}
 			}
@@ -1535,14 +1545,38 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 		this.traits = game.village.traits;
 		this.traitsByName = game.village.traitsByName;
 
+		this.initialize();
+
+		// this.render();
+	},
+
+	initialize: function () {
 		this.name = this.getRandomName();
 		this.surname = this.getRandomSurname();
 		this.trait = this.getRandomTrait();
 		this.age = this.getRandomAge();
 
-		this.skills = {};
+		this.exp = 0;
+		this.rank = 0;
 
-		// this.render();
+		this.skills = {};
+	},
+
+	fireAll: function () {
+		if (this.isLeader) {
+			this.fireLeader(true);
+		}
+		if (this.isSenator) {
+			this.fireSenator(true);
+		}
+		if (this.job) {
+			this.quitJob();
+		}
+	},
+
+	reset: function () {
+		this.initialize();
+		this.fireAll();
 	},
 
 	render: function () {
@@ -1587,6 +1621,7 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 		self.quitJobNode = dojo.create("div", {innerHTML: '<a href="#">Unassign job</a>'}, div);
 		on(self.quitJobNode.children[0], "click", function () {
 			self.quitJob();
+			self.game.update();
 		});
 		if (!self.village.getJob(self.job)) {
 			dojo.addClass(self.quitJobNode, "hidden");
@@ -1598,6 +1633,7 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 		}, div).children[0];
 		on(self.setLeaderNode, "click", function () {
 			self.makeLeader();
+			self.game.update();
 		});
 		if (self.isLeader) {
 			self.setLeaderNode.innerHTML = "&#9733;";
@@ -1703,6 +1739,7 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 		game._createButton(
 			{value: "Save"}, span, function () {
 				self.saveEdits();
+				game.update();
 			}, "first"
 		);
 
@@ -1862,8 +1899,6 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 		if (this.isLeader || (this.isSenator && this.showSenate)) {
 			this.village.renderGovernment();
 		}
-
-		this.game.update();
 	},
 
 	makeLeader: function (noRender) {

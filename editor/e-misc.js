@@ -299,6 +299,8 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 	domNode: null,
 	cycleEffectsNode: null,
 
+	cryptoPrice: 1000,
+
 	getCurSeason: function () {
 		if (this.game.challenges.currentChallenge === "winterIsComing") {
 			return this.seasons[3]; //eternal winter
@@ -434,6 +436,13 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		input = game._createInput({id: "futureSeasonTemporalParadoxNode", class: "integerInput"},
 			tr.children[1], self, "futureSeasonTemporalParadox");
 		input.minValue = -1;
+
+		tr = dojo.create("tr", {
+			innerHTML: "<td>Blackcoin price</td><td></td>"
+		}, table);
+
+		input = game._createInput({id: "cryptoPriceNode"}, tr.children[1], self, "cryptoPrice");
+		input.minValue = Number.MIN_VALUE;
 	},
 
 	cycleEffectsBasics: function (effects, building_name) {
@@ -554,8 +563,8 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 	},
 
 	save: function (saveData) {
-		saveData.calendar = this.game.filterMetaObj(this, ["year", "day", "season",
-			"weather", "festivalDays", "cycle", "cycleYear", "futureSeasonTemporalParadox"]);
+		saveData.calendar = this.game.filterMetaObj(this, ["year", "day", "season", "weather",
+			"festivalDays", "cycle", "cycleYear", "futureSeasonTemporalParadox", "cryptoPrice"]);
 	},
 
 	load: function (saveData) {
@@ -571,6 +580,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		this.cycle = this.cycleNode.selectedIndex;
 		this.set("cycleYear", data.cycleYear || 0);
 		this.set("futureSeasonTemporalParadox", data.futureSeasonTemporalParadox || -1);
+		this.set("cryptoPrice", data.cryptoPrice || 1000);
 
 		this.refYear = this.year;
 	}
@@ -779,8 +789,8 @@ dojo.declare("classes.KGSaveEdit.ChallengesManager", classes.KGSaveEdit.Manager,
 	}, {
 		name: "winterIsComing",
 		label: "Winter Has Come",
-		description: "Restart the game with only winter seasons.<br><br>Goal: Get to Helios.",
-		effectDesc: "Weather is better overall.",
+		description: "Restart the game with only winter seasons. (Catnip will not benefit from paragon production bonus)<br><br>Goal: Get to Helios.",
+		effectDesc: "Warm seasons are more likely, and cold seasons are less likely.",
 		condition: function () {
 			return this.game.space.getPlanet("helios").reached;
 		},
@@ -788,8 +798,11 @@ dojo.declare("classes.KGSaveEdit.ChallengesManager", classes.KGSaveEdit.Manager,
 	}, {
 		name: "anarchy",
 		label: "Anarchy",
-		description: "Restart the game with kittens acting their own way : kittens are lazy, always eat extra catnip and can't be assigned as leaders.<br><br>Goal: TBD.",
-		effectDesc: "TBD",
+		description: "Restart the game with kittens acting their own way : kittens are lazy, always eat extra catnip and can't be assigned as leaders.<br><br>Goal: Construct AI Core.",
+		effectDesc: "Your global resource production is improved by 5%",
+		condition: function () {
+			return this.game.bld.get("aiCore").val > 0;
+		},
 		unlocked: true
 	}, {
 		name: "energy",

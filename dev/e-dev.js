@@ -95,22 +95,22 @@ dojo.declare("classes.KGSaveEdit.DevMode", classes.KGSaveEdit.UI.Tab, {
 			var newKittens = {};
 
 			for (var index in delta.village.kittens) {
-				var kitten = delta.village.kittens[index];
-				if (index === "_t" || !kitten.skills) {
-					newKittens[index] = kitten;
+				var deltaKitten = delta.village.kittens[index];
+				if (index === "_t" || !deltaKitten.skills) {
+					newKittens[index] = deltaKitten;
 					continue;
 				}
 
 				var keepKitten = false;
 
-				if (Object.keys(kitten).toString() !== "skills") {
+				if (Object.keys(deltaKitten).toString() !== "skills") {
 					keepKitten = true;
 				}
 
 				var kittenNegated = false;
 				var keptSkills = {};
-				for (var key in kitten.skills) {
-					var skill = kitten.skills[key];
+				for (var key in deltaKitten.skills) {
+					var skill = deltaKitten.skills[key];
 					if (skill.length === 3 && skill[0] <= 0 && skill[1] === 0 && skill[2] === 0) {
 						if (!kittenNegated) {
 							negatedKittens.push(index);
@@ -124,13 +124,13 @@ dojo.declare("classes.KGSaveEdit.DevMode", classes.KGSaveEdit.UI.Tab, {
 
 				if (keepKitten) {
 					var clone = {};
-					for (var keepKey in kitten) {
+					for (var keepKey in deltaKitten) {
 						if (keepKey === "skills") {
 							if (!$.isEmptyObject(keptSkills)) {
 								clone[keepKey] = keptSkills;
 							}
 						} else {
-							clone[keepKey] = kitten[keepKey];
+							clone[keepKey] = deltaKitten[keepKey];
 						}
 					}
 

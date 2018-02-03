@@ -512,8 +512,19 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science", val: 1250000},
 				{name: "relic",   val: 1024}
 			],
-			// unlocks: {},
+			// unlocks: {tech: ["blackchain"]},
 			requires: {tech: ["ai"]}
+		}, {
+			name: "blackchain",
+			label: "Blackchain",
+			description: "All cool cats are mining this, so I think it is some kind of mineral",
+			effectDesc: "Unlocks cryptomining and blackcoin exchange",
+			prices: [
+				{name: "science", val: 5000000},
+				{name: "relic",   val: 5000}
+			],
+			// unlocks: {},
+			requires: {tech: ["quantumCryptography"]}
 		}, {
 			name: "nuclearFission",
 			label: "Nuclear Fission",
@@ -730,7 +741,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 			requires: {tech: ["tachyonTheory"]}
 		}, {
 			name: "paradoxalKnowledge",
-			label: "Paradoxal Knowledge",
+			label: "Paradox Theory",
 			description: "TBD",
 			effectDesc: "Unlocks Chronocontrol and Resource Retrieval",
 			prices: [
@@ -738,7 +749,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "timeCrystal", val: 40},
 				{name: "void",        val: 250}
 			],
-			// unlocks: {chronoforge: ["ressourceRetrieval"], voidSpace: ["chronocontrol"], upgrades: ["distorsion"]},
+			// unlocks: {chronoforge: ["ressourceRetrieval"], voidSpace: ["chronocontrol", "voidResonator"], upgrades: ["distorsion"]},
 			requires: {tech: ["voidSpace"]}
 	}],
 
@@ -1011,9 +1022,21 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 150}
 			],
+			// unlocks: {"perks": ["pawgan"]},
 			requires: {perks: ["numerology"]},
 			effects: {
 				"kittenGrowthRatio": 0.75
+			}
+		}, {
+			name: "pawgan",
+			label: "Pawgan Rituals",
+			description: "Kittens will arrive an additional 150% faster.",
+			prices: [
+				{name: "paragon", val: 400}
+			],
+			requires: {perks: ["willenfluff"]},
+			effects: {
+				"kittenGrowthRatio": 1.50
 			}
 		}, {
 			name: "numerology",
@@ -1167,7 +1190,16 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 5}
 			],
+			// unlocks: {"perks": ["ascoh"]},
 			unlocked: true
+		}, {
+			name: "ascoh",
+			label: "ASCOH",
+			description: "A Secret Council Of Hats",
+			prices: [
+				{name: "paragon", val: 5}
+			],
+			requires: {perks: ["adjustmentBureau"]}
 	}],
 
 	domNode: null,
@@ -2911,18 +2943,6 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			progressHandicap: 1,
 			tier: 1
 		}, {
-			name: "concrate",
-			label: "Concrete",
-			description: "A block of reinforced concrete.",
-			prices: [
-				{name: "slab",  val: 2500},
-				{name: "steel", val: 25}
-			],
-			unlocked: false,
-			requires: {tech: ["mechanization"]},
-			progressHandicap: 9,
-			tier: 4
-		}, {
 			name: "plate",
 			label: "Metal Plate",
 			description: "A metal plate. Required for advanced construction.",
@@ -2944,6 +2964,18 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			requires: {tech: ["steel"]},
 			progressHandicap: 4,
 			tier: 2
+		}, {
+			name: "concrate",
+			label: "Concrete",
+			description: "A block of reinforced concrete.",
+			prices: [
+				{name: "slab",  val: 2500},
+				{name: "steel", val: 25}
+			],
+			unlocked: false,
+			requires: {tech: ["mechanization"]},
+			progressHandicap: 9,
+			tier: 4
 		}, {
 			name: "gear",
 			label: "Gear",

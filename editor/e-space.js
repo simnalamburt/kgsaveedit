@@ -498,7 +498,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					description: "Generates antimatter once per year. Inactive if energy production is negative",
 					prices: [
 						{name: "science",  val: 500000},
-						{name: "eludium",  val: 250},
+						{name: "eludium",  val: 225},
 						{name: "kerosene", val: 2500}
 					],
 					priceRatio: 1.15,
@@ -520,7 +520,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 						{name: "science",  val: 500000},
 						{name: "kerosene", val: 2500}
 					],
-					priceRatio: 1.15,
+					priceRatio: 1.125,
 					togglable: true,
 					effects: {
 						"energyConsumption": 0,
@@ -698,7 +698,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 						yearBonus = 0;
 					}
 					var fluxBonus = 0;
-					if (game.time.flux > 0) {
+					if (game.time.flux > 1) {
 						fluxBonus = Math.log(game.time.flux);
 					}
 
