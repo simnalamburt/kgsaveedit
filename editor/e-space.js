@@ -887,7 +887,12 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 		var div = dojo.create("div", {class: "bottom-margin"}, this.tabBlockNode);
 		this.game._createCheckbox("Hide complete missions", div, this, "hideResearched");
 
-		this.programsBlock = dojo.create("table", {id: "programsBlock"}, this.tabBlockNode);
+		this.programsBlock = dojo.create("table", {
+			id: "programsBlock",
+			class: "bottom-margin"
+		}, this.tabBlockNode);
+
+		this.planetsBlock = dojo.create("table", {id: "planetsBlock"}, this.tabBlockNode);
 	},
 
 	render: function () {
@@ -901,23 +906,22 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 		for (i = 0, len = this.planets.length; i < len; i++) {
 			var planet = this.planets[i];
 
-			dojo.create("tr", {"colspan": 3, innerHTML: "&nbsp;"}, this.programsBlock);
+			if (i > 0) {
+				dojo.create("tr", {"colspan": 2, innerHTML: "&nbsp;"}, this.planetsBlock);
+			}
 
 			var tr = dojo.create("tr", {
 				class: "planet",
-				innerHTML: '<td colspan="3"></td>'
-			}, this.programsBlock);
+				innerHTML: '<td class="nameNode">' + (planet.label || planet.name) + '</td><td></td>'
+			}, this.planetsBlock);
 
 			planet.nameRow = tr;
-			planet.nameNode = dojo.create("span", {
-				class: "nameNode",
-				innerHTML: planet.label || planet.name
-			}, tr.children[0]);
+			planet.nameNode = tr.children[0];
 
 			var span = dojo.create("span", {
 				class: "planetRouteDaysSpan",
 				innerHTML: "Flight time &nbsp;"
-			}, tr.children[0]);
+			}, tr.children[1]);
 
 			var input = this.game._createInput({}, span, planet, "routeDays");
 			input.parseFn = function (value) {
@@ -931,7 +935,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 			for (var j = 0, bldlen = planet.buildings.length; j < bldlen; j++) {
 				program = planet.buildings[j];
 				program.render();
-				dojo.place(program.domNode, this.programsBlock);
+				dojo.place(program.domNode, this.planetsBlock);
 			}
 		}
 	},
@@ -1097,8 +1101,7 @@ dojo.declare("classes.KGSaveEdit.ProgramMeta", classes.KGSaveEdit.MetaItem, {
 	render: function () {
 		this.domNode = dojo.create("tr", {
 			class: "program",
-			innerHTML: '<td class="nameNode">' + (this.label || this.name) + "</td>" +
-				'<td class="rightAlign"></td><td></td>'
+			innerHTML: '<td class="nameNode">' + (this.label || this.name) + "</td><td></td>"
 		});
 		this.nameNode = this.domNode.children[0];
 
@@ -1114,10 +1117,10 @@ dojo.declare("classes.KGSaveEdit.ProgramMeta", classes.KGSaveEdit.MetaItem, {
 		}, this.domNode.children[1], this);
 
 		if (!this.planet) {
-			var input = this.game._createCheckbox("Unlocked", this.domNode.children[2], this, "unlocked");
+			var input = this.game._createCheckbox("Unlocked", this.domNode.children[1], this, "unlocked");
 			this.unlockedLabel = input.label;
 
-			input = this.game._createCheckbox("Launched", this.domNode.children[2], this);
+			input = this.game._createCheckbox("Launched", this.domNode.children[1], this);
 			this.launchedNode = input.cbox;
 			input.cbox.handler = function () {
 				var val = num(this.checked);
