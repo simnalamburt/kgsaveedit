@@ -1,4 +1,4 @@
-/*global dojo, require, classes*/
+/* global dojo, require, classes */
 
 require([], function () {
 

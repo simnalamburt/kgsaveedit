@@ -1,4 +1,4 @@
-/*global dojo, require, LZString, classes, num*/
+/* global dojo, require, classes, LZString, num */
 
 require(["dojo/on"], function (on) {
 "use strict";

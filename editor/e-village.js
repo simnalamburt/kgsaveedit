@@ -1,4 +1,4 @@
-/*global dojo, require, classes, num*/
+/* global dojo, require, classes, num */
 
 require(["dojo/on"], function (on) {
 "use strict";

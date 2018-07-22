@@ -1,4 +1,4 @@
-/*global dojo, require, classes, jsondiffpatch*/
+/* global dojo, require, classes, jsondiffpatch */
 
 require(["dojo/on"], function (on) {
 "use strict";
