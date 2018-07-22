@@ -390,8 +390,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			priceRatio: 1.15,
 			effects: {},
 			flavor: "We live on a placid island of ignorance in the midst of black seas of infinity, and it was not meant that we should voyage far."
-		}
-	],
+	}],
 
 	zigguratUpgrades: null,
 	zigguratUpgradesByName: null,

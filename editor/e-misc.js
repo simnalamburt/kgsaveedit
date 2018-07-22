@@ -167,6 +167,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 			title: "Charon",
 			glyph: "&#9049;",
 			effects: {
+				"entangler-gflopsConsumption":         2,
 				"moonOutpost-unobtainiumPerTickSpace": 0.9
 			},
 			festivalEffects: {
@@ -179,6 +180,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 			title: "Umbra",
 			glyph: "&#9062;",
 			effects: {
+				"hrHarvester-energyProduction":           1.5,
 				"planetCracker-uraniumPerTickSpace":      0.9,
 				"hydrofracturer-oilPerTickAutoprodSpace": 0.75
 			},
@@ -193,6 +195,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 			title: "Yarn",
 			glyph: "&#9063;",
 			effects: {
+				"hydroponics-catnipRatio":                  2,
 				"researchVessel-starchartPerTickBaseSpace": 0.5
 			},
 			festivalEffects: {
@@ -203,7 +206,15 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 			title: "Helios",
 			glyph: "&#8978;",
 			effects: {
-				"sunlifter-energyProduction": 1.5
+				"sunlifter-energyProduction": 1.5,
+				"cryostation-woodMax":        0.9,
+				"cryostation-mineralsMax":    0.9,
+				"cryostation-ironMax":        0.9,
+				"cryostation-coalMax":        0.9,
+				"cryostation-uraniumMax":     0.9,
+				"cryostation-titaniumMax":    0.9,
+				"cryostation-oilMax":         0.9,
+				"cryostation-unobtainiumMax": 0.9
 			},
 			festivalEffects: {
 				"faith":    2,
@@ -228,7 +239,8 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 			title: "Redmoon",
 			glyph: "&#9052;",
 			effects: {
-				"moonOutpost-unobtainiumPerTickSpace": 1.2
+				"moonOutpost-unobtainiumPerTickSpace": 1.2,
+				"entangler-gflopsConsumption":         0.5
 			},
 			festivalEffects: {
 				"unobtainium": 2
@@ -239,7 +251,8 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 			glyph: "&#9067;",
 			effects: {
 				"planetCracker-uraniumPerTickSpace":      1.1,
-				"hydrofracturer-oilPerTickAutoprodSpace": 1.5
+				"hydrofracturer-oilPerTickAutoprodSpace": 1.5,
+				"hrHarvester-energyProduction":           0.75
 			},
 			festivalEffects: {
 				"uranium": 2
@@ -249,7 +262,8 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 			title: "Piscine",
 			glyph: "&#9096;",
 			effects: {
-				"researchVessel-starchartPerTickBaseSpace": 1.5
+				"researchVessel-starchartPerTickBaseSpace": 1.5,
+				"hydroponics-catnipRatio":                  0.5
 			},
 			festivalEffects: {
 				"science": 2
@@ -259,6 +273,14 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 			title: "Terminus",
 			glyph: "&#9053;",
 			effects: {
+				"cryostation-woodMax":        1.2,
+				"cryostation-mineralsMax":    1.2,
+				"cryostation-ironMax":        1.2,
+				"cryostation-coalMax":        1.2,
+				"cryostation-uraniumMax":     1.2,
+				"cryostation-titaniumMax":    1.2,
+				"cryostation-oilMax":         1.2,
+				"cryostation-unobtainiumMax": 1.2,
 				"sunlifter-energyProduction": 0.5
 			},
 			festivalEffects: {
@@ -345,7 +367,8 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 
 		self.milleniumParagonSpan = dojo.create("a", {
 			id: "milleniumParagonSpan",
-			href: "#", class: "hidden",
+			href: "#",
+			class: "hidden",
 			innerHTML: "(+0 paragon)"
 		}, td);
 
@@ -504,8 +527,12 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		}
 	},
 
-	isDarkFuture: function () {
-		return (this.year - 40000 - this.game.time.flux - this.game.getEffect("timeImpedance") >= 0);
+	darkFutureYears: function (withImpedance) {
+		var impedance = 0;
+        if (withImpedance) {
+			impedance = this.game.getEffect("timeImpedance") * (1 + this.game.getEffect("timeRatio"));
+		}
+		return this.year - (40000 + impedance);
 	},
 
 	getTooltip: function (node) {
@@ -798,8 +825,8 @@ dojo.declare("classes.KGSaveEdit.ChallengesManager", classes.KGSaveEdit.Manager,
 	}, {
 		name: "anarchy",
 		label: "Anarchy",
-		description: "Restart the game with kittens acting their own way : kittens are lazy, always eat extra catnip and can't be assigned as leaders.<br><br>Goal: Construct AI Core.",
-		effectDesc: "Your global resource production is improved by 5%",
+		description: "Restart the game with kittens acting their own way : kittens are lazy, always eat extra catnip and can't be assigned as leaders.<br><br>Goal: Construct AI Core",
+		effectDesc: "Kittens count double for karma",
 		condition: function () {
 			return this.game.bld.get("aiCore").val > 0;
 		},

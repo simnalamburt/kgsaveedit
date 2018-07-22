@@ -549,6 +549,20 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					],
 					priceRatio: 1.12,
 					upgrades: {spaceBuilding: ["containmentChamber"]}
+				}, {
+					name: "sunforge",
+					label: "Sunforge",
+					description: "Uses the heat of the sun to smelt materials into supercondensed plasma. Every level of sunforge improves the storage space of your base metals by 1%",
+					prices: [
+						{name: "science", val: 100000},
+						{name: "relic",   val: 1},
+						{name: "kerosene", val: 1250},
+						{name: "antimatter", val: 250}
+					],
+					priceRatio: 1.12,
+					effects: {
+						"baseMetalMaxRatio": 0.01
+					}
 			}],
 			requires: {spaceMission: ["heliosMission"]}
 		}, {
@@ -693,18 +707,13 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					"energyProduction": 1
 				},
 				calculateEffects: function (self, game) {
-					var yearBonus = game.calendar.year - 40000 - game.time.flux;
+					var yearBonus = game.calendar.darkFutureYears();
 					if (yearBonus < 0) {
 						yearBonus = 0;
 					}
-					var fluxBonus = 0;
-					if (game.time.flux > 1) {
-						fluxBonus = Math.log(game.time.flux);
-					}
 
 					self.effects["energyProduction"] =
-						1 * (1 + yearBonus * 0.01) *
-							(1 + fluxBonus * 0.01) *
+						1 * (1 + game.getTriValue(yearBonus, 0.075) * 0.01) *
 							(1 + game.getEffect("umbraBoostRatio"));
 				}
 			}],
@@ -731,7 +740,10 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 				},
 				action: function (self, game) {
 					var gflopsPerTick = self.effects.gflopsConsumption * self.on;
-					if (game.resPool.get("gflops").value <= gflopsPerTick) {
+					var gflops = game.resPool.get("gflops").value;
+					if (gflops < gflopsPerTick && gflops > 0) {
+						gflopsPerTick = gflops;
+					} else if (gflops == 0) {
 						return;
 					}
 
@@ -750,6 +762,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					} else {
 						self.effects.hashRateLevel = 0;
 					}
+					self.effects.gflopsConsumption = 0.1;
 				}
 			}],
 			requires: {spaceMission: ["charonMission"]}

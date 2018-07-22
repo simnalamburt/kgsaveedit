@@ -35,12 +35,21 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			calculatePerTick: true
 		}, {
 			name: "iron",
+			tags: {
+				baseMetal: true
+			},
 			calculatePerTick: true
 		}, {
 			name: "titanium",
+			tags: {
+				baseMetal: true
+			},
 			calculatePerTick: true
 		}, {
 			name: "gold",
+			tags: {
+				baseMetal: true
+			},
 			calculatePerTick: true
 		}, {
 			name: "oil",
@@ -48,10 +57,16 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 		}, {
 			name: "uranium",
 			color: "#4EA24E",
+			tags: {
+				baseMetal: true
+			},
 			calculatePerTick: true
 		}, {
 			name: "unobtainium",
 			color: "#A00000",
+			tags: {
+				baseMetal: true
+			},
 			calculatePerTick: true
 		}, {
 			name: "manpower",
@@ -452,6 +467,10 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			if (!this.isNormalCraftableResource(res) && !res.transient) {
 				maxValue *= 1 + this.game.getEffect("globalResourceRatio");
 			}
+		}
+
+		if (res.tags && res.tags.baseMetal) {
+			maxValue *= (1 + this.game.getEffect("baseMetalMaxRatio"));
 		}
 
 		return maxValue;

@@ -250,7 +250,7 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 			},
 
 			"prodTransferBonus": {
-				title: "Transferred production bonus",
+				title: "Transferred cath production bonus",
 				type: "ratio"
 			},
 
@@ -288,7 +288,7 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 			},
 
 			"harborRatio": {
-				title: "Harbor'ship expansion",
+				title: "Harbor ship expansion",
 				type: "ratio"
 			},
 
@@ -343,7 +343,7 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 			},
 
 			"calcinerSteelCraftRatio": {
-				title: "Steel plants's calciner bonuss",
+				title: "Steel plants's calciner bonus",
 				type: "ratio"
 			},
 
@@ -443,7 +443,7 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 			},
 
 			"timeRatio": {
-				title: "Temporal flux bonus",
+				title: "Chronomancy bonus",
 				type: "ratio"
 			},
 
@@ -479,6 +479,11 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 
 			"ivoryMeteorRatio": {
 				title: "Ivory meteor bonus",
+				type: "ratio"
+			},
+
+			"goldMaxRatio": {
+				title: "Maximum gold bonus",
 				type: "ratio"
 			},
 
@@ -569,7 +574,7 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 
 			// cycleEffects
 			"spaceElevator-prodTransferBonus": {
-				title: "Space Elevator - Transferred cath production bonus",
+				title: "Space Elevator - Transferred production bonus",
 				type: "ratio"
 			},
 
@@ -613,19 +618,94 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 				type: "ratio"
 			},
 
+			"cryostation-woodMax": {
+				title: "Cryostation - Max Wood",
+				type: "ratio"
+			},
+
+			"cryostation-mineralsMax": {
+				title: "Cryostation - Max Minerals",
+				type: "ratio"
+			},
+
+			"cryostation-ironMax": {
+				title: "Cryostation - Max Iron",
+				type: "ratio"
+			},
+
+			"cryostation-coalMax": {
+				title: "Cryostation - Max Coal",
+				type: "ratio"
+			},
+
+			"cryostation-uraniumMax": {
+				title: "Cryostation - Max Uranium",
+				type: "ratio"
+			},
+
+			"cryostation-titaniumMax": {
+				title: "Cryostation - Max Titanium",
+				type: "ratio"
+			},
+
+			"cryostation-oilMax": {
+				title: "Cryostation - Max Oil",
+				type: "ratio"
+			},
+
+			"cryostation-unobtainiumMax": {
+				title: "Cryostation - Max Unobtainium",
+				type: "ratio"
+			},
+
 			"spaceBeacon-starchartPerTickBaseSpace": {
 				title: "Space Beacon - Starchart production",
 				type: "ratio"
 			},
 
-			"spiceRefinery-spicePerTickAutoprodSpace": {
-				title: "Spice Refinery - Spice production",
+			"hydroponics-catnipRatio": {
+				title: "Hydroponics - Catnip bonus",
+				type: "ratio"
+			},
+
+			"hrHarvester-energyProduction": {
+				title: "HR Harvester - Energy production",
+				type: "ratio"
+			},
+
+			"entangler-gflopsConsumption": {
+				title: "Entanglement St. - GFlops consumption",
 				type: "ratio"
 			},
 
 			"hrProgress": {
 				title: "Hash collision",
 				type: "ratio"
+			},
+
+			"aiLevel": {
+				title: "AI Level",
+				type: "fixed"
+			},
+
+			"gflopsConsumption": {
+				title: "GFlops consumption",
+				type: "fixed"
+			},
+
+			"hashrate": {
+				title: "Hashrate",
+				type: "fixed"
+			},
+
+			"nextHashLevelAt": {
+				title: "Next hashrate level at",
+				type: "fixed"
+			},
+
+			"hashRateLevel": {
+				title: "Hashrate level",
+				type: "fixed"
 			}
 		}
 	}
@@ -686,9 +766,9 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	],
 
 	/**
-	 * Parses a input element's .value into a numeric value with a minimum of 0
-	 * Strips all non-alphanumeric, non-"+", "-", or "." characters and parseFloat()s
-	 * Can read a single display postfix if the input displays its value with postfixes
+		* Parses a input element's .value into a numeric value with a minimum of 0
+		* Strips all non-alphanumeric, non-"+", "-", or "." characters and parseFloat()s
+		* Can read a single display postfix if the input displays its value with postfixes
 	**/
 	parseInput: function (ele) {
 		if (ele.type !== "text" || dojo.hasClass(ele, "textInput")) {
@@ -720,8 +800,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Calls the applicable function to set a form element's value
-	 * Passes arguments to the function
+		* Calls the applicable function to set a form element's value
+		* Passes arguments to the function
 	**/
 	setEle: function (ele, value) {
 		if (!ele) {
@@ -739,10 +819,10 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Sets a numeric input's checked states and also updates its associated data property (if applicable)
-	 * Passing no value just causes it to redisplay its parsed value (used for .abbrInput onBlur)
-	 * Calls handlers on the input and associated object unless noHandlers is truthy
-	 * Sets prevChecked (used to revert automatic changes) unless noPrev is truthy
+		* Sets a numeric input's checked states and also updates its associated data property (if applicable)
+		* Passing no value just causes it to redisplay its parsed value (used for .abbrInput onBlur)
+		* Calls handlers on the input and associated object unless noHandlers is truthy
+		* Sets prevChecked (used to revert automatic changes) unless noPrev is truthy
 	**/
 	setInput: function (ele, value, noHandlers, noPrev) {
 		if (dojo.hasClass(ele, "textInput")) {
@@ -792,9 +872,9 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Sets a checkbox's checked states and also updates its associated data property (if applicable)
-	 * Sets prevChecked (used to revert automatic changes) unless noPrev is truthy
-	 * Calls handlers on the checkbox and associated object unless noHandlers is truthy
+		* Sets a checkbox's checked states and also updates its associated data property (if applicable)
+		* Sets prevChecked (used to revert automatic changes) unless noPrev is truthy
+		* Calls handlers on the checkbox and associated object unless noHandlers is truthy
 	**/
 	setCheckbox: function (ele, checked, noPrev, noHandlers) {
 		if (!ele || ele.type !== "checkbox") {
@@ -817,9 +897,9 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Selects a select element's option element that matches the given value
-	 * Defaults to the select's defaultVal, or the first option if no option matches
-	 * Not using select.value = value because that doesn't guarantee an option selected
+		* Selects a select element's option element that matches the given value
+		* Defaults to the select's defaultVal, or the first option if no option matches
+		* Not using select.value = value because that doesn't guarantee an option selected
 	**/
 	setSelectByValue: function (ele, value) {
 		if (!ele) {
@@ -837,7 +917,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Toggles an input's disabled attribute, and toggles a class on its parentNode
+		* Toggles an input's disabled attribute, and toggles a class on its parentNode
 	**/
 	toggleDisabled: function (ele, disabled, extraClass) {
 		if (!ele) {
@@ -851,8 +931,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Clones an array of meta objects by passing them through filterMetaObj
-	 */
+		* Clones an array of meta objects by passing them through filterMetaObj
+		*/
 	filterMetadata: function (meta, fields, callback) {
 		var filtered = [];
 		for (var i = 0, len = meta.length; i < len; i++) {
@@ -863,9 +943,9 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Clones an object, but only the keys in the fields array
-	 * Calls callback in the context of the object if passed
-	 */
+		* Clones an object, but only the keys in the fields array
+		* Calls callback in the context of the object if passed
+		*/
 	filterMetaObj: function (meta, fields, callback) {
 		var clone = {};
 		for (var i = 0, len = fields.length; i < len; i++) {
@@ -1853,9 +1933,9 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Checks whether everything in a given meta.requires is owned
-	 * Returns defaultUnlocked if no .requires, else unlocked
-	 * Has a hack for stages (>_>)
+		* Checks whether everything in a given meta.requires is owned
+		* Returns defaultUnlocked if no .requires, else unlocked
+		* Has a hack for stages (>_>)
 	**/
 	checkRequirements: function (meta, defaultUnlocked, isStage) {
 		if (!meta) {
@@ -1941,8 +2021,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Create a numeric input element and attaches an "input" event handler to it
-	 * Automatically updates metaObj[dataProp] if both are set
+		* Create a numeric input element and attaches an "input" event handler to it
+		* Automatically updates metaObj[dataProp] if both are set
 	**/
 	_createInput: function (attrs, parentNode, metaObj, dataProp, pos, noUpdate) {
 		var input = dojo.create("input", attrs, parentNode, pos || "last");
@@ -2003,9 +2083,9 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Special case of _createInput for metaObj.val
-	 * Sets default html classes and a handler to update .on if not .togglable or if .togglableOnOff
-	 */
+		* Special case of _createInput for metaObj.val
+		* Sets default html classes and a handler to update .on if not .togglable or if .togglableOnOff
+		*/
 	_createValInput: function (attrs, parentNode, metaObj, pos, noUpdate) {
 		if (!attrs) {
 			attrs = {};
@@ -2024,8 +2104,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Creates a checkbox and a label wrapper, and attaches a click event handler
-	 * Automatically updates metaObj[dataProp] if both are set
+		* Creates a checkbox and a label wrapper, and attaches a click event handler
+		* Automatically updates metaObj[dataProp] if both are set
 	**/
 	_createCheckbox: function (text, parentNode, metaObj, prop, pos) {
 		var label = dojo.create("label", {innerHTML: " "}, parentNode, pos || "last");
@@ -2057,7 +2137,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Call handler methods, and recalculate things as necessary
+		* Call handler methods, and recalculate things as necessary
 	**/
 	_callHandlers: function (ele) {
 		if (dojo.isFunction(ele.handler)) {
@@ -2082,10 +2162,10 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Recursively access a obj's properties, given a string of period-separated object keys
-	 * Kinda like lodash.get, but with support to find an array member with a .name property matching a given key,
-	 * and otherwise not very robust
-	 */
+		* Recursively access a obj's properties, given a string of period-separated object keys
+		* Kinda like lodash.get, but with support to find an array member with a .name property matching a given key,
+		* and otherwise not very robust
+		*/
 	resolveObjPath: function (obj, path) {
 		if (path && path.split) {
 			var keys = path.split(".");
@@ -2120,7 +2200,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Loop through a list, calling a method by the given name on each of its members, with arguments passed through
+		* Loop through a list, calling a method by the given name on each of its members, with arguments passed through
 	**/
 	callMethods: function (list, method) {
 		var args = [].slice.call(arguments, 2);
@@ -2134,8 +2214,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-	 * Loop through a list, calling a method by the given name on each of its members,
-	 * and returns an array of the returned values
+		* Loop through a list, calling a method by the given name on each of its members,
+		* and returns an array of the returned values
 	**/
 	mapMethods: function (list, method) {
 		var args = [].slice.call(arguments, 2);

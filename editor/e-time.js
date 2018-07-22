@@ -66,7 +66,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		],
 		priceRatio: 1.05,
 		requires: function (game) {
-			return game.calendar.year >= 40000;
+			return game.calendar.darkFutureYears() >= 0;
 		},
 		effects: {
 			"timeImpedance": 1000
