@@ -1229,7 +1229,7 @@ dojo.declare("classes.KGSaveEdit.VillageManager", [classes.KGSaveEdit.UI.Tab, cl
 					genKitten.job = null;
 				}
 				if (rerender) {
-					genKitten.renderInfo();
+					genKitten.render();
 				}
 			}
 
