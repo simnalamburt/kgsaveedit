@@ -564,7 +564,7 @@ input.integerInput.timeInput {
 }
 
 .newMarker:after {
-	content: " New!";
+	content: " " attr(data-new);
 	color: red;
 	font-style: italic;
 	font-size: 10px;

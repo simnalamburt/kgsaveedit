@@ -186,7 +186,22 @@ dojo.declare("classes.KGSaveEdit.i18n.Lang", null, {
 			throw 'Language "' + lang + '" not available';
 		}
 
-		return $.getJSON("res/i18n/" + lang + ".json?v=" + editorVersion).done(function (gameData) {
+		var fetchGamei18n = $.getJSON("res/i18n/" + lang + ".json?v=" + editorVersion).fail(function (e) {
+			console.error("Couldn't load user locale '" + lang + "'", e);
+			throw "Couldn't load user locale '" + lang + "'";
+		});
+
+		var fetchEditori189 = $.Deferred();
+		$.getJSON("editor/i18n/" + lang + ".json?v=" + editorVersion).always(function (data) {
+			fetchEditori189.resolve(data);
+		});
+
+		return $.when(fetchGamei18n, fetchEditori189).done(function (gameData, editorData) {
+			gameData = gameData[0];
+			if (editorData) {
+				gameData = $.extend(gameData, editorData);
+			}
+
 			var defaultLocale = self.loadedLocales[self.fallbackLocale];
 			if (defaultLocale) {
 				gameData = $.extend({}, defaultLocale, gameData);
@@ -195,9 +210,6 @@ dojo.declare("classes.KGSaveEdit.i18n.Lang", null, {
 			if (lang === self.language) {
 				self.updateLanguage(lang);
 			}
-		}).fail(function (e) {
-			console.error("Couldn't load user locale '" + lang + "'", e);
-			throw "Couldn't load user locale '" + lang + "'";
 		});
 	},
 

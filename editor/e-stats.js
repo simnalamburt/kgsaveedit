@@ -380,6 +380,8 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 	},
 
 	render: function () {
+		this.tabWrapper.setAttribute("data-new", $I("KGSaveEdit.achievements.new"));
+
 		this.game.callMethods(this.achievements, "render", this.achievementsBlock, "achievement");
 		this.game.callMethods(this.hats, "render", this.hatsBlock, "hat");
 	},
@@ -479,17 +481,19 @@ dojo.declare("classes.KGSaveEdit.AchievementMeta", [classes.KGSaveEdit.GenericIt
 	render: function (parent) {
 		this.seti18n();
 
+		var newText = $I("KGSaveEdit.achievements.new");
+
 		// TODO turn the title attributes into proper tooltips?
 
 		this.domNode = dojo.create("tr", {
 			class: "achievement",
-			innerHTML: '<td title="' + this.description + '">' +
-				(this.title || this.name) + "</td><td></td><td></td>"
+			innerHTML: '<td title="' + this.description + '">' + (this.title || this.name) + "</td><td></td><td></td>"
 		}, parent);
 		this.nameNode = this.domNode.children[0];
 
-		var input = this.game._createCheckbox("Earned", this.domNode.children[1], this, "unlocked");
+		var input = this.game._createCheckbox($I("KGSaveEdit.achievements.earned"), this.domNode.children[1], this, "unlocked");
 		this.unlockedLabel = input.label;
+		input.label.setAttribute("data-new", newText);
 		on(input.label, mouse.enter, dojo.hitch(this, function () {
 			if (this.isNew) {
 				this.isNew = false;
@@ -502,6 +506,7 @@ dojo.declare("classes.KGSaveEdit.AchievementMeta", [classes.KGSaveEdit.GenericIt
 			input = this.game._createCheckbox((this.starUnlocked ? "&#9733;" : "&#9734;"),
 				this.domNode.children[2], this, "starUnlocked");
 			this.starUnlockedLabel = input.label;
+			input.label.setAttribute("data-new", newText);
 			this.starText = input.text;
 			if (this.starDescription) {
 				input.label.title = this.starDescription;

@@ -216,11 +216,11 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		var div = dojo.create("div", {
 			id: "timestampBlock",
 			class: "bottom-margin",
-			innerHTML: '<span class="nameNode">Last save time</span> '
+			innerHTML: '<span class="nameNode">' + $I("KGSaveEdit.time.timestamp") + "</span> "
 		}, self.tabBlockNode);
 
 		dojo.create("small", {
-			title: "Times are in milliseconds since January 1, 1970, 00:00:00 UTC.\nFor more information, click here.",
+			title: $I("KGSaveEdit.time.timestamp.help"),
 			innerHTML: '<a class="help" href="http://www.epochconverter.com/" target="_blank">[?]</a>'
 		}, div);
 
@@ -229,13 +229,13 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		game._createInput({
 			id: "timestampNode",
 			class: "integerInput timeInput",
-			title: "Timestamp of last save"
+			title: $I("KGSaveEdit.time.timestamp.title")
 		}, div, self, "timestamp");
 
 		dojo.place(document.createTextNode(" "), div);
 		var btn = dojo.create("a", {
 			href: "#",
-			innerHTML: "Set to current time"
+			innerHTML: $I("KGSaveEdit.time.timestamp.set")
 		}, div);
 		on(btn, "click", function () {
 			self.set("timestamp", Date.now());
@@ -277,8 +277,8 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 
 		// Flux Node
 		tr = dojo.create("tr", {
-			innerHTML: '<td><span class="nameNode">Years skipped</span></td><td></td><td></td>',
-			title: "Years skipped by shattering time crystals"
+			innerHTML: '<td><span class="nameNode">' + $I("KGSaveEdit.time.flux") + "</span></td><td></td><td></td>",
+			title: $I("KGSaveEdit.time.flux.title")
 		}, self.timeBlock);
 
 		input = game._createInput({
@@ -456,12 +456,12 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 
 			this.game._createInput({
 				class: "integerInput ownedInput",
-				title: "Number of active upgrades"
+				title: $I("KGSaveEdit.buildings.on.title")
 			}, this.onNodeSpan, this, "on", "first");
 		}
 
 		this.game._createValInput({
-			title: "Number of upgrades"
+			title: $I("KGSaveEdit.buildings.val.title")
 		}, tr.children[1], this);
 
 		if (this.hasOwnProperty("heat")) {
@@ -471,10 +471,10 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 		}
 
 		if (this.hasOwnProperty("isAutomationEnabled")) {
-			this.game._createCheckbox("Automation on", tr.children[2], this, "isAutomationEnabled");
+			this.game._createCheckbox("Automation enabled", tr.children[2], this, "isAutomationEnabled");
 		}
 
-		// this.game._createCheckbox("Unlocked", tr.children[2], this, "unlocked");
+		// this.game._createCheckbox($I("KGSaveEdit.label.unlocked"), tr.children[2], this, "unlocked");
 
 		this.registerHighlight(this.domNode); // MetaItem
 		this.registerTooltip(this.domNode); // ToolTip

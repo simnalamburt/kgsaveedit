@@ -1,4 +1,4 @@
-/* global dojo, require, classes */
+/* global dojo, require, classes, $I */
 
 require([], function () {
 
@@ -14,7 +14,7 @@ dojo.declare("classes.KGSaveEdit.ExtrasTab", classes.KGSaveEdit.UI.Tab, {
 	},
 
 	getTabName: function () {
-		var title = "Extras";
+		var title = $I("KGSaveEdit.extras.tabName");
 		if (this.extraMetadata.length > 0) {
 			title += " (" + this.extraMetadata.length + ")";
 		}
@@ -34,7 +34,7 @@ dojo.declare("classes.KGSaveEdit.ExtrasTab", classes.KGSaveEdit.UI.Tab, {
 			class: "bottom-margin hidden"
 		}, self.tabBlockNode);
 
-		var input = game._createCheckbox("Save all", self.extraDataBlock, self);
+		var input = game._createCheckbox($I("KGSaveEdit.extras.save.all"), self.extraDataBlock, self);
 		self.extraDataEnableAllNode = input.cbox;
 
 		input.cbox.handler =  function () {
@@ -176,13 +176,13 @@ dojo.declare("classes.KGSaveEdit.ExtraMetaItem", classes.KGSaveEdit.GenericItem,
 			innerHTML: " &nbsp; "
 		}, self.domNode);
 
-		self.game._createCheckbox("Save", header, self, "enabled", "first");
+		self.game._createCheckbox($I("KGSaveEdit.extras.save"), header, self, "enabled", "first");
 		self.enabledNode.handler = function () {
 			self.game.extrasTab.updateEnableAllNode();
 		};
 
 		self.editButton = self.game._createButton(
-			{value: "Edit data"}, header, function () {
+			{value: $I("KGSaveEdit.extras.edit")}, header, function () {
 				if (dojo.hasClass(self.editBlock, "hidden")) {
 					self.jsonField.value = self.metaJSON;
 					self.jsonField.defaultValue = self.metaJSON;
@@ -203,7 +203,7 @@ dojo.declare("classes.KGSaveEdit.ExtraMetaItem", classes.KGSaveEdit.GenericItem,
 		self.jsonField = dojo.create("textarea", {class: "jsonField"}, self.editBlock, "first");
 
 		self.game._createButton(
-			{value: "Save"}, self.editBlock, function () {
+			{value: $I("KGSaveEdit.extras.save.data")}, self.editBlock, function () {
 				var data = self.jsonField.value.trim();
 				if (!data || data == self.metaJSON) {
 					return;
@@ -225,7 +225,7 @@ dojo.declare("classes.KGSaveEdit.ExtraMetaItem", classes.KGSaveEdit.GenericItem,
 
 		self.editCancelButton = self.game._createButton(
 			{
-				value: "Cancel",
+				value: $I("KGSaveEdit.extras.cancel"),
 				class: "leftSpacer"
 			}, self.editBlock, function () {
 				dojo.addClass(self.editBlock, "hidden");
@@ -249,7 +249,7 @@ dojo.declare("classes.KGSaveEdit.ExtraTooltipHelp", [classes.KGSaveEdit.TooltipI
 	render: function () {
 		this.domNode = dojo.create("a", {
 			href: "#",
-			innerHTML: "What is this?",
+			innerHTML: $I("KGSaveEdit.extras.help"),
 			class: "help smallText"
 		}, self.tabBlockNode);
 
@@ -260,9 +260,7 @@ dojo.declare("classes.KGSaveEdit.ExtraTooltipHelp", [classes.KGSaveEdit.TooltipI
 		var tooltipBlock = dojo.byId("tooltipBlock");
 		tooltipBlock.className = "help_tooltip";
 
-		tooltipBlock.innerHTML = "<p>TLDR: It's here to help, don't worry about it.</p>" +
-			"<p>This automatically finds extra buildings and such in imported save codes. This is so that when the game is updated in the future this editor can try to press on, even if it's outdated.</p>" +
-			"<p>You can choose what to include and even edit the JSON directly if you know what you're doing.</p>";
+		tooltipBlock.innerHTML = $I("KGSaveEdit.extras.help.tooltip");
 	},
 
 	getTooltipOffset: function (node) {

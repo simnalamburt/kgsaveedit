@@ -36,8 +36,8 @@ dojo.declare("classes.KGSaveEdit.UpgradeMeta", classes.KGSaveEdit.MetaItem, {
 		});
 		this.nameNode = this.domNode.children[0];
 
-		this.game._createCheckbox("Unlocked", this.domNode.children[1], this, "unlocked");
-		this.game._createCheckbox("Researched", this.domNode.children[1], this, "researched");
+		this.game._createCheckbox($I("KGSaveEdit.label.unlocked"), this.domNode.children[1], this, "unlocked");
+		this.game._createCheckbox($I("KGSaveEdit.label.researched"), this.domNode.children[1], this, "researched");
 		dojo.addClass(this.researchedNode, "ownedInput");
 
 		this.registerHighlight(this.domNode);
@@ -1864,13 +1864,13 @@ dojo.declare("classes.KGSaveEdit.CraftMeta", classes.KGSaveEdit.MetaItem, {
 
 		this.domNode = dojo.create("tr", {
 			class: "craft",
-			innerHTML: "<td>" + (this.label || this.name) + "</td><td></td><td></td><td> &nbsp;Progress </td>"
+			innerHTML: "<td>" + (this.label || this.name) + "</td><td></td><td></td><td> &nbsp;" + $I("KGSaveEdit.workshop.crafts.progress") + " </td>"
 		});
 		this.nameNode = this.domNode.children[0];
 
 		var input = this.game._createInput({
 			class: "integerInput",
-			title: "Crafting Engineers"
+			title: $I("KGSaveEdit.workshop.crafts.craftingEngineers")
 		}, this.domNode.children[1], this, "value");
 
 		input.parseFn = function (value) {
@@ -1893,7 +1893,7 @@ dojo.declare("classes.KGSaveEdit.CraftMeta", classes.KGSaveEdit.MetaItem, {
 			this.game.village.unassignCraftJobs(this, value);
 		});
 
-		this.game._createCheckbox("Unlocked", this.domNode.children[3], this, "unlocked", "first");
+		this.game._createCheckbox($I("KGSaveEdit.label.unlocked"), this.domNode.children[3], this, "unlocked", "first");
 
 		this.game._createInput(null, this.domNode.children[3], this, "progress");
 

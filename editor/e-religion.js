@@ -446,24 +446,24 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 		var table = dojo.create("table", {class: "bottom-margin"}, this.tabBlockNode);
 
 		var tr = dojo.create("tr", {
-			innerHTML: '<td>Total faith</td><td></td><td id="solarBonusSpan"></td>'
+			innerHTML: "<td>" + $I("KGSaveEdit.religion.totalFaith") + '</td><td></td><td id="solarBonusSpan"></td>'
 		}, table);
 		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "faith");
 		this.solarBonusSpan = tr.children[2];
 
 		tr = dojo.create("tr", {
-			innerHTML: '<td>Apocrypha bonus</td><td></td><td id="apocryphaBonusSpan"></td>'
+			innerHTML: "<td>" + $I("KGSaveEdit.religion.apocryphaBonus") + '</td><td></td><td id="apocryphaBonusSpan"></td>'
 		}, table);
 		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "faithRatio");
 		this.apocryphaBonusSpan = tr.children[2];
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>Corruption timer</td><td></td><td></td>"
+			innerHTML: "<td>" + $I("KGSaveEdit.religion.corruptionTimer") + "</td><td></td><td></td>"
 		}, table);
 		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "corruption");
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>Transcendence ratio</td><td></td><td></td>"
+			innerHTML: "<td>" + $I("KGSaveEdit.religion.transcendenceRatio") + "</td><td></td><td></td>"
 		}, table);
 		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "tcratio");
 		this.transcendenceLevelSpan = tr.children[2];
@@ -691,7 +691,7 @@ dojo.declare("classes.KGSaveEdit.ReligionMeta", classes.KGSaveEdit.MetaItem, {
 		});
 		this.nameNode = this.domNode.children[0];
 
-		var input = this.game._createCheckbox("Bought", this.domNode.children[1], this);
+		var input = this.game._createCheckbox($I("KGSaveEdit.religion.complete"), this.domNode.children[1], this);
 		this.ownedCheckbox = input.cbox;
 		dojo.addClass(input.cbox, "ownedInput");
 		input.cbox.handler = function () {

@@ -1,4 +1,4 @@
-/* global dojo, require, classes, num */
+/* global dojo, require, classes, $I, num */
 
 require(["dojo/on"], function (on) {
 "use strict";
@@ -693,7 +693,7 @@ dojo.declare("classes.KGSaveEdit.ResourceMeta", [classes.KGSaveEdit.GenericItem,
 		}
 
 		var td = dojo.create("td", {class: "resourceProps"}, tr);
-		this.game._createCheckbox("Unlocked", td, this, "unlocked");
+		this.game._createCheckbox($I("KGSaveEdit.label.unlocked"), td, this, "unlocked");
 		this.game._createCheckbox("Hidden", td, this, "isHidden");
 
 		this.maxValueNode = dojo.create("td", null, tr);

@@ -879,7 +879,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 
 			var span = dojo.create("span", {
 				class: "planetRouteDaysSpan",
-				innerHTML: "Flight time &nbsp;"
+				innerHTML: $I("KGSaveEdit.space.flightTime") + " &nbsp;"
 			}, tr.children[1]);
 
 			var input = this.game._createInput({}, span, planet, "routeDays");
@@ -1084,18 +1084,18 @@ dojo.declare("classes.KGSaveEdit.ProgramMeta", classes.KGSaveEdit.MetaItem, {
 
 		this.game._createInput({
 			class: "integerInput ownedInput",
-			title: "Number of active programs"
+			title: $I("KGSaveEdit.buildings.on.title")
 		}, this.onNodeSpan, this, "on", "first");
 
 		this.game._createValInput({
-			title: "Number of programs"
+			title: $I("KGSaveEdit.buildings.val.title")
 		}, this.domNode.children[1], this);
 
 		if (!this.planet) {
-			var input = this.game._createCheckbox("Unlocked", this.domNode.children[1], this, "unlocked");
+			var input = this.game._createCheckbox($I("KGSaveEdit.label.unlocked"), this.domNode.children[1], this, "unlocked");
 			this.unlockedLabel = input.label;
 
-			input = this.game._createCheckbox("Launched", this.domNode.children[1], this);
+			input = this.game._createCheckbox($I("KGSaveEdit.space.launched"), this.domNode.children[1], this);
 			this.launchedNode = input.cbox;
 			input.cbox.handler = function () {
 				var val = num(this.checked);

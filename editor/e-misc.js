@@ -54,13 +54,17 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 			desc: $I("challendge.ironWill.label")
 		}, {
 			name: "cheatMode",
-			desc: "Cheat mode",
+			desc: $I("KGSaveEdit.opts.cheatMode"),
 			class: "bottom-margin"
 		}
 	],
 	scheme: null,
 
 	tabName: "Options &amp; Settings",
+
+	constructor: function () {
+		this.i18nKeys = {tabName: "KGSaveEdit.opts.tab"};
+	},
 
 	renderTabBlock: function () {
 		var game = this.game;
@@ -101,7 +105,7 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 		var table = dojo.create("table", {class: "bottom-margin"}, this.tabBlockNode);
 
 		var tr = dojo.create("tr", {
-			innerHTML: "<td>Dead kittens</td><td></td>"
+			innerHTML: "<td>" + $I("KGSaveEdit.opts.deadKittens") + "</td><td></td>"
 		}, table);
 		game._createInput({class: "integerInput"}, tr.children[1], game, "deadKittens");
 
@@ -364,12 +368,12 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		var table = dojo.create("table", {
 			id: "calendarBlock",
 			class: "bottom-margin",
-			innerHTML: '<tr><th colspan="2">Calendar</th></tr>'
+			innerHTML: '<tr><th colspan="2">' + $I("KGSaveEdit.opts.calendar.header") + "</th></tr>"
 		});
 		self.domNode = table;
 
 		var tr = dojo.create("tr", {
-			innerHTML: "<td>Year</td><td></td>"
+			innerHTML: "<td>" + $I("KGSaveEdit.opts.calendar.year") + "</td><td></td>"
 		}, table);
 		var td = tr.children[1];
 		game._createInput({id: "yearNode", class: "integerInput"},
@@ -392,7 +396,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		});
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>Cycle</td><td> &nbsp;Year </td>"
+			innerHTML: "<td>" + $I("KGSaveEdit.opts.calendar.cycle") + "</td><td> &nbsp;" + $I("KGSaveEdit.opts.calendar.year") + " </td>"
 		}, table);
 
 		self.cycleNode = dojo.create("select", {id: "cycleNode"}, tr.children[1], "first");
@@ -418,7 +422,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		self.registerTooltip(self.cycleEffectsNode);
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>Season</td><td></td>"
+			innerHTML: "<td>" + $I("KGSaveEdit.opts.calendar.season") + "</td><td></td>"
 		}, table);
 		self.seasonNode = dojo.create("select", {id: "seasonNode"}, tr.children[1]);
 		self.seasonNode.defaultVal = 0;
@@ -437,7 +441,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		});
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>Weather</td><td></td>"
+			innerHTML: "<td>" + $I("KGSaveEdit.opts.calendar.weather") + "</td><td></td>"
 		}, table);
 		self.weatherSel = dojo.create("select", {
 			id: "weatherSel",
@@ -451,19 +455,19 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		});
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>Day</td><td></td>"
+			innerHTML: "<td>" + $I("KGSaveEdit.opts.calendar.day") + "</td><td></td>"
 		}, table);
 		var input = game._createInput({id: "dayNode"}, tr.children[1], self, "day");
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>Festival days</td><td></td>"
+			innerHTML: "<td>" + $I("KGSaveEdit.opts.calendar.festivalDays") + "</td><td></td>"
 		}, table);
 		game._createInput({id: "festivalDaysNode", class: "integerInput abbrInput"},
 			tr.children[1], self, "festivalDays");
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>Paradox timer</td><td></td>",
-			title: "Seasons until temporal paradox"
+			innerHTML: "<td>" + $I("KGSaveEdit.opts.calendar.paradoxTimer") + "</td><td></td>",
+			title: $I("KGSaveEdit.opts.calendar.paradoxTimer.title")
 		}, table);
 
 		input = game._createInput({id: "futureSeasonTemporalParadoxNode", class: "integerInput"},
@@ -471,7 +475,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		input.minValue = -1;
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>Blackcoin price</td><td></td>"
+			innerHTML: "<td>" + $I("KGSaveEdit.opts.cryptoPrice") + "</td><td></td>"
 		}, table);
 
 		input = game._createInput({id: "cryptoPriceNode"}, tr.children[1], self, "cryptoPrice");
@@ -586,7 +590,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 
 	update: function () {
 		var paragon = Math.floor(Math.max(this.year - this.refYear, 0) / 1000);
-		this.milleniumParagonSpan.innerHTML = "(+" + paragon + " paragon)";
+		this.milleniumParagonSpan.innerHTML = "(" + $I("KGSaveEdit.opts.calendar.milleniumParagon", [paragon]) + ")";
 		dojo.toggleClass(this.milleniumParagonSpan, "hidden", !paragon);
 
 		this.dayNode.minValue = -10 - this.game.getEffect("temporalParadoxDay");
@@ -664,8 +668,8 @@ dojo.declare("classes.KGSaveEdit.Console", classes.KGSaveEdit.core, {
 				class: "logFilter",
 				innerHTML: "<td>" + filter.title + "</td><td></td>"
 			}, this.domNode);
-			game._createCheckbox("Unlocked", tr.children[1], filter, "unlocked");
-			game._createCheckbox("Enabled", tr.children[1], filter, "enabled");
+			game._createCheckbox($I("KGSaveEdit.label.unlocked"), tr.children[1], filter, "unlocked");
+			game._createCheckbox($I("KGSaveEdit.opts.msgfilter.enabled"), tr.children[1], filter, "enabled");
 		}
 	},
 
@@ -734,15 +738,15 @@ dojo.declare("classes.KGSaveEdit.DiplomacyManager", [classes.KGSaveEdit.UI.Tab, 
 			}, this.diplomacyBlock);
 			race.nameNode = race.domNode.children[0];
 
-			this.game._createCheckbox("Unlocked", race.domNode.children[1], race, "unlocked");
-			this.game._createCheckbox("Collapsed", race.domNode.children[1], race, "collapsed");
+			this.game._createCheckbox($I("KGSaveEdit.label.unlocked"), race.domNode.children[1], race, "unlocked");
+			this.game._createCheckbox($I("KGSaveEdit.trade.collapsed"), race.domNode.children[1], race, "collapsed");
 		}
 
 		race = this.get("leviathans");
 		var node = race.domNode.children[2];
-		node.textContent = "Days left ";
+		node.textContent = $I("KGSaveEdit.trade.elders.daysRemaining") + " ";
 		this.game._createInput({class: "integerInput"}, node, race, "duration");
-		dojo.place(document.createTextNode(" Energy "), node);
+		dojo.place(document.createTextNode(" " + $I("KGSaveEdit.trade.elders.energy") + " "), node);
 		this.game._createInput({class: "integerInput"}, node, race, "energy");
 		dojo.place(document.createTextNode(" / "), node);
 		race.energyMaxSpan = dojo.create("span", {innerHTML: "5"}, node);
@@ -1010,10 +1014,10 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 			}
 		});
 
-		self.game._createCheckbox("Unlocked", tr.children[1], self, "unlocked");
-		self.game._createCheckbox("Complete", tr.children[1], self, "researched");
+		self.game._createCheckbox($I("KGSaveEdit.label.unlocked"), tr.children[1], self, "unlocked");
+		self.game._createCheckbox($I("KGSaveEdit.challenge.complete"), tr.children[1], self, "researched");
 
-		var input = self.game._createCheckbox("Active", tr.children[1], self);
+		var input = self.game._createCheckbox($I("KGSaveEdit.challenge.active"), tr.children[1], self);
 		self.activeChallengeNode = input.cbox;
 		input.cbox.handler = function () {
 			self.game.challenges.setCurrentChallenge(this.checked ? self.name : null);
@@ -1219,14 +1223,14 @@ dojo.declare("classes.KGSaveEdit.Telemetry", null, {
 		self.domNode = dojo.create("div", {
 			"id": "telemetryNode",
 			class: "bottom-margin",
-			innerHTML: 'Save ID: <span class="monospace">' + self.guid + '</span> &nbsp;'
+			innerHTML: $I("KGSaveEdit.opts.saveID") + ': <span class="monospace">' + self.guid + '</span> &nbsp;'
 		});
 
 		self.guidNode = self.domNode.children[0];
 
 		this.game._createButton(
-			{value: "New ID"}, self.domNode, function () {
-				if (!self.warnOnNewGuid || confirm("Are you sure you want to create a new save ID?")) {
+			{value: $I("KGSaveEdit.opts.saveID.new")}, self.domNode, function () {
+				if (!self.warnOnNewGuid || confirm($I("KGSaveEdit.opts.saveID.new.confirm"))) {
 					self.setGuid();
 				}
 			}

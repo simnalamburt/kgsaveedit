@@ -1623,11 +1623,11 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 
 		self.game._createInput({
 			class: "integerInput ownedInput",
-			title: "Number of active buildings"
+			title: $I("KGSaveEdit.buildings.on.title")
 		}, self.onNodeSpan, self, "on", "first");
 
 		self.game._createValInput({
-			title: "Number of buildings"
+			title: $I("KGSaveEdit.buildings.val.title")
 		}, self.domNode.children[1], self);
 
 		self.toggleNode = self.game._createButton(
@@ -1640,16 +1640,16 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 			}
 		);
 
-		var input = self.game._createCheckbox("Unlocked", self.domNode.children[3], self, "unlocked");
+		var input = self.game._createCheckbox($I("KGSaveEdit.label.unlocked"), self.domNode.children[3], self, "unlocked");
 		dojo.toggleClass(input.label, "hidden", !self.get("unlockRatio"));
 
 		if (self.hasOwnProperty("isAutomationEnabled")) {
-			input = self.game._createCheckbox("Automation on", self.domNode.children[3], self, "isAutomationEnabled");
+			input = self.game._createCheckbox("Automation enabled", self.domNode.children[3], self, "isAutomationEnabled");
 			self.isAutomationEnabledLabel = input.label;
 		}
 
 		if ("jammed" in self) {
-			self.game._createCheckbox("Jammed", self.domNode.children[3], self, "jammed");
+			self.game._createCheckbox($I("KGSaveEdit.buildings.steamworks.jammed"), self.domNode.children[3], self, "jammed");
 		}
 
 		self.registerHighlight(self.domNode);
