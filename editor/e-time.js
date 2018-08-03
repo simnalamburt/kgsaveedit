@@ -1,4 +1,4 @@
-/* global dojo, require, classes, num */
+/* global dojo, require, classes, $I, num */
 
 require(["dojo/on"], function (on) {
 "use strict";
@@ -15,168 +15,150 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 	vsu: null,
 	vsuByName: null,
 
-	cfuData: [{
-		name: "temporalBattery",
-		label: "Temporal Battery",
-		description: "Improves your flux energy capacity by 25%",
-		prices: [
-			{name: "timeCrystal", val: 5}
-		],
-		effects: {
-			"temporalFluxMax": 750
-		},
-		priceRatio: 1.25,
-		unlocked: true
-	}, {
-		name: "blastFurnace",
-		label: "Chrono Furnace",
-		description: "Operates on chronoheat. Increases the maximum heat limit by 100.",
-		prices: [
-			{name: "timeCrystal", val: 25},
-			{name: "relic",       val: 5}
-		],
-		priceRatio: 1.25,
-		heat: 0,
-		isAutomationEnabled: true,
-		effects: {
-			"heatMax":      100,
-			"heatPerTick": -0.02
-		},
-		unlocked: true
-	}, {
-		name: "temporalAccelerator",
-		label: "Temporal Accelerator",
-		description: "Improves the flux energy generation by 5%",
-		prices: [
-			{name: "timeCrystal", val: 10},
-			{name: "relic",       val: 1000}
-		],
-		priceRatio: 1.25,
-		effects: {
-			"timeRatio": 0.05
-		},
-		unlocked: true
-	}, {
-		name: "temporalImpedance",
-		label: "Time Impedance",
-		description: "Suppress effect of Dark Future temporal penalty by 1000 years.",
-		prices: [
-			{name: "timeCrystal", val: 100},
-			{name: "relic",       val: 250}
-		],
-		priceRatio: 1.05,
-		requires: function (game) {
-			return game.calendar.darkFutureYears() >= 0;
-		},
-		effects: {
-			"timeImpedance": 1000
-		}
-	}, {
-		name: "ressourceRetrieval",
-		label: "Resource Retrieval",
-		description: "Retrieve part of your yearly resources when you shatter TC",
-		prices: [
-			{name: "timeCrystal", val: 1000}
-		],
-		priceRatio: 1.25,
-		requires: {"tech": ["paradoxalKnowledge"]},
-		effects: {
-			"shatterTCGain": 0.01
-		}
-	}],
-
-	vsuData: [{
-		name: "cryochambers",
-		label: "Cryochambers",
-		description: "What!",
-		prices: [
-			{name: "timeCrystal", val: 2},
-			{name: "void",        val: 100},
-			{name: "karma",       val: 1}
-		],
-		priceRatio: 1.25,
-		requires: {tech: ["voidSpace"]},
-		effects: {
-			"maxKittens": 1
-		},
-		// handled elsewhere
-		// calculateEffects: function (self, game) {
-		// 	self.on = Math.min(self.val, game.bld.get("chronosphere").val);
-		// }
-	}, {
-		name: "usedCryochambers",
-		label: "Used Cryochambers",
-		description: "Those are unusable cryochambers...",
-		prices: [],
-		priceRatio: 1.25,
-		effects: {}
-	}, {
-		name: "voidHoover",
-		label: "Void Hoover",
-		description: "Increase the maximum of void per days in Temporal Paradox",
-		prices: [
-			{name: "timeCrystal", val: 10},
-			{name: "void",        val: 250},
-			{name: "antimatter",  val: 1000}
-		],
-		priceRatio: 1.25,
-		requires: {upgrades: ["voidAspiration"]},
-		effects: {
-			"temporalParadoxVoid": 1
-		}
-	}, {
-		name: "voidRift",
-		label: "Void Rift",
-		description: "Increase the maximum storage space by 2%",
-		prices: [
-			{name: "void", val: 75}
-		],
-		priceRatio: 1.25,
-		requires: {upgrades: ["voidAspiration"]},
-		effects: {
-			"globalResourceRatio": 0.02,
-			"umbraBoostRatio":     0.1
-		}
-	}, {
-		name: "chronocontrol",
-		label: "Chronocontrol",
-		description: "Increase the number of days in Temporal Paradox",
-		prices: [
-			{name: "timeCrystal",  val: 30},
-			{name: "void",         val: 500},
-			{name: "temporalFlux", val: 3000}
-		],
-		priceRatio: 1.25,
-		// unlocks: {upgrades: ["turnSmoothly"]},
-		requires: {tech: ["paradoxalKnowledge"]},
-		effects: {
-			"temporalParadoxDay": 1,
-			"energyConsumption": 15
-		},
-		togglable: true,
-		calculateEffects: function (self, game) {
-			self.effects = {
-				"temporalParadoxDay": 1 + game.getEffect("temporalParadoxDayBonus"),
-				"energyConsumption": 15
-			};
-			if (game.challenges.currentChallenge === "energy") {
-				self.effects["energyConsumption"] *= 2;
+	cfuData: [
+		{
+			name: "temporalBattery",
+			prices: [
+				{name: "timeCrystal", val: 5}
+			],
+			effects: {
+				"temporalFluxMax": 750
+			},
+			priceRatio: 1.25,
+			unlocked: true
+		}, {
+			name: "blastFurnace",
+			prices: [
+				{name: "timeCrystal", val: 25},
+				{name: "relic",       val: 5}
+			],
+			priceRatio: 1.25,
+			heat: 0,
+			isAutomationEnabled: true,
+			effects: {
+				"heatMax":      100,
+				"heatPerTick": -0.02
+			},
+			unlocked: true
+		}, {
+			name: "temporalAccelerator",
+			prices: [
+				{name: "timeCrystal", val: 10},
+				{name: "relic",       val: 1000}
+			],
+			priceRatio: 1.25,
+			effects: {
+				"timeRatio": 0.05
+			},
+			unlocked: true
+		}, {
+			name: "temporalImpedance",
+			prices: [
+				{name: "timeCrystal", val: 100},
+				{name: "relic",       val: 250}
+			],
+			priceRatio: 1.05,
+			requires: function (game) {
+				return game.calendar.darkFutureYears() >= 0;
+			},
+			effects: {
+				"timeImpedance": 1000
+			}
+		}, {
+			name: "ressourceRetrieval",
+			prices: [
+				{name: "timeCrystal", val: 1000}
+			],
+			priceRatio: 1.25,
+			requires: {"tech": ["paradoxalKnowledge"]},
+			effects: {
+				"shatterTCGain": 0.01
 			}
 		}
-    }, {
-		name: "voidResonator",
-		label: "Void Resonator",
-		description: "Every Void Resonator will improve Order of the Void effect by 10%. Will trigger OotV on a time skips.",
-		prices: [
-			{name: "timeCrystal", val: 1000},
-			{name: "relic",       val: 10000}
-		],
-		priceRatio: 1.25,
-		requires: {tech: ["paradoxalKnowledge"]},
-		effects: {
-			"voidResonance": 0.1
+	],
+
+	vsuData: [
+		{
+			name: "cryochambers",
+			prices: [
+				{name: "timeCrystal", val: 2},
+				{name: "void",        val: 100},
+				{name: "karma",       val: 1}
+			],
+			priceRatio: 1.25,
+			requires: {tech: ["voidSpace"]},
+			effects: {
+				"maxKittens": 1
+			},
+			// handled elsewhere
+			// calculateEffects: function (self, game) {
+			// 	self.on = Math.min(self.val, game.bld.get("chronosphere").val);
+			// }
+		}, {
+			name: "usedCryochambers",
+			prices: [],
+			priceRatio: 1.25,
+			effects: {}
+		}, {
+			name: "voidHoover",
+			prices: [
+				{name: "timeCrystal", val: 10},
+				{name: "void",        val: 250},
+				{name: "antimatter",  val: 1000}
+			],
+			priceRatio: 1.25,
+			requires: {upgrades: ["voidAspiration"]},
+			effects: {
+				"temporalParadoxVoid": 1
+			}
+		}, {
+			name: "voidRift",
+			prices: [
+				{name: "void", val: 75}
+			],
+			priceRatio: 1.25,
+			requires: {upgrades: ["voidAspiration"]},
+			effects: {
+				"globalResourceRatio": 0.02,
+				"umbraBoostRatio":     0.1
+			}
+		}, {
+			name: "chronocontrol",
+			prices: [
+				{name: "timeCrystal",  val: 30},
+				{name: "void",         val: 500},
+				{name: "temporalFlux", val: 3000}
+			],
+			priceRatio: 1.25,
+			// unlocks: {upgrades: ["turnSmoothly"]},
+			requires: {tech: ["paradoxalKnowledge"]},
+			effects: {
+				"temporalParadoxDay": 1,
+				"energyConsumption": 15
+			},
+			togglable: true,
+			calculateEffects: function (self, game) {
+				self.effects = {
+					"temporalParadoxDay": 1 + game.getEffect("temporalParadoxDayBonus"),
+					"energyConsumption": 15
+				};
+				if (game.challenges.currentChallenge === "energy") {
+					self.effects["energyConsumption"] *= 2;
+				}
+			}
+		}, {
+			name: "voidResonator",
+			prices: [
+				{name: "timeCrystal", val: 1000},
+				{name: "relic",       val: 10000}
+			],
+			priceRatio: 1.25,
+			requires: {tech: ["paradoxalKnowledge"]},
+			effects: {
+				"voidResonance": 0.1
+			}
 		}
-	}],
+	],
 
 	tabName: "Time",
 	getVisible: function () {
@@ -196,9 +178,20 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 	constructor: function (game) {
 		this.game = game;
 		this.timestamp = Date.now();
+		this.i18nKeys = {tabName: "tab.name.time"};
 
-		this.registerMetaItems(this.cfuData, classes.KGSaveEdit.CFUMeta, "cfu");
-		this.registerMetaItems(this.vsuData, classes.KGSaveEdit.VSUMeta, "vsu");
+		this.registerMetaItems(this.cfuData, classes.KGSaveEdit.CFUMeta, "cfu", function (cfu) {
+			cfu.i18nKeys = {
+				label: "time.cfu." + cfu.name + ".label",
+				description: "time.cfu." + cfu.name + ".desc"
+			};
+		});
+		this.registerMetaItems(this.vsuData, classes.KGSaveEdit.VSUMeta, "vsu", function (vsu) {
+			vsu.i18nKeys = {
+				label: "time.vsu." + vsu.name + ".label",
+				description: "time.vsu." + vsu.name + ".desc"
+			};
+		});
 
 		this.meta.push(this.cfu, this.vsu);
 	},
@@ -295,14 +288,12 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 
 		// Heat Node
 		tr = dojo.create("tr", {
-			innerHTML: '<td><span class="nameNode">Heat</span></td><td></td><td></td>'
+			innerHTML: '<td><span class="nameNode">' + $I("time.heat") + "</span></td><td></td><td></td>"
 		}, self.timeBlock);
 
 		self.heatNameNode = tr.children[0].children[0];
 
-		input = game._createInput({
-			id: "heatNode",
-		}, tr.children[1], self, "heat");
+		input = game._createInput({id: "heatNode"}, tr.children[1], self, "heat");
 		self.heatBlock = tr.children[2];
 
 
@@ -447,6 +438,8 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 	},
 
 	render: function () {
+		this.seti18n();
+
 		var tr = dojo.create("tr", {
 			// class: "building",
 			innerHTML: "<td></td><td></td><td></td>"
@@ -472,7 +465,7 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 		}, tr.children[1], this);
 
 		if (this.hasOwnProperty("heat")) {
-			dojo.place(document.createTextNode(" Heat "), tr.children[1]);
+			dojo.place(document.createTextNode(" " + $I("time.heat") + " "), tr.children[1]);
 			var input = this.game._createInput(null, tr.children[1], this, "heat");
 			input.minValue = -Number.MAX_VALUE;
 		}
@@ -542,7 +535,7 @@ dojo.declare("classes.KGSaveEdit.VSUMeta", classes.KGSaveEdit.CFUMeta, {
 		var saveData = this.game.filterMetaObj(this, ["name", "val", "on"]);
 		saveData.on = this.getOn();
 		return saveData;
-	},
+	}
 });
 
 

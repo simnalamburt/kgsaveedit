@@ -1,4 +1,4 @@
-/* global dojo, require, classes */
+/* global dojo, require, classes, $I */
 
 function num(value) {
 	if (!isFinite(value)) {
@@ -10,6 +10,7 @@ function num(value) {
 
 require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 "use strict";
+
 
 /**
  * Super class. Contains a method to set any property and also update the associated form element, if any
@@ -23,6 +24,14 @@ dojo.declare("classes.KGSaveEdit.core", null, {
 		}
 		this[key] = value;
 		return value;
+	},
+
+	seti18n: function () {
+		if (this.i18nKeys) {
+			for (var key in this.i18nKeys) {
+				this[key] = $I(this.i18nKeys[key]);
+			}
+		}
 	}
 });
 
@@ -46,6 +55,8 @@ dojo.declare("classes.KGSaveEdit.UI.Tab", classes.KGSaveEdit.core, {
 
 	renderTab: function () {
 		var self = this;
+		self.seti18n();
+
 		//wrap tab link for css
 		self.tabWrapper = dojo.create("span", {
 			class: "wrapper separated" + (self.isVisible ? "" : " spoiler") + (self.tabNodeClass ? " " + self.tabNodeClass : "")
@@ -54,15 +65,15 @@ dojo.declare("classes.KGSaveEdit.UI.Tab", classes.KGSaveEdit.core, {
 		self.tabNode = dojo.create("a", {
 			class: "tab",
 			href: "#",
-			innerHTML: self.tabName,
+			innerHTML: self.tabName
 		}, self.tabWrapper);
 
 		self.tabBlockNode = dojo.create("div", {
 			class: "tabBlock hidden" + (self.tabBlockClass ? " " + self.tabBlockClass : "")
 		});
 
-		on(self.tabNode, "click", function (event) {
-			event.preventDefault();
+		on(self.tabNode, "click", function (ev) {
+			ev.preventDefault();
 			self.game.openTab(self);
 		});
 
@@ -96,7 +107,9 @@ dojo.declare("classes.KGSaveEdit.Manager", classes.KGSaveEdit.core, {
 		this.meta = [];
 	},
 
-	render: function () { },
+	render: function () {
+		this.seti18n();
+	},
 
 	/* registerMeta: function (meta) {
 		this.meta.push(meta);
@@ -283,7 +296,9 @@ dojo.declare("classes.KGSaveEdit.TooltipItem", classes.KGSaveEdit.core, {
 
 
 dojo.declare("classes.KGSaveEdit.MetaItem", [classes.KGSaveEdit.GenericItem, classes.KGSaveEdit.TooltipItem], {
-	render: function () { },
+	render: function () {
+		this.seti18n();
+	},
 
 	owned: function () {
 		return false;

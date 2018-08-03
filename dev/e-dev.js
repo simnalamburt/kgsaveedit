@@ -64,7 +64,8 @@ dojo.declare("classes.KGSaveEdit.DevMode", classes.KGSaveEdit.UI.Tab, {
 			self.runCompare(json);
 		});
 
-		input = self.game._createCheckbox("Set dev compare data", dojo.byId("importCancel"), self, "overwriteCompareOnImport", "after");
+		dojo.empty("importDevSpan");
+		input = self.game._createCheckbox("Set dev compare data", dojo.byId("importDevSpan"), self, "overwriteCompareOnImport");
 		input.label.style.marginLeft = "5px"; //sigh
 	},
 

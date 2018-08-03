@@ -1,13 +1,12 @@
-/* global dojo, require, classes, num */
+/* global dojo, require, classes, $I, num */
 
 require([], function () {
 "use strict";
 
 dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
-	zigguratUpgradesData: [{
+	zigguratUpgradesData: [
+		{
 			name: "unicornTomb",
-			label: "Unicorn Tomb",
-			description: "Improves your unicorns generation by 5%",
 			prices: [
 				{name: "ivory", val: 500},
 				{name: "tears", val: 5}
@@ -20,8 +19,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "ivoryTower",
-			label: "Ivory Tower",
-			description: "Improves your unicorns generation by 10%, unlocks Unicorn Rifts",
 			prices: [
 				{name: "ivory", val: 25000},
 				{name: "tears", val: 25}
@@ -35,8 +32,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "ivoryCitadel",
-			label: "Ivory Citadel",
-			description: "Improves your unicorns generation by 25%, summons Ivory Meteors",
 			prices: [
 				{name: "ivory", val: 50000},
 				{name: "tears", val: 50}
@@ -50,8 +45,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "skyPalace",
-			label: "Sky Palace",
-			description: "Improves your unicorns generation by 50%.\nThere was a legend of ancient and mysterious beings living in this place long ago.",
 			prices: [
 				{name: "ivory",    val: 125000},
 				{name: "megalith", val: 5},
@@ -76,8 +69,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "unicornUtopia",
-			label: "Unicorn Utopia",
-			description: "Improves your unicorns generation by 250%. Increase alicorn summon chance. Improves TC refine ratio by 5%",
 			prices: [
 				{name: "ivory", val: 1000000},
 				{name: "gold",  val: 500},
@@ -102,8 +93,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "sunspire",
-			label: "Sunspire",
-			description: "Improves your unicorns generation by 500%. Increase alicorn summon chance by significant amount. Improves TC refine ratio by 10%",
 			prices: [
 				{name: "ivory", val: 750000},
 				{name: "gold",  val: 1250},
@@ -127,8 +116,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "marker",
-			label: "Marker",
-			description: "A strange structure made of unknown metal and serving unidentified purpose.",
 			prices: [
 				{name: "spice",       val: 50000},
 				{name: "tears",       val: 5000},
@@ -142,8 +129,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "unicornGraveyard",
-			label: "Unicorn Graveyard",
-			description: "Grave of the fireflies.",
 			prices: [
 				{name: "necrocorn", val: 5},
 				{name: "megalith",  val: 1000}
@@ -156,8 +141,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["ziggurat"]}
 		}, {
 			name: "unicornNecropolis",
-			label: "Unicorn Necropolis",
-			description: "The ocean of blood at the end of the lane",
 			prices: [
 				{name: "void",      val: 5},
 				{name: "necrocorn", val: 25},
@@ -170,8 +153,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "blackPyramid",
-			label: "Black Pyramid",
-			description: "A dark relic of unspeakable horrors.",
 			prices: [
 				{name: "spice",       val: 150000},
 				{name: "sorrow",      val: 5},
@@ -181,12 +162,12 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			priceRatio: 1.15,
 			requires: {perks: ["megalomania"]},
 			effects: {}
-	}],
+		}
+	],
 
-	religionUpgradesData: [{
+	religionUpgradesData: [
+		{
 			name: "solarchant",
-			label: "Solar Chant",
-			description: "Improves your faith generation rate by 10%",
 			prices: [
 				{name: "faith", val: 100}
 			],
@@ -198,8 +179,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			}
 		}, {
 			name: "scholasticism",
-			label: "Scholasticism",
-			description: "Temples will give a bonus to science",
 			prices: [
 				{name: "faith", val: 250}
 			],
@@ -209,8 +188,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["temple"]}
 		}, {
 			name: "goldenSpire",
-			label: "Golden Spire",
-			description: "Temples can store 50% more max faith",
 			prices: [
 				{name: "faith", val: 350},
 				{name: "gold",  val: 150}
@@ -221,8 +198,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["temple"]}
 		}, {
 			name: "sunAltar",
-			label: "Sun Altar",
-			description: "Every temple will improve happiness by 0.5%",
 			prices: [
 				{name: "faith", val: 500},
 				{name: "gold",  val: 250}
@@ -233,8 +208,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["temple"]}
 		}, {
 			name: "stainedGlass",
-			label: "Stained Glass",
-			description: "Every temple will generate twice as much culture",
 			prices: [
 				{name: "faith", val: 500},
 				{name: "gold",  val: 250}
@@ -245,8 +218,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["temple"]}
 		}, {
 			name: "solarRevolution",
-			label: "Solar Revolution",
-			description: "Accumulated faith will give a small boost to resource production.",
 			prices: [
 				{name: "faith", val: 750},
 				{name: "gold",  val: 500}
@@ -254,8 +225,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			faith: 1000
 		}, {
 			name: "basilica",
-			label: "Basilica",
-			description: "Temples are generating more culture and expanding cultural limits",
 			prices: [
 				{name: "faith", val: 1250},
 				{name: "gold",  val: 750}
@@ -266,8 +235,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["temple"]}
 		}, {
 			name: "templars",
-			label: "Templars",
-			description: "Temples have a small impact on the catpower limit",
 			prices: [
 				{name: "faith", val: 3500},
 				{name: "gold",  val: 3000}
@@ -278,8 +245,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			upgrades: {buildings: ["temple"]}
 		}, {
 			name: "apocripha",
-			label: "Apocrypha",
-			description: "Grants the ability to discard accumulated faith to improve effectiveness of praying",
 			prices: [
 				{name: "faith", val: 5000},
 				{name: "gold",  val: 5000}
@@ -287,31 +252,27 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			faith: 100000
 		}, {
 			name: "transcendence",
-			label: "Transcendence",
-			description: "Unlocks additional religion upgrades",
 			prices: [
 				{name: "faith", val: 7500},
 				{name: "gold",  val: 7500}
 			],
 			// unlocks: {challenges: ["atheism"]},
 			faith: 125000
-	}],
+		}
+	],
 
-	transcendenceUpgradesData: [{
+	transcendenceUpgradesData: [
+		{
 			name: "blackObelisk",
-			label: "Black Obelisk",
-			description: "Improves your faith bonus.<br>Every Obelisk will improve your transcendance level bonus by 5%",
 			prices: [
 				{name: "relic", val: 100}
 			],
 			tier: 1,
 			priceRatio: 1.15,
 			effects: {},
-			flavor: "TBD" // flavor is TBD but the faith bonus improvement is already done
+			flavor: true
 		}, {
 			name: "blackNexus",
-			label: "Black Nexus",
-			description: "Improves the rate you refine time crystals into relics.<br>Every Black Pyramid will improve your Relic Refine ratio by 100%. Every level of Black Nexus will increase this bonus by additional 100%<br>This effect also boosts the effectiveness of Relic Stations",
 			prices: [
 				{name: "relic", val: 5000}
 			],
@@ -320,11 +281,9 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			effects: {
 				"relicRefineRatio": 1.0
 			},
-			flavor: "Eye in the sky."
+			flavor: true
 		}, {
 			name: "blackCore",
-			label: "Black Core",
-			description: "Alter and corrupt the laws of the reality on a minor scale. Every level of Black Core increases BLS limit by 1%.",
 			prices: [
 				{name: "relic", val: 10000}
 			],
@@ -333,11 +292,9 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			effects: {
 				"blsLimit": 1
 			},
-			flavor: "Built with the bones of kitten sacrifices."
+			flavor: true
 		}, {
 			name: "singularity",
-			label: "Event Horizon",
-			description: "Improve global resource limits by 10%",
 			prices: [
 				{name: "relic", val: 25000}
 			],
@@ -346,11 +303,9 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			effects: {
 				"globalResourceRatio": 0.10
 			},
-			flavor: "A gateway... To what?"
+			flavor: true
 		}, {
 			name: "blazar",
-			label: "Blazar",
-			description: "Improve time-related structures",
 			prices: [
 				{name: "relic", val: 50000}
 			],
@@ -362,11 +317,9 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 				"rrRatio": 0.02
 			},
 			unlocked: false,
-			flavor: "Tiger tiger burning bright."
+			flavor: true
 		}, {
 			name: "darkNova",
-			label: "Dark Nova",
-			description: "Improves global energy production",
 			prices: [
 				{name: "relic", val: 75000},
 				{name: "void",  val: 7500}
@@ -377,10 +330,9 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 				"energyProductionRatio": 0.02
 			},
 			unlocked: false,
-			flavor: "The stars are dead. Just like our hopes and dreams."
+			flavor: true
 		}, {
 			name: "holyGenocide",
-			label: "Holy Genocide",
 			description: "And tear will not fall down",
 			prices: [
 				{name: "relic", val: 100000},
@@ -389,8 +341,9 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			tier: 25,
 			priceRatio: 1.15,
 			effects: {},
-			flavor: "We live on a placid island of ignorance in the midst of black seas of infinity, and it was not meant that we should voyage far."
-	}],
+			flavor: true
+		}
+	],
 
 	zigguratUpgrades: null,
 	zigguratUpgradesByName: null,
@@ -412,6 +365,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 	},
 
 	constructor: function () {
+		this.i18nKeys = {tabName: "tab.name.religion"};
 		this.registerMetaItems(this.zigguratUpgradesData, classes.KGSaveEdit.ZigguratMeta, "zigguratUpgrades");
 		this.registerMetaItems(this.religionUpgradesData, classes.KGSaveEdit.ReligionMeta, "religionUpgrades");
 		this.registerMetaItems(this.transcendenceUpgradesData, classes.KGSaveEdit.TranscendenceMeta, "transcendenceUpgrades");
@@ -485,7 +439,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 		this.zigguratBlock = dojo.create("table", {
 			id: "zigguratBlock",
 			class: "bottom-margin",
-			innerHTML: '<tr><th colspan="2">Ziggurats</th></tr>'
+			innerHTML: '<tr><th colspan="2">' + $I("religion.panel.ziggurat.label") + "</th></tr>"
 		}, this.tabBlockNode);
 		this.zigguratBlockHeader = this.zigguratBlock.children[0];
 
@@ -509,7 +463,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "corruption");
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>Transcendence Ratio</td><td></td><td></td>"
+			innerHTML: "<td>Transcendence ratio</td><td></td><td></td>"
 		}, table);
 		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "tcratio");
 		this.transcendenceLevelSpan = tr.children[2];
@@ -517,13 +471,13 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 		this.religionBlock = dojo.create("table", {
 			id: "religionBlock",
 			class: "bottom-margin",
-			innerHTML: '<tr><th colspan="2">Order of the Sun</th></tr>'
+			innerHTML: '<tr><th colspan="2">' + $I("religion.panel.orderOfTheSun.label") + "</th></tr>"
 		}, this.tabBlockNode);
 		this.religionBlockHeader = this.religionBlock.children[0];
 
 		this.transcendenceBlock = dojo.create("table", {
 			id: "transcendenceBlock",
-			innerHTML: '<tr><th colspan="2">Cryptotheology</th></tr>'
+			innerHTML: '<tr><th colspan="2">' + $I("religion.panel.cryptotheology.label") + "</th></tr>"
 		}, this.tabBlockNode);
 		this.transcendenceBlockHeader = this.transcendenceBlock.children[0];
 	},
@@ -564,7 +518,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 
 		if (this.getRU("solarRevolution").owned()) {
 			var bonus = this.getProductionBonus();
-			text = " (+" + this.game.getDisplayValueExt(bonus) + "% bonus)";
+			text = " (+" + this.game.getDisplayValueExt(bonus) + "% " + $I("religion.faithCount.bonus") + ")";
 		}
 		this.solarBonusSpan.textContent = text;
 
@@ -620,6 +574,16 @@ dojo.declare("classes.KGSaveEdit.ZigguratMeta", classes.KGSaveEdit.MetaItem, {
 	on: 0,
 	unlocked: false,
 
+	constructor: function () {
+		this.i18nKeys = {
+			label: "religion.zu." + this.name + ".label",
+			description: "religion.zu." + this.name + ".desc"
+		};
+		if (this.flavor) {
+			this.i18nKeys.flavor = "religion.zu." + this.name + ".flavor";
+		}
+	},
+
 	getName: function () {
 		return (this.label || this.name) + " (" + this.val + ")";
 	},
@@ -629,6 +593,8 @@ dojo.declare("classes.KGSaveEdit.ZigguratMeta", classes.KGSaveEdit.MetaItem, {
 	},
 
 	render: function () {
+		this.seti18n();
+
 		this.domNode = dojo.create("tr", {
 			class: "zigguratUpgrade",
 			innerHTML: "<td>" + (this.label || this.name) + "</td><td></td>"
@@ -666,6 +632,16 @@ dojo.declare("classes.KGSaveEdit.ReligionMeta", classes.KGSaveEdit.MetaItem, {
 	on: 0,
 	upgradable: false,
 
+	constructor: function () {
+		this.i18nKeys = {
+			label: "religion.ru." + this.name + ".label",
+			description: "religion.ru." + this.name + ".desc"
+		};
+		if (this.flavor) {
+			this.i18nKeys.flavor = "religion.ru." + this.name + ".flavor";
+		}
+	},
+
 	owned: function (override) {
 		if (!override && this.game.challenges.currentChallenge === "atheism") {
 			return false;
@@ -679,7 +655,7 @@ dojo.declare("classes.KGSaveEdit.ReligionMeta", classes.KGSaveEdit.MetaItem, {
 			if (this.upgradable && this.game.religion.hasTranscendeceUpgrade) {
 				name += " (" + this.val + ")";
 			} else {
-				name += " (complete)";
+				name += " " + $I("btn.complete");
 			}
 		}
 		return name;
@@ -707,6 +683,8 @@ dojo.declare("classes.KGSaveEdit.ReligionMeta", classes.KGSaveEdit.MetaItem, {
 	},
 
 	render: function () {
+		this.seti18n();
+
 		this.domNode = dojo.create("tr", {
 			class: "religionUpgrade",
 			innerHTML: "<td>" + (this.label || this.name) + "</td><td></td>"
@@ -755,6 +733,16 @@ dojo.declare("classes.KGSaveEdit.TranscendenceMeta", classes.KGSaveEdit.MetaItem
 	on: 0,
 	unlocked: false,
 
+	constructor: function () {
+		this.i18nKeys = {
+			label: "religion.tu." + this.name + ".label",
+			description: "religion.tu." + this.name + ".desc"
+		};
+		if (this.flavor) {
+			this.i18nKeys.flavor = "religion.tu." + this.name + ".flavor";
+		}
+	},
+
 	getName: function () {
 		return (this.label || this.name) + " (" + this.val + ")";
 	},
@@ -764,6 +752,8 @@ dojo.declare("classes.KGSaveEdit.TranscendenceMeta", classes.KGSaveEdit.MetaItem
 	},
 
 	render: function () {
+		this.seti18n();
+
 		this.domNode = dojo.create("tr", {
 			class: "transcendenceUpgrade",
 			innerHTML: "<td>" + (this.label || this.name) + "</td><td></td>"

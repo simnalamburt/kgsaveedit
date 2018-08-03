@@ -88,7 +88,6 @@ dojo.declare("classes.KGSaveEdit.ExtrasTab", classes.KGSaveEdit.UI.Tab, {
 		var extraData = new classes.KGSaveEdit.ExtraMetaItem(this.game, {
 			path: path,
 			meta: meta,
-			// metaJSON: JSON.stringify(meta, null, "    "),
 			index: index,
 			enabled: enabled || typeof index === "number"
 		});
@@ -263,7 +262,7 @@ dojo.declare("classes.KGSaveEdit.ExtraTooltipHelp", [classes.KGSaveEdit.TooltipI
 
 		tooltipBlock.innerHTML = "<p>TLDR: It's here to help, don't worry about it.</p>" +
 			"<p>This automatically finds extra buildings and such in imported save codes. This is so that when the game is updated in the future this editor can try to press on, even if it's outdated.</p>" +
-			"<p>You can choose what to include, and edit their JSON directly if you know what you're doing.</p>";
+			"<p>You can choose what to include and even edit the JSON directly if you know what you're doing.</p>";
 	},
 
 	getTooltipOffset: function (node) {

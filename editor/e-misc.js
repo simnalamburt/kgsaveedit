@@ -1,11 +1,12 @@
-/* global require, dojo, classes */
+/* global require, dojo, classes, $I */
 
 require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 "use strict";
 
 
 dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
-	options: [{
+	options: [
+		{
 			name: "useWorkers",
 			desc: "Use web worker (game works correctly in background tab, may cause performance issues)"
 		}, {
@@ -39,7 +40,7 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 		}, {
 			name: "IWSmelter",
 			desc: "Smelters turn off at 95% max Iron in Iron Will mode",
-			src: "game.opts",
+			src: "game.opts"
 		}, {
 			name: "disableTelemetry",
 			desc: "Disable game statistics.",
@@ -50,12 +51,13 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 			class: "hidden"
 		}, {
 			name: "ironWill",
-			desc: "Iron Will"
+			desc: $I("challendge.ironWill.label")
 		}, {
 			name: "cheatMode",
 			desc: "Cheat mode",
 			class: "bottom-margin"
-	}],
+		}
+	],
 	scheme: null,
 
 	tabName: "Options &amp; Settings",
@@ -99,7 +101,7 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 		var table = dojo.create("table", {class: "bottom-margin"}, this.tabBlockNode);
 
 		var tr = dojo.create("tr", {
-			innerHTML: "<td>DeadKittens</td><td></td>"
+			innerHTML: "<td>Dead kittens</td><td></td>"
 		}, table);
 		game._createInput({class: "integerInput"}, tr.children[1], game, "deadKittens");
 
@@ -111,7 +113,7 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 		game._createInput({id: "karmaKittensNode", class: "integerInput"},
 			td, game, "karmaKittens", "first");
 		game.karmaKittensKarma = game._createInput({class: "abbrInput"}, td);
-		dojo.place(document.createTextNode(" Karma"), td);
+		dojo.place(document.createTextNode(" " + $I("resources.karma.title")), td);
 
 		game.karmaKittensNode.handler = function () {
 			var value = this.game.getTriValue(this.parsedValue, 5);
@@ -140,29 +142,24 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 	game: null,
 
-	seasons: [{
+	seasons: [
+		{
 			name: "spring",
-			title: "Spring",
-			winterHasComeTitle: "Winter I",
 			modifiers: {"catnip": 1.5}
 		}, {
 			name: "summer",
-			title: "Summer",
-			winterHasComeTitle: "Winter II",
 			modifiers: {"catnip": 1.0}
 		}, {
 			name: "autumn",
-			title: "Autumn",
-			winterHasComeTitle: "Winter III",
 			modifiers: {"catnip": 1.0}
 		}, {
 			name: "winter",
-			title: "Winter",
-			winterHasComeTitle: "Winter IV",
 			modifiers: {"catnip": 0.25}
-	}],
+		}
+	],
 
-	cycles: [{
+	cycles: [
+		{
 			name: "charon",
 			title: "Charon",
 			glyph: "&#9049;",
@@ -300,7 +297,8 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 			festivalEffects: {
 				"starchart": 5
 			}
-	}],
+		}
+	],
 
 	yearsPerCycle: 5,
 	daysPerSeason: 100,
@@ -344,6 +342,20 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		this.game = game;
 	},
 
+	getSeasonTitle: function (season) {
+		var hasCome = this.game.challenges.currentChallenge === "winterIsComing";
+		var titleSeason = this.seasons[hasCome ? 3 : season];
+		var title = $I("calendar.season." + titleSeason.name);
+		if (hasCome) {
+			if (season == 0) {      title += " I"; }
+			else if (season == 1) { title += " II"; }
+			else if (season == 2) { title += " III"; }
+			else if (season == 3) { title += " IV"; }
+		}
+
+		return title;
+	},
+
 	render: function () {
 		var self = this;
 		var game = self.game;
@@ -383,9 +395,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 			innerHTML: "<td>Cycle</td><td> &nbsp;Year </td>"
 		}, table);
 
-		self.cycleNode = dojo.create("select", {
-			id: "cycleNode",
-		}, tr.children[1], "first");
+		self.cycleNode = dojo.create("select", {id: "cycleNode"}, tr.children[1], "first");
 		self.cycleNode.defaultVal = 0;
 
 		for (i = 0, len = self.cycles.length; i < len; i++) {
@@ -417,7 +427,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 			var season = self.seasons[i];
 			season.optionNode = dojo.create("option", {
 				value: i,
-				innerHTML: season.title
+				innerHTML: self.getSeasonTitle(i)
 			}, self.seasonNode);
 		}
 
@@ -431,7 +441,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		}, table);
 		self.weatherSel = dojo.create("select", {
 			id: "weatherSel",
-			innerHTML: '<option value="">---</option><option value="warm">Warm</option><option value="cold">Cold</option>'
+			innerHTML: '<option value="">---</option><option value="warm">' + $I("calendar.weather.warm") + '</option><option value="cold">' + $I("calendar.weather.cold") + '</option>'
 		}, tr.children[1]);
 		self.weatherSel.defaultVal = "";
 
@@ -529,7 +539,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 
 	darkFutureYears: function (withImpedance) {
 		var impedance = 0;
-        if (withImpedance) {
+		if (withImpedance) {
 			impedance = this.game.getEffect("timeImpedance") * (1 + this.game.getEffect("timeRatio"));
 		}
 		return this.year - (40000 + impedance);
@@ -582,10 +592,8 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		this.dayNode.minValue = -10 - this.game.getEffect("temporalParadoxDay");
 		this.set("day", this.day); //refresh value
 
-		var hasCome = this.game.challenges.currentChallenge === "winterIsComing";
 		for (var i = this.seasons.length - 1; i >= 0; i--) {
-			var season = this.seasons[i];
-			season.optionNode.innerHTML = season[hasCome ? "winterHasComeTitle" : "title"];
+			this.seasons[i].optionNode.innerHTML = this.getSeasonTitle(i);
 		}
 	},
 
@@ -690,14 +698,14 @@ dojo.declare("classes.KGSaveEdit.Console", classes.KGSaveEdit.core, {
 
 dojo.declare("classes.KGSaveEdit.DiplomacyManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
 	raceData: [
-		{name: "lizards",    title: "Lizards"},
-		{name: "sharks",     title: "Sharks"},
-		{name: "griffins",   title: "Griffins"},
-		{name: "nagas",      title: "Nagas",      hidden: true},
-		{name: "zebras",     title: "Zebras",     hidden: true},
-		{name: "spiders",    title: "Spiders",    hidden: true},
-		{name: "dragons",    title: "Dragons",    hidden: true},
-		{name: "leviathans", title: "Leviathans", hidden: true, energy: 0, duration: 0}
+		{name: "lizards"},
+		{name: "sharks"},
+		{name: "griffins"},
+		{name: "nagas",      hidden: true},
+		{name: "zebras",     hidden: true},
+		{name: "spiders",    hidden: true},
+		{name: "dragons",    hidden: true},
+		{name: "leviathans", hidden: true, energy: 0, duration: 0}
 	],
 
 	tabName: "Trade",
@@ -705,6 +713,7 @@ dojo.declare("classes.KGSaveEdit.DiplomacyManager", [classes.KGSaveEdit.UI.Tab, 
 	racesByName: null,
 
 	constructor: function () {
+		this.i18nKeys = {tabName: "tab.name.trade"};
 		this.registerMetaItems(this.raceData, classes.KGSaveEdit.GenericItem, "races", function (race) {
 			race.unlocked = Boolean(race.unlocked);
 			race.collapsed = Boolean(race.collapsed);
@@ -721,7 +730,7 @@ dojo.declare("classes.KGSaveEdit.DiplomacyManager", [classes.KGSaveEdit.UI.Tab, 
 
 			race.domNode = dojo.create("tr", {
 				class: "tradeRace",
-				innerHTML: "<td>" + race.title + "</td><td></td><td></td>"
+				innerHTML: "<td>" + $I("trade.race." + race.name) + "</td><td></td><td></td>"
 			}, this.diplomacyBlock);
 			race.nameNode = race.domNode.children[0];
 
@@ -806,65 +815,49 @@ dojo.declare("classes.KGSaveEdit.ChallengesManager", classes.KGSaveEdit.Manager,
 
 	currentChallenge: null,
 
-	challengesData: [{
-		name: "ironWill",
-		label: "Iron Will",
-		description: "Iron Will is a bit hidden challenge and you don't need to click here to enable it: reset the game and play without kittens.",
-		effectDesc: "Nothing",
-		unlocked: true,
-		invisible: true
-	}, {
-		name: "winterIsComing",
-		label: "Winter Has Come",
-		description: "Restart the game with only winter seasons. (Catnip will not benefit from paragon production bonus)<br><br>Goal: Get to Helios.",
-		effectDesc: "Warm seasons are more likely, and cold seasons are less likely.",
-		condition: function () {
-			return this.game.space.getPlanet("helios").reached;
-		},
-		unlocked: true
-	}, {
-		name: "anarchy",
-		label: "Anarchy",
-		description: "Restart the game with kittens acting their own way : kittens are lazy, always eat extra catnip and can't be assigned as leaders.<br><br>Goal: Construct AI Core",
-		effectDesc: "Kittens count double for karma",
-		condition: function () {
-			return this.game.bld.get("aiCore").val > 0;
-		},
-		unlocked: true
-	}, {
-		name: "energy",
-		label: "Energy",
-		description: "Restart the game with consumption of energy multiply by 2.<br><br>Goal: Unlock all energy production buildings and build at least one of them.",
-		effectDesc: "Production bonuses cuts caused by negative energy are divided by 2.",
-		requires: function (game) {
-			return game.resPool.energyCons !== 0 || game.resPool.energyProd !== 0;
-		},
-		condition: function () {
-			return ((this.game.bld.get("pasture").val > 0 && this.game.bld.get("pasture").stage === 1) &&
-				(this.game.bld.get("aqueduct").val > 0 && this.game.bld.get("aqueduct").stage === 1) &&
-				this.game.bld.get("steamworks").val > 0 &&
-				this.game.bld.get("magneto").val > 0 &&
-				this.game.bld.get("reactor").val > 0 &&
-				this.game.space.getBuilding("sattelite").val > 0 &&
-				this.game.space.getBuilding("sunlifter").val > 0 &&
-				this.game.space.getBuilding("tectonic").val > 0 &&
-				this.game.space.getBuilding("hrHarvester").val > 0);
+	challengesData: [
+		{
+			name: "ironWill",
+			unlocked: true,
+			invisible: true
+		}, {
+			name: "winterIsComing",
+			condition: function () {
+				return this.game.space.getPlanet("helios").reached;
+			},
+			unlocked: true
+		}, {
+			name: "anarchy",
+			condition: function () {
+				return this.game.bld.get("aiCore").val > 0;
+			},
+			unlocked: true
+		}, {
+			name: "energy",
+			requires: function (game) {
+				return game.resPool.energyCons !== 0 || game.resPool.energyProd !== 0;
+			},
+			condition: function () {
+				return ((this.game.bld.get("pasture").val > 0 && this.game.bld.get("pasture").stage === 1) &&
+					(this.game.bld.get("aqueduct").val > 0 && this.game.bld.get("aqueduct").stage === 1) &&
+					this.game.bld.get("steamworks").val > 0 &&
+					this.game.bld.get("magneto").val > 0 &&
+					this.game.bld.get("reactor").val > 0 &&
+					this.game.space.getBuilding("sattelite").val > 0 &&
+					this.game.space.getBuilding("sunlifter").val > 0 &&
+					this.game.space.getBuilding("tectonic").val > 0 &&
+					this.game.space.getBuilding("hrHarvester").val > 0);
+			}
+		}, {
+			name: "atheism",
+			requires: {tech: ["voidSpace"]}
+		}, {
+			name: "1000Years",
+			condition: function () {
+				return this.game.calendar.year >= 1000;
+			}
 		}
-	}, {
-		name: "atheism",
-		label: "Atheism",
-		description: "Restart the game without faith bonus.<br><br>Goal: Reset with at least one cryochamber.",
-		effectDesc: "Every level of transcendence will increase aprocrypha effectiveness by 10%.",
-		requires: {tech: ["voidSpace"]}
-	}, {
-		name: "1000Years",
-		label: "1000 years",
-		description: "Restart the game with a half-life time.<br><br>Goal: Reach year 1000.",
-		effectDesc: "Colder combustion of Time Crystal.",
-		condition: function () {
-			return this.game.calendar.year >= 1000;
-		}
-	}],
+	],
 
 	constructor: function (game) {
 		this.game = game;
@@ -896,7 +889,7 @@ dojo.declare("classes.KGSaveEdit.ChallengesManager", classes.KGSaveEdit.Manager,
 	render: function () {
 		this.domNode = dojo.create("table", {
 			id: "challengesBlock",
-			innerHTML: '<tr><th colspan="2">Challenges</th></tr>'
+			innerHTML: '<tr><th colspan="2">' + $I("challendge.panel.label") + "</th></tr>"
 		}, this.game.science.tabBlockNode);
 		this.domNodeHeader = this.domNode.children[0];
 
@@ -958,6 +951,11 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 
 	constructor: function () {
 		this.defaultUnlocked = this.unlocked;
+		this.i18nKeys = {
+			label: "challendge." + this.name + ".label",
+			description: "challendge." + this.name + ".desc",
+			effectDesc: "challendge." + this.name + ".effect.desc"
+		};
 	},
 
 	getName: function () {
@@ -990,6 +988,8 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 
 	render: function () {
 		var self = this;
+		self.seti18n();
+
 		var tr = dojo.create("tr", {
 			class: "challengeNode",
 			innerHTML: '<td class="nameNode">' + (self.label || self.name) + "</td><td></td>"
@@ -1124,7 +1124,8 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarHappiness", classes.KGSaveEdi
 
 		var base = this.game.getEffect("happiness");
 		//var population = this.game.village.getKittens() *  2;
-		var html = "Base: 100%<br>" + "Buildings: +" + (Math.floor(base)) + "%<br>";
+		var html = $I("village.happiness.base") + ": 100%<br>" +
+			$I("village.happiness.buildings") + ": +" + (Math.floor(base)) + "%<br>";
 
 		//----------------------
 		var resHappiness = 0;
@@ -1137,24 +1138,28 @@ dojo.declare("classes.KGSaveEdit.ui.toolbar.ToolbarHappiness", classes.KGSaveEdi
 				}
 			}
 		}
-		html += "Rare resources: +" + this.game.getDisplayValueExt(resHappiness, false, false, 0) + "%<br>";
+		html += $I("village.happiness.rare.resources") + ": +" + this.game.getDisplayValueExt(resHappiness, false, false, 0) + "%<br>";
 		//---------------------
 		var karma = this.game.resPool.get("karma");
 		if (karma.value > 0) {
-			html += "Karma: +" + this.game.getDisplayValueExt(karma.value, false, false, 0) + "%<br>";
+			html += $I("village.happiness.karma") + ": +" + this.game.getDisplayValueExt(karma.value, false, false, 0) + "%<br>";
+		}
+
+		if (this.game.calendar.festivalDays > 0) {
+			html += $I("village.happiness.festival") + ": +30%<br>";
 		}
 
 		var unhappiness = (this.game.village.getKittens() - 5) * 2;
 
 		var unhappinessReduction = unhappiness * this.game.getEffect("unhappinessRatio", true);
-		html += "Population penalty: -" + this.game.getDisplayValueExt(unhappiness + unhappinessReduction, false, false, 0) + "%<br>";
+		html += $I("village.happiness.penalty") + ": -" + this.game.getDisplayValueExt(unhappiness + unhappinessReduction, false, false, 0) + "%<br>";
 
-		html += "* Penalty base: -" + this.game.getDisplayValueExt(unhappiness, false, false, 0) + "%<br>";
-		html += "* Penalty mitigated: " + -this.game.getDisplayValueExt(unhappinessReduction, false, false, 0) + "%<br>";
+		html += "* " + $I("village.happiness.penalty.base") + ": -" + this.game.getDisplayValueExt(unhappiness, false, false, 0) + "%<br>";
+		html += "* " + $I("village.happiness.penalty.mitigated") + ": " + -this.game.getDisplayValueExt(unhappinessReduction, false, false, 0) + "%<br>";
 
 		var overpopulation = this.game.village.getKittens() - this.game.village.maxKittens;
 		if (overpopulation > 0) {
-			html += "Overpopulation: -" + overpopulation * 2 + "%<br>";
+			html += $I("village.happiness.overpopulation") + ": -" + overpopulation * 2 + "%<br>";
 		}
 
 		tooltip.innerHTML = html;
@@ -1279,15 +1284,17 @@ dojo.declare("classes.KGSaveEdit.Server", classes.KGSaveEdit.core, {
 dojo.declare("classes.KGSaveEdit.VoidManager", classes.KGSaveEdit.Manager, {
 	game: null,
 
-	voidUpgradesData: [{
+	voidUpgradesData: [
+		{
 		name: "spaceCathedral",
 		label: "Space Cathedral",
 		description: "TBD.",
-		prices: [{
-			name: "relic", val: 1
-		}],
+		prices: [
+			{name: "relic", val: 1}
+		],
 		researched: false
-	}],
+		}
+	],
 
 	voidUpgrades: null,
 	voidUpgradesByName: null,

@@ -3,6 +3,10 @@
 	display: none;
 }
 
+.collapsed {
+	visibility: collapse;
+}
+
 html, body {
 	height: 100%;
 	overflow-y: hidden;

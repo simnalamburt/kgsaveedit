@@ -1,13 +1,12 @@
-/* global dojo, require, classes, num */
+/* global dojo, require, classes, $I, num */
 
 require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 "use strict";
 
 dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
-	achievementsData: [{
+	achievementsData: [
+		{
 			name: "theElderLegacy",
-			title: "The Elder Legacy",
-			description: "Be a first player to test Kittens Game Mobile",
 			condition: function () {
 				var date = new Date();
 				return (date.getMonth() == 0 && date.getFullYear() == 2017);
@@ -15,194 +14,145 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 			hidden: true
 		}, {
 			name: "unicornConspiracy",
-			title: "Unicorn Conspiracy",
-			description: "Lift the shroud of the Unicorn conspiracy!",
 			condition: function () {
 				return this.game.resPool.get("unicorns").owned();
 			}
 		}, {
 			name: "uniception",
-			title: "Uniception",
-			description: "Find the conspiracy within the conspiracy",
 			condition: function () {
 				return this.game.resPool.get("tears").owned();
 			}
 		}, {
 			name: "sinsOfEmpire",
-			title: "Sins of a Solar Empire",
-			description: "Wait, seriously?",
 			condition: function () {
 				return this.game.resPool.get("alicorn").owned();
 			}
 		}, {
 			name: "anachronox",
-			title: "Anachronox",
-			description: "Please stop",
 			condition: function () {
 				return this.game.resPool.get("timeCrystal").owned();
 			}
 		}, {
 			name: "deadSpace",
-			title: "Dead Space",
-			description: "In space no one can hear you meow.",
 			condition: function () {
 				return this.game.resPool.get("necrocorn").owned();
 			}
 		}, {
 			name: "ironWill",
-			title: "Iron Will",
-			description: "You truly deserved this",
 			condition: function () {
 				return this.game.ironWill && !this.game.resPool.get("kittens").owned() && this.game.bld.get("mine").owned();
 			}
 		}, {
 			name: "uberkatzhen",
-			title: "Uberkatzchen",
-			description: "What does not kill you makes you stronger",
 			condition: function () {
 				return this.game.ironWill && !this.game.resPool.get("kittens").owned() && this.game.bld.get("warehouse").owned();
 			}
 		}, {
 			name: "hundredYearsSolitude",
-			title: "One Hundred Years of Solitude",
-			description: "How far is too far?",
 			condition: function () {
 				return this.game.ironWill && !this.game.resPool.get("kittens").owned() && this.game.bld.get("steamworks").owned();
 			}
 		}, {
 			name: "soilUptuned",
-			title: "Virgin Soil Upturned",
-			description: "Have 45 pastures in Iron Will mode",
 			condition: function () {
 				return this.game.ironWill && !this.game.resPool.get("kittens").owned() && this.game.bld.get("pasture").val >= 45;
 			}
 		}, {
 			name: "atlasUnmeowed",
-			title: "Atlas Unmeowed",
-			description: "Construct a magneto in Iron Will mode",
 			condition: function () {
 				return this.game.ironWill && !this.game.resPool.get("kittens").owned() && this.game.bld.get("magneto").owned();
 			}
 		}, {
 			name: "meowMeowRevolution",
-			title: "Meow Meow Revolution",
-			description: "Construct a factory in Iron Will mode",
 			condition: function () {
 				return this.game.ironWill && !this.game.resPool.get("kittens").owned() && this.game.bld.get("factory").owned();
 			}
 		}, {
 			name: "spaceOddity",
-			title: "Space Oddity",
-			description: "Complete a Moon Program in Iron Will mode",
 			condition: function () {
 				return this.game.ironWill && this.game.space.getProgram("moonMission").owned();
 			},
 			hasStar: true,
-			starDescription: "Get Moon Program in IW without any paragon points",
 			starCondition: function () {
 				return this.game.ironWill && this.game.space.getProgram("moonMission").owned() && this.game.resPool.get("paragon").value < 10;
 			}
 		}, {
 			name: "jupiterAscending",
-			title: "Jupiter Ascending",
-			description: "Get to the space on a first year",
 			condition: function () {
 				return this.game.space.getProgram("orbitalLaunch").owned() && this.game.calendar.year <= 1;
 			}
 		}, {
 			name: "shadowOfTheColossus",
-			title: "Shadow Of The Colossus",
-			description: "Build a Ziggurat having only one kitten",
 			condition: function () {
 				return this.game.bld.get("ziggurat").owned() && this.game.village.maxKittens === 1;
 			}
 		}, {
 			name: "sunGod",
-			title: "Sun God",
-			description: "Gain a total of 696,342 accumulated faith",
 			condition: function () {
 				return this.game.religion.faith >= 696342;
 			}
 		}, {
 			name: "heartOfDarkness",
-			title: "Heart Of Darkness",
-			description: "Become the chieftain of a zebra tribe. (How is this even possible?)",
 			condition: function () {
 				return this.game.resPool.get("zebras").value > 1;
 			}
 		}, {
 			name: "winterIsComing",
-			title: "Winter Is Coming",
-			description: "Have 10 kittens dead",
 			unethical: true,
 			condition: function () {
 				return this.game.deadKittens >= 10;
 			}
 		}, {
 			name: "youMonster",
-			title: "You Monster",
 			unethical: true,
-			description: "Poor kittens.",
 			condition: function () {
 				return this.game.deadKittens >= 100;
 			}
 		}, {
 			name: "superUnethicalClimax",
-			title: "Super Unethical Climax",
-			description: "Cheat your way through the game.",
 			unethical: true,
 			condition: function () {
 				return this.game.cheatMode;
 			}
 		}, {
 			name: "systemShock",
-			title: "System Shock",
-			description: "I'm sorry Dave, I'm afraid I can't do that.",
 			unethical: true,
 			condition: function () {
 				return this.game.systemShockMode;
 			}
 		}, {
 			name: "lotusMachine",
-			title: "Lotus Eater Machine",
-			description: "Break the cycle of reincarnations",
 			condition: function () {
 				return this.game.resPool.get("karma").owned();
 			}
 		}, {
 			name: "serenity",
-			title: "Serenity",
-			description: "Have 50 kittens without losing any of them",
 			condition: function () {
 				return this.game.resPool.get("kittens").value >= 50 && this.game.deadKittens === 0;
 			}
 		}, {
 			name: "utopiaProject",
-			title: "Utopia Project",
-			description: "Get a total happiness of over 150%",
 			condition: function () {
 				return this.game.village.happiness >= 1.5 && this.game.resPool.get("kittens").value > 35;
 			},
 			hasStar: true,
-			starDescription: "Get a total happiness of over 500%",
 			starCondition: function () {
 				return this.game.village.happiness >= 5 && this.game.resPool.get("kittens").value > 35;
 			}
 		}, {
 			name: "cathammer",
-			title: "Cathammer 40K",
-			description: "In the grim and dark future of a catkind",
 			condition: function () {
 				return this.game.stats.getStat("totalYears").val >= 40000;
 			},
 			hasStar: true,
-			starDescription: "In the grim and dark future of a catkind there are no resets",
 			starCondition: function () {
 				return this.game.calendar.year >= 40000 + this.game.time.flux;
 			}
-	}],
+		}
+	],
 
-	hatsData: [{
+	hatsData: [
+		{
 			id: 1,
 			name: "simpleHat",
 			title: "Simple Hat",
@@ -381,7 +331,8 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 			title: "Fez Hat",
 			description: "A prism-shaped red fez hat.",
 			difficulty: "A"
-	}],
+		}
+	],
 
 	tabName: "Achievements",
 
@@ -391,8 +342,17 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 	councilUnlocked: false,
 
 	constructor: function () {
+		this.i18nKeys = {tabName: "tab.name.achievements"};
 		this.registerMetaItems(this.achievementsData, classes.KGSaveEdit.AchievementMeta, "achievements", function (ach) {
 			ach.starUnlocked = Boolean(ach.starUnlocked);
+
+			ach.i18nKeys = {
+				title: "achievements." + ach.name + ".title",
+				description: "achievements." + ach.name + ".desc"
+			};
+			if (ach.hasStar) {
+				ach.i18nKeys.starDescription = "achievements." + ach.name + ".starDesc";
+			}
 		});
 
 		this.registerMetaItems(this.hatsData, classes.KGSaveEdit.AchievementMeta, "hats");
@@ -517,6 +477,10 @@ dojo.declare("classes.KGSaveEdit.AchievementMeta", [classes.KGSaveEdit.GenericIt
 	},
 
 	render: function (parent) {
+		this.seti18n();
+
+		// TODO turn the title attributes into proper tooltips?
+
 		this.domNode = dojo.create("tr", {
 			class: "achievement",
 			innerHTML: '<td title="' + this.description + '">' +
@@ -595,9 +559,10 @@ dojo.declare("classes.KGSaveEdit.AchievementMeta", [classes.KGSaveEdit.GenericIt
 
 
 dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
-	statsData: [{
+	statsData: [
+		{
 			name: "totalKittens",
-			title: "Total kittens",
+			title: "stats.kittens.total",
 			val: 0,
 			compareVal: function (game) {
 				return game.resPool.get("kittens").value;
@@ -605,7 +570,7 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 			unlocked: true
 		}, {
 			name: "kittensDead",
-			title: "Kittens dead",
+			title: "stats.kittens.dead",
 			val: 0,
 			compareVal: function (game) {
 				return game.deadKittens;
@@ -613,7 +578,7 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 			unlocked: true
 		}, {
 			name: "totalYears",
-			title: "Total years played",
+			title: "stats.years.total",
 			val: 0,
 			compareVal: function (game) {
 				return game.calendar.year;
@@ -621,11 +586,11 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 			unlocked: true
 		}, {
 			name: "totalResets",
-			title: "Resets made",
+			title: "stats.resets.total",
 			val: 0
 		}, {
 			name: "totalParagon",
-			title: "Total paragon",
+			title: "stats.paragon.total",
 			val: 0,
 			compareVal: function (game) {
 				var paragon = game.resPool.get("paragon").value;
@@ -637,51 +602,53 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 			}
 		}, {
 			name: "eventsObserved",
-			title: "Rare events observed",
+			title: "stats.events.total",
 			val: 0
 		}, {
 			name: "unicornsSacrificed",
-			title: "Unicorns sacrificed",
+			title: "stats.unicorns",
 			val: 0,
 			inputClass: "integerInput abbrInput"
 		}, {
 			name: "buildingsConstructed",
-			title: "Buildings Constructed",
+			title: "stats.buildings",
 			val: 0
 		}, {
 			name: "totalClicks",
-			title: "Total Clicks",
+			title: "stats.clicks.total",
 			val: 0
 		}, {
 			name: "totalTrades",
-			title: "Trades Completed",
+			title: "stats.trades.total",
 			val: 0
 		}, {
 			name: "totalCrafts",
-			title: "Crafting Times",
+			title: "stats.crafts.total",
 			val: 0
 		}, {
 			name: "averageKittens",
-			title: "Avg. Kittens Born (Per Century)",
+			title: "stats.kittens.avg",
 			val: 0,
 			calculate: function (game) {
 				var years = game.stats.getStat("totalYears").val;
 				var kittens = game.stats.getStat("totalKittens").val;
 				return years != 0 ? kittens / Math.ceil(years / 100) : 0;
 			}
-	}],
+		}
+	],
 
-	statsCurrentData: [{
+	statsCurrentData: [
+		{
 			name: "totalTrades",
-			title: "Trades Completed",
+			title: "stats.trades.current",
 			val: 0
 		}, {
 			name: "totalCrafts",
-			title: "Crafting Times",
+			title: "stats.crafts.current",
 			val: 0
 		}, {
 			name: "averageKittens",
-			title: "Avg. Kittens Born (Per Century)",
+			title: "stats.kittens.current",
 			val: 0,
 			calculate: function (game) {
 				var years = game.calendar.year;
@@ -690,13 +657,14 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 			}
 		}, {
 			name: "timePlayed",
-			title: "Time Played (Hours)",
+			title: "stats.time.current",
 			val: 0,
 			calculate: function (game) {
 				var cDay = ((game.calendar.year * 400) + ((game.calendar.season - 1) * 100) + game.calendar.day);
 				return Math.round(cDay / 1800 * 10) / 10;
 			}
-	}],
+		}
+	],
 
 	tabName: "Stats",
 	getVisible: function () {
@@ -711,6 +679,7 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 	statsCurrentByName: null,
 
 	constructor: function () {
+		this.i18nKeys = {tabName: "tab.name.stats"};
 		this.allStats = [];
 
 		var statHandler = function (stat) {
@@ -722,13 +691,13 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 	},
 
 	renderTabBlock: function () {
-		dojo.create("div", {innerHTML: "ALL-TIME STATS"}, this.tabBlockNode);
+		dojo.create("div", {innerHTML: $I("stats.group.all")}, this.tabBlockNode);
 		this.statsBlock = dojo.create("table", {
 			id: "statsBlock",
 			class: "bottom-margin"
 		}, this.tabBlockNode);
 
-		dojo.create("div", {innerHTML: "CURRENT GAME STATS"}, this.tabBlockNode);
+		dojo.create("div", {innerHTML: $I("stats.group.current")}, this.tabBlockNode);
 		this.statsCurrentBlock = dojo.create("table", {id: "statsCurrentBlock"}, this.tabBlockNode);
 	},
 
@@ -766,7 +735,13 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 
 
 dojo.declare("classes.KGSaveEdit.StatsMeta", classes.KGSaveEdit.GenericItem, {
+	constructor: function () {
+		this.i18nKeys = {title: this.title};
+	},
+
 	render: function (parent) {
+		this.seti18n();
+
 		this.domNode = dojo.create("tr", {
 			class: "statastic",
 			innerHTML: "<td>" + this.title + "</td><td></td>"

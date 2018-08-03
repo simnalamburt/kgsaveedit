@@ -1,9 +1,5 @@
 /* global dojo, require, classes, num */
 
-function capitalize(str) {
-	return str[0].toUpperCase() + str.slice(1);
-}
-
 require(["dojo/on"], function (on) {
 "use strict";
 
@@ -70,7 +66,6 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			calculatePerTick: true
 		}, {
 			name: "manpower",
-			title: "catpower",
 			transient: true,
 			color: "#DBA901",
 			calculatePerTick: true
@@ -130,7 +125,6 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			color: "#5A0EDE"
 		}, {
 			name: "temporalFlux",
-			title: "temporal flux",
 			getMaxValue: function () { //bit of a hack to prevent paragon bonus
 				return Math.round(this.game.getEffect(this.name + "Max"));
 			},
@@ -145,6 +139,7 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			transient: true
 		}, {
 			name: "hashrates",
+			title: "hashrates",
 			transient: true
 		}, {
 			name: "furs",
@@ -168,7 +163,6 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			calculatePerTick: true
 		}, {
 			name: "alicorn",
-			title: "alicorns",
 			type: "rare",
 			calculatePerTick: true,
 			inputHandler: function () {
@@ -176,7 +170,6 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "necrocorn",
-			title: "necrocorns",
 			type: "rare",
 			color: "#E00000"
 		}, {
@@ -199,12 +192,10 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			inputClass: "integerInput abbrInput"
 		}, {
 			name: "burnedParagon",
-			title: "burned paragon",
 			color: "#493099",
 			inputClass: "integerInput abbrInput"
 		}, {
 			name: "timeCrystal",
-			title: "time crystal",
 			color: "#14CD61"
 		}, {
 			name: "sorrow",
@@ -216,7 +207,6 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			hardMaxLimit: true
 		}, {
 			name: "relic",
-			title: "relic",
 			type: "exotic",
 			color: "#5A0EDE",
 			style: {
@@ -234,8 +224,7 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			inputClass: "integerInput abbrInput"
 		}, {
 			name: "elderBox",
-			title: "present box",
-			description: "Merry Eldermass!",
+			description: true,
 			type: "exotic",
 			color: "#FA0EDE",
 			style: {
@@ -245,7 +234,6 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			relockIfZero: true
 		}, {
 			name: "wrappingPaper",
-			title: "wrapping paper",
 			type: "exotic",
 			color: "#FA0EDE",
 			style: {
@@ -254,7 +242,6 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "blackcoin",
-			title: "blackcoin",
 			type: "exotic",
 			color: "gold"
 		}, {
@@ -273,7 +260,6 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			calculatePerTick: true
 		}, {
 			name: "concrate",
-			title: "concrete",
 			craftable: true
 		}, {
 			name: "gear",
@@ -316,7 +302,6 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			calculatePerTick: true
 		}, {
 			name: "compedium",
-			title: "compendium",
 			craftable: true,
 			color: "#01A9DB"
 		}, {
@@ -333,10 +318,21 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			name: "megalith",
 			craftable: true,
 			color: "gray"
-	}],
+		}
+	],
 
 	constructor: function () {
-		this.registerMetaItems(this.resourceData, classes.KGSaveEdit.ResourceMeta, "resources");
+		this.registerMetaItems(this.resourceData, classes.KGSaveEdit.ResourceMeta, "resources",
+		function (res) {
+			var keys = {};
+			if (!res.title) {
+				keys.title = "resources." + res.name + ".title";
+			}
+			if (res.description) {
+				keys.description = "resources." + res.name + ".desc";
+			}
+			res.i18nKeys = keys;
+		});
 	},
 
 	render: function () {
@@ -537,8 +533,8 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 	 * Note: this function is just a placeholder to try to calculate resource conversions correctly
 	 * It affects .valueVirtual as it would affect .value ingame
 	 */
-	addRes: function (res, addedValue, event) {
-		if (this.game.calendar.day < 0 && !event || !addedValue) {
+	addRes: function (res, addedValue, ev) {
+		if (this.game.calendar.day < 0 && !ev || !addedValue) {
 			return 0;
 		}
 
@@ -659,6 +655,8 @@ dojo.declare("classes.KGSaveEdit.ResourceMeta", [classes.KGSaveEdit.GenericItem,
 	perTickCached: 0,
 
 	render: function () {
+		this.seti18n();
+
 		var tr = dojo.create("tr", {class: "resource"});
 		this.domNode = tr;
 
@@ -671,7 +669,7 @@ dojo.declare("classes.KGSaveEdit.ResourceMeta", [classes.KGSaveEdit.GenericItem,
 
 		this.nameNode = dojo.create("td", {
 			class: "nameNode",
-			innerHTML: capitalize(this.title || this.name)
+			innerHTML: this.title || this.name
 		}, tr);
 		this.registerTooltip(this.nameNode);
 

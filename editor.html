@@ -17,7 +17,7 @@
 	<form>
 		<div id="topBar" class="header">
 			<span class="smallText">
-				<a href="https://bitbucket.org/coderpatsy/kgsaveedit">Kittens Game Save Editor</a> by <a href="https://coderpatsy.bitbucket.io/">patsy</a>, updated by Guest93,
+				<a href="https://bitbucket.org/coderpatsy/kgsaveedit">Kittens Game Save Editor</a> by <a href="https://coderpatsy.bitbucket.io/">patsy</a>, with help from Guest93,
 				for <a href="http://bloodrizer.ru/games/kittens/">Kittens Game</a> version <span id="gameVersionSpan">1.4.4.7</span>
 				by <a href="http://bloodrizer.ru/">bloodrizer</a>
 			</span>
@@ -25,8 +25,13 @@
 			<span id="topSettings">
 				<span id="toolbarBlock"></span>
 
-				<a id="showImport" href="#">Import</a> |
-				<a id="showExport" href="#">Export</a>
+				<span id="languageSelSpan" class="hidden">
+					<span data-lang-key="opts.lang">Language</span>
+					<select id="languageSel"></select>
+				</span>
+				&nbsp;
+				<a id="showImport" href="#" data-lang-key="menu.import">Import</a> |
+				<a id="showExport" href="#" data-lang-key="menu.export">Export</a>
 			</span>
 		</div>
 
@@ -38,8 +43,10 @@
 				<textarea id="importSaveArea" class="saveArea" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea><br>
 				<input id="importLoadButton" type="button" value="Load">
 				<input id="importCancel" type="button" value="Cancel">
+				<span id="importDevSpan"></span>
 				<span id="importError" class="error hidden">Unable to import data!</span>
 			</div>
+
 			<div id="exportBlock" class="lightbox hidden">
 				Save Export<br>
 				<textarea id="exportSaveArea" class="saveArea" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea><br>
@@ -69,51 +76,73 @@
 	<script src="lib/dojo.js"></script>
 
 	<script>
-		require(["dojo/on"], function (on) {
-			"use strict";
+		/* global dojo, require */
 
+		require(["dojo/on"], function (on) {
 			window.catchError = on(window, "error", function () {
 				dojo.byId("load").textContent = "Something went wrong while loading!";
 			});
+		});
+	</script>
+
+	<script src="editor/e-config.js"></script>
+
+	<script>
+		/* global dojo, require, editorVersion: true, i18nLang */
+
+		require(["dojo/on"], function (on) {
+			"use strict";
 
 			var scripts = ["editor/e-core.js", "editor/e-misc.js", "editor/e-resources.js",
 				"editor/e-upgrades.js", "editor/e-tech.js", "editor/e-prestige.js",
 				"editor/e-buildings.js", "editor/e-religion.js", "editor/e-space.js",
 				"editor/e-time.js", "editor/e-village.js", "editor/e-stats.js", "editor/e-main.js", "editor/e-extras.js", "dev/e-dev.js"];
 			var index = 0;
-			var version = dojo.byId("gameVersionSpan").textContent;
+			window.editorVersion = dojo.byId("gameVersionSpan").textContent;
+
+			console.log("Loading locale system");
+			var langPromise = i18nLang.init(editorVersion);
+			langPromise.done(function () {
+				console.log("Loading editor modules");
+				fetchScript();
+			}).fail(function () {
+				console.log("Unable to load locales");
+			});
 
 			function fetchScript() {
-				$.getScript(scripts[index] + "?" + version, function () {
+				$.getScript(scripts[index] + "?" + editorVersion)
+				.done(function () {
 					index++;
 					if (scripts[index]) {
 						fetchScript();
 					} else {
-						init();
+						initEditor();
 					}
+				}).fail(function () {
+					console.error("Unable to load modules");
 				});
 			}
-			fetchScript();
 
-			function init() {
-				/*global game, gamePage, dojo, require, classes*/
+			function initEditor() {
+				/* global game:true, gamePage:true, dojo, require, classes */
 				window.gamePage = new classes.KGSaveEdit.SaveEdit(dojo.byId("editContainer"));
 				window.game = gamePage;
 				window.saveEdit = gamePage;
 
-				game.version = version;
+				game.version = editorVersion;
 
 				setTimeout(function () {
 					//stop the submit event from doing anything (the <form> element is only there for "valid" html)
-					on(document.forms[0], "submit", function (event) { event.preventDefault(); });
+					on(document.forms[0], "submit", function (ev) { ev.preventDefault(); });
 
 					// don't follow empty fragment links
 					// on(document.documentElement, 'a[href="#"]:click',
-					// 	function (event) { event.preventDefault(); });
+					// 	function (ev) { ev.preventDefault(); });
 					// apparently the above consistently fails on certain elements and I have no clue why the [expletive], considering the elements are identical to others that do get prevented
-					document.documentElement.addEventListener("click", function (event) {
-						if (event && event.target && event.target.href && event.target.href.slice(-1) === "#") {
-							event.preventDefault();
+
+					document.documentElement.addEventListener("click", function (ev) {
+						if (ev && ev.target && ev.target.href && ev.target.href.slice(-1) === "#") {
+							ev.preventDefault();
 						}
 					}, true); // use capture
 
@@ -160,6 +189,11 @@
 						dojo.addClass("exportBlock", "hidden");
 					});
 
+					on(dojo.byId("languageSel"), "change", function () {
+						i18nLang.updateLanguage(this.value);
+					});
+
+					dojo.removeClass("languageSelSpan", "hidden");
 					dojo.addClass("load", "hidden");
 					window.catchError.remove();
 				}, 0);

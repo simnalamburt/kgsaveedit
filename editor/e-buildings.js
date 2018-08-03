@@ -1,13 +1,12 @@
-/* global dojo, require, classes, num */
+/* global dojo, require, classes, $I, num */
 
 require(["dojo/on"], function (on) {
 "use strict";
 
 dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, classes.KGSaveEdit.Manager], {
-	buildingsData: [{
+	buildingsData: [
+		{
 			name: "field",
-			label: "Catnip field",
-			description: "Plant some catnip to grow in the village.\nFields have +50% production in Spring and -75% production in Winter",
 			prices: [
 				{name: "catnip", val: 10}
 			],
@@ -17,38 +16,38 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			effects: {
 				"catnipPerTickBase": 0.125
 			},
-			flavor: "'Nip as far as the eye can see."
+			flavor: true
 		}, {
 			name: "pasture",
 			unlockRatio: 0.3,
 			stage: 0,
-			stages: [{
-				label: "Pasture",
-				description: "Provides an alternative source of food, which reduces catnip consumption.",
-				prices: [
-					{name: "catnip", val: 100},
-					{name: "wood",   val: 10}
-				],
-				priceRatio: 1.15,
-				stageUnlocked: true,
-				// stageRequires: {tech: ["animal"]},
-				effects: {
-					"catnipDemandRatio": -0.005
-				},
-				flavor: "Take a pint o' milk, Sir!"
-			}, {
-				label: "Solar Farm",
-				description: "Provides an additional source of energy depending on the seasons.",
-				prices: [
-					{name: "titanium", val: 250}
-				],
-				priceRatio: 1.15,
-				stageUnlocked: false,
-				stageRequires: {tech: ["ecology"]},
-				effects: {
-					"energyProduction": 2
+			stages: [
+				{
+					stageName: "pasture",
+					prices: [
+						{name: "catnip", val: 100},
+						{name: "wood",   val: 10}
+					],
+					priceRatio: 1.15,
+					stageUnlocked: true,
+					// stageRequires: {tech: ["animal"]},
+					effects: {
+						"catnipDemandRatio": -0.005
+					},
+					flavor: true
+				}, {
+					stageName: "solarfarm",
+					prices: [
+						{name: "titanium", val: 250}
+					],
+					priceRatio: 1.15,
+					stageUnlocked: false,
+					stageRequires: {tech: ["ecology"]},
+					effects: {
+						"energyProduction": 2
+					}
 				}
-			}],
+			],
 			requires: {tech: ["animal"]},
 			calculateEffects: function (self, game) {
 				var stageMeta = self.stages[self.stage];
@@ -69,36 +68,35 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			}
 		}, {
 			name: "aqueduct",
-			label: "Aqueduct",
 			unlockRatio: 0.3,
 			stage: 0,
-			stages: [{
-				label: "Aqueduct",
-				description: "+3% to catnip production",
-				prices: [
-					{name: "minerals", val: 75}
-				],
-				priceRatio: 1.12,
-				stageUnlocked: true,
-				// stageRequires: {tech: ["engineering"]},
-				effects: {
-					"catnipRatio": 0.03
-				},
-				flavor: "No Swimming"
-			}, {
-				label: "Hydro Plant",
-				description: "A modern source of power production",
-				prices: [
-					{name: "concrate", val: 100},
-					{name: "titanium", val: 2500}
-				],
-				priceRatio: 1.15,
-				stageUnlocked: false,
-				stageRequires: {tech: ["robotics"]},
-				effects: {
-					"energyProduction": 5
+			stages: [
+				{
+					stageName: "aqueduct",
+					prices: [
+						{name: "minerals", val: 75}
+					],
+					priceRatio: 1.12,
+					stageUnlocked: true,
+					// stageRequires: {tech: ["engineering"]},
+					effects: {
+						"catnipRatio": 0.03
+					},
+					flavor: true
+				}, {
+					stageName: "hydroplant",
+					prices: [
+						{name: "concrate", val: 100},
+						{name: "titanium", val: 2500}
+					],
+					priceRatio: 1.15,
+					stageUnlocked: false,
+					stageRequires: {tech: ["robotics"]},
+					effects: {
+						"energyProduction": 5
+					}
 				}
-			}],
+			],
 			requires: {tech: ["engineering"]},
 			action: function (self, game) {
 				var stageMeta = self.stages[self.stage];
@@ -114,8 +112,6 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			}
 		}, {
 			name: "hut",
-			label: "Hut",
-			description: "Build a hut (each has a space for 2 kittens)",
 			prices: [
 				{name: "wood", val: 5}
 			],
@@ -127,11 +123,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				"maxKittens":  2,
 				"manpowerMax": 75
 			},
-			flavor: "The Nation of Two"
+			flavor: true
 		}, {
 			name: "logHouse",
-			label: "Log House",
-			description: "Build a house (each has a space for 1 kitten)",
 			prices: [
 				{name: "wood",     val: 200},
 				{name: "minerals", val: 250}
@@ -143,11 +137,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				"maxKittens":  1,
 				"manpowerMax": 50
 			},
-			flavor: "The Cabin in the Woods"
+			flavor: true
 		}, {
 			name: "mansion",
-			label: "Mansion",
-			description: "A spacy mansion (each has a space for 1 kitten)",
 			prices: [
 				{name: "slab",     val: 185},
 				{name: "steel",    val: 75},
@@ -159,11 +151,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				"maxKittens":  1,
 				"manpowerMax": 50
 			},
-			flavor: "The best shipping container available"
+			flavor: true
 		}, {
 			name: "library",
-			label: "Library",
-			description: "Build a library to store sacred catkind knowledge.\nEach upgrade level improves your science output by 10%",
 			prices: [
 				{name: "wood", val: 25}
 			],
@@ -186,11 +176,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				effects["scienceMax"] *= 1 + game.bld.get("observatory").val * libraryRatio;
 				self.effects = effects;
 			},
-			flavor: "All in Catonese"
+			flavor: true
 		}, {
 			name: "academy",
-			label: "Academy",
-			description: "Improves your research ratio and the speed of your kitten skills growth.\nEach upgrade level improves your science output by 20%",
 			prices: [
 				{name: "wood",     val: 50},
 				{name: "minerals", val: 70},
@@ -205,11 +193,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				"cultureMax":   25,
 				"scienceMax":   500
 			},
-			flavor: "Curiosity is the basis of science. Our cats died nobly"
+			flavor: true
 		}, {
 			name: "observatory",
-			label: "Observatory",
-			description: "Increases the chance of astronomical events by 0.5%",
 			prices: [
 				{name: "scaffold", val: 50},
 				{name: "slab",     val: 35},
@@ -243,11 +229,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 
 				self.effects = effects;
 			},
-			flavor: "Yearning to one day catch the red light fairy"
+			flavor: true
 		}, {
 			name: "biolab",
-			label: "Bio Lab",
-			description: "Improves effectiveness of catnip refinement by 10%. More effective if powered.",
 			prices: [
 				{name: "slab",    val: 100},
 				{name: "alloy",   val: 25},
@@ -299,11 +283,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 					return amt;
 				}
 			},
-			flavor: "New postdoc positions available."
+			flavor: true
 		}, {
 			name: "barn",
-			label: "Barn",
-			description: "Provides a space to store your resources.",
 			prices: [
 				{name: "wood", val: 50}
 			],
@@ -332,11 +314,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 
 				self.effects = game.resPool.addBarnWarehouseRatio(effects);
 			},
-			flavor: "Rats ain't a problem for us!"
+			flavor: true
 		}, {
 			name: "warehouse",
-			label: "Warehouse",
-			description: "Provides a space to store your resources",
 			prices: [
 				{name: "beam", val: 1.5},
 				{name: "slab", val: 2}
@@ -369,11 +349,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 
 				self.effects = game.resPool.addBarnWarehouseRatio(effects);
 			},
-			flavor: "All our stocks are scratched"
+			flavor: true
 		}, {
 			name: "harbor",
-			label: "Harbour",
-			description: "Provides a space to store your resources",
 			prices: [
 				{name: "scaffold", val: 5},
 				{name: "slab",     val: 50},
@@ -422,11 +400,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 
 				self.effects = game.resPool.addBarnWarehouseRatio(effects);
 			},
-			flavor: "Ahoy, landlubbers!"
+			flavor: true
 		}, {
 			name: "mine",
-			label: "Mine",
-			description: "Unlocks the miner job.\nEach upgrade level improves your mineral output by 20%",
 			prices: [
 				{name: "wood", val: 100}
 			],
@@ -451,11 +427,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 
 				self.effects = effects;
 			},
-			flavor: "100 days without diggor mortis"
+			flavor: true
 		}, {
 			name: "quarry",
-			label: "Quarry",
-			description: "Quarries each improve your mining efficiency by 35% and produce a bit of coal",
 			prices: [
 				{name: "scaffold", val: 50},
 				{name: "steel",    val: 125},
@@ -468,11 +442,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				"mineralsRatio":   0.35,
 				"coalPerTickBase": 0.015
 			},
-			flavor: "Its full of mice! Wait, wrong 'quarry'"
+			flavor: true
 		}, {
 			name: "smelter",
-			label: "Smelter",
-			description: "Smelts ore into metal",
 			prices: [
 				{name: "minerals", val: 200}
 			],
@@ -536,11 +508,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 
 				return amt;
 			},
-			flavor: "Watch your whiskers!"
+			flavor: true
 		}, {
 			name: "calciner",
-			label: "Calciner",
-			description: "A highly effective source of metal.\nConsumes 1.5 minerals and 0.02 oil per tick. Produces iron and a small amount of titanium",
 			prices: [
 				{name: "steel",     val: 100},
 				{name: "titanium",  val: 15},
@@ -638,8 +608,6 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			}
 		}, {
 			name: "steamworks",
-			label: "Steamworks",
-			description: "When active, significantly reduces your coal production. Does nothing useful by default, but can do a lot of cool stuff once upgraded.",
 			prices: [
 				{name: "steel",     val: 65},
 				{name: "gear",      val: 20},
@@ -674,11 +642,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				}
 				self.effects["manuscriptPerTickProd"] = amt;
 			}, //no factory automation stuff
-			flavor: "I just nap here and it looks like I'm working"
+			flavor: true
 		}, {
 			name: "magneto",
-			label: "Magneto",
-			description: "Improves your total resource production by 2%. Every steamworks will boost this effect by 15%. Consumes oil.",
 			prices: [
 				{name: "alloy",     val: 10},
 				{name: "gear",      val: 5},
@@ -694,8 +660,6 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			}
 		}, {
 			name: "lumberMill",
-			label: "Lumber Mill",
-			description: "Improves wood production by 10%",
 			prices: [
 				{name: "wood",     val: 100},
 				{name: "iron",     val: 50},
@@ -710,11 +674,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			calculateEffects: function (self, game) {
 				self.effects["woodRatio"] = 0.1 + game.getEffect("lumberMillRatio") * 0.1;
 			},
-			flavor: "Best log analysing tool"
+			flavor: true
 		}, {
 			name: "oilWell",
-			label: "Oil Well",
-			description: "Produces a bit of oil, +1500 to maximum oil limit",
 			prices: [
 				{name: "steel",    val: 50},
 				{name: "gear",     val: 25},
@@ -749,11 +711,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 
 				self.effects = effects;
 			},
-			flavor: "Rise early, work hard, strike oil."
+			flavor: true
 		}, {
 			name: "workshop",
-			label: "Workshop",
-			description: "Provides a vast variety of upgrades.\nImproves craft effectiveness by 6%",
 			prices: [
 				{name: "wood",     val: 100},
 				{name: "minerals", val: 400}
@@ -765,11 +725,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			effects: {
 				"craftRatio": 0.06 //6% for craft output
 			},
-			flavor: "Free toys for workers"
+			flavor: true
 		}, {
 			name: "factory",
-			label: "Factory",
-			description: "Improves craft effectiveness by 5%",
 			prices: [
 				{name: "titanium", val: 2000},
 				{name: "plate",    val: 2500},
@@ -802,8 +760,6 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			}
 		}, {
 			name: "reactor",
-			label: "Reactor",
-			description: "Provides a 5% boost to production while active. Requires uranium to operate.",
 			prices: [
 				{name: "titanium",  val: 3500},
 				{name: "plate",     val: 5000},
@@ -845,8 +801,6 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			}
 		}, {
 			name: "accelerator",
-			label: "Accelerator",
-			description: "Converts titanium to the uranium (sic)",
 			prices: [
 				{name: "titanium", val: 7500},
 				{name: "concrate", val: 125},
@@ -906,11 +860,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 
 				return amt;
 			},
-			flavor: "Large Catron Collider"
+			flavor: true
 		}, {
 			name: "tradepost",
-			label: "Tradepost",
-			description: "The heart of your trading empire.\nImproves trade effectiveness by 1.5%, reduces rare resource consumption by 4%",
 			prices: [
 				{name: "wood",     val: 500},
 				{name: "minerals", val: 200},
@@ -942,11 +894,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 
 				self.effects = effects;
 			},
-			flavor: "I hope they have yarn"
+			flavor: true
 		}, {
 			name: "mint",
-			label: "Mint",
-			description: "Produces luxurious resources proportional to your max catpower. Consumes catpower and a bit of gold.",
 			prices: [
 				{name: "minerals", val: 5000},
 				{name: "plate",    val: 200},
@@ -1000,39 +950,39 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 		}, {
 			name: "amphitheatre",
 			stage: 0,
-			stages: [{
-				label: "Amphitheatre",
-				description: "Reduces negative effects of overpopulation by 5%. Produces culture.",
-				prices: [
-					{name: "wood",      val: 200},
-					{name: "minerals",  val: 1200},
-					{name: "parchment", val: 3}
-				],
-				priceRatio: 1.15,
-				stageUnlocked: true,
-				// stageRequires: {tech: ["writing"]},
-				effects: {
-					"unhappinessRatio":  -0.048,
-					"culturePerTickBase": 0.005,
-					"cultureMax":         50
-				},
-				flavor: "Daily 'All Dogs Go to Heaven' showings"
-			}, {
-				label: "Broadcast Tower",
-				description: "Generates culture and happiness. More effective with high energy production.",
-				prices: [
-					{name: "iron",     val: 1250},
-					{name: "titanium", val: 75}
-				],
-				priceRatio: 1.18,
-				stageUnlocked: false,
-				stageRequires: {tech: ["electronics"]},
-				effects: {
-					"culturePerTickBase": 1,
-					"unhappinessRatio":  -0.75,
-					"cultureMax":         300
+			stages: [
+				{
+					stageName: "amphitheatre",
+					prices: [
+						{name: "wood",      val: 200},
+						{name: "minerals",  val: 1200},
+						{name: "parchment", val: 3}
+					],
+					priceRatio: 1.15,
+					stageUnlocked: true,
+					// stageRequires: {tech: ["writing"]},
+					effects: {
+						"unhappinessRatio":  -0.048,
+						"culturePerTickBase": 0.005,
+						"cultureMax":         50
+					},
+					flavor: true
+				}, {
+					stageName: "broadcasttower",
+					prices: [
+						{name: "iron",     val: 1250},
+						{name: "titanium", val: 75}
+					],
+					priceRatio: 1.18,
+					stageUnlocked: false,
+					stageRequires: {tech: ["electronics"]},
+					effects: {
+						"culturePerTickBase": 1,
+						"unhappinessRatio":  -0.75,
+						"cultureMax":         300
+					}
 				}
-			}],
+			],
 			requires: {tech: ["writing"]},
 			action: function (self, game) {
 				//very ugly and crappy stuff
@@ -1058,8 +1008,6 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			}
 		}, {
 			name: "chapel",
-			label: "Chapel",
-			description: "Produces a bit of culture and faith per tick. May be improved with religious upgrades",
 			prices: [
 				{name: "minerals",  val: 2000},
 				{name: "culture",   val: 250},
@@ -1085,8 +1033,6 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			}
 		}, {
 			name: "temple",
-			label: "Temple",
-			description: "Temple of light. Produces culture. May be improved with Theology.",
 			prices: [
 				{name: "slab",       val: 25},
 				{name: "plate",      val: 15},
@@ -1158,11 +1104,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 
 				self.effects = effects;
 			},
-			flavor: "All praise Ceiling Cat!"
+			flavor: true
 		}, {
 			name: "unicornPasture",
-			label: "Unic. Pasture",
-			description: "Allows the taming of unicorns.\nReduces catnip consumption by 0.15%",
 			prices: [
 				{name: "unicorns", val: 2}
 			],
@@ -1173,11 +1117,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				"catnipDemandRatio":  -0.0015,
 				"unicornsPerTickBase": 0.001
 			},
-			flavor: "We glue horns on horses"
+			flavor: true
 		}, {
 			name: "ziggurat",
-			label: "Ziggurat",
-			description: "The dark legacy of the lost race.\n May have special usage once Theology is researched.",
 			prices: [
 				{name: "megalith",  val: 50},
 				{name: "scaffold",  val: 50},
@@ -1196,8 +1138,6 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			}
 		}, {
 			name: "chronosphere",
-			label: "Chronosphere",
-			description: "Relocates small amount of resources through time. Can be upgraded further. Every chronosphere increases the chance of Temporal Paradox.",
 			prices: [
 				{name: "unobtainium", val: 2500},
 				{name: "timeCrystal", val: 1},
@@ -1223,8 +1163,8 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			}
 		}, {
 			name: "aiCore",
-			label: "AI Core",
-			description: "FelineOS, a state of the art artificial intelligence. Absolutely harmless. Every level of upgrade will increase core energy consumption by 75%.",
+			label: "buildings.aicore.label",
+			description: "buildings.aicore.desc",
 			prices: [
 				{name: "antimatter", val: 125},
 				{name: "science", 	val: 500000}
@@ -1253,19 +1193,20 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				}
 				self.effects["aiLevel"] = aiLevel;
 			},
-			flavor: "It time to put our differences aside for science."
-	}],
+			flavor: "buildings.aicore.flavor"
+		}
+	],
 
 	buildingGroupsData: {
 		all: {
 			name: "all",
-			title: "All",
+			titleKey: "ui.filter.all",
 			buildings: [],
 			alwaysVisible: true
 		},
 		allEnabled: {
 			name: "allEnabled",
-			title: "Enabled",
+			titleKey: "ui.filter.enabled",
 			filterFn: function (bld) {
 				return bld.unlocked && !dojo.hasClass(bld.nameNode, "btnDisabled");
 			},
@@ -1281,71 +1222,43 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 		},
 		iw: {
 			name: "iw",
-			title: "Iron Will",
+			title: "IW",
 			buildings: []
 		},
 		food: {
 			name: "food",
-			title: "Food",
 			buildings: ["field", "pasture", "aqueduct"]
-			/* filterFn: function () {
-				var bld = ["field"];
-				if (KEdt.bld.get("pasture").stage === 0) {
-					bld.push("pasture");
-				}
-				if (KEdt.bld.get("aqueduct").stage === 0) {
-					bld.push("aqueduct");
-				}
-				return bld;
-			} */
 		},
 		population: {
 			name: "population",
-			title: "Population",
 			buildings: ["hut", "logHouse", "mansion"]
 		},
 		science: {
 			name: "science",
-			title: "Science",
 			buildings: ["library", "academy", "observatory", "biolab"]
 		},
 		storage: {
 			name: "storage",
-			title: "Storage",
 			buildings: ["barn", "warehouse", "harbor"]
 		},
 		resource: {
 			name: "resource",
-			title: "Resource",
 			buildings: ["mine", "quarry", "lumberMill", "oilWell", "accelerator"]
 		},
 		industry: {
 			name: "industry",
-			title: "Industry",
 			buildings: ["steamworks", "magneto", "smelter", "calciner", "factory", "reactor"]
-			/* filterFn: function () {
-				if (KEdt.bld.get("pasture").stage > 0) {
-					bld.push("pasture");
-				}
-				if (KEdt.bld.get("aqueduct").stage > 0) {
-					bld.push("aqueduct");
-				}
-				return bld;
-			} */
 		},
 		culture: {
 			name: "culture",
-			title: "Culture",
 			buildings: ["amphitheatre", "chapel", "temple"]
 		},
 		other: {
 			name: "other",
-			title: "Other",
 			buildings: ["workshop", "tradepost", "mint", "unicornPasture"]
 		},
 		megastructures: {
 			name: "megastructures",
-			title: "Mega Structures",
 			buildings: ["ziggurat", "chronosphere", "aiCore"]
 		}
 	},
@@ -1381,6 +1294,8 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 	tabBlockClass: "shortInt",
 
 	constructor: function (game) {
+		this.i18nKeys = {tabName: "buildings.tabName"};
+
 		this.buildingsNames = [];
 		this.buildingGroups = {};
 
@@ -1431,7 +1346,7 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			group.domNode = dojo.create("a", {
 				class: "buildGroup",
 				href: "#",
-				innerHTML: group.title || group.name,
+				innerHTML: group.title || $I(group.titleKey || "buildings.group." + group.name)
 			}, group.nodeWrapper);
 
 			on(group.domNode, "click", dojo.hitch(group, onclick));
@@ -1619,24 +1534,63 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 
 	showAutomation: false,
 
-	constructor: function () { },
+	constructor: function () {
+		var setKeys = function (obj, name) {
+			obj.i18nKeys = {
+				label: obj.label || "buildings." + name + ".label",
+				description: obj.description || "buildings." + name + ".desc"
+			};
+
+			if (obj.flavor) {
+				obj.i18nKeys.flavor = typeof obj.flavor === "string" ? obj.flavor : "buildings." + name + ".flavor";
+			}
+		};
+
+		if (this.stages) {
+			for (var i = this.stages.length - 1; i >= 0; i--) {
+				setKeys(this.stages[i], this.stages[i].stageName);
+			}
+		} else {
+			setKeys(this, this.name);
+		}
+	},
+
+	seti18n: function () {
+		var setKeys = function (obj, keys) {
+			if (keys) {
+				for (var key in keys) {
+					obj[key] = $I(keys[key]);
+				}
+			}
+		};
+
+		if (this.stages) {
+			for (var i = this.stages.length - 1; i >= 0; i--) {
+				setKeys(this.stages[i], this.stages[i].i18nKeys);
+			}
+		} else {
+			setKeys(this, this.i18nKeys);
+		}
+	},
 
 	render: function () {
 		var self = this;
 
-		this.domNode = dojo.create("tr", {
+		self.seti18n();
+
+		self.domNode = dojo.create("tr", {
 			class: "building",
 			innerHTML: '<td></td><td class="rightAlign"></td><td></td><td></td>'
 		});
 
-		var td = this.domNode.children[0];
-		this.nameNode = dojo.create("span", {
+		var td = self.domNode.children[0];
+		self.nameNode = dojo.create("span", {
 			class: "nameNode",
-			innerHTML: this.get("label") || this.get("name")
+			innerHTML: self.get("label") || self.get("name")
 		}, td);
 
-		if (this.stages) {
-			this.stageUpNode = this.game._createButton(
+		if (self.stages) {
+			self.stageUpNode = self.game._createButton(
 				{
 					value: "^",
 					class: "stageBtn hidden",
@@ -1650,7 +1604,7 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 				}
 			);
 
-			this.stageDownNode = this.game._createButton(
+			self.stageDownNode = self.game._createButton(
 				{
 					value: "V",
 					class: "stageBtn hidden",
@@ -1665,41 +1619,41 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 			);
 		}
 
-		this.onNodeSpan = dojo.create("span", {innerHTML: " / "}, this.domNode.children[1]);
+		self.onNodeSpan = dojo.create("span", {innerHTML: " / "}, self.domNode.children[1]);
 
-		this.game._createInput({
+		self.game._createInput({
 			class: "integerInput ownedInput",
 			title: "Number of active buildings"
-		}, this.onNodeSpan, this, "on", "first");
+		}, self.onNodeSpan, self, "on", "first");
 
-		this.game._createValInput({
+		self.game._createValInput({
 			title: "Number of buildings"
-		}, this.domNode.children[1], this);
+		}, self.domNode.children[1], self);
 
-		this.toggleNode = this.game._createButton(
+		self.toggleNode = self.game._createButton(
 			{
 				value: "On",
 				title: "Toggle building"
-			}, this.domNode.children[2], function () {
+			}, self.domNode.children[2], function () {
 				self.set("on", self.on > 0 ? 0 : self.val);
 				self.game.update();
 			}
 		);
 
-		var input = this.game._createCheckbox("Unlocked", this.domNode.children[3], this, "unlocked");
-		dojo.toggleClass(input.label, "hidden", !this.get("unlockRatio"));
+		var input = self.game._createCheckbox("Unlocked", self.domNode.children[3], self, "unlocked");
+		dojo.toggleClass(input.label, "hidden", !self.get("unlockRatio"));
 
-		if (this.hasOwnProperty("isAutomationEnabled")) {
-			input = this.game._createCheckbox("Automation on", this.domNode.children[3], this, "isAutomationEnabled");
-			this.isAutomationEnabledLabel = input.label;
+		if (self.hasOwnProperty("isAutomationEnabled")) {
+			input = self.game._createCheckbox("Automation on", self.domNode.children[3], self, "isAutomationEnabled");
+			self.isAutomationEnabledLabel = input.label;
 		}
 
-		if ("jammed" in this) {
-			this.game._createCheckbox("Jammed", this.domNode.children[3], this, "jammed");
+		if ("jammed" in self) {
+			self.game._createCheckbox("Jammed", self.domNode.children[3], self, "jammed");
 		}
 
-		this.registerHighlight(this.domNode);
-		this.registerTooltip(this.domNode);
+		self.registerHighlight(self.domNode);
+		self.registerTooltip(self.domNode);
 	},
 
 	//special consideration for staged buildings
@@ -1821,11 +1775,11 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 				this.stage === len || !this.stages[this.stage + 1].stageUnlocked);
 		}
 
-		this.nameNode.textContent = this.get("label") || this.get("name");
+		this.nameNode.innerHTML = this.get("label") || this.get("name");
 		this.updateEnabled();
 
 		var activeGroup = this.game.bld.activeGroup;
-		dojo.toggleClass(this.domNode, "hidden", activeGroup.buildings.indexOf(this.name) < 0);
+		dojo.toggleClass(this.domNode, "collapsed", activeGroup.buildings.indexOf(this.name) < 0);
 
 		if (this.action && on > 0) {
 			var amt = this.action(this, this.game);

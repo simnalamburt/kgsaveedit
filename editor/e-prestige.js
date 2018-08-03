@@ -1,13 +1,12 @@
-/* global dojo, require, classes */
+/* global dojo, require, classes, $I */
 
 require([], function () {
 "use strict";
 
 dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
-	perksData: [{
+	perksData: [
+		{
 			name: "engeneering",
-			label: "Engineering",
-			description: "Reduce all price ratios by 1% (The price will grow up much slower). Unlocks more price upgrades.",
 			prices: [
 				{name: "paragon", val: 5}
 			],
@@ -18,8 +17,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "codexVox",
-			label: "Codex Vox",
-			description: "Improves manuscript craft ratio by 25%.",
 			prices: [
 				{name: "paragon", val: 25}
 			],
@@ -31,8 +28,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "codexLogos",
-			label: "Codex Logos",
-			description: "Improves compendium craft ratio by 25%.",
 			prices: [
 				{name: "paragon", val: 50}
 			],
@@ -45,8 +40,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "codexAgrum",
-			label: "Codex Agrum",
-			description: "Improves blueprint craft ratio by 25%.",
 			prices: [
 				{name: "paragon", val: 75}
 			],
@@ -59,8 +52,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "megalomania",
-			label: "Megalomania",
-			description: "Unlocks additional megastructures.",
 			prices: [
 				{name: "paragon", val: 10}
 			],
@@ -68,8 +59,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			requires: {perks: ["engeneering"]}
 		}, {
 			name: "blackCodex",
-			label: "Black Codex",
-			description: "Unlocks unicorn graveyards.",
 			prices: [
 				{name: "paragon", val: 25}
 			],
@@ -77,8 +66,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			requires: {perks: ["megalomania"]}
 		}, {
 			name: "goldenRatio",
-			label: "Golden Ratio",
-			description: "Reduce all price ratios by ~1.618%",
 			prices: [
 				{name: "paragon", val: 50}
 			],
@@ -89,8 +76,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "divineProportion",
-			label: "Divine Proportion",
-			description: "Reduce all price ratios by 1.7%",
 			prices: [
 				{name: "paragon", val: 100}
 			],
@@ -101,8 +86,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "vitruvianFeline",
-			label: "Vitruvian Feline",
-			description: "Reduce all price ratios by 2%",
 			prices: [
 				{name: "paragon", val: 250}
 			],
@@ -113,8 +96,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "renaissance",
-			label: "Renaissance",
-			description: "Reduce all price ratios by 2.25%",
 			prices: [
 				{name: "paragon", val: 750}
 			],
@@ -124,8 +105,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "diplomacy",
-			label: "Diplomacy",
-			description: "Races will be discovered earlier and with better standing. Unlocks more trade upgrades.",
 			prices: [
 				{name: "paragon", val: 5}
 			],
@@ -133,8 +112,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			unlocked: true
 		}, {
 			name: "zebraDiplomacy",
-			label: "Zebra Diplomacy",
-			description: "Some zebras hunters will stay in the village. (You need to unlock zebra hunters first to use this upgrade).",
 			prices: [
 				{name: "paragon", val: 35}
 			],
@@ -142,16 +119,12 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			requires: {perks: ["diplomacy"]}
 		}, {
 			name: "zebraCovenant",
-			label: "Zebra Covenant",
-			description: "More zebras will stay with you.",
 			prices: [
 				{name: "paragon", val: 75}
 			],
 			requires: {perks: ["zebraDiplomacy"]}
 		}, {
 			name: "chronomancy",
-			label: "Chronomancy",
-			description: "Meteor and star events will happen faster.",
 			prices: [
 				{name: "paragon", val: 25}
 			],
@@ -159,32 +132,24 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			unlocked: true
 		}, {
 			name: "astromancy",
-			label: "Astromancy",
-			description: "Star events chance and observatory effectiveness are doubled",
 			prices: [
 				{name: "paragon", val: 50}
 			],
 			requires: {perks: ["chronomancy"]}
 		}, {
 			name: "unicornmancy",
-			label: "Unicornmancy",
-			description: "Unicorn rifts and ivory meteors are more frequent.",
 			prices: [
 				{name: "paragon", val: 125}
 			],
 			unlocked: true
 		}, {
 			name: "anachronomancy",
-			label: "Anachronomancy",
-			description: "Time crystals and chronophysics will be saved across resets.",
 			prices: [
 				{name: "paragon", val: 125}
 			],
 			requires: {perks: ["chronomancy"]}
 		}, {
 			name: "carnivals",
-			label: "Carnivals",
-			description: "Festivals can now stack",
 			prices: [
 				{name: "paragon", val: 25}
 			],
@@ -192,8 +157,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			unlocked: true
 		}, {
 			name: "willenfluff",
-			label: "Venus of Willenfluff",
-			description: "Kittens will arrive 75% faster.",
 			prices: [
 				{name: "paragon", val: 150}
 			],
@@ -204,8 +167,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "pawgan",
-			label: "Pawgan Rituals",
-			description: "Kittens will arrive an additional 150% faster.",
 			prices: [
 				{name: "paragon", val: 400}
 			],
@@ -215,8 +176,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "numerology",
-			label: "Numerology",
-			description: "Certain years will have special effects.",
 			prices: [
 				{name: "paragon", val: 50}
 			],
@@ -224,8 +183,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			requires: {perks: ["carnivals"]}
 		}, {
 			name: "numeromancy",
-			label: "Numeromancy",
-			description: "Certain years will have extra effects during Festivals.",
 			prices: [
 				{name: "paragon", val: 500}
 			],
@@ -233,8 +190,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			requires: {perks: ["numerology"]}
 		}, {
 			name: "malkuth",
-			label: "Malkuth",
-			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 500}
 			],
@@ -245,8 +200,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "yesod",
-			label: "Yesod",
-			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 750}
 			],
@@ -257,8 +210,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "hod",
-			label: "Hod",
-			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 1250}
 			],
@@ -269,8 +220,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "netzach",
-			label: "Netzach",
-			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 1750}
 			],
@@ -281,8 +230,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "tiferet",
-			label: "Tiferet",
-			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 2500}
 			],
@@ -293,8 +240,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "gevurah",
-			label: "Gevurah",
-			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 5000}
 			],
@@ -305,8 +250,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "chesed",
-			label: "Chesed",
-			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 7500}
 			],
@@ -317,8 +260,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "binah",
-			label: "Binah",
-			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 15000}
 			],
@@ -329,8 +270,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "chokhmah",
-			label: "Chokhmah",
-			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 30000}
 			],
@@ -341,8 +280,6 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "keter",
-			label: "Keter",
-			description: "Improves paragon effect and scaling by 5%",
 			prices: [
 				{name: "paragon", val: 60000}
 			],
@@ -352,16 +289,12 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			}
 		}, {
 			name: "voidOrder",
-			label: "Order of Void",
-			description: "Every priest will now give a minor bonus to faith accumulation",
 			prices: [
 				{name: "paragon", val: 75}
 			],
 			requires: {perks: ["numerology"]}
 		}, {
 			name: "adjustmentBureau",
-			label: "Adjustment Bureau",
-			description: "Unlocks additional game challenges.",
 			prices: [
 				{name: "paragon", val: 5}
 			],
@@ -369,13 +302,12 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			unlocked: true
 		}, {
 			name: "ascoh",
-			label: "ASCOH",
-			description: "A Secret Council Of Hats",
 			prices: [
 				{name: "paragon", val: 5}
 			],
 			requires: {perks: ["adjustmentBureau"]}
-	}],
+		}
+	],
 
 	domNode: null,
 
@@ -383,7 +315,15 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 	perksByName: null,
 
 	constructor: function () {
-		this.registerMetaItems(this.perksData, classes.KGSaveEdit.UpgradeMeta, "perks");
+		this.registerMetaItems(this.perksData, classes.KGSaveEdit.UpgradeMeta, "perks", function (prestige) {
+			prestige.i18nKeys = {
+				label: "prestige." + prestige.name + ".label",
+				description: "prestige." + prestige.name + ".desc"
+			};
+			if (prestige.flavor) {
+				prestige.i18nKeys.flavor = "prestige." + prestige.name + ".flavor";
+			}
+		});
 		this.meta.push(this.perks);
 	},
 
@@ -447,7 +387,7 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 		this.domNode = dojo.create("table", {
 			id: "metaphysicsBlock",
 			class: "bottom-margin",
-			innerHTML: '<tr><th colspan="2">Metaphysics</th></tr>'
+			innerHTML: '<tr><th colspan="2">' + $I("prestige.panel.label") + "</th></tr>"
 		}, this.game.science.tabBlockNode);
 		this.domNodeHeader = this.domNode.children[0];
 
