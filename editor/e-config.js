@@ -30,6 +30,10 @@ dojo.declare("classes.KGSaveEdit.i18n.Lang", null, {
 		var config = new classes.KGSaveEdit.KGConfig();
 		this.availableLocales = [this.fallbackLocale];
 
+		this.localeCodes = {
+			"br": "pt-BR"
+		};
+
 		var localeLabels = {
 			"en": "English",
 			"ru": "Русский",
@@ -146,7 +150,7 @@ dojo.declare("classes.KGSaveEdit.i18n.Lang", null, {
 		self.language = lang;
 		LCstorage["KGCalc.Language"] = lang;
 		dojo.byId("languageSel").value = lang;
-		document.body.setAttribute("lang", lang);
+		document.body.setAttribute("lang", this.localeCodes[lang] || lang);
 
 		if (self.isLoaded(lang)) {
 			self.messages = self.loadedLocales[lang];
