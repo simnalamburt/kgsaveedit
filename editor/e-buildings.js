@@ -1517,8 +1517,10 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 	load: function (saveData) {
 		this.loadMetadata(saveData, "buildings", "get", null, true);
 
-		this.groupBuildings = saveData.bldData.groupBuildings;
-		this.twoRows = saveData.bldData.twoRows;
+		if (saveData.bldData) {
+			this.groupBuildings = saveData.bldData.groupBuildings;
+			this.twoRows = saveData.bldData.twoRows;
+		}
 	}
 });
 

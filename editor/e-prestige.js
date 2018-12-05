@@ -184,7 +184,7 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 		}, {
 			name: "numeromancy",
 			prices: [
-				{name: "paragon", val: 500}
+				{name: "paragon", val: 250}
 			],
 			// unlocks: {"perks": ["malkuth"]},
 			requires: {perks: ["numerology"]}

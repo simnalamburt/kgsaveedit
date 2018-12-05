@@ -131,7 +131,7 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			inputHandler: function () {
 				this.game.setInput(this.game.time.temporalFluxNode, this.parsedValue, true);
 			},
-			hardMaxLimit: true,
+			// hardMaxLimit: true,
 			invisible: true
 		}, {
 			name: "gflops",
