@@ -143,7 +143,8 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			name: "unicornNecropolis",
 			prices: [
 				{name: "void",      val: 5},
-				{name: "necrocorn", val: 25},
+				{name: "necrocorn", val: 15},
+				{name: "alicorn",   val: 100},
 				{name: "megalith",  val: 2500}
 			],
 			priceRatio: 1.15,
@@ -302,6 +303,17 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			priceRatio: 1.15,
 			effects: {
 				"globalResourceRatio": 0.10
+			},
+			flavor: true
+		}, {
+			name: "blackRadiance",
+			prices: [
+				{name: "relic", val: 37500}
+			],
+			tier: 12,
+			priceRatio: 1.15,
+			effects: {
+				"blsCorruptionRatio": 0.0012
 			},
 			flavor: true
 		}, {

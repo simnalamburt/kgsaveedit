@@ -49,34 +49,6 @@ dojo.declare("classes.KGSaveEdit.ExtrasTab", classes.KGSaveEdit.UI.Tab, {
 		helpLink.render();
 		dojo.place(helpLink.domNode, self.tabBlockNode);
 
-		/* var helpBlock = dojo.create("div", {
-			id: "extraHelpBlock",
-			innerHTML: "<p>TLDR: It's here to help, don't worry about it.</p>" +
-				"<p>This automatically finds extra buildings and such in imported save codes, so that when the game is updated in the future this editor can try to press on, even if it's outdated.</p>" +
-				"<p>You can choose what bits of data to include, and edit them directly if you know what you're doing.</p>",
-			class: "lightbox hidden"
-		}, "editContainer");
-
-		var closeLink = dojo.create("a", {
-			href: "#",
-			innerHTML: "close",
-			class: "closeLink"
-		}, helpBlock, "first");
-
-		on(closeLink, "click", function () {
-			game._toggleLightbox();
-		});
-
-		var helpLink = dojo.create("a", {
-			href: "#",
-			innerHTML: "What is this?",
-			class: "help smallText"
-		}, self.tabBlockNode);
-
-		on(helpLink, "click", function () {
-			game._toggleLightbox(helpBlock);
-		}); */
-
 		self.renderExtraData();
 	},
 
@@ -94,6 +66,8 @@ dojo.declare("classes.KGSaveEdit.ExtrasTab", classes.KGSaveEdit.UI.Tab, {
 
 		this.extraMetadata.push(extraData);
 	},
+
+	//TODO some way to live edit data that doesn't currently have an interface but is saved normally?
 
 	updateEnableAllNode: function () {
 		var enabledCount = 0;
@@ -154,7 +128,6 @@ dojo.declare("classes.KGSaveEdit.ExtraMetaItem", classes.KGSaveEdit.GenericItem,
 
 	stringifyMeta: function () {
 		this.metaJSON = JSON.stringify(this.meta, null, "    ");
-		// console.log(this.metaJSON);
 	},
 
 	render: function () {
@@ -188,7 +161,6 @@ dojo.declare("classes.KGSaveEdit.ExtraMetaItem", classes.KGSaveEdit.GenericItem,
 					self.jsonField.defaultValue = self.metaJSON;
 					dojo.addClass(self.editErrorSpan, "hidden");
 					dojo.removeClass(self.editBlock, "hidden");
-					// this.disabled = true;
 				} else {
 					self.editCancelButton.click();
 				}
@@ -229,7 +201,6 @@ dojo.declare("classes.KGSaveEdit.ExtraMetaItem", classes.KGSaveEdit.GenericItem,
 				class: "leftSpacer"
 			}, self.editBlock, function () {
 				dojo.addClass(self.editBlock, "hidden");
-				// self.editButton.disabled = false;
 			}
 		);
 

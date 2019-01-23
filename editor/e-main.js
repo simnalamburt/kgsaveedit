@@ -751,8 +751,15 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		showAllKittenSkills: true //show all of a kitten's job skills in the census (game caps at displaying three jobs)
 	},
 
+	_loadingBlankJSON: false,
+
 	rand: function (ratio) {
-		return Math.floor(Math.random() * ratio);
+		return this.uniformRandomInteger(0, ratio);
+	},
+
+	//TODO move this to game.math like KG?
+	uniformRandomInteger: function (min, max) {
+		return min + Math.floor(Math.random() * (max - min));
 	},
 
 	//shamelessly copied from Sandcastle Builder code
@@ -906,22 +913,20 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-		* Selects a select element's option element that matches the given value
-		* Defaults to the select's defaultVal, or the first option if no option matches
-		* Not using select.value = value because that doesn't guarantee an option selected
+		* Sets the select element to the given value if it exists
+		* Defaults to the select's defaultVal if set, else the first option
 	**/
 	setSelectByValue: function (ele, value) {
-		if (!ele) {
-			return;
+		if (!ele || !ele.length) {
+			return "";
 		}
-		var option = dojo.query('option[value="' + value + '"]', ele)[0];
-		if (!option && "defaultVal" in ele) {
-			option = dojo.query('option[value="' + ele.defaultVal + '"]', ele)[0];
+		ele.value = value;
+		if (ele.selectedIndex < 0 && "defaultVal" in ele) {
+			ele.value = ele.defaultVal;
 		}
-		if (!option) {
-			option = ele.options[0] || {}; //ah safety nets
+		if (ele.selectedIndex < 0) {
+			ele.options[0].selected = true;
 		}
-		option.selected = true;
 		return ele.value;
 	},
 
@@ -1338,7 +1343,15 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 				var displayEffectValue;
 
 				if (effectMeta.type === "perTick" && this.opts.usePerSecondValues) {
-					displayEffectValue = this.getDisplayValueExt(effectValue * this.rate) + "/sec";
+					var tempVal = Math.abs(effectValue * this.game.rate), precision;
+					if (tempVal >= 0.001) {
+						precision = tempVal < 0.01 ? 3 : 2;
+						displayEffectValue = this.game.getDisplayValueExt(
+							effectValue * this.game.rate, false, false, precision) + "/sec";
+					} else {
+						displayEffectValue = this.game.getDisplayValueExt(
+							effectValue * this.game.rate * 3600, false, false, 2) + "/h";
+					}
 				} else if (effectMeta.type === "perDay") {
 					displayEffectValue = this.getDisplayValueExt(effectValue) + "/day";
 				} else if (effectMeta.type === "perYear") {
@@ -1377,7 +1390,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			this.workshop.getEffect(effectName) +
 			this.prestige.getEffect(effectName) +
 			this.religion.getEffect(effectName) +
-			this.time.getEffect(effectName);
+			this.time.getEffect(effectName) +
+			this.village.getEffect(effectName);
 		return effect;
 	},
 
@@ -2285,10 +2299,10 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			cheatMode: this.cheatMode,
 
 			opts: this.filterMetaObj(this.opts, ["usePerSecondValues", "forceHighPrecision", "usePercentageResourceValues",
-				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter", "disableCMBR", "disableTelemetry", "enableRedshift"])
+				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter", "disableCMBR", "disableTelemetry", "enableRedshift", "forceLZ"])
 		};
 
-		this.telemetry.save(saveData);
+		// this.telemetry.save(saveData);
 		this.extrasTab.save(saveData);
 
 		if (compress) {
@@ -2618,12 +2632,12 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	_loadBlankJSON: function () {
-		this.loadingBlockJSON = true;
+		this._loadingBlankJSON = true;
 		this._loadJSON(this.blankSaveJSON);
 
 		this.time.set("timestamp", Date.now());
 		this.telemetry.setGuid();
-		this.loadingBlockJSON = false;
+		this._loadingBlankJSON = false;
 	},
 
 	_loadJSON: function (saveData) {
@@ -2664,7 +2678,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			}
 
 			this.loadMetaFields(this.opts, data.opts, ["usePerSecondValues", "forceHighPrecision", "usePercentageResourceValues",
-				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter", "disableCMBR", "disableTelemetry", "enableRedshift"]);
+				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter", "disableCMBR", "disableTelemetry", "enableRedshift", "forceLZ"]);
 		}
 
 		this.extrasTab.load(saveData);
@@ -2726,7 +2740,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			IWSmelter: true,
 			disableCMBR: false,
 			disableTelemetry: true,
-			enableRedshift: false
+			enableRedshift: false,
+			forceLZ: false
 		});
 
 		this.toolbar = new classes.KGSaveEdit.ui.Toolbar(this);
@@ -2808,7 +2823,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 
 		this.calendar.render();
 		this.console.render();
-		this.telemetry.render();
+		// this.telemetry.render();
 
 		this.resPool.render();
 

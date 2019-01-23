@@ -514,7 +514,7 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			prices: [
 				{name: "steel",     val: 100},
 				{name: "titanium",  val: 15},
-				{name: "blueprint", val: 5},
+				{name: "blueprint", val: 1},
 				{name: "oil",       val: 500}
 			],
 			priceRatio: 1.15,
@@ -932,6 +932,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				var manpower = game.resPool.get("manpower");
 				var mpratio = (manpower.maxValue * 0.007) / 100;
 
+				//hidden 1% boost to mints from village level
+				mpratio *= (1 + game.village.map.villageLevel * 0.005);
+
 				self.effects["fursPerTickProd"]  = mpratio * 1.25; //2
 				self.effects["ivoryPerTickProd"] = mpratio * 0.3;  //1.5
 
@@ -1194,6 +1197,42 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				self.effects["aiLevel"] = aiLevel;
 			},
 			flavor: "buildings.aicore.flavor"
+		}, {
+			name: "zebraOutpost",
+			label: "buildings.zebraOutpost.label",
+			description: "buildings.zebraOutpost.desc",
+			prices: [
+				{name: "bloodstone", val: 1}
+			],
+			priceRatio: 1.35,
+			unlockRatio: 0.01,
+			requires: {tech: ["animal"]},
+			zebraRequired: 5,
+			effects: {}
+		}, {
+			name: "zebraWorkshop",
+			label: "buildings.zebraWorkshop.label",
+			description: "buildings.zebraWorkshop.desc",
+			prices: [
+				{name: "bloodstone", val: 5}
+			],
+			priceRatio: 1.15,
+			unlockRatio: 0.01,
+			requires: {tech: ["animal"]},
+			zebraRequired: 10,
+			effects: {}
+		}, {
+			name: "zebraForge",
+			label: "buildings.zebraForge.label",
+			description: "buildings.zebraForge.desc",
+			prices: [
+				{name: "bloodstone", val: 50}
+			],
+			priceRatio: 1.15,
+			unlockRatio: 0.01,
+			requires: {tech: ["animal"]},
+			zebraRequired: 50,
+			effects: {}
 		}
 	],
 
@@ -1260,6 +1299,10 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 		megastructures: {
 			name: "megastructures",
 			buildings: ["ziggurat", "chronosphere", "aiCore"]
+		},
+		zebraBuildings: {
+			name: "zebraBuildings",
+			buildings: ["zebraOutpost", "zebraWorkshop", "zebraForge"]
 		}
 	},
 
@@ -1492,8 +1535,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 
 		var ratioBase = ratio - 1;
 
-		var ratioDiff = this.game.getEffect(bldName + "PriceRatio") || 0;
-		ratioDiff += this.game.getEffect("priceRatio") || 0;
+		var ratioDiff = this.game.getEffect(bldName + "PriceRatio") +
+			this.game.getEffect("priceRatio") +
+			this.game.getEffect("mapPriceReduction");
 
 		ratioDiff = this.game.getHyperbolicEffect(ratioDiff, ratioBase);
 
@@ -1634,8 +1678,8 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 
 		self.toggleNode = self.game._createButton(
 			{
-				value: "On",
-				title: "Toggle building"
+				value: $I("btn.off.minor"),
+				title: $I("btn.off.tooltip")
 			}, self.domNode.children[2], function () {
 				self.set("on", self.on > 0 ? 0 : self.val);
 				self.game.update();
@@ -1646,7 +1690,7 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 		dojo.toggleClass(input.label, "hidden", !self.get("unlockRatio"));
 
 		if (self.hasOwnProperty("isAutomationEnabled")) {
-			input = self.game._createCheckbox("Automation enabled", self.domNode.children[3], self, "isAutomationEnabled");
+			input = self.game._createCheckbox($I("btn.aon.tooltip"), self.domNode.children[3], self, "isAutomationEnabled");
 			self.isAutomationEnabledLabel = input.label;
 		}
 
@@ -1760,7 +1804,8 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 
 		dojo.toggleClass(this.onNodeSpan, "hidden", !this.togglable || this.togglableOnOff);
 		dojo.toggleClass(this.toggleNode, "hidden", !this.togglableOnOff);
-		this.toggleNode.value = on > 0 ? "Off" : "On";
+		this.toggleNode.value = on > 0 ? $I("btn.on.minor") : $I("btn.off.minor");
+		this.toggleNode.title = on > 0 ? $I("btn.on.tooltip") : $I("btn.off.tooltip");
 
 		if (this.stages) {
 			var len = this.stages.length - 1;

@@ -26,7 +26,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 			prices: [
 				{name: "science", val: 300}
 			],
-			// unlocks: {tech: ["animal"], jobs: ["hunter"]},
+			// unlocks: {tech: ["animal"], buildings: ["zebraOutpost", "zebraWorkshop", "zebraForge"], jobs: ["hunter"]},
 			requires: {tech: ["agriculture"]}
 		}, {
 			name: "mining",
@@ -426,7 +426,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science", val: 750000},
 				{name: "relic",   val: 5}
 			],
-			// unlocks: {tech: ["hydroponics"], space: [{planet:"yarn", bld: "terraformingStation"}]},
+			// unlocks: {tech: ["hydroponics"], space: [{planet: "yarn", bld: "terraformingStation"}]},
 			requires: {tech: ["antimatter"]}
 		}, {
 			name: "hydroponics",
@@ -434,8 +434,15 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science", val: 1000000},
 				{name: "relic",   val: 25}
 			],
-			// unlocks: {space: [{planet:"yarn", bld: "hydroponics"}]},
+			// unlocks: {tech: "exogeophysics", space: [{planet: "yarn", bld: "hydroponics"}]},
 			requires: {tech: ["terraformation"]}
+		}, {
+			name: "exogeophysics",
+			prices: [
+				{name: "science", val: 25000000},
+				{name: "relic",   val: 500}
+			],
+			requires: {tech: ["hydroponics"]}
 		}, {
 			name: "particlePhysics",
 			prices: [

@@ -408,7 +408,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					{
 						name: "researchVessel",
 						prices: [
-							{name: "starchart", val: 500},
+							{name: "starchart", val: 100},
 							{name: "alloy",     val: 2500},
 							{name: "titanium",  val: 12500},
 							{name: "kerosene",  val: 250}
@@ -427,9 +427,10 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					}, {
 						name: "orbitalArray",
 						prices: [
-							{name: "eludium",  val: 100},
-							{name: "science",  val: 250000},
-							{name: "kerosene", val: 500}
+							{name: "starchart", val: 2000},
+							{name: "eludium",   val: 100},
+							{name: "science",   val: 250000},
+							{name: "kerosene",  val: 500}
 						],
 						priceRatio: 1.15,
 						togglable: true,
@@ -583,7 +584,6 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 						var amMax = game.resPool.get("antimatter").maxValue;
 						if (amMax < 5000) {
 							rrBoost = rrBoost * (amMax / 5000);
-							//todo: consider boosting relic stations is over 5000
 						}
 
 						var entBoost = 1 + game.space.getBuilding("entangler").effects["hashRateLevel"] * 0.25;	//25% per entangler hashrate
@@ -679,6 +679,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					],
 					priceRatio: 1.15,
 					requires: {tech: ["quantumCryptography"]},
+					togglable: true,
 					effects: {
 						"energyConsumption": 25,
 						"gflopsConsumption": 0.1,
@@ -720,7 +721,6 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 				{
 					name: "tectonic",
 					prices: [
-						{name: "science",    val: 600000},
 						{name: "antimatter", val: 500},
 						{name: "thorium",    val: 75000}
 					],
@@ -729,11 +729,23 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					effects: {
 						"energyProduction": 0
 					},
-					calculateEffects: function (self) {
+					calculateEffects: function (self, game) {
 						self.effects = {
-							"energyProduction": 25
+							"energyProduction": 25 * (1 + game.getEffect("tectonicBonus"))
 						};
 					}
+				}, {
+					name: "moltenCore",
+					prices: [
+						{name: "science", val: 250000000},
+						{name: "uranium", val: 5000000}
+					],
+					priceRatio: 1.25,
+					requires: {tech: ["exogeophysics"]},
+					effects: {
+						"tectonicBonus": 0.05
+					},
+					upgrades: {spaceBuilding: ["tectonic"]}
 				}
 			],
 			requires: {spaceMission: ["centaurusSystemMission"]}

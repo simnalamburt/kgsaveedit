@@ -4,7 +4,7 @@ require([], function () {
 
 dojo.declare("classes.KGSaveEdit.KGConfig", null, {
 	statics: {
-		locales: ["br", "fr", "ja", "ru"]
+		locales: ["br", "cz", "fr", "ja", "ru"]
 	}
 });
 
@@ -40,13 +40,13 @@ dojo.declare("classes.KGSaveEdit.i18n.Lang", null, {
 			"zh": "Chinese",
 			"ja": "Japanese",
 			"br": "Portuguese",
-			"fr": "French"
+			"fr": "French",
+			"cz": "Česky"
 		};
 
 		this.availableLocaleLabels = {};
 		this.loadedLocales = {};
 
-		// console.log("Available locales:", config.statics.locales);
 		for (var i = 0, len = config.statics.locales.length; i < len; i++) {
 			this.availableLocales.push(config.statics.locales[i]);
 		}
@@ -75,7 +75,6 @@ dojo.declare("classes.KGSaveEdit.i18n.Lang", null, {
 
 			navigator.globalization.getPreferredLanguage(
 				function (language) {
-					//console.log("platform locale:", language);
 					self.platformLocale = language.value;
 
 					def.resolve();

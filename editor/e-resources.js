@@ -245,6 +245,15 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			type: "exotic",
 			color: "gold"
 		}, {
+			name: "bloodstone",
+			type: "exotic",
+			craftable: true,
+			color: "red",
+			style: {
+				textShadow: "1px 0px 10px red",
+				animation: "neon1 1.5s ease-in-out infinite alternate"
+			}
+		}, {
 			name: "beam",
 			craftable: true
 		}, {
@@ -756,6 +765,9 @@ dojo.declare("classes.KGSaveEdit.ResourceMeta", [classes.KGSaveEdit.GenericItem,
 
 		dojo.toggleClass(this.valueNode, "resLimitNotice", maxValue > 0 && value > maxValue * 0.95);
 		dojo.toggleClass(this.valueNode, "resLimitWarn", maxValue > 0 && value > maxValue * 0.75 && value <= maxValue * 0.95);
+
+		dojo.toggleClass(this.valueNode, "blaze", value === 420);
+		dojo.toggleClass(this.valueNode, "hail", value === 666);
 
 		this.perTickCached = 0;
 		if (this.calculatePerTick) {

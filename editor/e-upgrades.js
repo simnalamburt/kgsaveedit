@@ -1623,6 +1623,15 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			unlocked: true,
 			progressHandicap: 5,
 			tier: 3
+		}, {
+			name: "bloodstone",
+			prices: [
+				{name: "timeCrystal", val: 5000},
+				{name: "relic",       val: 10000}
+			],
+			unlocked: true,
+			progressHandicap: 7500,
+			tier: 5
 		}
 	],
 

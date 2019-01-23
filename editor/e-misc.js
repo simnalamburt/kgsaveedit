@@ -34,6 +34,10 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 			desc: "Enable offline progression (Experimental)",
 			src: "game.opts"
 		}, {
+			name: "forceLZ",
+			desc: "Always compress save files (Experimental)",
+			src: "game.opts"
+		}, {
 			name: "noConfirm",
 			desc: "Do not confirm when clearing all jobs",
 			src: "game.opts"
@@ -138,7 +142,7 @@ dojo.declare("classes.KGSaveEdit.OptionsTab", classes.KGSaveEdit.UI.Tab, {
 
 		dojo.place(game.console.domNode, this.tabBlockNode);
 
-		dojo.place(game.telemetry.domNode, this.tabBlockNode);
+		// dojo.place(game.telemetry.domNode, this.tabBlockNode);
 	}
 });
 
