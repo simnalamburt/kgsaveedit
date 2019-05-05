@@ -316,6 +316,19 @@ dojo.declare("classes.KGSaveEdit.MetaItem", [classes.KGSaveEdit.GenericItem, cla
 		return this.effects || {};
 	},
 
+	getNextEffectValue: function (effectName) {
+		if (!this.updateEffects) {
+			return undefined;
+		}
+
+		this.on++;
+		this.updateEffects(this, this.game);
+		var nextEffectValue = this.effects[effectName];
+		this.on--;
+		this.updateEffects(this, this.game);
+		return nextEffectValue;
+	},
+
 	getPrices: function () {
 		return this.prices ? dojo.clone(this.prices) : [];
 	},
@@ -393,7 +406,7 @@ dojo.declare("classes.KGSaveEdit.MetaItem", [classes.KGSaveEdit.GenericItem, cla
 		}
 
 		if (!this.hideEffects) {
-			this.game.renderEffects(tooltip, this.getEffects());
+			this.game.renderEffects(tooltip, this);
 		}
 
 		if (this.flavor) {

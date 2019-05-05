@@ -31,7 +31,7 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			prices: [
 				{name: "paragon", val: 50}
 			],
-			// unlocks: {"perks": ["codexAgrum"]},
+			// unlocks: {"perks": ["codexAgrum", "codexLeviathanianus"]},
 			requires: {perks: ["codexVox"]},
 			effects: {
 				"compediumCraftRatio":        0.25,
@@ -64,6 +64,12 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 			],
 			// unlocks: {"zigguratUpgrades": ["unicornGraveyard"]},
 			requires: {perks: ["megalomania"]}
+		}, {
+			name: "codexLeviathanianus",
+			prices: [
+				{name: "paragon", val: 75}
+			],
+			requires: {perks: ["codexLogos"]}
 		}, {
 			name: "goldenRatio",
 			prices: [

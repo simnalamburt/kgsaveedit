@@ -838,6 +838,15 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["nuclearFission"]}
 		}, {
+			name: "orbitalGeodesy",
+			prices: [
+				{name: "alloy",   val: 1000},
+				{name: "oil",     val: 35000},
+				{name: "science", val: 150000}
+			],
+			requires: {tech: ["sattelites"]},
+			upgrades: {buildings: ["quarry"]}
+		}, {
 			name: "printingPress",
 			prices: [
 				{name: "gear",    val: 45},
@@ -864,6 +873,50 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			],
 			requires: {tech: ["sattelites"]},
 			upgrades: {buildings: ["steamworks"]}
+		}, {
+			name: "uplink",
+			prices: [
+				{name: "alloy",   val: 1750},
+				{name: "science", val: 75000}
+			],
+			effects: {
+				"uplinkDCRatio": 0.01,
+				"uplinkLabRatio": 0.01
+			},
+			requires: {tech: ["sattelites"]},
+			upgrades: {buildings: ["library", "biolab"]}
+		}, {
+			name: "starlink",
+			prices: [
+				{name: "alloy",   val: 5000},
+				{name: "oil",     val: 25000},
+				{name: "science", val: 175000}
+			],
+			effects: {
+				"uplinkLabRatio": 0.01
+			},
+			requires: {tech: ["orbitalEngineering"]},
+			upgrades: {buildings: ["library", "biolab"]}
+		}, {
+			name: "cryocomputing",
+			prices: [
+				{name: "eludium", val: 15},
+				{name: "science", val: 125000}
+			],
+			requires: {tech: ["superconductors"]},
+			upgrades: {buildings: ["library"]}
+		}, {
+			name: "machineLearning",
+			prices: [
+				{name: "science",    val: 175000},
+				{name: "eludium",    val: 25},
+				{name: "antimatter", val: 125}
+			],
+			effects: {
+				"dataCenterAIRatio": 0.1
+			},
+			requires: {tech: ["ai"]},
+			upgrades: {buildings: ["library"]}
 		}, {
 			name: "factoryAutomation",
 			prices: [
@@ -1739,7 +1792,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 	},
 
 	update: function () {
-		this.craftEffectivenessNode.innerHTML = $I("workshop.craft.effectiveness", [(this.game.getCraftRatio() * 100).toFixed()]);
+		this.craftEffectivenessNode.innerHTML = $I("workshop.craft.effectiveness", [this.game.getDisplayValueExt(this.game.getCraftRatio() * 100, false, false, 0)]);
 
 		var count = this.countWorkers();
 
@@ -1755,7 +1808,31 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 
 		dojo.toggleClass(this.freeEngineersBlock, "spoiler", !this.game.science.get("mechanization").owned());
 
-		this.effectsBase["scienceMax"] = Math.floor(this.game.resPool.get("compedium").value * 10);
+		var scienceMaxBuilding = this.game.bld.getEffect("scienceMax", true); // without the default scienceMax, because game adds it in differently
+		var scienceMaxCompendiaCap =  this.game.bld.getEffect("scienceMaxCompendia");
+		var compendiaScienceMax = Math.floor(this.game.resPool.get("compedium").value * 10);
+
+		//iw compedia cap is set to 1000% instead of 100%
+		var iwScienceCapRatio = this.game.ironWill ? 10 : 1;
+
+		if (this.game.prestige.getPerk("codexLeviathanianus").researched) {
+			var blackLibrary = this.game.religion.getTU("blackLibrary");
+			var ttBoostRatio = (
+				0.05 * (
+					1 +
+					blackLibrary.val * (
+						blackLibrary.effects["compendiaTTBoostRatio"] +
+						this.game.getEffect("blackLibraryBonus"))
+				)
+			);
+			iwScienceCapRatio *= (1 + ttBoostRatio * this.game.religion.getTranscendenceLevel());
+		}
+
+		if (compendiaScienceMax > (scienceMaxBuilding * iwScienceCapRatio + scienceMaxCompendiaCap)) {
+			compendiaScienceMax = (scienceMaxBuilding * iwScienceCapRatio + scienceMaxCompendiaCap);
+		}
+
+		this.effectsBase["scienceMax"] = compendiaScienceMax;
 		this.effectsBase["oilMax"] = Math.floor(this.game.resPool.get("tanker").value * 500);
 		var cultureBonusRaw = Math.floor(this.game.resPool.get("manuscript").value);
 		this.effectsBase["cultureMax"] = this.game.getTriValue(cultureBonusRaw, 0.01);
@@ -1787,7 +1864,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 		}
 
 		// (One * bonus / handicap) crafts per engineer per 10 minutes
-		var effectPerTick = (1 / (600 * this.game.rate)) * (kittenResProduction * tierCraftRatio) / craft.progressHandicap;
+		var effectPerTick = (1 / (600 * this.game.ticksPerSecond)) * (kittenResProduction * tierCraftRatio) / craft.progressHandicap;
 
 		return afterCraft ? effectPerTick * this.game.getResCraftRatio({name: resName}) : effectPerTick;
 	},
@@ -1846,6 +1923,15 @@ dojo.declare("classes.KGSaveEdit.CraftMeta", classes.KGSaveEdit.MetaItem, {
 
 	getDescription: function () {
 		var desc = this.description;
+
+		var craftBonus = this.game.getResCraftRatio(this);
+		if (this.name != "wood") {
+			craftBonus -= this.game.getCraftRatio();
+		}
+
+		if (craftBonus > 0) {
+			desc += "<br><br>" + $I("workshop.craftBtn.desc.effectivenessBonus", [this.game.getDisplayValueExt(craftBonus * 100, false, false, 0)]);
+		}
 
 		if (this.game.science.get("mechanization").owned()) {
 			desc += "<br><br>" + $I("workshop.craftBtn.desc.tier") + ": " + this.tier;

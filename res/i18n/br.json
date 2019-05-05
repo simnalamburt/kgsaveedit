@@ -1,5 +1,5 @@
 {
-	"buildings.field.label": "Campo de erva de gato",
+    "buildings.field.label": "Campo de erva de gato",
     "buildings.field.desc": "Plante um pouco de erva de gato na vila. Os campos têm +50% de produção na Primavera e -75% no Inverno",
     "buildings.field.flavor": "'Ervas até onde os olhos alcançam.",
     "buildings.pasture.label": "Pasto",
@@ -219,7 +219,6 @@
     "village.trait.none": "Nada",
     "village.trait.scientist": "Cientista",
     "village.trait.wise": "Filósofo",
-    "village.trait.filter.all": "All traits",
 
     "stats.kittens.total": "Total de Gatos",
     "stats.kittens.dead":"Gatos mortos",
@@ -1060,7 +1059,6 @@
     "effectsMgr.statics.temporalParadoxVoid.title": "Vácuo Máximo",
     "effectsMgr.statics.temporalParadoxDay.title": "Dia em um paradoxo temporal",
     "effectsMgr.statics.temporalParadoxDayBonus.title": "Dia em um paradoxo temporal",
-    "effectsMgr.statics.goldMaxRatio.title": "Bônus máximo de ouro",
     "effectsMgr.statics.unicornsRatioReligion.title": "Bônus de unicórnio",
     "effectsMgr.statics.riftChance.title": "Chance de fenda de unicórnios",
     "effectsMgr.statics.ivoryMeteorChance.title": "Chance de meteoro de marfim",
@@ -1428,7 +1426,6 @@
     "res.stack.time":"Tempo",
     "res.effect":"Efeito",
     "res.effects":"Efeitos",
-    "res.per.sec":"/seg",
     "reset.prompt":"Tem certeza que quer recomeçar?",
     "reset.prompt.base":"Você vai ganhar bônus de felicidade. Você continua com todas as suas estatísticas e conquistas",
     "reset.prompt.70":"Você vai ganhar felicidade extra e bônus de produção",
@@ -1452,7 +1449,7 @@
     "res.notify.msg":"Você será notificado quando {0} estará disponível.",
     "res.notify.ready":"{0} está pronto",
     "res.notify.ready.title":"Recursos suficientes para comprar",
-"console.intro":"Você é um gatinho numa floresta de erva de gato.",
+    "console.intro":"Você é um gatinho numa floresta de erva de gato.",
 
     "trade.buys": "Compra",
     "trade.sells": "Vende",

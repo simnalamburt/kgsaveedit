@@ -47,6 +47,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 				{name: "relic",       val: 1000}
 			],
 			priceRatio: 1.25,
+			upgrades: {chronoforge: ["temporalImpedance"]},
 			effects: {
 				"timeRatio": 0.05
 			},
@@ -63,6 +64,9 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 			},
 			effects: {
 				"timeImpedance": 1000
+			},
+			calculateEffects: function (self, game) {
+				self.effects["timeImpedance"] = Math.round(1000 * (1 + game.getEffect("timeRatio")));
 			}
 		}, {
 			name: "ressourceRetrieval",
@@ -121,7 +125,8 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 			effects: {
 				"globalResourceRatio": 0.02,
 				"umbraBoostRatio":     0.1
-			}
+			},
+			upgrades: {spaceBuilding: ["hrHarvester"]}
 		}, {
 			name: "chronocontrol",
 			prices: [
@@ -149,6 +154,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		}, {
 			name: "voidResonator",
 			prices: [
+				{name: "void",        val: 50},
 				{name: "timeCrystal", val: 1000},
 				{name: "relic",       val: 10000}
 			],
@@ -166,7 +172,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 	},
 
 	effectsBase: {
-		"temporalFluxMax": 60 * 10 * 5,  //10 minutes (5 == this.game.rate)
+		"temporalFluxMax": 60 * 10 * 5,  //10 minutes (5 == this.game.ticksPerSecond)
 		"heatMax":         100,
 		"heatPerTick":    -0.01
 	},
@@ -251,7 +257,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		var temporalFlux = self.game.resPool.get("temporalFlux");
 		var str = "/" + temporalFlux.maxValue;
 		if (temporalFlux.value > 0) {
-			str +=  " (" + self.game.toDisplaySeconds(temporalFlux.value / self.game.rate) + ")";
+			str +=  " (" + self.game.toDisplaySeconds(temporalFlux.value / self.game.ticksPerSecond) + ")";
 		}
 
 		var tr = dojo.create("tr", {
@@ -341,7 +347,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		var temporalFlux = this.game.resPool.get("temporalFlux");
 		var str = "/" + temporalFlux.maxValue;
 
-		var seconds = temporalFlux.value / this.game.rate;
+		var seconds = temporalFlux.value / this.game.ticksPerSecond;
 		if (seconds > 0) {
 			str +=  " (" + this.game.toDisplaySeconds(seconds) + ")";
 		}
@@ -495,7 +501,7 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 	},
 
 	save: function () {
-		var saveData = this.game.filterMetaObj(this, ["name", "val", "on", "heat", "isAutomationEnabled"]);
+		var saveData = this.game.filterMetaObj(this, ["name", "val", "on", "heat", "isAutomationEnabled", "unlocked"]);
 		saveData.on = this.getOn();
 		return saveData;
 	},

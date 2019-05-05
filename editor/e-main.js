@@ -10,7 +10,10 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 		this.game = game;
 
 		for (var key in this.statics.effectMeta) {
-			this.statics.effectMeta[key].titleKey = this.statics.effectMeta[key].title;
+			var effectMeta = this.statics.effectMeta[key];
+			if (!effectMeta.titleKey) {
+				effectMeta.titleKey = "effectsMgr.statics." + (effectMeta.title || key) + ".title";
+			}
 		}
 	},
 
@@ -98,623 +101,515 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 		effectMeta: {
 			// Specials meta of resources
 			"catnipJobRatio": {
-				title: "effectsMgr.statics.catnipJobRatio.title",
 				resName: "catnip",
 				type: "ratio"
 			},
 
 			"catnipDemandWorkerRatioGlobal": {
-				title: "effectsMgr.statics.catnipDemandWorkerRatioGlobal.title",
 				resName: "catnip",
 				type: "ratio"
 			},
 
 			"woodJobRatio": {
-				title: "effectsMgr.statics.woodJobRatio.title",
 				resName: "wood",
 				type: "ratio"
 			},
 
 			"manpowerJobRatio": {
-				title: "effectsMgr.statics.manpowerJobRatio.title",
 				resName: "manpower",
 				type: "ratio"
 			},
 
 			"coalRatioGlobal": {
-				title: "effectsMgr.statics.coalRatioGlobal.title",
 				resName: "coal",
-				type: "ratio"
+				type: "ratio",
+				calculation: "constant"
 			},
 
 			"coalRatioGlobalReduction": {
-				title: "effectsMgr.statics.coalRatioGlobalReduction.title",
 				resName: "coal",
 				type: "ratio"
 			},
 
 			"oilReductionRatio": {
-				title: "effectsMgr.statics.oilReductionRatio.title",
 				type: "ratio"
 			},
 
 			//kittens
 
-			"maxKittens": {
-				title: "effectsMgr.statics.maxKittens.title"
-			},
+			"maxKittens": {},
 
 			"antimatterProduction": {
-				title: "effectsMgr.statics.antimatterProduction.title",
 				type: "perYear"
 			},
 
 			"temporalFluxProduction": {
-				title: "effectsMgr.statics.temporalFluxProduction.title",
 				type: "perYear"
 			},
 
 			"temporalFluxProductionChronosphere": {
-				title: "effectsMgr.statics.temporalFluxProductionChronosphere.title",
 				type: "perYear"
 			},
 
 			// Miscellaneous
 
 			"observatoryRatio": {
-				title: "effectsMgr.statics.observatoryRatio.title",
 				type: "ratio"
 			},
 
 			"magnetoBoostRatio": {
-				title: "effectsMgr.statics.magnetoBoostRatio.title",
-				resName: "oil",				//this is sort of hack to prevent early spoiler on magnetos
+				resName: "oil", //this is sort of hack to prevent early spoiler on magnetos
 				type: "ratio"
 			},
 
 			"learnRatio": {
-				title: "effectsMgr.statics.learnRatio.title",
 				type: "perTick"
 			},
 
 			"refineRatio": {
-				title: "effectsMgr.statics.refineRatio.title",
 				type: "ratio"
 			},
 
 			"craftRatio": {
-				title: "effectsMgr.statics.craftRatio.title",
 				type: "ratio"
 			},
 
-			"happiness": {
-				title: "effectsMgr.statics.happiness.title"
-			},
+			"happiness": {},
 
 			"unhappinessRatio": {
-				title: "effectsMgr.statics.unhappinessRatio.title",
 				type: "ratio"
 			},
 
 			"tradeRatio": {
-				title: "effectsMgr.statics.tradeRatio.title",
 				type: "ratio"
 			},
 
 			"standingRatio": {
-				title: "effectsMgr.statics.standingRatio.title",
 				type: "ratio"
 			},
 
 			"resStasisRatio": {
-				title: "effectsMgr.statics.resStasisRatio.title",
 				type: "ratio"
 			},
 
 			"beaconRelicsPerDay": {
-				title: "effectsMgr.statics.beaconRelicsPerDay.title",
 				type: "perDay"
 			},
 
 			"relicPerDay": {
-				title: "effectsMgr.statics.relicPerDay.title",
 				type: "perDay"
 			},
 
 			"routeSpeed": {
-				title: "effectsMgr.statics.routeSpeed.title",
 				type: "fixed"
 			},
 
 			// energy
 
 			"energyProduction": {
-				title: "effectsMgr.statics.energyProduction.title",
-				type: "energy"
-			},
-			"energyConsumption": {
-				title: "effectsMgr.statics.energyConsumption.title",
 				type: "energy"
 			},
 
+			"energyConsumption": {
+				type: "energy",
+				calculation: "nonProportional"
+			},
+
 			"energyProductionRatio": {
-				title: "effectsMgr.statics.energyProductionRatio.title",
 				type: "ratio"
 			},
 
 			//production
 
 			"productionRatio": {
-				title: "effectsMgr.statics.productionRatio.title",
 				type: "ratio"
 			},
 
 			"magnetoRatio": {
-				title: "effectsMgr.statics.magnetoRatio.title",
 				type: "ratio"
 			},
 
 			"spaceRatio": {
-				title: "effectsMgr.statics.spaceRatio.title",
 				type: "ratio"
 			},
 
 			"prodTransferBonus": {
-				title: "effectsMgr.statics.prodTransferBonus.title",
 				type: "ratio"
 			},
 
 			//starEvent
 
 			"starEventChance": {
-				title: "effectsMgr.statics.starEventChance.title",
 				type: "ratio"
 			},
 
 			"starAutoSuccessChance": {
-				title: "effectsMgr.statics.starAutoSuccessChance.title",
 				type: "ratio"
 			},
 
 			//in the tab workshop
 			"lumberMillRatio": {
-				title: "effectsMgr.statics.lumberMillRatio.title",
 				type: "ratio"
 			},
 
 			"barnRatio": {
-				title: "effectsMgr.statics.barnRatio.title",
 				type: "ratio"
 			},
 
 			"warehouseRatio": {
-				title: "effectsMgr.statics.warehouseRatio.title",
 				type: "ratio"
 			},
 
 			"acceleratorRatio": {
-				title: "effectsMgr.statics.acceleratorRatio.title",
 				type: "ratio"
 			},
 
 			"harborRatio": {
-				title: "effectsMgr.statics.harborRatio.title",
 				type: "ratio"
 			},
 
 			"harborCoalRatio": {
-				title: "effectsMgr.statics.harborCoalRatio.title",
 				type: "ratio"
 			},
 
 			"catnipMaxRatio": {
-				title: "effectsMgr.statics.catnipMaxRatio.title",
 				type: "ratio"
 			},
 
 			"hunterRatio": {
-				title: "effectsMgr.statics.hunterRatio.title",
 				type: "ratio"
 			},
 
 			"solarFarmRatio": {
-				title: "effectsMgr.statics.solarFarmRatio.title",
 				type: "ratio"
 			},
 
 			"shipLimit": {
-				title: "effectsMgr.statics.shipLimit.title",
 				type: "ratio"
 			},
 
 			"hutPriceRatio": {
-				title: "effectsMgr.statics.hutPriceRatio.title",
 				type: "ratio"
 			},
 
 			"coalSuperRatio": {
-				title: "effectsMgr.statics.coalSuperRatio.title",
 				type: "ratio"
 			},
 
 			"smelterRatio": {
-				title: "effectsMgr.statics.smelterRatio.title",
 				type: "ratio"
 			},
 
 			"calcinerRatio": {
-				title: "effectsMgr.statics.calcinerRatio.title",
 				type: "ratio"
 			},
 
 			"calcinerSteelRatio": {
-				title: "effectsMgr.statics.calcinerSteelRatio.title",
 				type: "ratio"
 			},
 
 			"calcinerSteelCraftRatio": {
-				title: "effectsMgr.statics.calcinerSteelCraftRatio.title",
 				type: "ratio"
 			},
 
 			"calcinerSteelReactorBonus": {
-				title: "effectsMgr.statics.calcinerSteelReactorBonus.title",
 				type: "ratio"
 			},
 
 			"libraryRatio": {
-				title: "effectsMgr.statics.libraryRatio.title",
 				type: "ratio"
 			},
 
 			"hydroPlantRatio": {
-				title: "effectsMgr.statics.hydroPlantRatio.title",
 				type: "ratio"
 			},
 
 			"spaceScienceRatio": {
-				title: "effectsMgr.statics.spaceScienceRatio.title",
 				type: "ratio"
 			},
 
 			"oilWellRatio": {
-				title: "effectsMgr.statics.oilWellRatio.title",
 				type: "ratio"
 			},
 
 			"unicornsGlobalRatio": {
-				title: "effectsMgr.statics.unicornsGlobalRatio.title",
 				type: "ratio"
 			},
 
 			"biofuelRatio": {
-				title: "effectsMgr.statics.biofuelRatio.title",
 				type: "ratio"
 			},
 
 			"cadBlueprintCraftRatio": {
-				title: "effectsMgr.statics.cadBlueprintCraftRatio.title",
 				type: "ratio"
 			},
 
 			"skillMultiplier": {
-				title: "effectsMgr.statics.skillMultiplier.title",
 				type: "ratio"
 			},
 
 			"uraniumRatio": {
-				title: "effectsMgr.statics.uraniumRatio.title",
 				type: "ratio"
 			},
 
 			"reactorEnergyRatio": {
-				title: "effectsMgr.statics.reactorEnergyRatio.title",
 				type: "ratio"
 			},
 
 			"reactorThoriumPerTick": {
-				title: "effectsMgr.statics.reactorThoriumPerTick.title",
 				type: "perTick"
 			},
 
 			"starchartGlobalRatio": {
-				title: "effectsMgr.statics.starchartGlobalRatio.title",
 				type: "ratio"
 			},
 
 			"satnavRatio": {
-				title: "effectsMgr.statics.satnavRatio.title",
 				type: "ratio"
 			},
 
 			"broadcastTowerRatio": {
-				title: "effectsMgr.statics.broadcastTowerRatio.title",
 				type: "ratio"
 			},
 
 			"cultureMaxRatio": {
-				title: "effectsMgr.statics.cultureMaxRatio.title",
 				type: "ratio"
 			},
 
 			"lunarOutpostRatio": {
-				title: "effectsMgr.statics.lunarOutpostRatio.title",
 				type: "ratio"
 			},
 
 			"crackerRatio": {
-				title: "effectsMgr.statics.crackerRatio.title",
 				type: "ratio"
 			},
 
 			"factoryRefineRatio": {
-				title: "effectsMgr.statics.factoryRefineRatio.title",
 				type: "ratio"
 			},
 
 			"timeRatio": {
-				title: "effectsMgr.statics.timeRatio.title",
 				type: "ratio"
 			},
 
 			"temporalParadoxVoid": {
-				title: "effectsMgr.statics.temporalParadoxVoid.title",
 				type: "perDay"
 			},
 
 			"temporalParadoxDay": {
-				title: "effectsMgr.statics.temporalParadoxDay.title",
 				type: "fixed"
 			},
 
 			"temporalParadoxDayBonus": {
-				title: "effectsMgr.statics.temporalParadoxDayBonus.title",
 				type: "fixed"
 			},
 
 			"unicornsRatioReligion": {
-				title: "effectsMgr.statics.unicornsRatioReligion.title",
 				type: "ratio"
 			},
 
 			"riftChance": {
-				title: "effectsMgr.statics.riftChance.title",
 				type: "fixed"
 			},
 
 			"ivoryMeteorChance": {
-				title: "effectsMgr.statics.ivoryMeteorChance.title",
 				type: "fixed"
 			},
 
 			"ivoryMeteorRatio": {
-				title: "effectsMgr.statics.ivoryMeteorRatio.title",
 				type: "ratio"
 			},
 
 			"goldMaxRatio": {
-				title: "effectsMgr.statics.goldMaxRatio.title",
 				type: "ratio"
 			},
 
 			"alicornChance": {
-				title: "effectsMgr.statics.alicornChance.title",
 				type: "fixed"
 			},
 
 			"tcRefineRatio": {
-				title: "effectsMgr.statics.tcRefineRatio.title",
 				type: "ratio"
 			},
 
 			"corruptionRatio": {
-				title: "effectsMgr.statics.corruptionRatio.title",
 				type: "ratio"
 			},
 
 			"cultureMaxRatioBonus": {
-				title: "effectsMgr.statics.cultureMaxRatioBonus.title",
 				type: "ratio"
 			},
 
 			"faithRatioReligion": {
-				title: "effectsMgr.statics.faithRatioReligion.title",
 				type: "ratio"
 			},
 
 			"relicRefineRatio": {
-				title: "effectsMgr.statics.relicRefineRatio.title",
 				type: "ratio"
 			},
 
 			"blsLimit": {
-				title: "effectsMgr.statics.blsLimit.title",
 				type: "integerRatio"
 			},
 
 			"globalResourceRatio": {
-				title: "effectsMgr.statics.globalResourceRatio.title",
 				type: "ratio"
 			},
 
+			"timeImpedance": {
+				type: "fixed"
+			},
+
 			"shatterTCGain": {
-				title: "effectsMgr.statics.shatterTCGain.title",
 				type: "ratio"
 			},
 
 			"rrRatio": {
-				title: "effectsMgr.statics.rrRatio.title",
 				type: "ratio"
 			},
 
 			"priceRatio": {
-				title: "effectsMgr.statics.priceRatio.title",
 				type: "ratio"
 			},
 
 			"kittenGrowthRatio": {
-				title: "effectsMgr.statics.kittenGrowthRatio.title",
 				type: "ratio"
 			},
 
 			"t1CraftRatio": {
-				title: "effectsMgr.statics.t1CraftRatio.title",
 				type: "fixed"
 			},
 
 			"t2CraftRatio": {
-				title: "effectsMgr.statics.t2CraftRatio.title",
 				type: "fixed"
 			},
 
 			"t3CraftRatio": {
-				title: "effectsMgr.statics.t3CraftRatio.title",
 				type: "fixed"
 			},
 
 			"t4CraftRatio": {
-				title: "effectsMgr.statics.t4CraftRatio.title",
 				type: "fixed"
 			},
 
 			"t5CraftRatio": {
-				title: "effectsMgr.statics.t5CraftRatio.title",
 				type: "fixed"
 			},
 
 			// cycleEffects
 			"spaceElevator-prodTransferBonus": {
-				title: "effectsMgr.statics.spaceElevator-prodTransferBonus.title",
 				type: "ratio"
 			},
 
 			"sattelite-starchartPerTickBaseSpace": {
-				title: "effectsMgr.statics.sattelite-starchartPerTickBaseSpace.title",
 				type: "ratio"
 			},
 
 			"sattelite-observatoryRatio": {
-				title: "effectsMgr.statics.sattelite-observatoryRatio.title",
 				type: "ratio"
 			},
 
 			"spaceStation-scienceRatio": {
-				title: "effectsMgr.statics.spaceStation-scienceRatio.title",
 				type: "ratio"
 			},
 
 			"moonOutpost-unobtainiumPerTickSpace": {
-				title: "effectsMgr.statics.moonOutpost-unobtainiumPerTickSpace.title",
 				type: "ratio"
 			},
 
 			"planetCracker-uraniumPerTickSpace": {
-				title: "effectsMgr.statics.planetCracker-uraniumPerTickSpace.title",
 				type: "ratio"
 			},
 
 			"hydrofracturer-oilPerTickAutoprodSpace": {
-				title: "effectsMgr.statics.hydrofracturer-oilPerTickAutoprodSpace.title",
 				type: "ratio"
 			},
 
 			"researchVessel-starchartPerTickBaseSpace": {
-				title: "effectsMgr.statics.researchVessel-starchartPerTickBaseSpace.title",
 				type: "ratio"
 			},
 
 			"sunlifter-energyProduction": {
-				title: "effectsMgr.statics.sunlifter-energyProduction.title",
 				type: "ratio"
 			},
 
 			"cryostation-woodMax": {
-				title: "effectsMgr.statics.cryostation-woodMax.title",
 				type: "ratio"
 			},
 
 			"cryostation-mineralsMax": {
-				title: "effectsMgr.statics.cryostation-mineralsMax.title",
 				type: "ratio"
 			},
 
 			"cryostation-ironMax": {
-				title: "effectsMgr.statics.cryostation-ironMax.title",
 				type: "ratio"
 			},
 
 			"cryostation-coalMax": {
-				title: "effectsMgr.statics.cryostation-coalMax.title",
 				type: "ratio"
 			},
 
 			"cryostation-uraniumMax": {
-				title: "effectsMgr.statics.cryostation-uraniumMax.title",
 				type: "ratio"
 			},
 
 			"cryostation-titaniumMax": {
-				title: "effectsMgr.statics.cryostation-titaniumMax.title",
 				type: "ratio"
 			},
 
 			"cryostation-oilMax": {
-				title: "effectsMgr.statics.cryostation-oilMax.title",
 				type: "ratio"
 			},
 
 			"cryostation-unobtainiumMax": {
-				title: "effectsMgr.statics.cryostation-unobtainiumMax.title",
 				type: "ratio"
 			},
 
 			"spaceBeacon-starchartPerTickBaseSpace": {
-				title: "effectsMgr.statics.spaceBeacon-starchartPerTickBaseSpace.title",
 				type: "ratio"
 			},
 
 			"hydroponics-catnipRatio": {
-				title: "effectsMgr.statics.hydroponics-catnipRatio.title",
 				type: "ratio"
 			},
 
 			"hrHarvester-energyProduction": {
-				title: "effectsMgr.statics.hrHarvester-energyProduction.title",
 				type: "ratio"
 			},
 
 			"entangler-gflopsConsumption": {
-				title: "effectsMgr.statics.entangler-gflopsConsumption.title",
 				type: "ratio"
 			},
+
 			"hrProgress": {
-				title: "effectsMgr.statics.entangler-hrProgress.title",
-				type: "ratio"
+				title: "entangler-hrProgress",
+				type: "ratio",
+				calculation: "constant"
 			},
 
 			"aiLevel": {
-				title: "effectsMgr.statics.aiLevel.title",
-				type: "fixed"
+				type: "fixed",
+				calculation: "constant"
 			},
 
 			"gflopsConsumption": {
-				title: "effectsMgr.statics.gflopsConsumption.title",
 				type: "fixed"
 			},
 
 			"hashrate": {
-				title: "effectsMgr.statics.hashrate.title",
-				type: "fixed"
+				type: "fixed",
+				calculation: "constant"
 			},
 
 			"nextHashLevelAt": {
-				title: "effectsMgr.statics.nextHashLevelAt.title",
-				type: "fixed"
+				type: "fixed",
+				calculation: "constant"
 			},
 
 			"hashRateLevel": {
-				title: "effectsMgr.statics.hashrateLevel.title",
-				type: "fixed"
+				title: "hashrateLevel", // different capitalization
+				type: "fixed",
+				calculation: "constant"
 			}
 		}
 	}
@@ -722,7 +617,7 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 
 
 dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
-	rate: 5,
+	ticksPerSecond: 5,
 
 	karmaKittens: 0,
 	karmaZebras: 0,
@@ -735,6 +630,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	saveVersion: 15,
 
 	opts: null,
+
+	keyStates: null,
 
 	isCMBREnabled: false,
 
@@ -1038,7 +935,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			usePerTickHack = this.opts.usePerSecondValues;
 		}
 		if (usePerTickHack) {
-			value = value * this.rate;
+			value = value * this.ticksPerSecond;
 		}
 
 		var postfix = "";
@@ -1152,7 +1049,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	getRateUI: function () {
-		return this.rate;
+		return this.ticksPerSecond;
 	},
 
 	calculateAllEffects: function () {
@@ -1257,7 +1154,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 
 		var resPerTick = this.getResourcePerTick(res.name, true);
 		if (!hasRes && resPerTick > 0) {
-			var eta = (price.val - resValue) / (resPerTick * this.rate);
+			var eta = (price.val - resValue) / (resPerTick * this.ticksPerSecond);
 			if (eta >= 1) {
 				priceSpan.textContent += " (" + this.toDisplaySeconds(eta) + ")";
 			}
@@ -1301,8 +1198,13 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		return {name: nameSpan, price: priceSpan};
 	},
 
-	renderEffects: function (tooltip, effectsList, hideTitle) {
-		if (Object.keys(effectsList).length === 0) {
+	isEffectMultiplierEnabled: function () {
+		return Boolean(this.keyStates.shiftKey);
+	},
+
+	renderEffects: function (tooltip, meta, hideTitle) {
+		var effectsList = meta.getEffects();
+		if (!effectsList || Object.keys(effectsList).length === 0) {
 			return;
 		}
 
@@ -1313,17 +1215,20 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			}, tooltip);
 		}
 
+		var isEffectMultiplierEnabled = this.isEffectMultiplierEnabled();
+		var valMultiplier = isEffectMultiplierEnabled ? meta.on : 1;
+
 		//-----------------------------------------
 
 		for (var effectName in effectsList) {
-			var effectValue = effectsList[effectName];
-			if (effectValue !== 0) {
-				var effectMeta = this.getEffectMeta(effectName);
+			var effectMeta = this.getEffectMeta(effectName) || {};
+			var effectValue = effectMeta.calculation === "constant"
+				? effectsList[effectName]
+				: effectsList[effectName] * valMultiplier;
+
+			if (effectValue) {
 				var effectClass = "tooltipEffect";
 
-				if (!effectMeta) {
-					effectMeta = {};
-				}
 				var displayEffectName = effectMeta.title || effectName;
 
 				var res = this.resPool.get(effectMeta.resName);
@@ -1332,25 +1237,33 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 					effectClass += " spoiler"; //mark resource-related effects if we did not unlocked this effect yet
 				}
 
+				if (!isEffectMultiplierEnabled && effectMeta.calculation === "nonProportional") {
+					var nextEffectValue = meta.getNextEffectValue(effectName);
+					if (nextEffectValue) {
+						effectValue = nextEffectValue * (meta.on + 1) - effectValue * meta.on;
+					}
+				}
+
 				//display resMax values with global ratios like Refrigeration and Paragon
 				if (effectName.substr(-3) === "Max") {
-					res = res || this.game.resPool.get(effectName.slice(0, -3));
+					res = res || this.resPool.get(effectName.slice(0, -3));
 					if (res) {
-						effectValue = this.game.resPool.addResMaxRatios(res, effectValue);
+						effectValue = this.resPool.addResMaxRatios(res, effectValue);
 					}
 				}
 
 				var displayEffectValue;
 
 				if (effectMeta.type === "perTick" && this.opts.usePerSecondValues) {
-					var tempVal = Math.abs(effectValue * this.game.rate), precision;
+					// avoid mantisa if we can, later on this can be changed to show scaled up values, e.g. minutes, hours
+					var tempVal = Math.abs(effectValue * this.ticksPerSecond), precision;
 					if (tempVal >= 0.001) {
 						precision = tempVal < 0.01 ? 3 : 2;
-						displayEffectValue = this.game.getDisplayValueExt(
-							effectValue * this.game.rate, false, false, precision) + "/sec";
+						displayEffectValue = this.getDisplayValueExt(
+							effectValue * this.ticksPerSecond, false, false, precision) + "/sec";
 					} else {
-						displayEffectValue = this.game.getDisplayValueExt(
-							effectValue * this.game.rate * 3600, false, false, 2) + "/h";
+						displayEffectValue = this.getDisplayValueExt(
+							effectValue * this.ticksPerSecond * 3600, false, false, 2) + "/h";
 					}
 				} else if (effectMeta.type === "perDay") {
 					displayEffectValue = this.getDisplayValueExt(effectValue) + "/day";
@@ -1445,29 +1358,34 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		return resString;
 	},
 
-	processResourcePerTickStack: function (resStack, res, depth) {
+	processResourcePerTickStack: function (resStack, res, depth, hasFixed) {
 		var resString = "";
-		var hasFixed = false;
+		if (depth < 2) {
+			hasFixed = false;
+		}
 
 		for (var i = 0, len = resStack.length; i < len; i++) {
 			var stackElem = resStack[i];
 
 			if (stackElem.length) {
-				var subStack = this.processResourcePerTickStack(stackElem, res, depth + 1);
+				var subStack = this.processResourcePerTickStack(stackElem, res, depth + 1, hasFixed);
 				if (subStack.length) {
 					resString += subStack;
 					hasFixed = true;
 				}
-			}
-
-			if (!stackElem.value || (stackElem.type === "ratio" && !hasFixed)) {
 				continue;
 			}
 
-			if (i !== 0) {
-				for (var j = 0; j < depth; j++) {
-					resString += "|-> ";
-				}
+			if (!stackElem.value || (stackElem.type != "fixed" && !hasFixed)) {
+				continue;
+			}
+
+			var indent = i == 0 ? depth - 1 : depth;
+			for (var j = 0; j < indent - 1; j++) {
+				resString += '<span class="invisible">|-> </span>';
+			}
+			if (indent > 0) {
+				resString += "|-> ";
 			}
 
 			resString += this.getStackElemString(stackElem, res);
@@ -1882,7 +1800,10 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 				name: $I("res.stack.spaceProdBonus"),
 				type: "ratio",
 				value: spaceRatio - 1
-			}, {
+			}
+		];
+
+		var spaceParagonSubStack = [{
 				name: $I("res.stack.spaceParagon"),
 				type: "ratio",
 				value: paragonSpaceProductionRatio - 1
@@ -1892,6 +1813,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 				value: this.getEffect("prodTransferBonus")
 			}
 		];
+		perTickAutoprodSpaceStack.push(spaceParagonSubStack);
 		stack.push(perTickAutoprodSpaceStack);
 
 		// +AUTOMATED PRODUCTION SPACE
@@ -1959,7 +1881,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		stack.push({
 			name: $I("res.stack.time"),
 			type: "ratio",
-			value: (this.getRateUI() - this.rate) / this.rate
+			value: (this.getRateUI() - this.ticksPerSecond) / this.ticksPerSecond
 		});
 
 		return stack;
@@ -2299,7 +2221,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			cheatMode: this.cheatMode,
 
 			opts: this.filterMetaObj(this.opts, ["usePerSecondValues", "forceHighPrecision", "usePercentageResourceValues",
-				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter", "disableCMBR", "disableTelemetry", "enableRedshift", "forceLZ"])
+				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter", "disableCMBR", "disableTelemetry", "enableRedshift", "useLegacyTwoInRowLayout", "forceLZ"])
 		};
 
 		// this.telemetry.save(saveData);
@@ -2730,17 +2652,25 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 
 		this.update = dojo.hitch(this, this.update); //ugh
 
+		this.keyStates = {
+			shiftKey: false,
+			ctrlKey: false,
+			altKey: false
+		};
+
 		this.opts = new classes.KGSaveEdit.GenericItem(this, {
 			usePerSecondValues: true,
 			forceHighPrecision: false,
 			usePercentageResourceValues: false,
-			highlightUnavailable: false,
+			highlightUnavailable: true,
 			hideSell: false,
 			noConfirm: false,
 			IWSmelter: true,
 			disableCMBR: false,
 			disableTelemetry: true,
 			enableRedshift: false,
+			// Used only in KG Mobile
+			useLegacyTwoInRowLayout: false,
 			forceLZ: false
 		});
 
@@ -2843,7 +2773,6 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	updateTimeDelay: 5000, //5 seconds
 	updateTimer: null,
 
-
 	update: function () {
 		clearTimeout(this.updateTimer);
 
@@ -2874,8 +2803,10 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 
 		//recalculate because some building.action()s are directly dependant on energy
 		//the game can get away with not doing this because it ticks
-		if (energyProd !== this.resPool.energyProd ||
-		energyCons !== this.resPool.energyCons) {
+		if (
+			energyProd !== this.resPool.energyProd ||
+			energyCons !== this.resPool.energyCons
+		) {
 			this.resPool.energyProd = energyProd;
 			this.resPool.energyCons = energyCons;
 
@@ -2889,13 +2820,10 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 
 		if (this.rerun) {
 			this.rerun = false;
-			if (dojo.isFunction(this.tooltipUpdateFunc)) {
-				this.tooltipUpdateFunc();
-			} else {
-				dojo.addClass("tooltipBlock", "hidden");
-			}
+			this.updateTooltip();
 
 			this.updateTimer = setTimeout(this.update, this.updateTimeDelay);
+
 		} else {
 			// run twice to make sure everything's up to date
 			// since some things are dependent on other things being run and it's a complicated mess
@@ -2903,6 +2831,14 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			this.rerun = true;
 			this.update();
 			return;
+		}
+	},
+
+	updateTooltip: function () {
+		if (dojo.isFunction(this.tooltipUpdateFunc)) {
+			this.tooltipUpdateFunc();
+		} else {
+			dojo.addClass("tooltipBlock", "hidden");
 		}
 	}
 });

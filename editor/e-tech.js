@@ -27,7 +27,8 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science", val: 300}
 			],
 			// unlocks: {tech: ["animal"], buildings: ["zebraOutpost", "zebraWorkshop", "zebraForge"], jobs: ["hunter"]},
-			requires: {tech: ["agriculture"]}
+			requires: {tech: ["agriculture"]},
+			flavor: true
 		}, {
 			name: "mining",
 			prices: [
@@ -222,7 +223,8 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "compedium", val: 100}
 			],
 			// unlocks: {tech: ["biochemistry"]},
-			requires: {tech: ["archeology"]}
+			requires: {tech: ["archeology"]},
+			flavor: true
 		}, {
 			name: "biochemistry",
 			prices: [
@@ -230,7 +232,8 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "compedium", val: 500}
 			],
 			// unlocks: {tech: ["genetics"], upgrades: ["biofuel"]},
-			requires: {tech: ["biology"]}
+			requires: {tech: ["biology"]},
+			flavor: true
 		}, {
 			name: "genetics",
 			prices: [
@@ -238,7 +241,8 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "compedium", val: 1500}
 			],
 			// unlocks: {upgrades: ["unicornSelection", "gmo"]},
-			requires: {tech: ["biochemistry"]}
+			requires: {tech: ["biochemistry"]},
+			flavor: true
 		}, {
 			name: "industrialization",
 			prices: [
@@ -288,7 +292,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 			// unlocks: {
 			// 	tech: ["nuclearFission", "rocketry", "robotics"],
 			// 	upgrades: ["cadSystems", "refrigeration", "seti", "factoryLogistics", "factoryOptimization", "internet"],]
-			// 	stages: [{bld: "amphitheatre", stage: 1}]
+			// 	stages: [{bld: "library", stage: 1}, {bld: "amphitheatre", stage: 1}]
 			// },
 			requires: {tech: ["mechanization"]}
 		}, {
@@ -310,7 +314,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 250000},
 				{name: "blueprint", val: 150}
 			],
-			// unlocks: {upgrades: ["neuralNetworks", "aiEngineers"], buildings: ["aiCore"], tech: ["quantumCryptography"]},
+			// unlocks: {upgrades: ["neuralNetworks", "aiEngineers", "machineLearning"], buildings: ["aiCore"], tech: ["quantumCryptography"]},
 			requires: {tech: ["robotics"]}
 		}, {
 			name: "quantumCryptography",
@@ -358,7 +362,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 190000},
 				{name: "blueprint", val: 125}
 			],
-			// unlocks: {tech: ["orbitalEngineering" ], upgrades: ["photolithography"]},
+			// unlocks: {tech: ["orbitalEngineering" ], upgrades: ["photolithography", "orbitalGeodesy", "uplink"]},
 			requires: {tech: ["rocketry"]},
 			flavor: true
 		}, {
@@ -369,7 +373,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 			],
 			// unlocks: {
 			// 	tech: ["exogeology", "thorium"],
-			// 	upgrades: ["hubbleTelescope", "satelliteRadio", "astrophysicists", "solarSatellites", "spaceEngineers"]
+			// 	upgrades: ["hubbleTelescope", "satelliteRadio", "astrophysicists", "solarSatellites", "spaceEngineers", "starlink"]
 			// },
 			requires: {tech: ["sattelites"]}
 		}, {
@@ -410,7 +414,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 225000},
 				{name: "blueprint", val: 175}
 			],
-			// unlocks: {upgrades: ["coldFusion", "spaceManufacturing"], tech: ["antimatter"]},
+			// unlocks: {upgrades: ["coldFusion", "spaceManufacturing", "cryocomputing"], tech: ["antimatter"]},
 			requires: {tech: ["nanotechnology"]}
 		}, {
 			name: "antimatter",

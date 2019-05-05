@@ -124,6 +124,12 @@ dojo.declare("classes.KGSaveEdit.ExtrasTab", classes.KGSaveEdit.UI.Tab, {
 dojo.declare("classes.KGSaveEdit.ExtraMetaItem", classes.KGSaveEdit.GenericItem, {
 	constructor: function () {
 		this.stringifyMeta();
+
+		var title = this.index;
+		if (typeof this.index === "number" && this.meta.name) {
+			title = this.meta.name;
+		}
+		this.fullPath = this.path + "." + title;
 	},
 
 	stringifyMeta: function () {
@@ -136,13 +142,8 @@ dojo.declare("classes.KGSaveEdit.ExtraMetaItem", classes.KGSaveEdit.GenericItem,
 			return;
 		}
 
-		var title = self.index;
-		if (typeof self.index === "number" && self.meta.name) {
-			title = self.meta.name;
-		}
-
 		self.domNode = dojo.create("div", {class: "extraDataBlock"});
-		dojo.create("div", {innerHTML: self.path + "." + title}, self.domNode);
+		dojo.create("div", {innerHTML: self.fullPath}, self.domNode);
 
 		var header = dojo.create("div", {
 			class: "indent",

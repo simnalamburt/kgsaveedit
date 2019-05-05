@@ -136,7 +136,8 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			priceRatio: 1.15,
 			requires: {perks: ["blackCodex"]},
 			effects: {
-				"cultureMaxRatioBonus": 0.01
+				"cultureMaxRatioBonus": 0.01,
+				"blackLibraryBonus":    0.02
 			},
 			upgrades: {buildings: ["ziggurat"]}
 		}, {
@@ -306,6 +307,17 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			},
 			flavor: true
 		}, {
+			name: "blackLibrary",
+			prices: [
+				{name: "relic", val: 30000}
+			],
+			tier: 9,
+			priceRatio: 1.15,
+			effects: {
+				"compendiaTTBoostRatio": 0.02
+			},
+			// flavor: true
+		}, {
 			name: "blackRadiance",
 			prices: [
 				{name: "relic", val: 37500}
@@ -329,6 +341,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 				"rrRatio": 0.02
 			},
 			unlocked: false,
+			upgrades: {chronoforge: ["temporalImpedance"]},
 			flavor: true
 		}, {
 			name: "darkNova",
@@ -530,7 +543,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 
 		if (this.getRU("solarRevolution").owned()) {
 			var bonus = this.getProductionBonus();
-			text = " (+" + this.game.getDisplayValueExt(bonus) + "% " + $I("religion.faithCount.bonus") + ")";
+			text = " (" + this.game.getDisplayValueExt(bonus, true, false, 3) + "% " + $I("religion.faithCount.bonus") + ")";
 		}
 		this.solarBonusSpan.textContent = text;
 

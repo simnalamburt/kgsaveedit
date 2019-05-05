@@ -166,6 +166,14 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		}
 	],
 
+	cycleYearColors: [
+		"#A00000",
+		"#DBA901",
+		"#14CD61",
+		"#01A9DB",
+		"#9A2EFE"
+	],
+
 	cycles: [
 		{
 			name: "charon",
@@ -308,8 +316,11 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		}
 	],
 
-	yearsPerCycle: 5,
+	ticksPerDay: 10,
 	daysPerSeason: 100,
+	seasonsPerYear: null,
+	yearsPerCycle: null,
+
 	refYear: 0, //to be used to calculate millenium paragon
 
 	season: 0,
@@ -348,6 +359,9 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 
 	constructor: function (game) {
 		this.game = game;
+
+		this.seasonsPerYear = this.seasons.length;
+		this.yearsPerCycle = this.cycleYearColors.length;
 	},
 
 	getSeasonTitle: function (season) {
@@ -545,10 +559,14 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		}
 	},
 
+	trueYear: function () {
+		return (this.day / this.daysPerSeason + this.season) / this.seasonsPerYear + this.year - this.game.time.flux;
+	},
+
 	darkFutureYears: function (withImpedance) {
 		var impedance = 0;
 		if (withImpedance) {
-			impedance = this.game.getEffect("timeImpedance") * (1 + this.game.getEffect("timeRatio"));
+			impedance = this.game.getEffect("timeImpedance");
 		}
 		return this.year - (40000 + impedance);
 	},
@@ -636,6 +654,7 @@ dojo.declare("classes.KGSaveEdit.Console", classes.KGSaveEdit.core, {
 	filtersData: {
 		"astronomicalEvent":  {title: "Astronomical Events", enabled: true, unlocked: false},
 		"hunt":               {title: "Hunts",               enabled: true, unlocked: false},
+		"trade":              {title: "Trade",               enabled: true, unlocked: false},
 		"craft":              {title: "Craft",               enabled: true, unlocked: false},
 		"workshopAutomation": {title: "Workshop Automation", enabled: true, unlocked: false},
 		"meteor":             {title: "Meteors",             enabled: true, unlocked: false},

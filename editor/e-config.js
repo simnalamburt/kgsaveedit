@@ -4,7 +4,7 @@ require([], function () {
 
 dojo.declare("classes.KGSaveEdit.KGConfig", null, {
 	statics: {
-		locales: ["br", "cz", "fr", "ja", "ru"]
+		locales: ["br", "cz", "es", "fr", "ja", "ru", "zh"]
 	}
 });
 
@@ -37,9 +37,10 @@ dojo.declare("classes.KGSaveEdit.i18n.Lang", null, {
 		var localeLabels = {
 			"en": "English",
 			"ru": "Русский",
-			"zh": "Chinese",
-			"ja": "Japanese",
+			"zh": "中文",
+			"ja": "日本語",
 			"br": "Portuguese",
+			"es": "Española",
 			"fr": "French",
 			"cz": "Česky"
 		};

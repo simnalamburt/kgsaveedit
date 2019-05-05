@@ -65,6 +65,10 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			},
 			calculatePerTick: true
 		}, {
+			name: "antimatter",
+			transient: true,
+			color: "#5A0EDE"
+		}, {
 			name: "manpower",
 			transient: true,
 			color: "#DBA901",
@@ -119,10 +123,6 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 			transient: true,
 			color: "#9A2EFE",
 			calculatePerTick: true
-		}, {
-			name: "antimatter",
-			transient: true,
-			color: "#5A0EDE"
 		}, {
 			name: "temporalFlux",
 			getMaxValue: function () { //bit of a hack to prevent paragon bonus
@@ -289,7 +289,7 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 		}, {
 			name: "ship",
 			craftable: true,
-			color: "#FF7F50",
+			color: "#FF571A",
 			upgrades: {buildings: ["harbor"]}
 		}, {
 			name: "tanker",
@@ -776,7 +776,7 @@ dojo.declare("classes.KGSaveEdit.ResourceMeta", [classes.KGSaveEdit.GenericItem,
 
 		this.maxValueNode.textContent = maxValue || this.showMax ? "/" + this.game.getDisplayValueExt(maxValue) : "";
 
-		var perTick = this.game.opts.usePerSecondValues ? this.perTickCached * this.game.rate : this.perTickCached;
+		var perTick = this.game.opts.usePerSecondValues ? this.perTickCached * this.game.ticksPerSecond : this.perTickCached;
 		var postfix = this.game.opts.usePerSecondValues ? "/sec" : "";
 		if (this.game.opts.usePercentageResourceValues && maxValue) {
 			perTick = perTick / maxValue * 100;

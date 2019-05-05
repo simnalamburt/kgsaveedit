@@ -2043,6 +2043,7 @@ dojo.declare("classes.KGSaveEdit.Kitten", classes.KGSaveEdit.core, {
 			saveKitten.exp = 0;
 			saveKitten.rank = 0;
 			saveKitten.isLeader = false;
+
 		} else {
 			for (var job in saveKitten.skills) {
 				var skill = saveKitten.skills[job];

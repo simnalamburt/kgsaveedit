@@ -146,7 +146,7 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 			},
 			hasStar: true,
 			starCondition: function () {
-				return this.game.calendar.year >= 40000 + this.game.time.flux;
+				return this.game.calendar.trueYear() >= 40000;
 			}
 		}
 	],
@@ -367,6 +367,8 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 	},
 
 	renderTabBlock: function () {
+		this.achievementsBlockHeader = dojo.create("div", {class: "bottom-margin"}, this.tabBlockNode);
+
 		this.achievementsBlock = dojo.create("table", {
 			id: "achievementsBlock",
 			class: "bottom-margin"
@@ -402,11 +404,42 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 	update: function () {
 		var hasNewMarker = false;
 
+		var completedAchievements = 0;
+		var totalAchievements = 0;
+		var completedStars = 0;
+		var uncompletedStars = 0;
+
 		for (var i = this.achievements.length - 1; i >= 0; i--) {
 			var ach = this.achievements[i];
 			ach.update();
+
+			if (ach.hidden) {
+				continue;
+			}
+
+			totalAchievements++;
+			if (ach.unlocked) {
+				completedAchievements++;
+			}
+			if (ach.hasStar) {
+				if (ach.starUnlocked) {
+					completedStars++;
+				} else {
+					uncompletedStars++;
+				}
+			}
 			hasNewMarker = hasNewMarker || ach.isNewStar || ach.isNew;
 		}
+
+		var stars = "";
+		for (i = completedStars; i > 0; --i) {
+			stars += "&#9733;";
+		}
+		for (i = uncompletedStars; i > 0; --i) {
+			stars += "&#9734;";
+		}
+
+		this.achievementsBlockHeader.innerHTML = $I("achievements.header", [completedAchievements, totalAchievements]) + stars;
 
 		var councilUnlocked = this.councilUnlocked;
 		for (i = this.hats.length - 1; i >= 0; i--) {
@@ -528,6 +561,7 @@ dojo.declare("classes.KGSaveEdit.AchievementMeta", [classes.KGSaveEdit.GenericIt
 
 			if (unlocked) {
 				this.game.setCheckbox(this.unlockedNode, unlocked, true, true);
+
 			} else if (this.unlocked !== this.unlockedNode.prevChecked) {
 				this.game.setCheckbox(this.unlockedNode, this.unlockedNode.prevChecked, true, true);
 			}
@@ -663,10 +697,9 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 		}, {
 			name: "timePlayed",
 			title: "stats.time.current",
-			val: 0,
+			val: "",
 			calculate: function (game) {
-				var cDay = ((game.calendar.year * 400) + ((game.calendar.season - 1) * 100) + game.calendar.day);
-				return Math.round(cDay / 1800 * 10) / 10;
+				return game.toDisplaySeconds(game.calendar.trueYear() * game.calendar.seasonsPerYear * game.calendar.daysPerSeason * game.calendar.ticksPerDay / game.ticksPerSecond);
 			}
 		}
 	],
@@ -733,7 +766,11 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 			stat.set("val", num(saveStat.val));
 		}, true);
 		this.loadMetadata(saveData, "statsCurrent", "getStatCurrent", function (stat, saveStat) {
-			stat.set("val", num(saveStat.val));
+			var saveVal = saveStat.val;
+			if (typeof stat.val === "number") {
+				saveVal = num(saveVal);
+			}
+			stat.set("val", saveVal);
 		}, true);
 	}
 });
@@ -765,10 +802,6 @@ dojo.declare("classes.KGSaveEdit.StatsMeta", classes.KGSaveEdit.GenericItem, {
 
 	update: function () {
 		var val = this.val;
-
-		if (this.calculate) {
-			// val = this.calculate(this.game) || 0;
-		}
 
 		if (this.compareVal && this.game.editorOptions.fixStats) {
 			val = Math.max(val, this.compareVal(this.game)) || 0;
