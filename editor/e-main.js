@@ -30,7 +30,7 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 			if (effectName.indexOf(res.name) === 0) {
 				var resname = res.name;
 				var restitle = res.title || resname;
-				restitle = restitle.charAt(0).toUpperCase() + restitle.substring(1, restitle.length);
+				restitle = restitle[0].toUpperCase() + restitle.slice(1);
 				var type = effectName.substring(resname.length, effectName.length);
 			}
 		}
@@ -54,25 +54,25 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 				};
 			case "Max":
 				return {
-					title: "Max " + restitle,
+					title: $I("effectsMgr.type.resMax", [restitle]),
 					resname: resname
 				};
 			case "Ratio":
 				return {
-					title: restitle + " bonus",
+					title: $I("effectsMgr.type.resRatio", [restitle]),
 					resname: resname,
 					type: "ratio"
 				};
 			case "DemandRatio":
 				return {
-					title: restitle + " demand reduction",
+					title: $I("effectsMgr.type.resDemandRatio", [restitle]),
 					resname: resname,
 					type: "ratio"
 				};
 			case "PerTickBase":
 			case "PerTickBaseSpace":
 				return {
-					title: restitle + " production",
+					title: $I("effectsMgr.type.resProduction", [restitle]),
 					resname: resname,
 					type: "perTick"
 				};
@@ -82,13 +82,13 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 			case "PerTickSpace":
 			case "PerTickAutoprodSpace":
 				return {
-					title: restitle + " conversion",
+					title: $I("effectsMgr.type.resConversion", [restitle]),
 					resname: resname,
 					type: "perTick"
 				};
 			case "CraftRatio":
 				return {
-					title: restitle + " craft bonus",
+					title: $I("effectsMgr.type.resCraftRatio", [restitle]),
 					resname: resname,
 					type: "ratio"
 				};
