@@ -166,33 +166,34 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 					stageUnlocked: true,
 					effects: {
 						"scienceRatio": 0,
-						"scienceMax": 0,
-						"cultureMax": 0
+						"scienceMax":   0,
+						"cultureMax":   0
 					},
 					flavor: true
 				}, {
 					stageName: "dataCenter",
 					prices: [
 						{name: "concrate", val: 10},
-						{name: "steel", val: 100}
+						{name: "steel",    val: 100}
 					],
 					stageUnlocked: false,
 					stageRequires: {tech: ["electronics"]},
 					effects: {
 						"scienceMaxCompendia": 1000,
-						"cultureMax": 25,
-						"energyConsumption": 2
+						"cultureMax":          25,
+						"energyConsumption":   2
 					}
 				}
 			],
+			priceRatio: 1.15,
 			// unlocks: {tabs: ["science"], jobs: ["scholar"]},
 			upgrades: {buildings: ["biolab"]},
 			calculateEffects: function (self, game) {
 				var stageMeta = self.stages[self.stage];
 				var effects = {
 					"scienceRatio": 0.1,
-					"scienceMax": 250,
-					"cultureMax": 10,
+					"scienceMax":   250,
+					"cultureMax":   10,
 				};
 
 				var libraryRatio = game.getEffect("libraryRatio");
@@ -1848,7 +1849,7 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 
 	getPrices: function (simple) {
 		var ratio = this.game.bld.getPriceRatio(this.name);
-		var prices = dojo.clone(this.get("prices")) || {};
+		var prices = dojo.clone(this.get("prices")) || [];
 
 		if (!simple) {
 			for (var i = 0, len = prices.length; i < len; i++) {
