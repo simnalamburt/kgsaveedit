@@ -432,7 +432,13 @@ input.integerInput.timeInput {
 }
 
 .separated:not(.hidden) ~ .separated::before {
-	content: " | ";
+	content: "|";
+	display: inline-block;
+	padding: 0 3px;
+}
+
+.separated:not(.hidden) ~ .separated.dotSeparator::before {
+	content: "\0022C5";
 }
 
 .btnDisabled {

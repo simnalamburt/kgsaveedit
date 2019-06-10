@@ -450,6 +450,30 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			},
 			upgrades: {buildings: ["pasture"]}
 		}, {
+			name: "thinFilm",
+			prices: [
+				{name: "science",     val: 125000},
+				{name: "unobtainium", val: 200},
+				{name: "uranium",     val: 1000}
+			],
+			requires: {tech: ["sattelites"]},
+			effects: {
+				"solarFarmSeasonRatio": 1
+			},
+			upgrades: {buildings: ["pasture"]}
+		}, {
+			name: "qdot",
+			prices: [
+				{name: "science", val: 175000},
+				{name: "eludium", val: 200},
+				{name: "thorium", val: 1000}
+			],
+			requires: {tech: ["thorium"]},
+			effects: {
+				"solarFarmSeasonRatio": 1
+			},
+			upgrades: {buildings: ["pasture"]}
+		}, {
 			name: "solarSatellites",
 			prices: [
 				{name: "science", val: 225000},
@@ -1828,7 +1852,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			iwScienceCapRatio *= (1 + ttBoostRatio * this.game.religion.getTranscendenceLevel());
 		}
 
-		if (compendiaScienceMax > (scienceMaxBuilding * iwScienceCapRatio + scienceMaxCompendiaCap)) {
+		if (compendiaScienceMax > (scienceMaxBuilding * iwScienceCapRatio + scienceMaxCompendiaCap) && !this.game.opts.ch40krun) {
 			compendiaScienceMax = (scienceMaxBuilding * iwScienceCapRatio + scienceMaxCompendiaCap);
 		}
 
@@ -1890,6 +1914,26 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 		this.loadMetadata(saveData, "workshop.upgrades", "get", null, true);
 
 		this.loadMetadata(saveData, "workshop.crafts", "getCraft", null, true);
+	},
+
+	// console-only shortcuts
+	unlockAllUpgrades: function () {
+		for (var i = this.upgrades.length - 1; i >= 0; i--) {
+			var upgrade = this.upgrades[i];
+			upgrade.set("unlocked", true);
+		}
+		this.game.update();
+		return true;
+	},
+
+	researchAllUpgrades: function () {
+		for (var i = this.upgrades.length - 1; i >= 0; i--) {
+			var upgrade = this.upgrades[i];
+			upgrade.set("unlocked", true);
+			upgrade.set("researched", true);
+		}
+		this.game.update();
+		return true;
 	}
 });
 

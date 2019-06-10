@@ -417,6 +417,17 @@ dojo.declare("classes.KGSaveEdit.PrestigeManager", classes.KGSaveEdit.Manager, {
 
 	load: function (saveData) {
 		this.loadMetadata(saveData, "prestige.perks", "getPerk", null, true);
+	},
+
+	// console-only shortcuts
+	researchAllPerks: function () {
+		for (var i = this.perks.length - 1; i >= 0; i--) {
+			var perk = this.perks[i];
+			perk.set("unlocked", true);
+			perk.set("researched", true);
+		}
+		this.game.update();
+		return true;
 	}
 });
 

@@ -64,6 +64,12 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 					} else if (game.calendar.season === 1) {
 						effects.energyProduction /= 0.75;
 					}
+
+					var seasonRatio = game.getEffect("solarFarmSeasonRatio");
+					if ((game.calendar.season == 3 && seasonRatio == 1) || (game.calendar.season != 1 && seasonRatio == 2)) {
+						effects["energyProduction"] *= (1 + 0.15 * seasonRatio);
+					}
+
 					stageMeta.effects = effects;
 				}
 			}
@@ -1467,7 +1473,7 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			var group = this.buildingGroups[name];
 
 			//wrap tab link for css
-			group.nodeWrapper = dojo.create("span", {class: "separated"}, this.buildingGroupsBlock);
+			group.nodeWrapper = dojo.create("span", {class: "separated dotSeparator"}, this.buildingGroupsBlock);
 
 			group.domNode = dojo.create("a", {
 				class: "buildGroup",

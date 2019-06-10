@@ -337,23 +337,9 @@ dojo.declare("classes.KGSaveEdit.MetaItem", [classes.KGSaveEdit.GenericItem, cla
 
 	updateEnabled: function () {
 		var prices = this.getPrices() || [];
-		var limited = false;
-		var hasRes = true;
-
-		for (var i = prices.length - 1; i >= 0; i--) {
-			var price = prices[i];
-			var res = this.game.resPool.get(price.name);
-			var value = res.getValue();
-			if (res.maxValue > 0 && value < price.val && res.maxValue < price.val) {
-				limited = true;
-				break;
-			}
-			if (hasRes && value < price.val) {
-				hasRes = false;
-			}
-		}
+		var limited = this.game.resPool.isStorageLimited(prices);
 		dojo.toggleClass(this.nameNode, "limited", this.game.opts.highlightUnavailable && limited);
-		dojo.toggleClass(this.nameNode, "btnDisabled", limited || !hasRes);
+		dojo.toggleClass(this.nameNode, "btnDisabled", limited || !this.game.resPool.hasRes(prices));
 	},
 
 	registerHighlight: function (node) {

@@ -610,6 +610,53 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 				title: "hashrateLevel", // different capitalization
 				type: "fixed",
 				calculation: "constant"
+			},
+
+			"corruptionBoostRatio": {
+				type: "ratio"
+			},
+
+			"blsCorruptionRatio": {
+				type: "ratio"
+			},
+
+			"baseMetalMaxRatio": {
+				type: "ratio"
+			},
+
+			"scienceMaxCompendia": {
+				type: "fixed"
+			},
+
+			"uplinkDCRatio": {
+				type: "ratio"
+			},
+
+			"uplinkLabRatio": {
+				type: "ratio"
+			},
+
+			"dataCenterAIRatio": {
+			},
+
+			"compendiaTTBoostRatio": {
+				type: "ratio"
+			},
+
+			"blackLibraryBonus": {
+				type: "ratio"
+			},
+
+			"solarFarmSeasonRatio": {
+				type: "fixed"
+			},
+
+			"tectonicBonus": {
+				type: "ratio"
+			},
+
+			"umbraBoostRatio": {
+				type: "ratio"
 			}
 		}
 	}
@@ -1803,7 +1850,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			}
 		];
 
-		var spaceParagonSubStack = [{
+		var spaceParagonSubStack = [
+			{
 				name: $I("res.stack.spaceParagon"),
 				type: "ratio",
 				value: paragonSpaceProductionRatio - 1

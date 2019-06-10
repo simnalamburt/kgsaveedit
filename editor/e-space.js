@@ -572,8 +572,8 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					],
 					priceRatio: 1.15,
 					effects: {
-						"starchartPerTickBaseSpace": 0,
-						"scienceMax":                0,
+						"starchartPerTickBaseSpace": 0.025,
+						"scienceMax":                25000,
 						"relicPerDay":               0
 					},
 					action: function (self, game) {
@@ -995,6 +995,49 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 		}, true);
 
 		this.set("hideResearched", saveData.space.hideResearched);
+	},
+
+	// console-only shortcuts
+	completeMission: function (name) {
+		var program = this.getProgram(name);
+		if (!program || program.upgradable) {
+			return false;
+		}
+
+		program.set("unlocked", true);
+		program.set("val", 1);
+		program.set("on", 1);
+		this.game.setCheckbox(program.launchedNode, true, null, true);
+
+		var planet = program.planetMeta;
+		if (planet) {
+			planet.set("unlocked", true);
+			planet.set("routeDays", 0);
+			planet.set("reached", true);
+		}
+
+		this.game.update();
+		return true;
+	},
+
+	completeAllMissions: function () {
+		for (var i = this.programs.length - 1; i >= 0; i--) {
+			var program = this.programs[i];
+			program.set("unlocked", true);
+			program.set("val", 1);
+			program.set("on", 1);
+			this.game.setCheckbox(program.launchedNode, true, null, true);
+		}
+
+		for (i = this.planets.length - 1; i >= 0; i--) {
+			var planet = this.planets[i];
+			planet.set("unlocked", true);
+			planet.set("routeDays", 0);
+			planet.set("reached", true);
+		}
+
+		this.game.update();
+		return true;
 	}
 });
 
@@ -1136,6 +1179,7 @@ dojo.declare("classes.KGSaveEdit.ProgramMeta", classes.KGSaveEdit.MetaItem, {
 		if (this.planet) {
 			unlocked = this.planet.reached && req;
 			spoiler = !unlocked;
+
 		} else {
 			dojo.toggleClass(this.valNode, "hidden", !this.upgradable);
 			dojo.toggleClass(this.launchedLabel, "hidden", this.upgradable);
@@ -1143,6 +1187,7 @@ dojo.declare("classes.KGSaveEdit.ProgramMeta", classes.KGSaveEdit.MetaItem, {
 			dojo.toggleClass(this.domNode, "collapsed",
 				this.game.space.hideResearched && !this.upgradable && this.owned());
 		}
+
 		this.unlocked = unlocked;
 		dojo.toggleClass(this.nameNode, "spoiler", spoiler);
 
@@ -1155,6 +1200,7 @@ dojo.declare("classes.KGSaveEdit.ProgramMeta", classes.KGSaveEdit.MetaItem, {
 			this.calculateEffects(this, this.game);
 			this.game.calendar.cycleEffectsBasics(this.effects, this.name);
 		}
+
 		if (this.action && this.val > 0) {
 			var amt = this.action(this, this.game);
 			if (typeof amt !== "undefined") {

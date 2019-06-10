@@ -362,7 +362,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 190000},
 				{name: "blueprint", val: 125}
 			],
-			// unlocks: {tech: ["orbitalEngineering" ], upgrades: ["photolithography", "orbitalGeodesy", "uplink"]},
+			// unlocks: {tech: ["orbitalEngineering" ], upgrades: ["photolithography", "orbitalGeodesy", "uplink", "thinFilm"]},
 			requires: {tech: ["rocketry"]},
 			flavor: true
 		}, {
@@ -382,7 +382,7 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 				{name: "science",   val: 375000},
 				{name: "blueprint", val: 375}
 			],
-			// unlocks: {crafts: ["thorium"], upgrades: ["thoriumReactors", "thoriumEngine"]},
+			// unlocks: {crafts: ["thorium"], upgrades: ["thoriumReactors", "thoriumEngine", "qdot"]},
 			requires: {tech: ["orbitalEngineering"]}
 		}, {
 			name: "exogeology",
@@ -563,6 +563,26 @@ dojo.declare("classes.KGSaveEdit.ScienceManager", [classes.KGSaveEdit.UI.Tab, cl
 			this.game.setCheckbox(this.hideResearchedNode, saveData.science.hideResearched);
 			this.loadMetadata(saveData, "science.techs", "get", null, true);
 		}
+	},
+
+	// console-only shortcut
+	unlockAllTechs: function () {
+		for (var i = this.techs.length - 1; i >= 0; i--) {
+			var tech = this.techs[i];
+			tech.set("unlocked", true);
+		}
+		this.game.update();
+		return true;
+	},
+
+	researchAllTechs: function () {
+		for (var i = this.techs.length - 1; i >= 0; i--) {
+			var tech = this.techs[i];
+			tech.set("unlocked", true);
+			tech.set("researched", true);
+		}
+		this.game.update();
+		return true;
 	}
 });
 
