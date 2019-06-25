@@ -617,6 +617,7 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				if (game.challenges.currentChallenge === "energy") {
 					self.effects["energyConsumption"] *= 2;
 				}
+				self.showAutomation = Boolean(game.getEffect("calcinerSteelRatio"));
 			},
 			action: function (self, game) {
 				var on = self.getOn();
@@ -648,12 +649,10 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 
 				var steelRatio = game.getEffect("calcinerSteelRatio");
 
-				self.showAutomation = false;
 				if (steelRatio) {
 					// if (typeof self.isAutomationEnabled === "undefined") {
 					// 	self.isAutomationEnabled = true;
 					// }
-					self.showAutomation = true;
 
 					if (self.isAutomationEnabled) {
 						// Second conversion of some of the iron that was just created, to steel
@@ -683,8 +682,6 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 					}
 				}
 
-				this.showAutomation = steelRatio > 0;
-
 				return amtFinal;
 			}
 		}, {
@@ -706,9 +703,9 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			},
 			jammed: false,
 			isAutomationEnabled: true,
-			showAutomation: true,
 			calculateEffects: function (self, game) {
 				self.effects["coalRatioGlobal"] = -0.8 + game.getEffect("coalRatioGlobalReduction");
+				self.showAutomation = game.workshop.get("factoryAutomation").owned();
 
 				var amt = 0;
 				if (game.workshop.get("printingPress").owned()) {
@@ -1958,11 +1955,11 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 	},
 
 	save: function () {
-		var saveData = this.game.filterMetaObj(this, ["name", "unlocked", "val", "on", "stage", "jammed", "isAutomationEnabled"]);
+		var saveData = this.game.filterMetaObj(this, ["name", "unlocked", "val", "on", "stage", "jammed"]);
 		saveData.on = this.getOn();
 
-		if (this.hasOwnProperty("isAutomationEnabled") && !this.showAutomation) {
-			saveData.isAutomationEnabled = null;
+		if (this.isAutomationEnabledNode && this.showAutomation) {
+			saveData.isAutomationEnabled = this.isAutomationEnabled;
 		}
 
 		return saveData;
