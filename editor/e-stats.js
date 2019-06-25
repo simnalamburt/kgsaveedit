@@ -382,8 +382,6 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 	},
 
 	render: function () {
-		this.tabWrapper.setAttribute("data-new", $I("KGSaveEdit.achievements.new"));
-
 		this.game.callMethods(this.achievements, "render", this.achievementsBlock, "achievement");
 		this.game.callMethods(this.hats, "render", this.hatsBlock, "hat");
 	},
@@ -452,7 +450,7 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 
 		dojo.toggleClass(this.hatsBlockHeader, "spoiler", !this.councilUnlocked || !this.game.science.get("metaphysics").owned());
 
-		dojo.toggleClass(this.tabWrapper, "newMarker", hasNewMarker);
+		this.game._toggleNewMarker(this.tabWrapper, hasNewMarker);
 	},
 
 	updateTabMarker: function () {
@@ -473,7 +471,7 @@ dojo.declare("classes.KGSaveEdit.AchievementsManager", [classes.KGSaveEdit.UI.Ta
 				}
 			}
 		}
-		dojo.toggleClass(this.tabWrapper, "newMarker", hasNewMarker);
+		this.game._toggleNewMarker(this.tabWrapper, hasNewMarker);
 	},
 
 	save: function (saveData) {
@@ -514,8 +512,6 @@ dojo.declare("classes.KGSaveEdit.AchievementMeta", [classes.KGSaveEdit.GenericIt
 	render: function (parent) {
 		this.seti18n();
 
-		var newText = $I("KGSaveEdit.achievements.new");
-
 		// TODO turn the title attributes into proper tooltips?
 
 		this.domNode = dojo.create("tr", {
@@ -526,7 +522,6 @@ dojo.declare("classes.KGSaveEdit.AchievementMeta", [classes.KGSaveEdit.GenericIt
 
 		var input = this.game._createCheckbox($I("KGSaveEdit.achievements.earned"), this.domNode.children[1], this, "unlocked");
 		this.unlockedLabel = input.label;
-		input.label.setAttribute("data-new", newText);
 		on(input.label, mouse.enter, dojo.hitch(this, function () {
 			if (this.isNew) {
 				this.isNew = false;
@@ -539,7 +534,6 @@ dojo.declare("classes.KGSaveEdit.AchievementMeta", [classes.KGSaveEdit.GenericIt
 			input = this.game._createCheckbox((this.starUnlocked ? "&#9733;" : "&#9734;"),
 				this.domNode.children[2], this, "starUnlocked");
 			this.starUnlockedLabel = input.label;
-			input.label.setAttribute("data-new", newText);
 			this.starText = input.text;
 			if (this.starDescription) {
 				input.label.title = this.starDescription;
@@ -570,7 +564,7 @@ dojo.declare("classes.KGSaveEdit.AchievementMeta", [classes.KGSaveEdit.GenericIt
 			if (wasUnlocked !== this.unlocked) {
 				this.isNew = this.unlocked;
 			}
-			dojo.toggleClass(this.unlockedLabel, "newMarker", this.isNew);
+			this.game._toggleNewMarker(this.unlockedLabel, this.isNew);
 
 			dojo.toggleClass(this.domNode, "hidden", this.hidden && !this.unlocked);
 		}
@@ -589,7 +583,7 @@ dojo.declare("classes.KGSaveEdit.AchievementMeta", [classes.KGSaveEdit.GenericIt
 			if (starWasUnlocked !== this.starUnlocked) {
 				this.isNewStar = this.starUnlocked;
 			}
-			dojo.toggleClass(this.starUnlockedLabel, "newMarker", this.isNewStar);
+			this.game._toggleNewMarker(this.starUnlockedLabel, this.isNewStar);
 
 			this.starText.innerHTML = this.starUnlocked ? "&#9733;" : "&#9734;";
 		}

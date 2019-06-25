@@ -570,7 +570,7 @@ input.integerInput.timeInput {
 }
 
 .newMarker:after {
-	content: " " attr(data-new);
+	content: attr(data-new);
 	color: red;
 	font-style: italic;
 	font-size: 10px;

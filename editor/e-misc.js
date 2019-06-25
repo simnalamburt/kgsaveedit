@@ -856,7 +856,7 @@ dojo.declare("classes.KGSaveEdit.ChallengesManager", classes.KGSaveEdit.Manager,
 		}, {
 			name: "anarchy",
 			condition: function () {
-				return this.game.bld.get("aiCore").val > 0;
+				return this.game.bld.get("aiCore").owned();
 			},
 			unlocked: true
 		}, {
@@ -865,15 +865,17 @@ dojo.declare("classes.KGSaveEdit.ChallengesManager", classes.KGSaveEdit.Manager,
 				return game.resPool.energyCons !== 0 || game.resPool.energyProd !== 0;
 			},
 			condition: function () {
-				return ((this.game.bld.get("pasture").val > 0 && this.game.bld.get("pasture").stage === 1) &&
-					(this.game.bld.get("aqueduct").val > 0 && this.game.bld.get("aqueduct").stage === 1) &&
-					this.game.bld.get("steamworks").val > 0 &&
-					this.game.bld.get("magneto").val > 0 &&
-					this.game.bld.get("reactor").val > 0 &&
-					this.game.space.getBuilding("sattelite").val > 0 &&
-					this.game.space.getBuilding("sunlifter").val > 0 &&
-					this.game.space.getBuilding("tectonic").val > 0 &&
-					this.game.space.getBuilding("hrHarvester").val > 0);
+				return (
+					(this.game.bld.get("pasture").owned() && this.game.bld.get("pasture").stage === 1) &&
+					(this.game.bld.get("aqueduct").owned() && this.game.bld.get("aqueduct").stage === 1) &&
+					this.game.bld.get("steamworks").owned() &&
+					this.game.bld.get("magneto").owned() &&
+					this.game.bld.get("reactor").owned() &&
+					(this.game.space.getBuilding("sattelite").owned() && this.game.workshop.get("solarSatellites").owned()) &&
+					this.game.space.getBuilding("sunlifter").owned() &&
+					this.game.space.getBuilding("tectonic").owned() &&
+					this.game.space.getBuilding("hrHarvester").owned()
+				);
 			}
 		}, {
 			name: "atheism",
@@ -947,7 +949,7 @@ dojo.declare("classes.KGSaveEdit.ChallengesManager", classes.KGSaveEdit.Manager,
 				break;
 			}
 		}
-		dojo.toggleClass(this.game.science.tabNode, "newMarker", hasNew);
+		this.game._toggleNewMarker(this.game.science.tabWrapper, hasNew);
 	},
 
 	save: function (saveData) {
@@ -1044,6 +1046,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 		self.activeChallengeNode = input.cbox;
 		input.cbox.handler = function () {
 			self.game.challenges.setCurrentChallenge(this.checked ? self.name : null);
+			self.game.calculateAllEffects();
 		};
 
 		self.registerTooltip(self.domNode);
@@ -1067,6 +1070,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 
 				challenges.setCurrentChallenge(null, true);
 				this.isNew = true;
+
 			} else if (!won && this.researched && !this.researchedNode.prevChecked && this.activeChallengeNode.prevChecked) { //fluh
 				this.researched = false;
 				this.researchedNode.checked = false;
@@ -1077,7 +1081,7 @@ dojo.declare("classes.KGSaveEdit.ChallengeMeta", classes.KGSaveEdit.MetaItem, {
 		}
 
 		this.game.toggleDisabled(this.activeChallengeNode, this.researched);
-		dojo.toggleClass(this.nameNode, "newMarker", this.isNew);
+		this.game._toggleNewMarker(this.nameNode, this.isNew);
 	}
 });
 

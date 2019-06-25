@@ -1,9 +1,9 @@
 {
     "KGSaveEdit.label.unlocked": "Unlocked",
     "KGSaveEdit.label.researched": "Researched",
+    "KGSaveEdit.label.new": " New!",
 
     "KGSaveEdit.achievements.earned": "Earned",
-    "KGSaveEdit.achievements.new": "New!",
 
     "KGSaveEdit.buildings.val.title": "Number of buildings",
     "KGSaveEdit.buildings.on.title": "Number of active buildings",

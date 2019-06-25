@@ -1,6 +1,6 @@
 /* global dojo, require, classes, LZString, $I, num */
 
-require(["dojo/on"], function (on) {
+require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 "use strict";
 
 dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
@@ -89,6 +89,12 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 			case "CraftRatio":
 				return {
 					title: $I("effectsMgr.type.resCraftRatio", [restitle]),
+					resname: resname,
+					type: "ratio"
+				};
+			case "GlobalCraftRatio":
+				return {
+					title: $I("effectsMgr.type.resGlobalCraftRatio", [restitle]),
 					resname: resname,
 					type: "ratio"
 				};
@@ -657,6 +663,22 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 
 			"umbraBoostRatio": {
 				type: "ratio"
+			},
+
+			"eludiumAutomationBonus": {
+				type: "ratio"
+			},
+
+			"heatMax": {
+				type: "fixed"
+			},
+
+			"heatPerTick": {
+				type: "perTick"
+			},
+
+			"voidResonance": {
+				type: "ratio"
 			}
 		}
 	}
@@ -697,6 +719,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 
 	_loadingBlankJSON: false,
 
+	_mouseover: null,
+
 	rand: function (ratio) {
 		return this.uniformRandomInteger(0, ratio);
 	},
@@ -726,10 +750,10 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	],
 
 	/**
-		* Parses a input element's .value into a numeric value with a minimum of 0
-		* Strips all non-alphanumeric, non-"+", "-", or "." characters and parseFloat()s
-		* Can read a single display postfix if the input displays its value with postfixes
-	**/
+	 * Parses a input element's .value into a numeric value with a minimum of 0
+	 * Strips all non-alphanumeric, non-"+", "-", or "." characters and parseFloat()s
+	 * Can read a single display postfix if the input displays its value with postfixes
+	 */
 	parseInput: function (ele) {
 		if (ele.type !== "text" || dojo.hasClass(ele, "textInput")) {
 			return ele.value;
@@ -760,9 +784,9 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-		* Calls the applicable function to set a form element's value
-		* Passes arguments to the function
-	**/
+	 * Calls the applicable function to set a form element's value
+	 * Passes arguments to the function
+	 */
 	setEle: function (ele, value) {
 		if (!ele) {
 			return value;
@@ -779,11 +803,11 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-		* Sets a numeric input's checked states and also updates its associated data property (if applicable)
-		* Passing no value just causes it to redisplay its parsed value (used for .abbrInput onBlur)
-		* Calls handlers on the input and associated object unless noHandlers is truthy
-		* Sets prevChecked (used to revert automatic changes) unless noPrev is truthy
-	**/
+	 * Sets a numeric input's value and also updates its associated data property (if applicable)
+	 * Passing no value just causes it to redisplay its value (used for inputs with custom display values like .abbrInput)
+	 * Calls handlers on the input and associated object unless noHandlers is truthy
+	 * Sets prevValue (used to revert automatic changes) unless noPrev is truthy
+	 */
 	setInput: function (ele, value, noHandlers, noPrev) {
 		if (dojo.hasClass(ele, "textInput")) {
 			if (typeof value === "string" && ele !== document.activeElement) {
@@ -816,26 +840,28 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		value = ele.parsedValue;
 		var abbr = dojo.hasClass(ele, "abbrInput");
 
+		var displayValue = value;
+		if (ele.displayFn) {
+			displayValue = ele.displayFn(value);
+
+		} else if (abbr) {
+			displayValue = this.getDisplayValueExt(value);
+		}
+
 		if (ele !== document.activeElement) {
-			var displayValue = value;
-			if (ele.displayFn) {
-				displayValue = ele.displayFn(value);
-			} else if (abbr) {
-				displayValue = this.getDisplayValueExt(value);
-			}
-			ele.value = displayValue;
+			ele.value = ele === this._mouseover ? value : displayValue;
 		}
 		if (abbr) {
-			ele.title = value;
+			ele.title = displayValue;
 		}
 		return value;
 	},
 
 	/**
-		* Sets a checkbox's checked states and also updates its associated data property (if applicable)
-		* Sets prevChecked (used to revert automatic changes) unless noPrev is truthy
-		* Calls handlers on the checkbox and associated object unless noHandlers is truthy
-	**/
+	 * Sets a checkbox's checked states and also updates its associated data property (if applicable)
+	 * Sets prevChecked (used to revert automatic changes) unless noPrev is truthy
+	 * Calls handlers on the checkbox and associated object unless noHandlers is truthy
+	 */
 	setCheckbox: function (ele, checked, noPrev, noHandlers) {
 		if (!ele || ele.type !== "checkbox") {
 			return;
@@ -875,8 +901,8 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-		* Toggles an input's disabled attribute, and toggles a class on its parentNode
-	**/
+	 * Toggles an input's disabled attribute, and toggles a class on its parentNode
+	 */
 	toggleDisabled: function (ele, disabled, extraClass) {
 		if (!ele) {
 			return;
@@ -889,8 +915,16 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-		* Clones an array of meta objects by passing them through filterMetaObj
-		*/
+	 * Toggles the new marker on the given HTMLElement, and ensures it has the necessary attribute
+	 */
+	_toggleNewMarker: function (ele, toggle) {
+		ele.setAttribute("data-new", $I("KGSaveEdit.label.new"));
+		dojo.toggleClass(ele, "newMarker", toggle);
+	},
+
+	/**
+	 * Clones an array of meta objects by passing them through filterMetaObj
+	 */
 	filterMetadata: function (meta, fields, callback) {
 		var filtered = [];
 		for (var i = 0, len = meta.length; i < len; i++) {
@@ -901,9 +935,9 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	/**
-		* Clones an object, but only the keys in the fields array
-		* Calls callback in the context of the object if passed
-		*/
+	 * Clones an object, but only the keys in the fields array
+	 * Calls callback in the context of the object if passed
+	 */
 	filterMetaObj: function (meta, fields, callback) {
 		var clone = {};
 		for (var i = 0, len = fields.length; i < len; i++) {
@@ -2082,6 +2116,20 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 			}
 		});
 
+		on(input, mouse.enter, function () {
+			if (dojo.hasClass(this, "abbrInput")) {
+				this.game._mouseover = this;
+				this.game.setInput(this);
+			}
+		});
+
+		on(input, mouse.leave, function () {
+			if (dojo.hasClass(this, "abbrInput")) {
+				this.game._mouseover = null;
+				this.game.setInput(this);
+			}
+		});
+
 		return input;
 	},
 
@@ -2623,6 +2671,19 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 
 		this.migrateSave(saveData);
 
+		if (saveData.game) {
+			var data = saveData.game;
+
+			this.loadMetaFields(this, data, ["forceShowLimits", "colorScheme", "karmaKittens", "karmaZebras",
+				"deadKittens", "useWorkers", "cheatMode", "isCMBREnabled"]);
+
+			this.OptionsTab.scheme.value = this.colorScheme;
+			this.ironWill = ("ironWill" in data) ? Boolean(data.ironWill) : true;
+
+			this.loadMetaFields(this.opts, data.opts, ["usePerSecondValues", "forceHighPrecision", "usePercentageResourceValues",
+				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter", "disableCMBR", "disableTelemetry", "enableRedshift", "forceLZ"]);
+		}
+
 		this.resPool.load(saveData);
 		this.village.load(saveData);
 		this.calendar.load(saveData);
@@ -2633,22 +2694,11 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		this.telemetry.load(saveData);
 
 		if (saveData.game) {
-			var data = saveData.game;
-
-			this.loadMetaFields(this, data, ["forceShowLimits", "colorScheme", "karmaKittens", "karmaZebras",
-				"deadKittens", "useWorkers", "cheatMode", "isCMBREnabled"]);
-
-			this.OptionsTab.scheme.value = this.colorScheme;
-			this.ironWill = ("ironWill" in data) ? Boolean(data.ironWill) : true;
-
 			var paragonPoints = num(data.paragonPoints);
 
 			if (paragonPoints > this.resPool.get("paragon").value) {
 				this.resPool.get("paragon").set("value", paragonPoints);
 			}
-
-			this.loadMetaFields(this.opts, data.opts, ["usePerSecondValues", "forceHighPrecision", "usePercentageResourceValues",
-				"highlightUnavailable", "hideSell", "noConfirm", "IWSmelter", "disableCMBR", "disableTelemetry", "enableRedshift", "forceLZ"]);
 		}
 
 		this.extrasTab.load(saveData);

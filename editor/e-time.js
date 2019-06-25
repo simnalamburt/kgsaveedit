@@ -67,7 +67,8 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 			},
 			calculateEffects: function (self, game) {
 				self.effects["timeImpedance"] = Math.round(1000 * (1 + game.getEffect("timeRatio")));
-			}
+			},
+			showUnlocked: true
 		}, {
 			name: "ressourceRetrieval",
 			prices: [
@@ -288,7 +289,8 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		}, self.timeBlock);
 
 		input = game._createInput({
-			id: "fluxNode"
+			id: "fluxNode",
+			class: "abbrInput"
 		}, tr.children[1], self, "flux");
 		input.minValue = -Number.MAX_VALUE;
 
@@ -480,18 +482,22 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 			this.game._createCheckbox("Automation enabled", tr.children[2], this, "isAutomationEnabled");
 		}
 
-		// this.game._createCheckbox($I("KGSaveEdit.label.unlocked"), tr.children[2], this, "unlocked");
+		if (this.showUnlocked) {
+			this.game._createCheckbox($I("KGSaveEdit.label.unlocked"), tr.children[2], this, "unlocked");
+		}
 
 		this.registerHighlight(this.domNode); // MetaItem
 		this.registerTooltip(this.domNode); // ToolTip
 	},
 
 	update: function () { // if researched
-		var req = this.game.checkRequirements(this, this.defaultUnlocked);
-		// this.set("unlocked", this.unlockedNode.prevChecked || req, true);
-		this.unlocked = req;
+		var unlocked = this.game.checkRequirements(this, this.defaultUnlocked);
+		if (this.unlockedNode) {
+			this.game.toggleDisabled(this.unlockedNode, unlocked);
+			unlocked = this.unlockedNode.prevChecked || unlocked;
+		}
+		this.set("unlocked", unlocked);
 		dojo.toggleClass(this.nameNode, "spoiler", !this.unlocked);
-		// this.game.toggleDisabled(this.unlockedNode, this.defaultUnlocked || req);
 
 		this.updateEnabled();
 
@@ -508,6 +514,7 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 
 	load: function (saveData) {
 		this.set("val", num(saveData.val));
+		this.set("on", num(saveData.on));
 		this.set("unlocked", Boolean(saveData.unlocked) || this.defaultUnlocked);
 
 		if (this.heatNode) {

@@ -873,23 +873,18 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			isAutomationEnabled: true,
 			calculateEffects: function (self, game) {
 				self.effects["uraniumPerTick"] = -0.001 * (1 - game.getEffect("uraniumRatio"));
+				self.showAutomation = game.workshop.get("thoriumReactors").owned();
 			},
 			action: function (self, game) {
 				self.effects["thoriumPerTick"] = game.getEffect("reactorThoriumPerTick");
 				self.effects["energyProduction"] = 10 * (1 + game.getEffect("reactorEnergyRatio"));
 
-				self.showAutomation = false;
-				if (game.workshop.get("thoriumReactors").owned()) {
-					// if (typeof self.isAutomationEnabled === "undefined") {
-					// 	self.isAutomationEnabled = true;
-					// }
-					self.showAutomation = true;
-					if (game.resPool.get("thorium").value === 0 || !self.isAutomationEnabled) {
-						self.effects["thoriumPerTick"] = 0;
-						self.effects["energyProduction"] -= 2.5;
-					}
-				} else {
-					// self.isAutomationEnabled = undefined;
+				if (
+					game.workshop.get("thoriumReactors").owned() &&
+					(game.resPool.get("thorium").value === 0 || !self.isAutomationEnabled)
+				) {
+					self.effects["thoriumPerTick"] = 0;
+					self.effects["energyProduction"] -= 2.5;
 				}
 			}
 		}, {
@@ -1854,10 +1849,10 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 	},
 
 	getPrices: function (simple) {
-		var ratio = this.game.bld.getPriceRatio(this.name);
 		var prices = dojo.clone(this.get("prices")) || [];
 
 		if (!simple) {
+			var ratio = this.game.bld.getPriceRatio(this.name);
 			for (var i = 0, len = prices.length; i < len; i++) {
 				prices[i].val *= Math.pow(ratio, this.val);
 			}
