@@ -1006,31 +1006,31 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		return percentage.toFixed(precision);
 	},
 
-	getDisplayValueExt: function (value, prefix, usePerTickHack, precision) {
+	getDisplayValueExt: function (value, prefix, usePerTickHack, precision, postfix) {
 		if (!value) { return "0"; }
 		if (!isFinite(value)) {
-			return this.getDisplayValue(value, prefix) + (usePerTickHack ? "/s" : "");
+			return this.getDisplayValue(value, prefix) + (usePerTickHack ? $I("res.per.sec") : "");
 		}
 
-		if (usePerTickHack) {
-			usePerTickHack = this.opts.usePerSecondValues;
-		}
+		usePerTickHack &= this.opts.usePerSecondValues;
 		if (usePerTickHack) {
 			value = value * this.ticksPerSecond;
 		}
 
-		var postfix = "";
+		postfix = postfix || "";
 		var absValue = Math.abs(value);
 		for (var i = 0; i < this.postfixes.length; i++) {
 			var p = this.postfixes[i];
-			while (absValue >= p.limit) {
-				value = value / p.divisor;
-				absValue = Math.abs(value);
-				postfix += p.postfix[0];
+			if (absValue >= p.limit) {
+				if (usePerTickHack) { // Prevent recursive * this.ticksPerSecond;
+					value = value / this.ticksPerSecond;
+				}
+				return this.getDisplayValueExt(value / p.divisor, prefix, usePerTickHack, precision, postfix + p.postfix[0]);
 			}
 		}
 
-		return this.getDisplayValue(value, prefix, precision) + postfix + (usePerTickHack ? "/s" : "");
+		var _value = this.getDisplayValue(value, prefix, precision);
+		return _value + postfix + (usePerTickHack ? $I("res.per.sec") : "");
 	},
 
 	getDisplayValue: function (floatVal, plusPrefix, precision) {

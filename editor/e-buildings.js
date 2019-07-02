@@ -58,11 +58,11 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 					var effects = {
 						"energyProduction": 2
 					};
-					effects.energyProduction *= 1 + game.getEffect("solarFarmRatio");
+					effects["energyProduction"] *= 1 + game.getEffect("solarFarmRatio");
 					if (game.calendar.season === 3) {
-						effects.energyProduction *= 0.75;
+						effects["energyProduction"] *= 0.75;
 					} else if (game.calendar.season === 1) {
-						effects.energyProduction /= 0.75;
+						effects["energyProduction"] /= 0.75;
 					}
 
 					var seasonRatio = game.getEffect("solarFarmSeasonRatio");
@@ -113,7 +113,7 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 					var effects = {
 						"energyProduction": 5
 					};
-					effects.energyProduction *= 1 + game.getEffect("hydroPlantRatio");
+					effects["energyProduction"] *= 1 + game.getEffect("hydroPlantRatio");
 					stageMeta.effects = effects;
 				}
 			}
@@ -1923,6 +1923,7 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 		var activeGroup = this.game.bld.activeGroup;
 		dojo.toggleClass(this.domNode, "collapsed", activeGroup.buildings.indexOf(this.name) < 0);
 
+		this.lackResConvert = false;
 		if (this.action && (on > 0 || this.forceAction)) {
 			var amt = this.action(this, this.game);
 			if (amt !== undefined) {

@@ -487,7 +487,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					calculateEffects: function (self, game) {
 						var effects = {
 							"antimatterMax":    100 * (1 + game.space.getBuilding("heatsink").val * 0.02),
-							"energyConsumption": 50 * (1 + game.space.getBuilding("heatsink").val * 0.02)
+							"energyConsumption": 50 * (1 + game.space.getBuilding("heatsink").val * 0.01)
 						};
 
 						if (game.challenges.currentChallenge === "energy") {
@@ -686,7 +686,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 						"hashRateLevel": 0
 					},
 					action: function (self, game) {
-						var gflopsPerTick = self.effects.gflopsConsumption * self.on;
+						var gflopsPerTick = self.effects["gflopsConsumption"] * self.on;
 						var gflops = game.resPool.get("gflops").value;
 						if (gflops < gflopsPerTick && gflops > 0) {
 							gflopsPerTick = gflops;
@@ -701,15 +701,15 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 						var difficulty = 1000;
 						var rate = 1.6;
 
-						self.effects.hashrate = hr;
-						self.effects.nextHashLevelAt = difficulty * Math.pow(rate, self.effects.hashRateLevel + 1);
-						self.effects.hrProgress = hr / (difficulty * Math.pow(rate, self.effects.hashRateLevel + 1));
+						self.effects["hashrate"] = hr;
+						self.effects["nextHashLevelAt"] = difficulty * Math.pow(rate, self.effects["hashRateLevel"] + 1);
+						self.effects["hrProgress"] = hr / (difficulty * Math.pow(rate, self.effects["hashRateLevel"] + 1));
 						if (hr > difficulty) {
-							self.effects.hashRateLevel = Math.floor(Math.log(hr / difficulty) / Math.log(rate));
+							self.effects["hashRateLevel"] = Math.floor(Math.log(hr / difficulty) / Math.log(rate));
 						} else {
-							self.effects.hashRateLevel = 0;
+							self.effects["hashRateLevel"] = 0;
 						}
-						self.effects.gflopsConsumption = 0.1;
+						self.effects["gflopsConsumption"] = 0.1;
 					}
 				}
 			],
