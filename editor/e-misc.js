@@ -407,10 +407,10 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		}, td);
 
 		on(self.milleniumParagonSpan, "click", function () {
-			self.refYear = self.year;
-			var paragon = self.game.resPool.get("paragon");
+			var paragon = game.resPool.get("paragon");
 			paragon.set("value", paragon.value + Math.floor(Math.max(self.year - self.refYear, 0) / 1000));
-			self.game.update();
+			self.refYear = self.year;
+			game.update();
 		});
 
 		tr = dojo.create("tr", {
@@ -430,7 +430,8 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 
 		on(self.cycleNode, "change", function () {
 			self.cycle = self.cycleNode.selectedIndex;
-			self.game.update();
+			game.calculateAllEffects();
+			game.update();
 		});
 
 		game._createInput({id: "cycleYearNode", class: "integerInput shortInt"},
@@ -455,7 +456,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 
 		on(self.seasonNode, "change", function () {
 			self.season = self.seasonNode.selectedIndex;
-			self.game.update();
+			game.update();
 		});
 
 		tr = dojo.create("tr", {
@@ -469,7 +470,7 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 
 		on(self.weatherSel, "change", function () {
 			self.weather = self.weatherSel.value || null;
-			self.game.update();
+			game.update();
 		});
 
 		tr = dojo.create("tr", {
