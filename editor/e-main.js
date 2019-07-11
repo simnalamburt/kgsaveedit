@@ -2117,14 +2117,14 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		});
 
 		on(input, mouse.enter, function () {
-			if (dojo.hasClass(this, "abbrInput")) {
+			if (this.displayFn || dojo.hasClass(this, "abbrInput")) {
 				this.game._mouseover = this;
 				this.game.setInput(this);
 			}
 		});
 
 		on(input, mouse.leave, function () {
-			if (dojo.hasClass(this, "abbrInput")) {
+			if (this.displayFn || dojo.hasClass(this, "abbrInput")) {
 				this.game._mouseover = null;
 				this.game.setInput(this);
 			}

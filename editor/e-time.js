@@ -394,10 +394,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 });
 
 
-dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
-	domNode: null, // Here is the HTML Node
-	val: 0,
-	on: 0,
+dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItemStackable, {
 	unlocked: false,
 
 	priceRatio: 1.25,
@@ -406,25 +403,15 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 		this.defaultUnlocked = this.unlocked;
 	},
 
-	owned: function () {
-		return this.val > 0;
-	},
-
 	getName: function () {
-		var name = this.label || this.name;
-		var paren = "";
+		var label = this.label;
 		if (this.owned()) {
-			paren = " (" + this.val + ")";
-			var on = this.getOn();
-			if (on !== this.val) {
-				paren = " (" + on + "/" + this.val + ")";
-			}
+			label += " (" + this.val + ")";
 		}
-		return name + paren;
-	},
-
-	getOn: function () {
-		return this.val;
+		if (this.heatNode) {
+			label += " [" + this.heat.toFixed(0) + "%]";
+		}
+		return label;
 	},
 
 	getPrices: function () {
@@ -437,12 +424,6 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 			}
 		}
 		return prices;
-	},
-
-	getEffect: function (name) {
-		var effects = this.effects || {};
-		var effect = num(effects[name]);
-		return effect * this.getOn();
 	},
 
 	render: function () {
@@ -476,6 +457,9 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItem, {
 			dojo.place(document.createTextNode(" " + $I("time.heat") + " "), tr.children[1]);
 			var input = this.game._createInput(null, tr.children[1], this, "heat");
 			input.minValue = -Number.MAX_VALUE;
+			input.displayFn = function (value) {
+				return value.toFixed(0) + "%";
+			};
 		}
 
 		if (this.hasOwnProperty("isAutomationEnabled")) {
@@ -542,6 +526,18 @@ dojo.declare("classes.KGSaveEdit.VSUMeta", classes.KGSaveEdit.CFUMeta, {
 			on = Math.min(this.val, this.game.bld.get("chronosphere").val) || 0;
 		}
 		return on;
+	},
+
+	getName: function () {
+		var label = this.get("label");
+		if (this.owned()) {
+			var on = this.getOn();
+			if (this.togglable || (this.name === "cryochambers" && on < this.val)) {
+				return label + " (" + on + "/" + this.val + ")";
+			}
+			return label + " (" + this.val + ")";
+		}
+		return label;
 	},
 
 	save: function () {

@@ -634,8 +634,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 							"catnipMaxRatio": 0.1,
 							"catnipRatio":    0.025
 						};
-					},
-					val: 0
+					}
 				}
 			],
 			requires: {spaceMission: ["yarnMission"]}
@@ -1042,17 +1041,19 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 });
 
 
-dojo.declare("classes.KGSaveEdit.ProgramMeta", classes.KGSaveEdit.MetaItem, {
-	val: 0,
-	on: 0,
+dojo.declare("classes.KGSaveEdit.ProgramMeta", classes.KGSaveEdit.MetaItemStackable, {
 	unlocked: false,
 	upgradable: true,
-	togglable: false,
 
 	constructor: function () { },
 
-	owned: function () {
-		return this.val > 0;
+	getOn: function () {
+		if (!this.upgradable) {
+			return this.val && (!this.planetMeta || this.planetMeta.reached) ? 1 : 0;
+		} else if (!this.togglable) {
+			return this.val;
+		}
+		return Math.min(this.on, this.val) || 0;
 	},
 
 	getName: function () {
@@ -1105,25 +1106,6 @@ dojo.declare("classes.KGSaveEdit.ProgramMeta", classes.KGSaveEdit.MetaItem, {
 		}
 
 		return prices;
-	},
-
-	getEffect: function (name) {
-		var effects = this.effects || {};
-		var effect = num(effects[name]);
-
-		if (this.togglable) {
-			return effect * this.getOn();
-		}
-		return effect * this.val;
-	},
-
-	getOn: function () {
-		if (!this.upgradable) {
-			return this.val && (!this.planetMeta || this.planetMeta.reached) ? 1 : 0;
-		} else if (!this.togglable) {
-			return this.val;
-		}
-		return Math.min(this.on, this.val) || 0;
 	},
 
 	render: function () {

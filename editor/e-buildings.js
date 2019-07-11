@@ -1279,7 +1279,7 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				self.effects["aiLevel"] = Math.round(Math.log(Math.max(game.resPool.get("gflops").value, 1)));
 			},
 			action: function (self, game) {
-				game.resPool.get("gflops").value += self.effects["gflopsPerTickBase"] * self.on;
+				game.resPool.addResEvent("gflops", self.effects["gflopsPerTickBase"] * self.on);
 				self.updateEffects(self, game);
 			},
 			forceAction: true,
@@ -1661,14 +1661,10 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 });
 
 
-dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
+dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItemStackable, {
 	domNode: null,
 
-	val: 0,
-	on: 0,
 	unlockable: false,
-	togglable: false,
-	togglableOnOff: false,
 
 	showAutomation: false,
 
@@ -1821,22 +1817,6 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 		return value;
 	},
 
-	owned: function () {
-		return this.val > 0;
-	},
-
-	getName: function () {
-		var name = this.get("label") || this.get("name");
-		var paren = "";
-		if (this.val > 0) {
-			paren = " (" + this.val + ")";
-			if (this.togglable && !this.togglableOnOff) {
-				paren = " (" + this.getOn() + "/" + this.val + ")";
-			}
-		}
-		return name + paren;
-	},
-
 	getDescription: function () {
 		var desc = this.get("description");
 		if (this.jammed) {
@@ -1857,12 +1837,8 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 		return prices;
 	},
 
-	getEffects: function () {
-		return this.get("effects");
-	},
-
 	getEffect: function (effectName) {
-		var effects = this.get("effects") || {};
+		var effects = this.getEffects();
 		var effect;
 
 		if (effectName === "coalRatioGlobal") {
@@ -1878,15 +1854,6 @@ dojo.declare("classes.KGSaveEdit.BuildingMeta", classes.KGSaveEdit.MetaItem, {
 		}
 
 		return num(effect);
-	},
-
-	getOn: function () {
-		if (!this.togglable) {
-			return this.val;
-		} else if (this.togglableOnOff) {
-			return this.on > 0 ? this.val : 0;
-		}
-		return Math.min(this.on, this.val) || 0;
 	},
 
 	update: function () {

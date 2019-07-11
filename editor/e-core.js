@@ -296,6 +296,10 @@ dojo.declare("classes.KGSaveEdit.TooltipItem", classes.KGSaveEdit.core, {
 
 
 dojo.declare("classes.KGSaveEdit.MetaItem", [classes.KGSaveEdit.GenericItem, classes.KGSaveEdit.TooltipItem], {
+	get: function (key) {
+		return this[key];
+	},
+
 	render: function () {
 		this.seti18n();
 	},
@@ -313,7 +317,7 @@ dojo.declare("classes.KGSaveEdit.MetaItem", [classes.KGSaveEdit.GenericItem, cla
 	},
 
 	getEffects: function () {
-		return this.effects || {};
+		return this.get("effects") || {};
 	},
 
 	getNextEffectValue: function (effectName) {
@@ -401,6 +405,52 @@ dojo.declare("classes.KGSaveEdit.MetaItem", [classes.KGSaveEdit.GenericItem, cla
 				innerHTML: this.flavor
 			}, tooltip);
 		}
+	}
+});
+
+
+dojo.declare("classes.KGSaveEdit.MetaItemStackable", classes.KGSaveEdit.MetaItem, {
+	val: 0,
+	on: 0,
+	togglable: false,
+	togglableOnOff: false,
+
+	owned: function () {
+		return this.val > 0;
+	},
+
+	getOn: function () {
+		if (!this.togglable) {
+			return this.val;
+		} else if (this.togglableOnOff) {
+			return this.on > 0 ? this.val : 0;
+		}
+		return Math.min(this.on, this.val) || 0;
+	},
+
+	getName: function () {
+		var label = this.get("label");
+		if (this.owned()) {
+			if (this.togglable && !this.togglableOnOff) {
+				return label + " (" + this.getOn() + "/" + this.val + ")";
+			}
+			return label + " (" + this.val + ")";
+		}
+		return label;
+	},
+
+	getEffect: function (name) {
+		var effects = this.getEffects();
+		return num(effects[name] * this.getOn());
+	},
+
+	getPrices: function () {
+		var prices = dojo.clone(this.prices) || [];
+		var ratio = this.priceRatio || 1;
+		for (var i = prices.length - 1; i >= 0; i--) {
+			prices[i].val *= Math.pow(ratio, this.val);
+		}
+		return prices;
 	}
 });
 

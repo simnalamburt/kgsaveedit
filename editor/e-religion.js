@@ -594,9 +594,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 });
 
 
-dojo.declare("classes.KGSaveEdit.ZigguratMeta", classes.KGSaveEdit.MetaItem, {
-	val: 0,
-	on: 0,
+dojo.declare("classes.KGSaveEdit.ZigguratMeta", classes.KGSaveEdit.MetaItemStackable, {
 	unlocked: false,
 
 	constructor: function () {
@@ -607,14 +605,6 @@ dojo.declare("classes.KGSaveEdit.ZigguratMeta", classes.KGSaveEdit.MetaItem, {
 		if (this.flavor) {
 			this.i18nKeys.flavor = "religion.zu." + this.name + ".flavor";
 		}
-	},
-
-	getName: function () {
-		return (this.label || this.name) + " (" + this.val + ")";
-	},
-
-	owned: function () {
-		return this.val > 0;
 	},
 
 	render: function () {
@@ -631,14 +621,6 @@ dojo.declare("classes.KGSaveEdit.ZigguratMeta", classes.KGSaveEdit.MetaItem, {
 		this.registerTooltip(this.domNode);
 	},
 
-	getEffect: function (name) {
-		var effect = 0;
-		if (this.effects) {
-			effect = this.effects[name] * this.val;
-		}
-		return effect || 0;
-	},
-
 	update: function () {
 		this.updateEnabled();
 		this.unlocked = this.game.checkRequirements(this);
@@ -652,9 +634,7 @@ dojo.declare("classes.KGSaveEdit.ZigguratMeta", classes.KGSaveEdit.MetaItem, {
 });
 
 
-dojo.declare("classes.KGSaveEdit.ReligionMeta", classes.KGSaveEdit.MetaItem, {
-	val: 0,
-	on: 0,
+dojo.declare("classes.KGSaveEdit.ReligionMeta", classes.KGSaveEdit.MetaItemStackable, {
 	upgradable: false,
 
 	constructor: function () {
@@ -689,7 +669,7 @@ dojo.declare("classes.KGSaveEdit.ReligionMeta", classes.KGSaveEdit.MetaItem, {
 	getPrices: function () {
 		var prices = dojo.clone(this.prices) || [];
 		var priceRatio = this.priceRatio || 2.5;
-		if (!this.upgradable || !this.game.religion.hasTranscendeceUpgrade) {
+		if (!this.upgradable) {
 			priceRatio = 1;
 		}
 
@@ -697,14 +677,6 @@ dojo.declare("classes.KGSaveEdit.ReligionMeta", classes.KGSaveEdit.MetaItem, {
 			prices[i].val *= Math.pow(priceRatio, this.val);
 		}
 		return this.game.village.getEffectLeader("wise", prices);
-	},
-
-	getEffect: function (name) {
-		var effect = this.effects && this.owned() ? num(this.effects[name]) : 0;
-		if (this.upgradable && this.game.religion.hasTranscendeceUpgrade) {
-			effect *= this.val;
-		}
-		return num(effect);
 	},
 
 	render: function () {
@@ -753,9 +725,7 @@ dojo.declare("classes.KGSaveEdit.ReligionMeta", classes.KGSaveEdit.MetaItem, {
 });
 
 
-dojo.declare("classes.KGSaveEdit.TranscendenceMeta", classes.KGSaveEdit.MetaItem, {
-	val: 0,
-	on: 0,
+dojo.declare("classes.KGSaveEdit.TranscendenceMeta", classes.KGSaveEdit.MetaItemStackable, {
 	unlocked: false,
 
 	constructor: function () {
@@ -766,14 +736,6 @@ dojo.declare("classes.KGSaveEdit.TranscendenceMeta", classes.KGSaveEdit.MetaItem
 		if (this.flavor) {
 			this.i18nKeys.flavor = "religion.tu." + this.name + ".flavor";
 		}
-	},
-
-	getName: function () {
-		return (this.label || this.name) + " (" + this.val + ")";
-	},
-
-	owned: function () {
-		return this.val > 0;
 	},
 
 	render: function () {
@@ -788,11 +750,6 @@ dojo.declare("classes.KGSaveEdit.TranscendenceMeta", classes.KGSaveEdit.MetaItem
 
 		this.registerHighlight(this.domNode);
 		this.registerTooltip(this.domNode);
-	},
-
-	getEffect: function (name) {
-		var effect = this.effects && this.owned() ? num(this.effects[name]) : 0;
-		return effect * this.val || 0;
 	},
 
 	update: function () {
