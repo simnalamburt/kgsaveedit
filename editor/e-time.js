@@ -255,10 +255,10 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		}, self.tabBlockNode);
 
 		// Energy Node
-		var temporalFlux = self.game.resPool.get("temporalFlux");
+		var temporalFlux = game.resPool.get("temporalFlux");
 		var str = "/" + temporalFlux.maxValue;
 		if (temporalFlux.value > 0) {
-			str +=  " (" + self.game.toDisplaySeconds(temporalFlux.value / self.game.ticksPerSecond) + ")";
+			str +=  " (" + game.toDisplaySeconds(temporalFlux.value / game.ticksPerSecond) + ")";
 		}
 
 		var tr = dojo.create("tr", {
@@ -273,11 +273,8 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		}, tr.children[1], self);
 		self.temporalFluxNode = input;
 
-		input.parseFn = function (value) {
-			return Math.min(value, temporalFlux.maxValue);
-		};
 		input.handler = function () {
-			temporalFlux.set("value", self.parsedValue, true);
+			temporalFlux.set("value", this.parsedValue, true);
 		};
 
 		self.energyMaxBlock = tr.children[2];
