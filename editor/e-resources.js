@@ -505,7 +505,7 @@ dojo.declare("classes.KGSaveEdit.Resources", classes.KGSaveEdit.Manager, {
 				var price = prices[i];
 
 				var res = this.get(price.name);
-				if (res.maxValue > 0 && price.val > res.maxValue) {
+				if (res.maxValue > 0 && price.val > res.maxValue && price.val > res.value) {
 					return true;
 				}
 				if (res.craftable && price.val > res.value) { //account for chronosphere resets etc
