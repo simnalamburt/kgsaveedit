@@ -91,6 +91,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 				{name: "karma",       val: 1}
 			],
 			priceRatio: 1.25,
+			// unlocks: {tabs: ["village"]},
 			requires: {tech: ["voidSpace"]},
 			effects: {
 				"maxKittens": 1

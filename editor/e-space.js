@@ -226,6 +226,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 						{name: "oil",       val: 35000}
 					],
 					priceRatio: 1.12,
+					// unlocks: {tabs: ["village"]},
 					requires: {tech: ["orbitalEngineering"]},
 					togglable: true,
 					effects: {
@@ -609,6 +610,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 						{name: "kerosene",   val: 5000}
 					],
 					priceRatio: 1.25,
+					// unlocks: {tabs: ["village"]},
 					requires: {tech: ["terraformation"]},
 					effects: {
 						"maxKittens": 0

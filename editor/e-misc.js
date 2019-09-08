@@ -783,7 +783,7 @@ dojo.declare("classes.KGSaveEdit.DiplomacyManager", [classes.KGSaveEdit.UI.Tab, 
 	getTabName: function () {
 		var name = this.tabName;
 		if (this.get("leviathans").unlocked) {
-			name += " (!)";
+			name += $I("common.warning");
 		}
 		return name;
 	},

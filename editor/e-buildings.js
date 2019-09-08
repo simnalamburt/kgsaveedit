@@ -139,6 +139,7 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 			],
 			priceRatio: 1.15,
 			unlockRatio: 0.3,
+			// unlocks: {tabs: ["village"]},
 			requires: {tech: ["construction"]},
 			effects: {
 				"maxKittens":  1,
@@ -153,6 +154,7 @@ dojo.declare("classes.KGSaveEdit.BuildingsManager", [classes.KGSaveEdit.UI.Tab, 
 				{name: "titanium", val: 25}
 			],
 			priceRatio: 1.15,
+			// unlocks: {tabs: ["village"]},
 			requires: {tech: ["architecture"]},
 			effects: {
 				"maxKittens":  1,

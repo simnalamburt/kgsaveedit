@@ -1790,6 +1790,14 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 		return this.craftsByName[craftName];
 	},
 
+	getTabName: function () {
+		var name = this.tabName;
+		if (this.game.village.getFreeEngineer() > 0) {
+			name += $I("common.warning");
+		}
+		return name;
+	},
+
 	getCraftPrice: function (craft) {
 		if (craft.name !== "ship") {
 			return craft.prices;

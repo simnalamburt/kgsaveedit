@@ -423,6 +423,11 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 		return Math.max(Math.round(Math.log(bonus)), 0);
 	},
 
+	getTranscendenceRatio: function (level) {
+		var bonus = Math.exp(level);
+		return (Math.pow(bonus / 5 + 1, 2) - 1) / 80;
+	},
+
 	getProductionBonus: function () {
 		var rate = this.getRU("solarRevolution").owned() ? this.game.getTriValue(this.faith, 1000) : 0;
 		//Solar Revolution capped to 1000% so it doesn't become game-breaking
@@ -471,27 +476,39 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 		var table = dojo.create("table", {class: "bottom-margin"}, this.tabBlockNode);
 
 		var tr = dojo.create("tr", {
-			innerHTML: "<td>" + $I("KGSaveEdit.religion.totalFaith") + '</td><td></td><td id="solarBonusSpan"></td>'
+			innerHTML: "<td>" + $I("KGSaveEdit.religion.totalFaith") + '</td><td></td>'
 		}, table);
 		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "faith");
-		this.solarBonusSpan = tr.children[2];
+		this.solarBonusSpan = dojo.create("span", {id: "solarBonusSpan", class: "leftSpacer"}, tr.children[1]);
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>" + $I("KGSaveEdit.religion.apocryphaBonus") + '</td><td></td><td id="apocryphaBonusSpan"></td>'
+			innerHTML: "<td>" + $I("KGSaveEdit.religion.apocryphaBonus") + '</td><td></td>'
 		}, table);
 		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "faithRatio");
-		this.apocryphaBonusSpan = tr.children[2];
+		this.apocryphaBonusSpan = dojo.create("span", {id: "apocryphaBonusSpan", class: "leftSpacer"}, tr.children[1]);
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>" + $I("KGSaveEdit.religion.corruptionTimer") + "</td><td></td><td></td>"
+			innerHTML: "<td>" + $I("KGSaveEdit.religion.corruptionTimer") + "</td><td></td>"
 		}, table);
 		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "corruption");
 
 		tr = dojo.create("tr", {
-			innerHTML: "<td>" + $I("KGSaveEdit.religion.transcendenceRatio") + "</td><td></td><td></td>"
+			innerHTML: "<td>" + $I("KGSaveEdit.religion.transcendenceRatio") + "</td>" +
+				'<td colspan="2">&nbsp; &harr; &nbsp;</td>'
 		}, table);
-		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "tcratio");
-		this.transcendenceLevelSpan = tr.children[2];
+		this.game._createInput({class: "abbrInput"}, tr.children[1], this, "tcratio", "first");
+		this.transcendenceLevelNode = this.game._createInput({class: "integerInput"}, tr.children[1]);
+		dojo.place(document.createTextNode(" " + $I("KGSaveEdit.religion.transcendenceLevel")), tr.children[1]);
+
+		this.tcratioNode.handler = function () {
+			var transcendenceLevel = this.game.religion.getTranscendenceLevel(this.game.religion.tcratio);
+			this.game.setInput(this.game.religion.transcendenceLevelNode, transcendenceLevel, true);
+		};
+
+		this.transcendenceLevelNode.handler = function () {
+			var transcendenceRatio = this.game.religion.getTranscendenceRatio(this.parsedValue);
+			this.game.setInput(this.game.religion.tcratioNode, transcendenceRatio, true);
+		};
 
 		this.religionBlock = dojo.create("table", {
 			id: "religionBlock",
@@ -549,13 +566,6 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 
 		var ratio = this.getFaithBonus();
 		this.apocryphaBonusSpan.textContent = " [" + this.game.getDisplayValueExt(ratio * 100, true, false, 1) + "%]";
-
-		text = "";
-		var level = this.getTranscendenceLevel();
-		if (level > 0) {
-			text = "[" + level + "]";
-		}
-		this.transcendenceLevelSpan.textContent = text;
 	},
 
 	save: function (saveData) {

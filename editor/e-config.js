@@ -4,7 +4,7 @@ require([], function () {
 
 dojo.declare("classes.KGSaveEdit.KGConfig", null, {
 	statics: {
-		locales: ["br", "cz", "es", "fr", "ja", "ru", "zh"]
+		locales: ["br", "cz", "es", "fr", "ja", "pl", "ru", "zh"]
 	}
 });
 
@@ -42,7 +42,8 @@ dojo.declare("classes.KGSaveEdit.i18n.Lang", null, {
 			"br": "Portuguese",
 			"es": "Española",
 			"fr": "French",
-			"cz": "Česky"
+			"cz": "Česky",
+			"pl": "Polskie"
 		};
 
 		this.availableLocaleLabels = {};
