@@ -361,7 +361,7 @@ dojo.declare("classes.KGSaveEdit.ReligionManager", [classes.KGSaveEdit.UI.Tab, c
 			description: "And tear will not fall down",
 			prices: [
 				{name: "relic", val: 100000},
-				{name: "void",  val: 25}
+				{name: "void",  val: 25000}
 			],
 			tier: 25,
 			priceRatio: 1.15,

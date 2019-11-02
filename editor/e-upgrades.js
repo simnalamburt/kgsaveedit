@@ -1139,7 +1139,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 		}, {
 			name: "amBases",
 			prices: [
-				{name: "eludium", val: 15},
+				{name: "eludium",    val: 15},
 				{name: "antimatter", val: 250}
 			],
 			// unlcoks: {upgrades: ["aiBases"]},
@@ -1147,8 +1147,8 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 		}, {
 			name: "aiBases",
 			prices: [
-				{name: "eludium", val: 15},
-				{name: "antimatter", val: 250}
+				{name: "antimatter", val: 7500},
+				{name: "science",    val: 750000}
 			],
 			requires: {upgrades: ["amBases"]}
 		}, {
@@ -1178,7 +1178,7 @@ dojo.declare("classes.KGSaveEdit.WorkshopManager", [classes.KGSaveEdit.UI.Tab, c
 			name: "amReactorsMK2",
 			prices: [
 				{name: "eludium",    val: 70},
-				{name: "antimatter", val: 2500}
+				{name: "antimatter", val: 1750}
 			],
 			// unlocks: {upgrades: ["voidReactors"]},
 			requires: {upgrades: ["amReactors"]},

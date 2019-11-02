@@ -568,7 +568,7 @@ dojo.declare("classes.KGSaveEdit.SpaceManager", [classes.KGSaveEdit.UI.Tab, clas
 					prices: [
 						{name: "starchart",  val: 25000},
 						{name: "antimatter", val: 50},
-						{name: "alloy",      val: 2500},
+						{name: "alloy",      val: 25000},
 						{name: "kerosene",   val: 7500}
 					],
 					priceRatio: 1.15,
