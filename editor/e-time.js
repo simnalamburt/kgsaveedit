@@ -9,6 +9,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 	flux: 0, /* Amount of years skipped by CF time jumps */
 	heat: 0,
 	timestamp: null,
+	isAccelerated: false,
 
 	cfu: null,
 	cfuByName: null,
@@ -34,12 +35,43 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 			],
 			priceRatio: 1.25,
 			heat: 0,
-			isAutomationEnabled: true,
+			// isAutomationEnabled: true,
 			effects: {
 				"heatMax":      100,
 				"heatPerTick": -0.02
 			},
-			unlocked: true
+			unlocked: true,
+			// unlocks: {chronoforge: ["timeBoiler"]},
+			calculateEffects: function (self, game) {
+				self.effects["heatMax"] = 100 + game.getEffect("heatMaxExpansion");
+			}
+		}, {
+			name: "timeBoiler",
+			prices: [
+				{name: "timeCrystal", val: 25000}
+			],
+			priceRatio: 1.25,
+			requires: {chronoforge: ["blastFurnace"]},
+			effects: {
+				"heatMaxExpansion":  10,
+				"energyConsumption": 1
+			},
+			togglable: true,
+			upgrades: {chronoforge: ["blastFurnace"]},
+			// TODO Actually "action" is almost always just updating effects (unclear from the name), better separate the 2 concerns: update effects (can be done several times per tick) and perform specific action (only once per tick!)
+			// TODO Separation of concerns currently done only for AI Core and Time Boilers (REQUIRED by non-proportional effect!), will be systematized later
+			updateEffects: function (self) {
+				// TB #1: 10; Total:  10; Average: 10
+				// TB #2: 30; Total:  40; Average: 20
+				// TB #3: 50; Total:  90; Average: 30
+				// TB #4: 90; Total: 160; Average: 40
+				// etc.
+				self.effects["heatMaxExpansion"] = 10 * self.on;
+				self.effects["energyConsumption"] = self.on;
+			},
+			action: function (self, game) {
+				self.updateEffects(self, game);
+			}
 		}, {
 			name: "temporalAccelerator",
 			prices: [
@@ -74,7 +106,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 			prices: [
 				{name: "timeCrystal", val: 1000}
 			],
-			priceRatio: 1.25,
+			priceRatio: 1.3,
 			requires: {"tech": ["paradoxalKnowledge"]},
 			effects: {
 				"shatterTCGain": 0.01
@@ -122,7 +154,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 			prices: [
 				{name: "void", val: 75}
 			],
-			priceRatio: 1.25,
+			priceRatio: 1.3,
 			requires: {upgrades: ["voidAspiration"]},
 			effects: {
 				"globalResourceRatio": 0.02,
@@ -223,7 +255,6 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		// Timestamp Node
 		var div = dojo.create("div", {
 			id: "timestampBlock",
-			class: "bottom-margin",
 			innerHTML: '<span class="nameNode">' + $I("KGSaveEdit.time.timestamp") + "</span> "
 		}, self.tabBlockNode);
 
@@ -249,6 +280,9 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 			self.set("timestamp", Date.now());
 		});
 
+		div = dojo.create("div", {class: "bottom-margin"}, self.tabBlockNode);
+		game._createCheckbox($I("time.AccelerateTimeBtn.label"), div, self, "isAccelerated");
+
 		self.timeBlock = dojo.create("table", {
 			id: "timeBlock",
 			class: "bottom-margin",
@@ -258,9 +292,8 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		// Energy Node
 		var temporalFlux = game.resPool.get("temporalFlux");
 		var str = "/" + temporalFlux.maxValue;
-		if (temporalFlux.value > 0) {
-			str +=  " (" + game.toDisplaySeconds(temporalFlux.value / game.ticksPerSecond) + ")";
-		}
+		var seconds = temporalFlux.value / this.game.ticksPerSecond;
+		str += " (" + (seconds < 1 ? "0s" : this.game.toDisplaySeconds(seconds)) + " / " + this.game.toDisplaySeconds(temporalFlux.maxValue / this.game.ticksPerSecond) + ")";
 
 		var tr = dojo.create("tr", {
 			innerHTML: '<td><span class="nameNode">Temporal Flux</span></td><td></td><td>' + str + "</td>"
@@ -348,9 +381,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		var str = "/" + temporalFlux.maxValue;
 
 		var seconds = temporalFlux.value / this.game.ticksPerSecond;
-		if (seconds > 0) {
-			str +=  " (" + this.game.toDisplaySeconds(seconds) + ")";
-		}
+		str += " (" + (seconds < 1 ? "0s" : this.game.toDisplaySeconds(seconds)) + " / " + this.game.toDisplaySeconds(temporalFlux.maxValue / this.game.ticksPerSecond) + ")";
 		this.energyMaxBlock.innerHTML = str;
 
 		this.heatBlock.innerHTML = "/" + this.game.getEffect("heatMax");
@@ -369,6 +400,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 			timestamp: this.timestamp,
 			flux: this.flux,
 			heat: this.heat,
+			isAccelerated: this.isAccelerated,
 			cfu: this.game.mapMethods(this.cfu, "save"),
 			vsu: this.game.mapMethods(this.vsu, "save")
 		};
@@ -380,7 +412,7 @@ dojo.declare("classes.KGSaveEdit.TimeManager", [classes.KGSaveEdit.UI.Tab, class
 		}
 
 		var data = saveData.time;
-		this.game.loadMetaFields(this, data, ["flux", "heat", "timestamp"]);
+		this.game.loadMetaFields(this, data, ["flux", "heat", "isAccelerated", "timestamp"]);
 
 		this.loadMetadata(data, "cfu", "getCFU", null, true);
 		this.loadMetadata(data, "vsu", "getVSU", null, true);
@@ -482,6 +514,10 @@ dojo.declare("classes.KGSaveEdit.CFUMeta", classes.KGSaveEdit.MetaItemStackable,
 		dojo.toggleClass(this.nameNode, "spoiler", !this.unlocked);
 
 		this.updateEnabled();
+
+		if (this.action) {
+			this.action(this, this.game);
+		}
 
 		if (this.name === "usedCryochambers") {
 			dojo.addClass(this.nameNode, "btnDisabled");

@@ -13,7 +13,8 @@ require(["dojo/on", "dojo/mouse"], function (on, mouse) {
 
 
 /**
- * Super class. Contains a method to set any property and also update the associated form element, if any
+ * Super class. Contains a method to set any property and also update the associated form element, if any.
+ * Also has a method for updating translations.
 **/
 dojo.declare("classes.KGSaveEdit.core", null, {
 	set: function (key, value) {

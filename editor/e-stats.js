@@ -619,7 +619,7 @@ dojo.declare("classes.KGSaveEdit.StatsManager", [classes.KGSaveEdit.UI.Tab, clas
 			unlocked: true
 		}, {
 			name: "totalResets",
-			title: "stats.resets.total",
+			title: "stats.run.number",
 			val: 0
 		}, {
 			name: "totalParagon",

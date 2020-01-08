@@ -776,7 +776,7 @@ dojo.declare("classes.KGSaveEdit.ResourceMeta", [classes.KGSaveEdit.GenericItem,
 
 		this.maxValueNode.textContent = maxValue || this.showMax ? "/" + this.game.getDisplayValueExt(maxValue) : "";
 
-		var perTick = this.game.opts.usePerSecondValues ? this.perTickCached * this.game.ticksPerSecond : this.perTickCached;
+		var perTick = this.game.opts.usePerSecondValues ? this.perTickCached * this.game.getTicksPerSecondUI() : this.perTickCached;
 		var postfix = this.game.opts.usePerSecondValues ? "/sec" : "";
 		if (this.game.opts.usePercentageResourceValues && maxValue) {
 			perTick = perTick / maxValue * 100;

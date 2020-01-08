@@ -635,7 +635,9 @@ dojo.declare("classes.KGSaveEdit.Calendar", classes.KGSaveEdit.TooltipItem, {
 		}
 		var data = saveData.calendar;
 
-		this.game.loadMetaFields(this, data, ["year", "day", "weather", "festivalDays"]);
+		this.game.loadMetaFields(this, data, ["year", "day", "festivalDays"]);
+		this.game.setSelectByValue(this.weatherSel, data.weather);
+		this.weather = this.weatherSel.value || null;
 		this.game.setSelectByValue(this.seasonNode, data.season);
 		this.season = this.seasonNode.selectedIndex;
 		this.game.setSelectByValue(this.cycleNode, data.cycle);

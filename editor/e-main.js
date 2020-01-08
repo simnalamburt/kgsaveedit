@@ -673,6 +673,11 @@ dojo.declare("classes.KGSaveEdit.EffectsManager", null, {
 				type: "fixed"
 			},
 
+			"heatMaxExpansion": {
+				type: "fixed",
+				calculation: "nonProportional"
+			},
+
 			"heatPerTick": {
 				type: "perTick"
 			},
@@ -1130,7 +1135,15 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 	},
 
 	getRateUI: function () {
-		return this.ticksPerSecond;
+		return this.getTicksPerSecondUI();
+	},
+
+	getTicksPerSecondUI: function () {
+		return this.ticksPerSecond * (1 + this.timeAccelerationRatio());
+	},
+
+	timeAccelerationRatio: function () {
+		return this.time.isAccelerated ? 0.5 : 0;
 	},
 
 	calculateAllEffects: function () {
@@ -1426,11 +1439,11 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		}
 
 		if (resPertick < 0) {
-			var toZero = res.value / (-resPertick * this.getRateUI());
+			var toZero = res.value / (-resPertick * this.getTicksPerSecondUI());
 			resString += "<br>" + $I("res.toZero") + ": " + this.toDisplaySeconds(toZero.toFixed());
 		} else {
 			if (res.maxValue && res.value < res.maxValue) {
-				var toCap = (res.maxValue - res.value) / (resPertick * this.getRateUI());
+				var toCap = (res.maxValue - res.value) / (resPertick * this.getTicksPerSecondUI());
 				if (toCap) {
 					resString += "<br>" + $I("res.toCap") + ": " + this.toDisplaySeconds(toCap.toFixed());
 				}
@@ -1963,7 +1976,7 @@ dojo.declare("classes.KGSaveEdit.SaveEdit", classes.KGSaveEdit.core, {
 		stack.push({
 			name: $I("res.stack.time"),
 			type: "ratio",
-			value: (this.getRateUI() - this.ticksPerSecond) / this.ticksPerSecond
+			value: (this.getTicksPerSecondUI() - this.ticksPerSecond) / this.ticksPerSecond
 		});
 
 		return stack;
